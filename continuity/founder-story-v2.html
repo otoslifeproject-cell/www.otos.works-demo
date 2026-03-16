@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTOS Continuity™ — Founder Story v2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --border: #e5e7eb;
+      --muted: #6b7280;
+      --muted-light: #9ca3af;
+      --text: #111827;
+      --teal: #0d9488;
+      --teal-soft: #5eead4;
+      --danger: #ef4444;
+      --danger-dark: #b91c1c;
+      --amber: #f59e0b;
+      --orange: #f97316;
+      --green: #10b981;
+      --panel-bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .panel-map {
+      position: relative;
+      width: 65%;
+      min-width: 0;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .map-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+    }
+
+    .map-shell {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      aspect-ratio: 900 / 780;
+    }
+
+    .map-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .map-dim {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 4;
+    }
+
+    .map-dim.active {
+      opacity: 0.7;
+    }
+
+    .map-overlay-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 5;
+      transition: opacity 0.4s ease;
+    }
+
+    .map-overlay-center.visible {
+      opacity: 1;
+    }
+
+    .pivot-overlay-inner {
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 20px;
+      padding: 32px 40px;
+      max-width: 480px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+      text-align: center;
+    }
+
+    .pivot-line-main {
+      font-size: 28px;
+      font-weight: 600;
+      color: #111827;
+      line-height: 1.2;
+    }
+
+    .pivot-line-sub {
+      margin-top: 8px;
+      font-size: 22px;
+      color: #6b7280;
+    }
+
+    .roundabout-outer {
+      fill: #4b6a8a;
+      stroke: none;
+    }
+
+    .roundabout-inner {
+      fill: #ffffff;
+      stroke: none;
+    }
+
+    .road-outer {
+      fill: none;
+      stroke: #4b6a8a;
+      stroke-width: 18;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .road-inner {
+      fill: none;
+      stroke: #5eead4;
+      stroke-width: 10;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .journey-line {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .journey-line.red {
+      stroke: #ef4444;
+    }
+
+    .journey-line.teal {
+      stroke: #0d9488;
+    }
+
+    .journey-line.amber {
+      stroke: #f59e0b;
+    }
+
+    .journey-line.orange {
+      stroke: #f97316;
+    }
+
+    .journey-line.green {
+      stroke: #10b981;
+    }
+
+    .journey-node-hit {
+      opacity: 0.3;
+      transform-origin: center;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .journey-node-hit.visited {
+      opacity: 1;
+    }
+
+    .journey-node-hit.pulsing {
+      animation: nodePulse 0.4s ease-out;
+    }
+
+    @keyframes nodePulse {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .nodes-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .service-node {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      opacity: 0.3;
+      transform-origin: center;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .service-node.visited {
+      opacity: 1;
+    }
+
+    .service-node-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 20px;
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    .service-node-logo img {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
+
+    .service-node-label {
+      position: absolute;
+      top: 84px;
+      left: 0;
+      width: 100%;
+      font-size: 11px;
+      text-align: center;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .panel-info {
+      width: 35%;
+      min-width: 320px;
+      border-left: 1px solid var(--border);
+      background: var(--panel-bg);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 10;
+    }
+
+    .info-inner {
+      flex: 1;
+      padding: 24px 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .info-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .info-title {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .info-title span.icon {
+      font-size: 20px;
+    }
+
+    .step-counter {
+      font-size: 12px;
+      color: var(--muted-light);
+      white-space: nowrap;
+    }
+
+    .cost-block-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted-light);
+    }
+
+    .cost-main {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--teal);
+      font-variant-numeric: tabular-nums;
+      margin-top: 2px;
+    }
+
+    .cost-main.flash-danger {
+      animation: costFlash 0.5s ease-out;
+    }
+
+    @keyframes costFlash {
+      0% { color: var(--danger); transform: scale(1.05); }
+      100% { color: var(--teal); transform: scale(1); }
+    }
+
+    .cost-true {
+      font-size: 11px;
+      font-style: italic;
+      color: var(--muted);
+      margin-top: -2px;
+    }
+
+    .phase-pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      width: fit-content;
+    }
+
+    .phase-pill-1-2 {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .phase-pill-3 {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .phase-pill-4 {
+      background: #fee2e2;
+      color: #7f1d1d;
+    }
+
+    .phase-pill-5 {
+      background: #fff7ed;
+      color: #c2410c;
+    }
+
+    .phase-pill-6 {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .phase-line {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .step-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .step-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 8px 0;
+    }
+
+    .otos-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #0d9488;
+      font-style: italic;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .otos-label span.icon {
+      font-size: 16px;
+    }
+
+    .otos-text {
+      margin-top: 4px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .selfmed-pill {
+      margin-top: auto;
+      align-self: flex-start;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .selfmed-active {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .selfmed-escalates {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .selfmed-resumes {
+      background: #ffedd5;
+      color: #c2410c;
+    }
+
+    .selfmed-stops {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .map-shake {
+      animation: mapShake 0.5s ease-in-out;
+    }
+
+    @keyframes mapShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-4px); }
+      40% { transform: translateX(4px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    .overlay-finale {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 40;
+    }
+
+    .overlay-finale.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-finale-inner {
+      text-align: center;
+      padding: 32px 24px;
+      max-width: 520px;
+    }
+
+    .finale-line-muted {
+      font-size: 16px;
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
+
+    .finale-line-main {
+      font-size: 42px;
+      font-weight: 700;
+      color: #0d9488;
+      margin-bottom: 24px;
+    }
+
+    .finale-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      background: #0d9488;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .finale-cta:hover {
+      background: #0f766e;
+    }
+
+    .otos-brain-emoji {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) translateY(40px) scale(0.1);
+      font-size: 64px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 6;
+    }
+
+    .otos-brain-emoji.rise {
+      animation: brainRise 1.2s ease-out forwards;
+    }
+
+    @keyframes brainRise {
+      0% {
+        transform: translate(-50%, -50%) translateY(40px) scale(0.1);
+        opacity: 0;
+      }
+      60% {
+        transform: translate(-50%, -50%) translateY(-10px) scale(1.05);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .panel-info.flash-green {
+      animation: panelFlashGreen 0.6s ease-out;
+    }
+
+    @keyframes panelFlashGreen {
+      0% { background-color: #d1fae5; }
+      100% { background-color: #ffffff; }
+    }
+
+    .bottom-bar {
+      height: 56px;
+      border-top: 1px solid var(--border);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      gap: 8px;
+    }
+
+    .bottom-left, .bottom-center, .bottom-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ghost-button {
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      font-size: 13px;
+      padding: 6px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      color: #111827;
+    }
+
+    .ghost-button:hover {
+      background: #f9fafb;
+    }
+
+    .primary-button {
+      border-radius: 999px;
+      border: none;
+      background: #0d9488;
+      font-size: 13px;
+      padding: 6px 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      color: #ffffff;
+    }
+
+    .primary-button:hover {
+      background: #0f766e;
+    }
+
+    .bottom-center-text {
+      font-size: 12px;
+      color: #9ca3af;
+      text-align: center;
+    }
+
+    .click-surface {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: transparent;
+    }
+
+    .map-shell, .panel-info {
+      transition: transform 0.15s ease;
+    }
+
+    .no-select {
+      user-select: none;
+    }
+  </style>
+</head>
+<body class="no-select">
+  <div class="app" id="app-root">
+    <div class="panel-map" id="panel-map">
+      <div class="map-wrapper">
+        <div class="map-shell" id="map-shell">
+          <svg class="map-svg" viewBox="0 0 900 780" xmlns="http://www.w3.org/2000/svg">
+            <rect width="900" height="780" fill="#ffffff" />
+            <g id="roads-outer" stroke-linecap="round" stroke-linejoin="round">
+              <line class="road-outer" x1="0" y1="145" x2="900" y2="145" />
+              <line class="road-outer" x1="0" y1="310" x2="900" y2="310" />
+              <line class="road-outer" x1="0" y1="490" x2="900" y2="490" />
+              <line class="road-outer" x1="0" y1="660" x2="900" y2="660" />
+              <line class="road-outer" x1="130" y1="0" x2="130" y2="780" />
+              <line class="road-outer" x1="300" y1="0" x2="300" y2="780" />
+              <line class="road-outer" x1="480" y1="0" x2="480" y2="780" />
+              <line class="road-outer" x1="660" y1="0" x2="660" y2="780" />
+              <line class="road-outer" x1="830" y1="0" x2="830" y2="780" />
+              <circle class="roundabout-outer" cx="390" cy="145" r="60" />
+              <circle class="roundabout-outer" cx="560" cy="490" r="80" />
+              <line class="road-outer" x1="300" y1="660" x2="130" y2="780" />
+              <path class="road-outer" d="M 660 310 C 720 310 720 145 780 145" />
+              <line class="road-outer" x1="480" y1="0" x2="480" y2="145" />
+              <line class="road-outer" x1="390" y1="145" x2="390" y2="0" />
+            </g>
+            <g id="roads-inner" stroke-linecap="round" stroke-linejoin="round">
+              <line class="road-inner" x1="0" y1="145" x2="900" y2="145" />
+              <line class="road-inner" x1="0" y1="310" x2="900" y2="310" />
+              <line class="road-inner" x1="0" y1="490" x2="900" y2="490" />
+              <line class="road-inner" x1="0" y1="660" x2="900" y2="660" />
+              <line class="road-inner" x1="130" y1="0" x2="130" y2="780" />
+              <line class="road-inner" x1="300" y1="0" x2="300" y2="780" />
+              <line class="road-inner" x1="480" y1="0" x2="480" y2="780" />
+              <line class="road-inner" x1="660" y1="0" x2="660" y2="780" />
+              <line class="road-inner" x1="830" y1="0" x2="830" y2="780" />
+              <circle class="roundabout-inner" cx="390" cy="145" r="52" />
+              <circle class="roundabout-inner" cx="560" cy="490" r="72" />
+              <line class="road-inner" x1="300" y1="660" x2="130" y2="780" />
+              <path class="road-inner" d="M 660 310 C 720 310 720 145 780 145" />
+              <line class="road-inner" x1="480" y1="0" x2="480" y2="145" />
+              <line class="road-inner" x1="390" y1="145" x2="390" y2="0" />
+            </g>
+            <g id="journey-layer"></g>
+          </svg>
+          <div class="map-dim" id="map-dim"></div>
+          <div class="map-overlay-center" id="pivot-overlay">
+            <div class="pivot-overlay-inner">
+              <div class="pivot-line-main">The door opened.</div>
+              <div class="pivot-line-main">Then closed.</div>
+              <div class="pivot-line-sub">No follow-through.</div>
+            </div>
+          </div>
+          <div class="otos-brain-emoji" id="otos-brain">🧠</div>
+          <div class="nodes-layer" id="nodes-layer"></div>
+          <div class="click-surface" id="click-surface"></div>
+        </div>
+      </div>
+    </div>
+    <aside class="panel-info" id="info-panel">
+      <div class="info-inner">
+        <header class="info-header">
+          <div class="info-title">
+            <span class="icon">🧠</span>
+            <span>OTOS Continuity™</span>
+          </div>
+          <div class="step-counter" id="step-counter">Step 0/62</div>
+        </header>
+        <section>
+          <div class="cost-block-label">RUNNING TOTAL (KNOWN COSTS ONLY)</div>
+          <div class="cost-main" id="cost-main">£0</div>
+          <div class="cost-true">True cost: £150,000+</div>
+        </section>
+        <section>
+          <div class="phase-pill phase-pill-1-2" id="phase-pill">Phase 1: The Invisible Line</div>
+          <div class="phase-line" id="phase-line">Phase 1: The Invisible Line</div>
+        </section>
+        <section>
+          <div class="step-title" id="step-title">Click anywhere to begin</div>
+        </section>
+        <section>
+          <p class="step-desc" id="step-desc">
+            Click anywhere on the page, press Space, or use the arrow keys to walk Dean's journey step by step.
+          </p>
+        </section>
+        <div class="divider"></div>
+        <section>
+          <div class="otos-label">
+            <span class="icon">💡</span>
+            <span>OTOS would have:</span>
+          </div>
+          <div class="otos-text" id="otos-text">Show how a joined-up continuity layer could have held the thread.</div>
+        </section>
+        <button class="selfmed-pill selfmed-active" id="selfmed-pill">Self-medicating continues</button>
+      </div>
+    </aside>
+  </div>
+  <div class="bottom-bar">
+    <div class="bottom-left">
+      <button class="ghost-button" id="btn-back">
+        <span>←</span>
+        <span>Back</span>
+      </button>
+    </div>
+    <div class="bottom-center">
+      <div class="bottom-center-text">
+        Click anywhere · Space to play · → to advance
+      </div>
+    </div>
+    <div class="bottom-right">
+      <button class="primary-button" id="btn-play">
+        <span id="btn-play-icon">▶</span>
+        <span>Play</span>
+      </button>
+    </div>
+  </div>
+  <div class="overlay-finale" id="overlay-finale">
+    <div class="overlay-finale-inner">
+      <div class="finale-line-muted" id="finale-line-1">No joined-up pathway.</div>
+      <div class="finale-line-main" id="finale-line-2">Until now.</div>
+      <a href="/continuity/guided-demos.html" class="finale-cta" id="finale-cta">
+        <span>See the OTOS demo</span>
+        <span>→</span>
+      </a>
+    </div>
+  </div>
+  <script>
+    (function () {
+      "use strict";
+
+      var EVENTS = [
+        { id: 1, phase: 1, title: "The Invisible Line", description: "30 years of successfully self-medicating every day. Functional. Creative. Driven. No diagnosis. No pathway. Nobody looking.", location: null, type: "baseline", cost: null, selfMed: "active", otosWouldHave: null, shake: 0 },
+        { id: 2, phase: 1, title: "GP — Northampton", description: "First GP contact. Symptoms present but not connected. No ADHD screen. Treated for surface-level complaints.", location: "GP Surgery", type: "first-contact", cost: 250, selfMed: "active", otosWouldHave: "Flagged repeated GP contacts with no resolution. Prompted ADHD screening.", shake: 0 },
+        { id: 3, phase: 1, title: "Northampton A&E", description: "First A&E attendance. Alcohol-related. Treated and discharged. No onward referral. No thread.", location: "Northampton", type: "crisis", cost: 400, selfMed: "active", otosWouldHave: "Created a continuity record. Triggered a CGL referral. Held the thread.", shake: 1 },
+        { id: 4, phase: 1, title: "Northampton A&E — again", description: "Second A&E visit. Same presentation. No connection made to previous visit. System starts again from zero.", location: "Northampton", type: "re-entry", cost: 400, selfMed: "active", otosWouldHave: "Flagged as repeat presentation. Warm handover to CGL. Second visit never happens.", shake: 2 },
+        { id: 5, phase: 1, title: "Self-medicating continues", description: "Between services. No one watching. The system closed each door behind it.", location: null, type: "self-medication", cost: null, selfMed: "active", otosWouldHave: "Daily check-in signal. Someone would have noticed the pattern.", shake: 0 },
+        { id: 6, phase: 2, title: "Move back to UK", description: "Returns to UK. New geography, same broken system. Has to re-register everywhere. History lost.", location: "GP Surgery", type: "re-entry", cost: 150, selfMed: "active", otosWouldHave: "Continuity record travels with Dean. No starting from zero.", shake: 0 },
+        { id: 7, phase: 2, title: "GP Cambridge — first contact", description: "New GP. History not transferred. Presents as alcohol-dependent. ADHD not screened. Fit note issued.", location: "GP Surgery", type: "first-contact", cost: 250, selfMed: "active", otosWouldHave: "Existing history visible. GP sees pattern immediately.", shake: 0 },
+        { id: 8, phase: 2, title: "UK GP: 'Safe to drink'", description: "GP says healthy enough, gives permission to continue drinking. A catastrophic missed signal. This is documented.", location: "GP Surgery", type: "touchpoint", cost: 250, selfMed: "active", otosWouldHave: "OTOS flags contradiction between GP note and A&E history. Escalates.", shake: 1 },
+        { id: 9, phase: 2, title: "CPFT — first referral", description: "Referred to CPFT Psychological Wellbeing Service. Long wait. Seen. No ADHD screen. Discharged.", location: "CPFT", type: "referral", cost: 800, selfMed: "active", otosWouldHave: "ADHD flag raised. Referral pathway opened before discharge.", shake: 1 },
+        { id: 10, phase: 2, title: "CGL — first registration", description: "Registers with CGL. Alcohol support begins. ADHD still not on anyone's radar.", location: "CGL", type: "first-contact", cost: 600, selfMed: "active", otosWouldHave: "CGL and CPFT records joined. First time someone sees the whole picture.", shake: 0 },
+        { id: 11, phase: 2, title: "AA — joins", description: "Starts attending AA. Commits. Stays for about a year. It helps but something is still wrong. The ADHD.", location: "Peer Support", type: "touchpoint", cost: 200, selfMed: "active", otosWouldHave: null, shake: 0 },
+        { id: 12, phase: 3, title: "Parents fund private psychiatric assessment", description: "Dean is honest with parents. They fund a Psymplicity assessment. Private. The NHS never offered this.", location: "Psymplicity", type: "touchpoint", cost: 900, selfMed: "active", otosWouldHave: "NHS pathway would have identified ADHD years earlier. Parents should never have needed to fund this.", shake: 0 },
+        { id: 13, phase: 3, title: "ADHD diagnosis — Psymplicity", description: "Privately diagnosed with ADHD. Methylphenidate prescribed. For the first time: clarity. Executive function returns.", location: "Psymplicity", type: "breakthrough", cost: 900, selfMed: "active", otosWouldHave: "This moment arrives 10 years earlier on an NHS pathway.", shake: 0 },
+        { id: 14, phase: 3, title: "GP refuses Shared Care Agreement", description: "GP won't support the shared care arrangement. Psymplicity not on Right To Choose register. Dean loses his medication.", location: "GP Surgery", type: "discharge", cost: 500, selfMed: "escalates", otosWouldHave: "OTOS escalates immediately. Warm handover. Medication never interrupted.", shake: 2 },
+        { id: 15, phase: 3, title: "THE PIVOT: Diagnosis + No Follow-Through", description: "The door opened. Then closed. ADHD diagnosed but medication gone. No NHS pathway. No thread. Self-medicating becomes full addiction from this moment.", location: null, type: "crisis", cost: null, selfMed: "escalates", otosWouldHave: "One check-in. One warm handover. One thread that didn't break. This is the moment OTOS was built for.", shake: 3, pivotPoint: true },
+        { id: 16, phase: 3, title: "Fit note — 3 months", description: "GP issues 3-month fit note: depression, alcohol dependency, suicidal thoughts. The real cause — ADHD — still not addressed.", location: "GP Surgery", type: "touchpoint", cost: 500, selfMed: "escalates", otosWouldHave: "Fit note triggers OTOS review. ADHD medication reinstated pathway opened.", shake: 2 },
+        { id: 17, phase: 4, title: "Addenbrooke's A&E", description: "First Addenbrooke's attendance. Alcohol crisis. Treated and discharged. No connection to CPFT, CGL, or GP history.", location: "A&E", type: "crisis", cost: 800, selfMed: "escalates", otosWouldHave: "A&E sees full history. CPFT alerted. CGL keyworker notified within 4 hours.", shake: 3 },
+        { id: 18, phase: 4, title: "Addenbrooke's refuses admission", description: "Presents for help. Told to 'come back when in withdrawal.' Refused and sent away.", location: "A&E", type: "discharge", cost: 400, selfMed: "escalates", otosWouldHave: "OTOS flags refusal. System escalates. No one sent away.", shake: 4 },
+        { id: 19, phase: 4, title: "999 Ambulance — won't take me in", description: "111 calls 999. Ambulance attends but refuses to convey. Dean left in crisis.", location: "A&E", type: "crisis", cost: 600, selfMed: "escalates", otosWouldHave: "Live alert to CGL and CPFT. Warm handover arranged before ambulance arrives.", shake: 4 },
+        { id: 20, phase: 4, title: "GP Cambridge — collapse. GP refuses admission.", description: "Physical collapse. GP called. GP also refuses admission. Sent home.", location: "GP Surgery", type: "crisis", cost: 400, selfMed: "escalates", otosWouldHave: "Pattern of refusals flagged. Escalated to duty team automatically.", shake: 5 },
+        { id: 21, phase: 4, title: "CPFT Sanctuary Service — 111", description: "111 referral to CPFT Sanctuary. Crisis support accessed. First time mental health crisis formally recognised.", location: "CPFT", type: "referral", cost: 600, selfMed: "escalates", otosWouldHave: "Sanctuary visit creates OTOS touchpoint. Next steps planned before leaving.", shake: 3 },
+        { id: 22, phase: 4, title: "Meet CPFT Helen Bedside — 1st time", description: "First time meeting Helen Bedside at CPFT. She sees the full picture. The beginning of someone actually holding the thread.", location: "CPFT", type: "touchpoint", cost: 600, selfMed: "escalates", otosWouldHave: "Helen's notes visible to CGL and GP immediately.", shake: 2 },
+        { id: 23, phase: 4, title: "Addenbrooke's Ward — Detox (1st)", description: "Finally admitted for detox. First inpatient detox. Alcohol cleared. But medication still not resolved. No pathway out.", location: "A&E", type: "touchpoint", cost: 3500, selfMed: "resumes", selfMedLabel: "Resumes after discharge", otosWouldHave: "Discharge plan includes medication pathway. Warm handover to Psymplicity.", shake: 3 },
+        { id: 24, phase: 4, title: "Self-medicating resumes", description: "Discharged. No pathway. No medication. Resumes within weeks.", location: null, type: "self-medication", cost: null, selfMed: "resumes", otosWouldHave: "Post-discharge check-in at 48h, 7 days, 30 days. Resumption never happens.", shake: 4 },
+        { id: 25, phase: 4, title: "Police arrest — drink driving", description: "Arrested for drink driving. Criminal justice system enters the picture. Still no ADHD treatment.", location: "Probation", type: "crisis", cost: 1200, selfMed: "escalates", otosWouldHave: "Police contact triggers OTOS alert to CGL and CPFT. Diversion pathway opened.", shake: 5 },
+        { id: 26, phase: 4, title: "Court appearance — convicted. 2-year ban.", description: "Convicted. 2-year driving ban. CGL Sally Criminal Justice worker assigned. System finally joins two dots.", location: "Courts", type: "crisis", cost: 1500, selfMed: "escalates", otosWouldHave: "Court outcome visible to all services simultaneously. No duplication.", shake: 5 },
+        { id: 27, phase: 4, title: "50 Hours Community Service", description: "Community service begins. System's response to addiction: punishment. ADHD still untreated.", location: "Probation", type: "touchpoint", cost: 800, selfMed: "escalates", otosWouldHave: "Community service touchpoints logged. Pattern visible.", shake: 4 },
+        { id: 28, phase: 4, title: "CGL — Register with Criminal Justice team", description: "Registers with CGL criminal justice stream. Sally becomes keyworker. First joined-up thread — but still no ADHD.", location: "CGL", type: "referral", cost: 600, selfMed: "escalates", otosWouldHave: "CGL sees CPFT history. ADHD medication immediately flagged as priority.", shake: 3 },
+        { id: 29, phase: 4, title: "Delirium Tremens — 2nd floor balcony jump", description: "Severe alcohol withdrawal. Delirium Tremens. Falls from 2nd floor balcony. Life-threatening. ICU admission.", location: "A&E", type: "crisis", cost: 12000, selfMed: "escalates", otosWouldHave: "Pattern of withdrawal severity visible across services. This never happens.", shake: 6, maxChaos: true },
+        { id: 30, phase: 4, title: "Addenbrooke's ICU", description: "Intensive care unit admission. Life saved. Discharged with no pathway. No medication plan. No ADHD treatment.", location: "A&E", type: "crisis", cost: 15000, selfMed: "resumes", selfMedLabel: "Resumes after ICU discharge", otosWouldHave: "ICU discharge triggers full pathway review. This is the intervention point.", shake: 6 },
+        { id: 31, phase: 4, title: "Arrested — retaliation incident. Cautioned.", description: "Incident during chaos period. Arrested. Cautioned. Probation supervision intensifies.", location: "Probation", type: "crisis", cost: 1200, selfMed: "escalates", otosWouldHave: "Escalating criminal justice contacts trigger multi-agency review.", shake: 5 },
+        { id: 32, phase: 4, title: "Addenbrooke's A&E — refused again", description: "Presents again. A&E refuses. Convinces Psychological Director personally — she believes him. He knows exactly what he needs.", location: "A&E", type: "crisis", cost: 800, selfMed: "escalates", otosWouldHave: "Dean's history visible. No need to convince anyone. Pathway already open.", shake: 6 },
+        { id: 33, phase: 4, title: "Probation contact", description: "Incident during period of chaos. Probation supervision begins.", location: "Probation", type: "touchpoint", cost: 800, selfMed: "escalates", otosWouldHave: "Probation contact logged. CGL and CPFT alerted.", shake: 5 },
+        { id: 34, phase: 4, title: "WorkWell referral", description: "Referred to WorkWell employment support. Cannot engage. ADHD untreated. Crisis ongoing.", location: "WorkWell", type: "referral", cost: 400, selfMed: "escalates", otosWouldHave: "OTOS flags: employment support inappropriate while ADHD unmedicated.", shake: 4 },
+        { id: 35, phase: 4, title: "Self-medicating resumes — post probation", description: "System closes another door. Resumes immediately.", location: null, type: "self-medication", cost: null, selfMed: "resumes", otosWouldHave: "30-day post-contact monitoring. Resumption prevented.", shake: 5 },
+        { id: 36, phase: 5, title: "Nightingale Hospital — 2-week detox", description: "Private 2-week detox at Nightingale. Funded personally. NHS couldn't provide it in time.", location: "Nightingale", type: "touchpoint", cost: 3000, selfMed: "resumes", selfMedLabel: "Resumes after Nightingale discharge", otosWouldHave: "NHS detox pathway available. No private funding needed.", shake: 3 },
+        { id: 37, phase: 5, title: "Help Me Stop — 6-week DayHab", description: "6-week day rehabilitation programme. Engages fully. Progress made. ADHD still the hidden driver.", location: "HelpMeStop", type: "touchpoint", cost: 2400, selfMed: "active", otosWouldHave: "DayHab progress visible to all services. ADHD assessment triggered.", shake: 2 },
+        { id: 38, phase: 5, title: "Relapse experiment", description: "11 months sober. Sets up vintage business. Medication helps. Tries controlled use. Things get slowly then quickly worse.", location: null, type: "touchpoint", cost: null, selfMed: "resumes", selfMedLabel: "Relapse — controlled attempt fails", otosWouldHave: "OTOS check-ins detect early warning signs. Intervention before full relapse.", shake: 3 },
+        { id: 39, phase: 5, title: "Experiment turns into crisis", description: "Paranoia. Real fear of survival. Business fails. Depression. ADHD intensifies. Addiction swoops in hard.", location: null, type: "crisis", cost: null, selfMed: "escalates", otosWouldHave: "Pattern detected at early warning stage. Crisis never reaches this point.", shake: 5 },
+        { id: 40, phase: 5, title: "Castle Craig — Residential Rehab", description: "Dean finds Castle Craig specifically — a dual-diagnosis hospital that addresses ADHD alongside addiction. Funded by CGL. Methylphenidate removed because it is a stimulant.", location: "Castle Craig", type: "touchpoint", cost: 18000, selfMed: "stops", selfMedLabel: "Stops during Castle Craig", otosWouldHave: "Castle Craig progress visible across all services. Medication plan agreed before discharge.", shake: 0 },
+        { id: 41, phase: 5, title: "AA — regular attendance", description: "AA regular for about a year post-Castle Craig. Helps but doesn't feel right. ADHD still untreated. Feels stuck.", location: "Peer Support", type: "touchpoint", cost: 200, selfMed: "active", otosWouldHave: null, shake: 0 },
+        { id: 42, phase: 5, title: "AA starts to drag", description: "Repetition not helpful. Feels stuck, not free. It's the ADHD — now worse without self-medication. ADHD still on his mind. No money to go private. No news from NHS.", location: "Peer Support", type: "touchpoint", cost: null, selfMed: "active", otosWouldHave: "OTOS detects disengagement. Prompts ADHD pathway review.", shake: 1 },
+        { id: 43, phase: 5, title: "Meet SMART Recovery — Inertia", description: "Meets SMART Recovery groups and Inertia peer support. Finding community again.", location: "Peer Support", type: "touchpoint", cost: 200, selfMed: "active", otosWouldHave: null, shake: 0 },
+        { id: 44, phase: 5, title: "Meet KC — SUN Network", description: "Introduced to KC at SUN Network. First time someone in the system sees the whole person and listens.", location: "SUN Network", type: "touchpoint", cost: 400, selfMed: "active", otosWouldHave: "KC and CPFT joined. First multi-agency view of Dean's full history.", shake: 0 },
+        { id: 45, phase: 5, title: "Meet Andrea — Cambridge Recovery Service", description: "Transferred to Cambridge Recovery Service. Meets Andrea. Peer-led recovery begins.", location: "CRS", type: "referral", cost: 600, selfMed: "active", otosWouldHave: "CRS visible to all services. No duplicate assessments.", shake: 0 },
+        { id: 46, phase: 5, title: "Meet Franceska — RCE Hub Wellbeing", description: "Wellbeing course at RCE Hub. Meets Franceska. Community building begins.", location: "SUN Network", type: "touchpoint", cost: 300, selfMed: "active", otosWouldHave: null, shake: 0 },
+        { id: 47, phase: 5, title: "Jo Fenton — Therapy", description: "6 weeks with Jo Fenton therapist. Mostly discusses OTOS. The idea is forming.", location: "Jo Fenton", type: "touchpoint", cost: 800, selfMed: "active", otosWouldHave: null, shake: 0 },
+        { id: 48, phase: 5, title: "Castle Craig — ADHD medication removed", description: "Methylphenidate removed at Castle Craig because it is a stimulant. Correct decision for rehab context. But leaves ADHD completely unmanaged on discharge.", location: "Castle Craig", type: "crisis", cost: null, selfMed: "resumes", selfMedLabel: "Resumes — ADHD unmanaged", otosWouldHave: "Discharge plan includes Elvanse referral. ADHD never left unmanaged.", shake: 3 },
+        { id: 49, phase: 5, title: "Psymplicity agrees to Elvanse — conditions", description: "Psymplicity agrees to switch from methylphenidate to Elvanse — but needs medical detox confirmed and CGL registration. Two more boxes to tick.", location: "Psymplicity", type: "touchpoint", cost: 900, selfMed: "active", otosWouldHave: "Both conditions already confirmed in OTOS record. Prescription issued immediately.", shake: 1 },
+        { id: 50, phase: 5, title: "CGL Assessment — detox nurse appointment too far away", description: "CGL assessment done. But detox nurse appointment is too far in the future. Needs detox urgently. System can't move fast enough.", location: "CGL", type: "touchpoint", cost: 600, selfMed: "escalates", otosWouldHave: "OTOS flags urgency. Fast-track detox pathway activated.", shake: 3 },
+        { id: 51, phase: 5, title: "Annie — CGL writes letter for Psymplicity", description: "Annie at CGL writes the letter Dean needs for Psymplicity confirming attendance and no risk. A human fighting for Dean inside the system.", location: "CGL", type: "touchpoint", cost: 400, selfMed: "active", otosWouldHave: "Letter auto-generated from OTOS record. No human advocacy required.", shake: 1 },
+        { id: 52, phase: 5, title: "Rak backs Dean at CPFT", description: "Rak speaks with psychiatrist, backs Dean as committed to recovery, blowing zeros, attending groups.", location: "CPFT", type: "touchpoint", cost: 600, selfMed: "active", otosWouldHave: "Recovery evidence visible in OTOS record. No advocacy needed.", shake: 1 },
+        { id: 53, phase: 5, title: "Addenbrooke's Ward — Detox (2nd)", description: "Second full detox admission at Addenbrooke's. Medically supervised. This time Dean knows exactly why he's there and what comes next.", location: "A&E", type: "touchpoint", cost: 3500, selfMed: "active", otosWouldHave: "Detox discharge plan already confirmed with Psymplicity. Elvanse ready.", shake: 2 },
+        { id: 54, phase: 5, title: "CPFT Helen — discharge letter", description: "Helen Bedside writes discharge letter with the words Psymplicity need to see. She fights for Dean. Confirms detoxed. Supporting the medication pathway.", location: "CPFT", type: "touchpoint", cost: 600, selfMed: "active", otosWouldHave: "Discharge letter auto-populated from OTOS record. Same outcome, no battle.", shake: 0 },
+        { id: 55, phase: 5, title: "GP refuses — can't find Shared Care Agreement", description: "Comberton GP has to open vault of old files to find original shared care arrangement. No other GP will take Dean. Psymplicity not on Right To Choose register.", location: "GP Surgery", type: "crisis", cost: 500, selfMed: "active", otosWouldHave: "Shared care agreement in OTOS record. Available to any GP instantly.", shake: 3 },
+        { id: 56, phase: 5, title: "Buddhist Centre — regular attendance", description: "Regularly attending Buddhist centre. Spirituality. Stillness. Something the system never provided.", location: null, type: "touchpoint", cost: null, selfMed: "active", otosWouldHave: null, shake: 0 },
+        { id: 57, phase: 5, title: "Gym — regular attendance", description: "Regular gym. Structure. Dopamine. The body doing what the medication should be doing.", location: null, type: "touchpoint", cost: null, selfMed: "active", otosWouldHave: null, shake: 0 },
+        { id: 58, phase: 5, title: "Join NA", description: "Joins NA alongside AA. Building multiple recovery communities. Still without correct medication.", location: "Peer Support", type: "touchpoint", cost: 200, selfMed: "active", otosWouldHave: null, shake: 0 },
+        { id: 59, phase: 5, title: "Parents — reconnection", description: "Amazing reconnection with parents. Their understanding of what Dean had been saying all along lifts the world off his shoulders. Performing higher than ever. Still needs 1 tablet.", location: null, type: "touchpoint", cost: null, selfMed: "active", otosWouldHave: null, shake: 0 },
+        { id: 60, phase: 5, title: "Meet Paula — CPFT ADHD Team", description: "Finally meets Paula at the CPFT ADHD team. The right person, the right service. Years too late. But here.", location: "ADHD Team", type: "touchpoint", cost: 800, selfMed: "active", otosWouldHave: "Dean meets Paula in year 1, not year 8.", shake: 0 },
+        { id: 61, phase: 6, title: "Psymplicity prescribes Elvanse", description: "Psymplicity prescribe Elvanse. My whole life changed.", location: "Psymplicity", type: "breakthrough", cost: 900, selfMed: "stops", otosWouldHave: "This happens in year 1. Not after years of crisis, cost, and chaos.", shake: 0, breakthrough: true },
+        { id: 62, phase: 6, title: "OTOS is born", description: "I am the problem. I built the solution. Dean begins building OTOS Continuity — the layer that would have held every thread.", location: null, type: "breakthrough", cost: null, selfMed: "stops", otosWouldHave: null, shake: 0, finale: true }
+      ];
+
+      var LOCATION_NODE_ID = {
+        "GP Surgery": "n_gp",
+        "GP": "n_gp",
+        "Northampton": "n_northampton",
+        "A&E": "n_addenbrookes",
+        "Addenbrooke's": "n_addenbrookes",
+        "CPFT": "n_adhd",
+        "CGL": "n_cgl",
+        "Psymplicity": "n_psymplicity",
+        "Castle Craig": "n_castlecraig",
+        "Police": "n_police",
+        "Courts": "n_courts",
+        "Probation": "n_probation",
+        "CRS": "n_crs",
+        "ADHD Team": "n_adhd",
+        "WorkWell": "n_workwell",
+        "MIND": "n_mind",
+        "Jo Fenton": "n_jofenton",
+        "Nightingale": "n_nightingale",
+        "HelpMeStop": "n_helpme",
+        null: null
+      };
+
+      function getNodeForEvent(index) {
+        if (index < 0 || index >= EVENTS.length) return null;
+        var ev = EVENTS[index];
+        if (ev.location && LOCATION_NODE_ID.hasOwnProperty(ev.location)) {
+          return LOCATION_NODE_ID[ev.location];
+        }
+        if (ev.location === null && index > 0) {
+          return getNodeForEvent(index - 1);
+        }
+        return null;
+      }
+
+      var TOTAL_STEPS = EVENTS.length;
+
+      var stepCounterEl = document.getElementById("step-counter");
+      var costMainEl = document.getElementById("cost-main");
+      var phasePillEl = document.getElementById("phase-pill");
+      var phaseLineEl = document.getElementById("phase-line");
+      var stepTitleEl = document.getElementById("step-title");
+      var stepDescEl = document.getElementById("step-desc");
+      var otosTextEl = document.getElementById("otos-text");
+      var selfmedPillEl = document.getElementById("selfmed-pill");
+      var mapShellEl = document.getElementById("map-shell");
+      var nodesLayerEl = document.getElementById("nodes-layer");
+      var journeyLayerEl = document.getElementById("journey-layer");
+      var mapDimEl = document.getElementById("map-dim");
+      var pivotOverlayEl = document.getElementById("pivot-overlay");
+      var btnPlayEl = document.getElementById("btn-play");
+      var btnPlayIconEl = document.getElementById("btn-play-icon");
+      var btnBackEl = document.getElementById("btn-back");
+      var overlayFinaleEl = document.getElementById("overlay-finale");
+      var otosBrainEl = document.getElementById("otos-brain");
+      var infoPanelEl = document.getElementById("info-panel");
+      var clickSurfaceEl = document.getElementById("click-surface");
+
+      var NODE_POSITIONS = {
+        n_helpme: { x: 20, y: 20 },
+        n_psymplicity: { x: 240, y: 20 },
+        n_northampton: { x: 440, y: 20 },
+        n_castlecraig: { x: 640, y: 20 },
+        n_police: { x: 800, y: 20 },
+        n_cgl: { x: 350, y: 105 },
+        n_rce: { x: 20, y: 220 },
+        n_gp: { x: 20, y: 360 },
+        n_hay: { x: 20, y: 490 },
+        n_crs: { x: 220, y: 220 },
+        n_ambulance: { x: 360, y: 330 },
+        n_courts: { x: 530, y: 230 },
+        n_courtslabel: { x: 530, y: 340 },
+        n_probation: { x: 530, y: 380 },
+        n_adhd: { x: 510, y: 450 },
+        n_sun: { x: 730, y: 310 },
+        n_workwell: { x: 790, y: 430 },
+        n_mind: { x: 790, y: 530 },
+        n_jofenton: { x: 790, y: 630 },
+        n_addenbrookes: { x: 320, y: 680 },
+        n_nightingale: { x: 130, y: 90 }
+      };
+
+      var NODE_META = {
+        n_helpme: { label: "Help Me Stop", logo: "help-me-stop", color: "#0f766e" },
+        n_psymplicity: { label: "Psymplicity", logo: "psymplicity", color: "#4f46e5" },
+        n_northampton: { label: "Northampton General A&E", logo: "nhs-northampton", color: "#2563eb" },
+        n_castlecraig: { label: "Castle Craig", logo: "castle-craig", color: "#1d4ed8" },
+        n_police: { label: "Police", logo: "police", color: "#111827" },
+        n_cgl: { label: "CGL", logo: "cgl", color: "#f97316" },
+        n_rce: { label: "RCE Hub", logo: "rce-hub", color: "#6366f1" },
+        n_gp: { label: "GP (Gilbray)", logo: "gp", color: "#0ea5e9" },
+        n_hay: { label: "H.A.Y. CPFT", logo: "hay-cpft", color: "#22c55e" },
+        n_crs: { label: "Cambs Recovery", logo: "crs", color: "#10b981" },
+        n_ambulance: { label: "NHS Ambulance", logo: "ambulance", color: "#2563eb" },
+        n_courts: { label: "HM Courts", logo: "hm-courts", color: "#991b1b" },
+        n_courtslabel: { label: "Courts", logo: null, color: "#991b1b" },
+        n_probation: { label: "Probation", logo: null, color: "#111827" },
+        n_adhd: { label: "CPFT ADHD Team", logo: "cpft-adhd", color: "#7c3aed" },
+        n_sun: { label: "SUN Network", logo: "sun-network", color: "#facc15" },
+        n_workwell: { label: "WorkWell", logo: "workwell", color: "#fb923c" },
+        n_mind: { label: "MIND", logo: "mind", color: "#1d4ed8" },
+        n_jofenton: { label: "Jo Fenton", logo: null, color: "#111827" },
+        n_addenbrookes: { label: "Addenbrooke's", logo: "addenbrookes", color: "#1d4ed8" },
+        n_nightingale: { label: "Nightingale", logo: "nightingale", color: "#f97316" }
+      };
+
+      var state = {
+        stepIndex: -1,
+        playing: false,
+        timer: null,
+        runningTotal: 0,
+        visitedNodes: {},
+        linePasses: {},
+        redsLocked: false,
+        redsTurnedTeal: false,
+        finaleShown: false
+      };
+
+      function buildNodes() {
+        nodesLayerEl.innerHTML = "";
+        var rect = mapShellEl.getBoundingClientRect();
+        var scaleX = rect.width / 900;
+        var scaleY = rect.height / 780;
+        Object.keys(NODE_POSITIONS).forEach(function (id) {
+          var pos = NODE_POSITIONS[id];
+          var meta = NODE_META[id] || { label: id, logo: null, color: "#4b5563" };
+          var left = pos.x * scaleX;
+          var top = pos.y * scaleY;
+          var nodeEl = document.createElement("div");
+          nodeEl.className = "service-node journey-node-hit";
+          nodeEl.id = id;
+          nodeEl.style.left = left + "px";
+          nodeEl.style.top = top + "px";
+          var logoWrap = document.createElement("div");
+          logoWrap.className = "service-node-logo";
+          logoWrap.style.backgroundColor = meta.color;
+          if (meta.logo) {
+            var img = document.createElement("img");
+            img.src = "/assets/logos/" + meta.logo + ".png";
+            img.alt = meta.label;
+            logoWrap.appendChild(img);
+          } else {
+            var initials = (meta.label || id).trim().charAt(0).toUpperCase();
+            logoWrap.textContent = initials;
+          }
+          var labelEl = document.createElement("div");
+          labelEl.className = "service-node-label";
+          labelEl.textContent = meta.label;
+          nodeEl.appendChild(logoWrap);
+          nodeEl.appendChild(labelEl);
+          nodesLayerEl.appendChild(nodeEl);
+        });
+      }
+
+      function phaseLabelFor(phase) {
+        if (phase === 1) return "Phase 1: The Invisible Line";
+        if (phase === 2) return "Phase 2: First Contact";
+        if (phase === 3) return "Phase 3: Diagnosis. No Follow-Through.";
+        if (phase === 4) return "Phase 4: Full Chaos";
+        if (phase === 5) return "Phase 5: Fighting Back";
+        if (phase === 6) return "Phase 6: Breakthrough";
+        return "";
+      }
+
+      function updatePhasePill(ev) {
+        var phase = ev ? ev.phase : 1;
+        phasePillEl.className = "phase-pill";
+        if (phase === 1 || phase === 2) phasePillEl.classList.add("phase-pill-1-2");
+        else if (phase === 3) phasePillEl.classList.add("phase-pill-3");
+        else if (phase === 4) phasePillEl.classList.add("phase-pill-4");
+        else if (phase === 5) phasePillEl.classList.add("phase-pill-5");
+        else if (phase === 6) phasePillEl.classList.add("phase-pill-6");
+        var label = phaseLabelFor(phase);
+        phasePillEl.textContent = label;
+        phaseLineEl.textContent = label;
+      }
+
+      function updateSelfMedPill(ev) {
+        var status = ev && ev.selfMed ? ev.selfMed : "active";
+        selfmedPillEl.className = "selfmed-pill";
+        var text = "";
+        if (status === "active") {
+          selfmedPillEl.classList.add("selfmed-active");
+          text = "Self-medicating continues";
+        } else if (status === "escalates") {
+          selfmedPillEl.classList.add("selfmed-escalates");
+          text = "Addiction intensifying ↑";
+        } else if (status === "resumes") {
+          selfmedPillEl.classList.add("selfmed-resumes");
+          text = "Resumes after discharge";
+        } else if (status === "stops") {
+          selfmedPillEl.classList.add("selfmed-stops");
+          text = "Free ✓";
+        }
+        selfmedPillEl.textContent = text;
+      }
+
+      function updateInfo(ev, index) {
+        var stepNum = index + 1;
+        stepCounterEl.textContent = "Step " + stepNum + "/" + TOTAL_STEPS;
+        stepTitleEl.textContent = ev.title;
+        stepDescEl.textContent = ev.description;
+        otosTextEl.textContent = ev.otosWouldHave || "—";
+        updatePhasePill(ev);
+        updateSelfMedPill(ev);
+      }
+
+      function animateCostTo(target) {
+        var start = state.runningTotal;
+        var t0 = performance.now();
+        function frame(now) {
+          var t = (now - t0) / 500;
+          if (t >= 1) {
+            state.runningTotal = target;
+            costMainEl.textContent = "£" + (target || 0).toLocaleString("en-GB");
+            return;
+          }
+          var p = t * t * (3 - 2 * t);
+          var current = Math.round(start + (target - start) * p);
+          state.runningTotal = current;
+          costMainEl.textContent = "£" + (current || 0).toLocaleString("en-GB");
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
+
+      function cumulativeCost(upToIndex) {
+        var total = 0;
+        for (var i = 0; i <= upToIndex && i < EVENTS.length; i++) {
+          var c = EVENTS[i].cost;
+          if (c != null) total += c;
+        }
+        return total;
+      }
+
+      function nodeCenter(id) {
+        var pos = NODE_POSITIONS[id];
+        if (!pos) return null;
+        return { x: pos.x + 40, y: pos.y + 40 };
+      }
+
+      function lineKey(a, b) {
+        return a < b ? a + "->" + b : b + "->" + a;
+      }
+
+      function phaseStrokeConfig(phase, isRedOverride, pass) {
+        var color, width;
+        if (isRedOverride) {
+          color = "#ef4444";
+          width = 3 + (pass > 1 ? (pass - 1) * 0.5 : 0);
+          return { color: color, width: width, phaseClass: "red" };
+        }
+        if (phase === 1 || phase === 2) {
+          color = "#0d9488";
+          width = 2.5;
+          return { color: color, width: width, phaseClass: "teal" };
+        }
+        if (phase === 3) {
+          color = "#f59e0b";
+          width = 3;
+          return { color: color, width: width, phaseClass: "amber" };
+        }
+        if (phase === 4) {
+          color = "#ef4444";
+          width = 3.5;
+          return { color: color, width: width, phaseClass: "red" };
+        }
+        if (phase === 5) {
+          color = "#f97316";
+          width = 3;
+          return { color: color, width: width, phaseClass: "orange" };
+        }
+        if (phase === 6) {
+          color = "#10b981";
+          width = 4;
+          return { color: color, width: width, phaseClass: "green" };
+        }
+        color = "#0d9488";
+        width = 3;
+        return { color: color, width: width, phaseClass: "teal" };
+      }
+
+      function addLine(fromId, toId, phase) {
+        if (!fromId || !toId || fromId === toId) return;
+        var key = lineKey(fromId, toId);
+        var pass = (state.linePasses[key] || 0) + 1;
+        state.linePasses[key] = pass;
+        var from = nodeCenter(fromId);
+        var to = nodeCenter(toId);
+        if (!from || !to) return;
+        var dx = to.x - from.x;
+        var dy = to.y - from.y;
+        var len = Math.sqrt(dx * dx + dy * dy);
+        var ux = dx / (len || 1);
+        var uy = dy / (len || 1);
+        var offset = (pass - 1) * 3;
+        var ox = -uy * offset;
+        var oy = ux * offset;
+        var x1 = from.x + ox;
+        var y1 = from.y + oy;
+        var x2 = to.x + ox;
+        var y2 = to.y + oy;
+        var isRedOverride = state.redsLocked && phase < 5;
+
+        var cfg = phaseStrokeConfig(phase, isRedOverride, pass);
+
+        var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", "M " + x1 + " " + y1 + " L " + x2 + " " + y2);
+        path.setAttribute("class", "journey-line " + cfg.phaseClass + (isRedOverride ? " red-lock" : ""));
+        path.setAttribute("stroke", cfg.color);
+        path.setAttribute("stroke-width", cfg.width);
+        path.setAttribute("stroke-linecap", "round");
+
+        var pathLength = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+        path.setAttribute("stroke-dasharray", pathLength);
+        path.setAttribute("stroke-dashoffset", pathLength);
+
+        journeyLayerEl.appendChild(path);
+
+        var start = performance.now();
+        function animate(now) {
+          var t = (now - start) / 600;
+          if (t >= 1) {
+            path.setAttribute("stroke-dashoffset", 0);
+            return;
+          }
+          var p = t * t * (3 - 2 * t);
+          path.setAttribute("stroke-dashoffset", pathLength * (1 - p));
+          requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
+      }
+
+      function markNodeVisited(nodeId) {
+        if (!nodeId) return;
+        if (!state.visitedNodes[nodeId]) {
+          state.visitedNodes[nodeId] = true;
+        }
+        var el = document.getElementById(nodeId);
+        if (el) {
+          el.classList.add("visited");
+          el.classList.add("pulsing");
+          setTimeout(function () {
+            el.classList.remove("pulsing");
+          }, 400);
+        }
+      }
+
+      function handlePivot() {
+        mapDimEl.classList.add("active");
+        pivotOverlayEl.classList.add("visible");
+        setTimeout(function () {
+          pivotOverlayEl.classList.remove("visible");
+          mapDimEl.classList.remove("active");
+        }, 2500);
+        state.redsLocked = true;
+      }
+
+      function handleICUShake() {
+        mapShellEl.classList.add("map-shake");
+        costMainEl.classList.add("flash-danger");
+        setTimeout(function () {
+          mapShellEl.classList.remove("map-shake");
+          costMainEl.classList.remove("flash-danger");
+        }, 600);
+      }
+
+      function handleBreakthrough() {
+        if (state.redsTurnedTeal) return;
+        state.redsTurnedTeal = true;
+        var paths = journeyLayerEl.querySelectorAll(".journey-line");
+        paths.forEach(function (p) {
+          var current = p.getAttribute("stroke");
+          if (current && (current.toLowerCase() === "#ef4444" || current.toLowerCase() === "rgb(239,68,68)")) {
+            p.setAttribute("stroke", "#0d9488");
+          }
+        });
+        otosBrainEl.classList.add("rise");
+        infoPanelEl.classList.add("flash-green");
+        setTimeout(function () {
+          infoPanelEl.classList.remove("flash-green");
+        }, 700);
+      }
+
+      function handleFinale() {
+        if (state.finaleShown) return;
+        state.finaleShown = true;
+        overlayFinaleEl.classList.add("visible");
+      }
+
+      function goToStep(index) {
+        if (index < 0) index = 0;
+        if (index >= TOTAL_STEPS) index = TOTAL_STEPS - 1;
+        if (index === state.stepIndex) return;
+
+        if (index < state.stepIndex) {
+          journeyLayerEl.innerHTML = "";
+          state.linePasses = {};
+          state.visitedNodes = {};
+          state.redsLocked = false;
+          state.redsTurnedTeal = false;
+          otosBrainEl.classList.remove("rise");
+          state.finaleShown = false;
+          overlayFinaleEl.classList.remove("visible");
+          var cumulative = 0;
+          for (var i = 0; i <= index; i++) {
+            var evPrev = EVENTS[i];
+            cumulative += evPrev.cost || 0;
+            var fromNode = i === 0 ? null : getNodeForEvent(i - 1);
+            var toNode = getNodeForEvent(i);
+            if (fromNode && toNode) {
+              addLine(fromNode, toNode, evPrev.phase);
+            }
+            var nodeId = getNodeForEvent(i);
+            if (nodeId) markNodeVisited(nodeId);
+            if (evPrev.id === 15) handlePivot();
+            if (evPrev.id === 29) handleICUShake();
+            if (evPrev.id === 61) handleBreakthrough();
+            if (evPrev.id === 62) handleFinale();
+          }
+          animateCostTo(cumulative);
+          state.stepIndex = index;
+          updateInfo(EVENTS[index], index);
+          return;
+        }
+
+        for (var j = state.stepIndex + 1; j <= index; j++) {
+          var ev = EVENTS[j];
+          var fromN = j === 0 ? null : getNodeForEvent(j - 1);
+          var toN = getNodeForEvent(j);
+          if (fromN && toN) {
+            addLine(fromN, toN, ev.phase);
+          }
+          if (toN) markNodeVisited(toN);
+          if (ev.id === 15) {
+            handlePivot();
+          }
+          if (ev.id === 29) {
+            handleICUShake();
+          }
+          if (ev.id === 61) {
+            handleBreakthrough();
+          }
+          if (ev.id === 62) {
+            handleFinale();
+          }
+        }
+        state.stepIndex = index;
+        var total = cumulativeCost(index);
+        animateCostTo(total);
+        updateInfo(EVENTS[index], index);
+      }
+
+      function nextStep() {
+        if (state.stepIndex >= TOTAL_STEPS - 1) return;
+        goToStep(state.stepIndex + 1);
+      }
+
+      function prevStep() {
+        if (state.stepIndex <= 0) {
+          state.stepIndex = -1;
+          journeyLayerEl.innerHTML = "";
+          state.linePasses = {};
+          state.visitedNodes = {};
+          state.redsLocked = false;
+          state.redsTurnedTeal = false;
+          otosBrainEl.classList.remove("rise");
+          state.finaleShown = false;
+          overlayFinaleEl.classList.remove("visible");
+          animateCostTo(0);
+          stepCounterEl.textContent = "Step 0/" + TOTAL_STEPS;
+          stepTitleEl.textContent = "Click anywhere to begin";
+          stepDescEl.textContent = "Click anywhere on the page, press Space, or use the arrow keys to walk Dean's journey step by step.";
+          otosTextEl.textContent = "Show how a joined-up continuity layer could have held the thread.";
+          updatePhasePill({ phase: 1 });
+          updateSelfMedPill({ selfMed: "active" });
+          Object.keys(NODE_POSITIONS).forEach(function (id) {
+            var n = document.getElementById(id);
+            if (n) n.classList.remove("visited");
+          });
+          return;
+        }
+        goToStep(state.stepIndex - 1);
+      }
+
+      function togglePlay() {
+        state.playing = !state.playing;
+        if (state.playing) {
+          btnPlayIconEl.textContent = "⏸";
+          btnPlayEl.lastElementChild.textContent = "Pause";
+          scheduleNext();
+        } else {
+          btnPlayIconEl.textContent = "▶";
+          btnPlayEl.lastElementChild.textContent = "Play";
+          if (state.timer) {
+            clearTimeout(state.timer);
+            state.timer = null;
+          }
+        }
+      }
+
+      function scheduleNext() {
+        if (!state.playing) return;
+        if (state.stepIndex >= TOTAL_STEPS - 1) {
+          state.playing = false;
+          btnPlayIconEl.textContent = "▶";
+          btnPlayEl.lastElementChild.textContent = "Play";
+          return;
+        }
+        if (state.timer) clearTimeout(state.timer);
+        state.timer = setTimeout(function () {
+          nextStep();
+          scheduleNext();
+        }, 3000);
+      }
+
+      function handleKeydown(e) {
+        if (e.key === " " || e.code === "Space") {
+          e.preventDefault();
+          if (state.stepIndex === -1) {
+            nextStep();
+          } else {
+            togglePlay();
+          }
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          nextStep();
+        } else if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          prevStep();
+        }
+      }
+
+      function handleClick() {
+        nextStep();
+      }
+
+      function init() {
+        buildNodes();
+        window.addEventListener("resize", function () {
+          buildNodes();
+        });
+        document.addEventListener("keydown", handleKeydown);
+        clickSurfaceEl.addEventListener("click", handleClick);
+        btnPlayEl.addEventListener("click", function () {
+          if (state.stepIndex === -1) {
+            nextStep();
+          }
+          togglePlay();
+        });
+        btnBackEl.addEventListener("click", function () {
+          prevStep();
+        });
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
+

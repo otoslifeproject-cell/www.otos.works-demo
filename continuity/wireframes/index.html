@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OTOS Continuity — Cambridge Pilot wireframes</title>
+  <link rel="stylesheet" href="otos-design-system.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { padding: var(--space-8); max-width: 960px; margin: 0 auto; }
+    h1 { margin-bottom: var(--space-2); }
+    .intro { color: var(--text-muted); margin-bottom: var(--space-6); }
+    .audience { font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-8); }
+    .section { margin-bottom: var(--space-8); }
+    .section h2 { margin-bottom: var(--space-3); font-size: 1.125rem; color: var(--text-secondary); }
+    .section p.desc { font-size: var(--text-sm); color: var(--text-muted); margin: 0 0 var(--space-3); }
+    ul.links { list-style: none; margin: 0; padding: 0; }
+    ul.links li { margin-bottom: var(--space-2); }
+    ul.links a { display: inline-block; padding: var(--space-2) 0; }
+    .meta { font-size: var(--text-sm); color: var(--text-muted); margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid var(--border-light); }
+  </style>
+</head>
+<body>
+  <h1>OTOS Continuity — Cambridge Pilot</h1>
+  <p class="intro">Four distinct interface views · NHS-adjacent, calm, trustworthy, accessible. White background, OTOS blue (#0066CC), light grey panels, amber for alerts. Inter typography. Desktop 1440px · Mobile iPhone 14 Pro frame.</p>
+
+  <section class="section">
+    <h2>0. OTOS brain slice / NHS layer install — hero animation</h2>
+    <p class="desc">Hero visual · 15–22s loop · OTOS brain slice installs between NHS and service providers as a thin, translucent connective layer.</p>
+    <ul class="links">
+      <li><a href="../brain-slice-animation.html" target="_blank" rel="noopener">Preview hero animation — OTOS brain slice installation</a></li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>1. Participant onboarding (Wireframe 1)</h2>
+    <p class="desc">Person in recovery / cohort member · Mobile (QR → web) · Ultra-minimal · Single action per screen · Progress indicator · Large tap targets.</p>
+    <ul class="links">
+      <li><a href="mobile-onboarding-welcome.html">Welcome — OTOS Continuity™</a></li>
+      <li><a href="mobile-onboarding-consent.html">Simple consent</a></li>
+      <li><a href="mobile-onboarding-id.html">Anonymous ID created (XXXX-XXXX)</a></li>
+      <li><a href="mobile-onboarding-checkin.html">First check-in — How are you doing today?</a></li>
+      <li><a href="mobile-onboarding-nextstep.html">Next step shown — Got it / I need help</a></li>
+      <li><a href="mobile-onboarding-done.html">Done — you're connected</a></li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>2. Bedside / rapid handoff — Helen view (Wireframe 2)</h2>
+    <p class="desc">Hospital liaison, A&E, bedside staff · Mobile-first · Low — 3 actions max · Fast-track ADHD toggle · Receipt automatic.</p>
+    <ul class="links">
+      <li><a href="mobile-helen-scan.html">Scan participant QR or enter 8-digit code</a></li>
+      <li><a href="mobile-helen-participant.html">Participant found — Record touchpoint</a></li>
+      <li><a href="mobile-helen-record.html">Record touchpoint — Attended / Referred / ADHD flag</a></li>
+      <li><a href="mobile-helen-adhd-route.html">ADHD referral route — QbTest / RTC (one-tap)</a></li>
+      <li><a href="mobile-helen-receipt.html">Receipt generated</a></li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>3. Coordinator dashboard — CGL / CRS view (Wireframe 3)</h2>
+    <p class="desc">Keyworker, coordinator, reviewer · Desktop / tablet · Medium — overview + review queue · Drift queue prominent · Codes only · Export CSV.</p>
+    <ul class="links">
+      <li><a href="desktop-coordinator-dashboard.html">Overview + Drift queue + Human review panel</a></li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>4. Commissioner reporting — Scott view (Wireframe 4)</h2>
+    <p class="desc">Commissioner, sponsor · Desktop · Read-only · Metrics only · ADHD fast-track / RTC headline · Trend chart · Download snapshot.</p>
+    <ul class="links">
+      <li><a href="desktop-commissioner-report.html">Week 8 of 12 — Core metrics, trend, open items</a></li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>Legacy / reference</h2>
+    <ul class="links">
+      <li><a href="desktop-dashboard.html">Dashboard (generic)</a></li>
+      <li><a href="desktop-ops-touchpoints.html">Ops — Touchpoints log</a></li>
+      <li><a href="desktop-alert-escalation.html">Reviewer — Escalation alert</a></li>
+      <li><a href="mobile-checkin.html">Participant — Quick check-in</a></li>
+      <li><a href="mobile-alert.html">Participant — Reminder / alert</a></li>
+    </ul>
+  </section>
+
+  <p class="meta">Export as PNG at 2×: run <code>npm run export</code> in this folder (requires Node and Puppeteer). Output in <code>exports/</code>. · <a href="../work-index.html">← All deliverables</a></p>
+</body>
+</html>

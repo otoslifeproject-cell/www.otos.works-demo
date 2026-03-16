@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OTOS Continuity™ — Brain Slice / NHS Layer Install</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0A0E1A;
+      --bg-white: #FFFFFF;
+      --bg-offwhite: #F9F9F7;
+      --slice-start: #FF8C00;
+      --slice-end: #FFB347;
+      --nhs-blue: #003087;
+      --line-teal: #7FFFD4;
+      --text-main: #1a1a1a;
+      --text-muted: rgba(0,0,0,0.6);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+      background: var(--bg-white);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-white);
+      padding: 16px;
+    }
+
+    .frame {
+      position: relative;
+      width: min(100%, 1920px);
+      aspect-ratio: 16 / 9;
+      background: var(--bg-white);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+      overflow: hidden;
+      color: var(--text-main);
+    }
+
+    /* CANVAS */
+    .canvas {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .scene-root {
+      position: relative;
+      width: 80%;
+      max-width: 1200px;
+      height: 70%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1600px;
+    }
+
+    /* Brain — appears in gap, flips to become the slice */
+    .brain-wrapper {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 220px;
+      height: 220px;
+      margin-left: -110px;
+      margin-top: -110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      will-change: transform, opacity;
+      opacity: 0;
+      transform: translate3d(0, 0, 0) scale(0.4);
+    }
+
+    .brain-slice {
+      width: 100%;
+      height: 100%;
+      transform-origin: center;
+      transform-style: preserve-3d;
+      /* NO GLOW AROUND LOGO per brief */
+    }
+
+    .brain-slice img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    /* Thick brain slice (side-on) — docks in gap, lockup sits on it at end */
+    .brain-slab {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 560px;
+      height: 28px;
+      transform: translate(-50%, -50%);
+      border-radius: 999px;
+      background: linear-gradient(90deg, #e67a00 0%, #ff8c00 25%, #ffb347 75%, #ffc266 100%);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brain-slab::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      border: 1px solid rgba(255,255,255,0.2);
+      pointer-events: none;
+    }
+
+    .lockup-final {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .lockup-final img {
+      display: block;
+      height: 42px;
+      width: auto;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
+    }
+
+    /* NHS + SP logo bands — on screen at all times */
+    .band {
+      position: absolute;
+      left: 50%;
+      width: 620px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      opacity: 1;
+    }
+
+    .band--nhs {
+      top: 40%;
+      transform: translate(-50%, -50%);
+    }
+
+    .band--sps {
+      top: 52%;
+      transform: translate(-50%, -50%);
+      flex-wrap: wrap;
+    }
+
+    /* Ensure SUN logo sits visually central */
+    .band--sps .logo-chip.sun {
+      order: 6;
+    }
+
+    .logo-nhs {
+      padding: 0;
+      border-radius: 6px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .logo-nhs img {
+      display: block;
+      height: 52px;
+      width: auto;
+    }
+
+    .logo-chip {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      opacity: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .logo-chip img {
+      display: block;
+      height: 44px;
+      width: auto;
+    }
+
+    .band.band-visible {
+      opacity: 1;
+    }
+
+    /* Scene 1 — Start: NHS + partners on screen, close together; brain hidden */
+    .scene-root.scene-1-start .band--nhs {
+      transform: translate(-50%, 0);
+    }
+    .scene-root.scene-1-start .band--sps {
+      transform: translate(-50%, 0);
+    }
+    .scene-root.scene-1-start .brain-wrapper {
+      opacity: 0;
+      transform: translate3d(0, 0, 0) scale(0.35);
+    }
+
+    /* Scene 2 — Split: logos split open to create gap */
+    .scene-root.scene-2-split .band--nhs {
+      transform: translate(-50%, calc(-50% - 38px));
+      transition: transform 1.6s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    .scene-root.scene-2-split .band--sps {
+      transform: translate(-50%, calc(-50% + 38px));
+      transition: transform 1.6s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    .scene-root.scene-2-split .brain-wrapper {
+      opacity: 0;
+    }
+
+    /* Scene 3 — Brain grows: appears in gap, presents itself (no slide from left) */
+    .scene-root.scene-3-grow .brain-wrapper {
+      animation: brainGrowIn 1.4s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+    }
+
+    /* Scene 4 — Flip: brain rotates to side-on, becomes the slice (slab appears as it flips) */
+    .scene-root.scene-4-flip .brain-wrapper {
+      animation: brainFlipToSlice 2s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+    }
+    .scene-root.scene-4-flip .brain-slab {
+      animation: slabRevealAsFlip 2s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+    }
+
+    /* Scene 5 — Land: slice in place, OTOS Continuity™ logo appears across it, prominent */
+    .scene-root.scene-5-land .brain-wrapper {
+      opacity: 0;
+    }
+    .scene-root.scene-5-land .brain-slab {
+      opacity: 1;
+      height: 48px;
+      width: 580px;
+      background: linear-gradient(90deg, #d97000 0%, #ff8c00 30%, #ffb347 70%, #ffc266 100%);
+    }
+    .scene-root.scene-5-land .lockup-final {
+      opacity: 0;
+      animation: lockupLand 0.6s cubic-bezier(0.33, 1, 0.68, 1) 0.2s forwards;
+    }
+
+    @keyframes pixelFadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes brainGrowIn {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) scale(0.35);
+      }
+      100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+    }
+
+    /* Brain flips 90° to become the slice (same position, no slide from left) */
+    @keyframes brainFlipToSlice {
+      0% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1) rotateX(0deg);
+      }
+      70% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1) rotateX(88deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) scale(1) rotateX(90deg);
+      }
+    }
+
+    /* Slab reveals as brain flips to edge-on (the slice is what the brain becomes) */
+    @keyframes slabRevealAsFlip {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%);
+      }
+      65% {
+        opacity: 0;
+        transform: translate(-50%, -50%);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    @keyframes lockupLand {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.92);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .frame {
+      animation: frameIn 0.5s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes frameIn {
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 960px) {
+      .scene-root {
+        width: 94%;
+        height: 74%;
+      }
+
+      .brain-wrapper {
+        width: 180px;
+        height: 180px;
+      }
+
+      .brain-slab {
+        width: 360px;
+        height: 24px;
+      }
+
+      .band {
+        width: 90%;
+      }
+
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="frame">
+      <div class="canvas">
+        <div class="scene-root scene-1-start" id="sceneRoot" aria-hidden="true">
+          <div class="brain-wrapper" id="brainWrapper">
+            <div class="brain-slice">
+              <img src="../assets/brain.png" alt="OTOS brain slice">
+            </div>
+          </div>
+
+          <div class="brain-slab" id="brainSlab">
+            <div class="lockup-final" id="lockupFinal">
+              <img src="../assets/logos/otos-continuity-lockup.png" alt="OTOS Continuity™">
+            </div>
+          </div>
+
+          <div class="band band--nhs" id="bandNHS">
+            <div class="logo-nhs">
+              <img src="../assets/nhs%20logo.png" alt="NHS logo">
+            </div>
+          </div>
+
+          <div class="band band--sps" id="bandSps">
+            <div class="logo-chip">
+              <img src="../assets/partners/NHS_CPFT_Logo.png" alt="CPFT logo">
+            </div>
+            <div class="logo-chip">
+              <img src="../assets/partners/CGL_Logo.png" alt="CGL logo">
+            </div>
+            <div class="logo-chip">
+              <img src="../assets/partners/CRS_Logo.png" alt="CRS logo">
+            </div>
+            <div class="logo-chip">
+              <img src="../assets/partners/Addenbrookes_Logo.png" alt="Addenbrooke's logo">
+            </div>
+            <div class="logo-chip">
+              <img src="../assets/partners/MIND_Logo.png" alt="Mind logo">
+            </div>
+            <div class="logo-chip">
+              <img src="../assets/partners/Keep_Your_Head_Logo.png" alt="Keep Your Head logo">
+            </div>
+            <div class="logo-chip">
+              <img src="../assets/partners/RCE_Logo.png" alt="RCE Hub logo">
+            </div>
+            <div class="logo-chip">
+              <img src="../assets/partners/Jo_Fenton_Logo.png" alt="Jo Fenton logo">
+            </div>
+            <div class="logo-chip">
+              <img src="../assets/partners/Gillvray_Health_Logo.png" alt="Gillvray Health logo">
+            </div>
+            <div class="logo-chip">
+              <img src="../assets/partners/WorkWell_Logo.png" alt="WorkWell logo">
+            </div>
+            <div class="logo-chip">
+              <img src="../assets/partners/Psymplicity_Logo.png" alt="Psymplicity logo">
+            </div>
+            <div class="logo-chip sun">
+              <img src="../assets/partners/The_Sun_Network_Logo.png" alt="The SUN Network logo">
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      "use strict";
+
+      var sceneRoot = document.getElementById("sceneRoot");
+      var brainWrapper = document.getElementById("brainWrapper");
+      var brainSlab = document.getElementById("brainSlab");
+
+      var SCENES = [
+        { id: "scene-1-start", dur: 1600 },
+        { id: "scene-2-split", dur: 1800 },
+        { id: "scene-3-grow", dur: 1600 },
+        { id: "scene-4-flip", dur: 2200 },
+        { id: "scene-5-land", dur: 2200 }
+      ];
+
+      var totalDuration = SCENES.reduce(function(sum, s) { return sum + s.dur; }, 0);
+      var currentSceneIndex = 0;
+      var playing = true;
+      var sceneStartTime = performance.now();
+
+      function setScene(index) {
+        currentSceneIndex = index;
+        sceneRoot.className = "scene-root " + SCENES[index].id;
+      }
+
+      function advanceScene() {
+        var nextIndex = currentSceneIndex + 1;
+        if (nextIndex >= SCENES.length) {
+          nextIndex = 0;
+        }
+        setScene(nextIndex);
+      }
+
+      function loop(now) {
+        if (!playing) {
+          requestAnimationFrame(loop);
+          return;
+        }
+
+        var elapsed = now - sceneStartTime;
+        var currentDur = SCENES[currentSceneIndex].dur;
+
+        if (elapsed >= currentDur) {
+          sceneStartTime = now;
+          if (currentSceneIndex < SCENES.length - 1) {
+            advanceScene();
+          }
+          /* End at scene 5: slice + logo, hold (no loop) */
+        }
+
+        requestAnimationFrame(loop);
+      }
+
+      function togglePlay() {
+        if (currentSceneIndex >= SCENES.length - 1 && !playing) {
+          currentSceneIndex = 0;
+          setScene(0);
+          playing = true;
+          sceneStartTime = performance.now();
+          requestAnimationFrame(loop);
+          return;
+        }
+        playing = !playing;
+        if (playing) {
+          sceneStartTime = performance.now();
+          requestAnimationFrame(loop);
+        }
+      }
+
+      document.addEventListener("keydown", function(e) {
+        if (e.code === "Space") {
+          e.preventDefault();
+          togglePlay();
+        }
+      });
+
+      setScene(0);
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>
+

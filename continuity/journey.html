@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>OTOS Journey Map</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:Inter;
+background:#f4f5f7;
+overflow:hidden;
+}
+
+.header{
+padding:20px 30px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+.title{
+font-family:"Playfair Display";
+font-size:22px;
+}
+
+.frame{
+position:absolute;
+top:80px;
+bottom:0;
+left:0;
+right:0;
+}
+
+svg{
+width:100%;
+height:100%;
+}
+
+.pin{
+fill:#ff5c5c;
+}
+
+.pinText{
+fill:white;
+font-size:10px;
+font-weight:600;
+text-anchor:middle;
+}
+
+.road{
+stroke:#3c4047;
+stroke-width:48;
+fill:none;
+stroke-linecap:round;
+}
+
+.roadCenter{
+stroke:#ffd400;
+stroke-width:5;
+stroke-dasharray:12 12;
+fill:none;
+}
+
+.roadGlow{
+stroke:rgba(255,138,0,0.25);
+stroke-width:72;
+fill:none;
+stroke-linecap:round;
+}
+
+.foot{
+fill:#111;
+opacity:.8;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+<div class="title">
+Founder Journey — System Reality
+</div>
+
+<div>
+Continuity Model Demonstration
+</div>
+
+</div>
+
+<div class="frame">
+
+<svg viewBox="0 0 1200 720">
+
+<g id="roadLayer"></g>
+<g id="pinLayer"></g>
+<g id="footLayer"></g>
+
+</svg>
+
+</div>
+
+<script>
+
+const svg = document.querySelector("svg")
+const roadLayer = document.getElementById("roadLayer")
+const pinLayer = document.getElementById("pinLayer")
+const footLayer = document.getElementById("footLayer")
+
+const NS="http://www.w3.org/2000/svg"
+
+/* ROAD NETWORK */
+
+const roads=[
+
+"M 100 360 L 1100 360",
+"M 300 140 L 300 580",
+"M 700 140 L 700 580",
+"M 1100 360 C 1160 360 1160 420 1100 420",
+
+]
+
+// roundabout
+const roundabout="M 520 360 m -60 0 a 60 60 0 1 0 120 0 a 60 60 0 1 0 -120 0"
+
+roads.push(roundabout)
+
+/* DRAW ROADS */
+
+let pathObjects=[]
+
+roads.forEach(path=>{
+
+const glow=document.createElementNS(NS,"path")
+glow.setAttribute("d",path)
+glow.setAttribute("class","roadGlow")
+
+const road=document.createElementNS(NS,"path")
+road.setAttribute("d",path)
+road.setAttribute("class","road")
+
+const centre=document.createElementNS(NS,"path")
+centre.setAttribute("d",path)
+centre.setAttribute("class","roadCenter")
+
+roadLayer.appendChild(glow)
+roadLayer.appendChild(road)
+roadLayer.appendChild(centre)
+
+pathObjects.push(road)
+
+})
+
+/* STOPS */
+
+let count=1
+
+pathObjects.forEach(road=>{
+
+const length=road.getTotalLength()
+
+for(let i=0;i<5;i++){
+
+let p=road.getPointAtLength((i/5)*length)
+
+const g=document.createElementNS(NS,"g")
+
+const c=document.createElementNS(NS,"circle")
+c.setAttribute("cx",p.x)
+c.setAttribute("cy",p.y)
+c.setAttribute("r",14)
+c.setAttribute("class","pin")
+
+const t=document.createElementNS(NS,"text")
+t.setAttribute("x",p.x)
+t.setAttribute("y",p.y+4)
+t.setAttribute("class","pinText")
+t.textContent=count++
+
+g.appendChild(c)
+g.appendChild(t)
+
+pinLayer.appendChild(g)
+
+}
+
+})
+
+/* FOOT WALKERS */
+
+let walkers=[]
+
+function spawnWalker(){
+
+const g=document.createElementNS(NS,"g")
+
+const left=document.createElementNS(NS,"ellipse")
+left.setAttribute("rx",4)
+left.setAttribute("ry",8)
+left.setAttribute("class","foot")
+
+const right=document.createElementNS(NS,"ellipse")
+right.setAttribute("cx",10)
+right.setAttribute("rx",4)
+right.setAttribute("ry",8)
+right.setAttribute("class","foot")
+
+g.appendChild(left)
+g.appendChild(right)
+
+footLayer.appendChild(g)
+
+const road=pathObjects[Math.floor(Math.random()*pathObjects.length)]
+
+walkers.push({
+el:g,
+road:road,
+pos:0,
+speed:.6+Math.random()
+})
+
+}
+
+function animate(){
+
+walkers.forEach(w=>{
+
+const L=w.road.getTotalLength()
+
+w.pos+=w.speed
+
+if(w.pos>L) w.pos=0
+
+const p=w.road.getPointAtLength(w.pos)
+
+w.el.setAttribute("transform",`translate(${p.x},${p.y})`)
+
+})
+
+requestAnimationFrame(animate)
+
+}
+
+function growTraffic(){
+
+spawnWalker()
+
+if(walkers.length<100){
+setTimeout(growTraffic,800)
+}
+
+}
+
+animate()
+growTraffic()
+
+</script>
+
+</body>
+</html>

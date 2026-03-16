@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>OTOS Continuity — Check-in (Mobile)</title>
+  <link rel="stylesheet" href="otos-design-system.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* iPhone 14 Pro frame: 393×852 logical; frame includes notch + safe area */
+    .device-frame {
+      width: 393px;
+      height: 852px;
+      margin: 0 auto;
+      background: #000;
+      border-radius: 55px;
+      padding: 12px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    }
+    .device-screen {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-page);
+      border-radius: 45px;
+      overflow: hidden;
+      position: relative;
+    }
+    .notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 125px;
+      height: 34px;
+      background: #000;
+      border-radius: 0 0 20px 20px;
+      z-index: 10;
+    }
+    .safe-top { height: 50px; }
+    .safe-bottom { height: 34px; }
+    .mobile-header {
+      padding: var(--space-4) var(--space-4) var(--space-3);
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-page);
+    }
+    .mobile-header .logo { font-weight: 700; font-size: 1rem; color: var(--otos-blue); }
+    .mobile-main { padding: var(--space-6) var(--space-4); min-height: 600px; }
+    .mobile-main h1 { font-size: 1.25rem; margin-bottom: var(--space-2); }
+    .mobile-main p { font-size: var(--text-sm); color: var(--text-muted); margin-bottom: var(--space-6); }
+    .checkin-question { font-size: 1rem; font-weight: 600; margin-bottom: var(--space-4); }
+    .options { display: flex; flex-direction: column; gap: var(--space-3); }
+    .option-btn {
+      display: block;
+      width: 100%;
+      padding: var(--space-4);
+      text-align: left;
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+    .option-btn:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+    .option-btn.selected { border-color: var(--otos-blue); background: var(--otos-blue-light); color: var(--otos-blue); font-weight: 500; }
+    .submit-wrap { padding: var(--space-4); padding-bottom: var(--space-6); }
+    .btn--full { width: 100%; padding: var(--space-4); }
+  </style>
+</head>
+<body style="background: #e5e5e5; padding: 40px 0;">
+  <div class="device-frame">
+    <div class="device-screen">
+      <div class="notch" aria-hidden="true"></div>
+      <div class="safe-top"></div>
+      <header class="mobile-header">
+        <div class="logo">OTOS Continuity</div>
+      </header>
+      <main class="mobile-main">
+        <h1>Quick check-in</h1>
+        <p>10–30 seconds · Your answers stay private and auditable.</p>
+        <p class="checkin-question">How are you feeling about your next step?</p>
+        <div class="options">
+          <button type="button" class="option-btn">On track</button>
+          <button type="button" class="option-btn selected">Need a nudge</button>
+          <button type="button" class="option-btn">Stuck — would like support</button>
+        </div>
+      </main>
+      <div class="submit-wrap">
+        <button type="button" class="btn btn--primary btn--full">Submit</button>
+      </div>
+      <div class="safe-bottom"></div>
+    </div>
+  </div>
+</body>
+</html>

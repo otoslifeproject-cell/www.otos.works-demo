@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Coordinator dashboard — CGL / CRS view (Wireframe 3)</title>
+  <link rel="stylesheet" href="otos-design-system.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .viewport { width: 1440px; min-height: 900px; margin: 0 auto; background: var(--bg-page); }
+    .header { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) var(--space-8); border-bottom: 1px solid var(--border); }
+    .logo { font-weight: 700; font-size: 1.25rem; color: var(--otos-blue); }
+    .header-actions { display: flex; align-items: center; gap: var(--space-4); }
+    .export-btn { font-size: var(--text-sm); }
+    .main { padding: var(--space-6) var(--space-8); display: grid; grid-template-columns: 1fr 400px; gap: var(--space-8); }
+    .overview h2 { font-size: 1rem; font-weight: 600; color: var(--text-secondary); margin-bottom: var(--space-4); }
+    .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-4); margin-bottom: var(--space-6); }
+    .stat { background: var(--bg-panel); border-radius: var(--radius-md); padding: var(--space-4); }
+    .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--text); }
+    .stat-label { font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-1); }
+    .stat.alert .stat-value { color: var(--alert-amber); }
+    .drift-queue h2 { font-size: 1rem; font-weight: 600; margin-bottom: var(--space-3); }
+    .drift-queue h2 .badge { background: var(--alert-amber-bg); color: var(--alert-amber); padding: 2px 8px; border-radius: var(--radius-sm); font-size: var(--text-xs); margin-left: var(--space-2); }
+    .drift-list { display: flex; flex-direction: column; gap: var(--space-3); }
+    .drift-item { background: var(--bg-page); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); }
+    .drift-item .code { font-weight: 600; letter-spacing: 0.05em; }
+    .drift-item .meta { font-size: var(--text-sm); color: var(--text-muted); margin: var(--space-2) 0; }
+    .drift-item .actions { display: flex; gap: var(--space-2); margin-top: var(--space-3); }
+    .drift-item .actions .btn { font-size: var(--text-xs); padding: var(--space-2) var(--space-3); }
+    .sidebar { display: flex; flex-direction: column; gap: var(--space-6); }
+    .review-panel { background: var(--bg-panel); border-radius: var(--radius-lg); padding: var(--space-5); border: 1px solid var(--border-light); }
+    .review-panel h3 { font-size: 1rem; margin: 0 0 var(--space-4); }
+    .review-panel label { display: block; font-size: var(--text-sm); font-weight: 500; margin-bottom: var(--space-2); }
+    .review-panel input, .review-panel select, .review-panel textarea { width: 100%; padding: var(--space-2) var(--space-3); margin-bottom: var(--space-4); font-family: var(--font-sans); font-size: var(--text-sm); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+    .review-panel textarea { min-height: 60px; resize: vertical; }
+    .review-panel .btn { width: 100%; margin-top: var(--space-2); }
+  </style>
+</head>
+<body>
+  <div class="viewport">
+    <header class="header">
+      <div class="logo">OTOS Continuity — CGL Coordinator</div>
+      <div class="header-actions">
+        <button type="button" class="btn btn--secondary export-btn">Download this week's snapshot (CSV)</button>
+      </div>
+    </header>
+    <main class="main">
+      <div class="overview">
+        <h2>Overview</h2>
+        <div class="stats-row">
+          <div class="stat"><div class="stat-value">47</div><div class="stat-label">Active participants</div></div>
+          <div class="stat"><div class="stat-value">112</div><div class="stat-label">Check-ins this week</div></div>
+          <div class="stat"><div class="stat-value">81%</div><div class="stat-label">Follow-through completed (38/47)</div></div>
+          <div class="stat alert"><div class="stat-value">4</div><div class="stat-label">Drift alerts</div></div>
+          <div class="stat"><div class="stat-value">2</div><div class="stat-label">Reviews pending</div></div>
+        </div>
+
+        <section class="drift-queue">
+          <h2>Drift / Escalation queue <span class="badge">Action needed</span></h2>
+          <div class="drift-list">
+            <div class="drift-item">
+              <div class="code">Code: XXXX-1234</div>
+              <div class="meta">Last seen: 8 days ago · No response to 3 check-ins</div>
+              <div class="actions">
+                <button type="button" class="btn btn--primary">Review</button>
+                <button type="button" class="btn btn--secondary">Mark resolved</button>
+                <button type="button" class="btn btn--secondary">Escalate</button>
+              </div>
+            </div>
+            <div class="drift-item">
+              <div class="code">Code: XXXX-5678</div>
+              <div class="meta">Last seen: 5 days ago · Missed CGL appointment</div>
+              <div class="actions">
+                <button type="button" class="btn btn--primary">Review</button>
+                <button type="button" class="btn btn--secondary">Mark resolved</button>
+                <button type="button" class="btn btn--secondary">Escalate</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="sidebar">
+        <div class="review-panel">
+          <h3>Human review — Record decision</h3>
+          <p class="text-muted" style="font-size: var(--text-xs); margin-bottom: var(--space-4);">Reviewed: XXXX-1234 · Decision timestamped automatically</p>
+          <label for="decision">Decision</label>
+          <input type="text" id="decision" placeholder="e.g. Attempted re-contact by phone">
+          <label for="outcome">Outcome</label>
+          <input type="text" id="outcome" placeholder="e.g. No answer — left message">
+          <label for="next">Next step</label>
+          <input type="text" id="next" placeholder="e.g. Keyworker follow-up in 48h">
+          <button type="button" class="btn btn--primary">Save + close</button>
+        </div>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>

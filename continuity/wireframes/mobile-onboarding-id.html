@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Participant onboarding — Your code (Wireframe 1)</title>
+  <link rel="stylesheet" href="otos-design-system.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .device-frame { width: 393px; height: 852px; margin: 0 auto; background: #000; border-radius: 55px; padding: 12px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+    .device-screen { width: 100%; height: 100%; background: var(--bg-page); border-radius: 45px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+    .notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 125px; height: 34px; background: #000; border-radius: 0 0 20px 20px; z-index: 10; }
+    .progress { padding: var(--space-3) var(--space-4) 0; font-size: var(--text-xs); color: var(--text-muted); }
+    .mobile-main { flex: 1; padding: var(--space-6) var(--space-5); display: flex; flex-direction: column; justify-content: center; text-align: center; }
+    .mobile-main h1 { font-size: 1.25rem; margin: 0 0 var(--space-3); }
+    .continuity-code { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.15em; color: var(--otos-blue); margin: var(--space-4) 0; padding: var(--space-4); background: var(--bg-panel); border-radius: var(--radius-md); }
+    .mobile-main p { font-size: var(--text-sm); color: var(--text-muted); margin: 0 0 var(--space-8); }
+    .btn--full { width: 100%; padding: 16px 24px; font-size: 1rem; min-height: 48px; }
+    .help-link { margin-top: var(--space-4); font-size: var(--text-sm); color: var(--text-muted); }
+    .safe-top { height: 50px; }
+    .safe-bottom { height: 34px; flex-shrink: 0; }
+  </style>
+</head>
+<body style="background: #e5e5e5; padding: 40px 0;">
+  <div class="device-frame">
+    <div class="device-screen">
+      <div class="notch" aria-hidden="true"></div>
+      <div class="safe-top"></div>
+      <p class="progress" aria-hidden="true">Step 3 of 5</p>
+      <main class="mobile-main">
+        <h1>Anonymous ID created</h1>
+        <p class="continuity-code" aria-label="Your continuity code">XXXX-XXXX</p>
+        <p>No name. No NHS number. Just a code.</p>
+        <button type="button" class="btn btn--primary btn--full">Continue</button>
+        <a href="#" class="help-link">I need help</a>
+      </main>
+      <div class="safe-bottom"></div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controls — OTOS Continuity</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+	--bg:#f4f4f4;
+	--text:#111;
+	--muted:#555;
+	--panel:#ffffff;
+	--glass:rgba(255,255,255,0.72);
+}
+
+*{ box-sizing:border-box; }
+html, body{ height:100%; }
+
+body{
+	margin:0;
+	font-family:Inter, sans-serif;
+	background:var(--bg);
+	color:var(--text);
+
+	min-height:100svh;
+	overflow:hidden;
+
+	display:flex;
+	flex-direction:column;
+}
+
+.navbar{
+	position:fixed;
+	top:0; left:0; right:0;
+	z-index:50;
+
+	display:flex;
+	align-items:center;
+	justify-content:space-between;
+
+	padding:clamp(12px, 1.8vh, 18px) clamp(16px, 4vw, 60px);
+	background:var(--glass);
+	backdrop-filter:blur(14px);
+	-webkit-backdrop-filter:blur(14px);
+
+	border-bottom:1px solid rgba(0,0,0,0.06);
+	box-shadow:0 12px 30px rgba(0,0,0,0.08);
+}
+
+.nav-left{ display:flex; align-items:center; gap:clamp(14px, 2vw, 40px); }
+.nav-logo{ height:36px; }
+
+.nav-links a{
+	margin-right:clamp(12px, 1.6vw, 24px);
+	text-decoration:none;
+	color:#444;
+	font-weight:500;
+}
+.nav-links a:hover{ color:#000; }
+.nav-links a.active{ color:#000; font-weight:600; }
+
+.page{
+	height:calc(100svh - 76px);
+	margin:0 auto;
+	width:min(1320px, 100%);
+
+	padding:
+		clamp(18px, 2.4vh, 32px)
+		clamp(16px, 3.2vw, 46px)
+		calc(clamp(16px, 2.6vh, 26px) + 84px);
+
+	margin-top:76px;
+
+	display:flex;
+	flex-direction:column;
+	gap:clamp(10px, 1.4vh, 14px);
+}
+
+.hero{ text-align:center; }
+.kicker{
+	font-size:12px;
+	letter-spacing:0.14em;
+	text-transform:uppercase;
+	color:#888;
+	margin:0 0 10px 0;
+}
+h1{
+	font-family:"Playfair Display", serif;
+	font-size:clamp(30px, 4.4vw, 46px);
+	line-height:1.12;
+	letter-spacing:-0.6px;
+	margin:0 0 10px 0;
+}
+.sub{
+	margin:0 auto;
+	max-width:1120px;
+	font-size:clamp(14px, 1.5vw, 17px);
+	line-height:1.6;
+	color:var(--muted);
+}
+
+.panel{
+	flex:1 1 auto;
+	min-height:0;
+
+	margin-top:clamp(10px, 1.4vh, 18px);
+	background:var(--panel);
+	border-radius:22px;
+	padding:clamp(12px, 1.8vh, 18px);
+	box-shadow:0 18px 50px rgba(0,0,0,0.08);
+
+	display:flex;
+	flex-direction:column;
+}
+
+.grid{
+	display:grid;
+	grid-template-columns:1fr 1fr;
+	gap:clamp(10px, 1.4vh, 14px);
+	margin-top:clamp(10px, 1.6vh, 12px);
+	flex:1 1 auto;
+	min-height:0;
+}
+
+.card{
+	padding:clamp(12px, 1.8vh, 16px);
+	border-radius:18px;
+	background:rgba(0,0,0,0.03);
+	border:1px solid rgba(0,0,0,0.06);
+}
+
+.card h3{
+	margin:0;
+	font-size:clamp(15px, 1.4vw, 18px);
+	font-weight:700;
+	color:#111;
+	line-height:1.25;
+}
+
+.card ul{
+	margin:10px 0 0 0;
+	padding-left:18px;
+	color:#555;
+	font-size:clamp(12.5px, 1.2vw, 14px);
+	line-height:1.5;
+}
+
+.strip{
+	margin-top:clamp(10px, 1.6vh, 12px);
+	padding:12px 16px;
+	border-radius:16px;
+	background:var(--glass);
+	backdrop-filter:blur(14px);
+	-webkit-backdrop-filter:blur(14px);
+	border:1px solid rgba(0,0,0,0.06);
+	box-shadow:0 10px 28px rgba(0,0,0,0.06);
+	text-align:center;
+	color:#555;
+	font-size:clamp(12.5px, 1.1vw, 13.5px);
+	line-height:1.35;
+}
+
+/* BOTTOM NAV */
+.bottom-nav{
+	position:fixed;
+	left:50%;
+	transform:translateX(-50%);
+	bottom:16px;
+	z-index:60;
+
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	gap:12px;
+
+	background:rgba(255,255,255,0.78);
+	backdrop-filter:blur(14px);
+	-webkit-backdrop-filter:blur(14px);
+
+	border:1px solid rgba(0,0,0,0.08);
+	box-shadow:0 14px 34px rgba(0,0,0,0.10);
+	border-radius:999px;
+	padding:10px 12px;
+}
+
+.nav-btn{
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	width:44px;
+	height:44px;
+	border-radius:999px;
+	text-decoration:none;
+	border:1px solid rgba(0,0,0,0.10);
+	background:#fff;
+	color:#111;
+	font-weight:700;
+	transition:.2s;
+}
+
+.nav-btn:hover{
+	transform:translateY(-1px);
+	box-shadow:0 12px 26px rgba(0,0,0,0.12);
+}
+
+.nav-next{
+	min-width:168px;
+	padding:0 16px;
+	width:auto;
+	gap:10px;
+	font-weight:700;
+}
+
+@media (max-height: 900px){
+	.page{ height:calc(100svh - 72px); margin-top:72px; }
+	.navbar{ padding:12px clamp(16px, 4vw, 60px); }
+}
+
+@media(max-width:980px){
+	.navbar{ padding:14px 18px; }
+	.page{
+		height:calc(100svh - 70px);
+		margin-top:70px;
+		padding:18px 18px calc(18px + 84px);
+	}
+	.grid{ grid-template-columns:1fr; }
+	h1{ font-size:34px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+	*{ transition:none !important; }
+}
+</style>
+</head>
+
+<body>
+<div class="navbar">
+	<div class="nav-left">
+		<img src="../assets/brain.png" class="nav-logo" alt="">
+		<div class="nav-links">
+			<a href="/continuity/index.html">Home</a>
+			<a href="/continuity/how-it-works.html">How it works</a>
+			<a href="/continuity/guided-demos.html">Guided demos</a>
+			<a class="active" href="/continuity/controls.html">Controls</a>
+			<a href="/continuity/reporting.html">Reporting</a>
+			<a href="/continuity/references.html">References</a>
+		</div>
+	</div>
+</div>
+
+<div class="page">
+	<div class="hero">
+		<p class="kicker">Controls</p>
+		<h1>Governance and safety boundaries</h1>
+		<p class="sub">
+			This pilot is designed to be low‑integration and low‑disruption in Phase 1.
+			Continuity logs touchpoints and raises prompts. Escalation decisions remain human controlled.
+		</p>
+	</div>
+
+	<div class="panel">
+		<div class="grid">
+			<div class="card">
+				<h3>Minimum viable data</h3>
+				<ul>
+					<li>Tokenised or pseudonymised at source</li>
+					<li>Identity remains with the originating service</li>
+					<li>No cross‑organisation record coupling</li>
+					<li>No stored personal profiles in the pilot view</li>
+				</ul>
+			</div>
+
+			<div class="card">
+				<h3>Integration posture (Phase 1)</h3>
+				<ul>
+					<li>No integration required for pilot entry and reporting</li>
+					<li>No EPR write‑back</li>
+					<li>No clinical record fields captured in the demo</li>
+					<li>Designed to sit around existing workflows</li>
+				</ul>
+			</div>
+
+			<div class="card">
+				<h3>Claims guardrails</h3>
+				<ul>
+					<li>No diagnosing</li>
+					<li>No prescribing</li>
+					<li>No automated clinical decisions</li>
+					<li>No claims of outcomes in a demo context</li>
+				</ul>
+			</div>
+
+			<div class="card">
+				<h3>Escalation is always human controlled</h3>
+				<ul>
+					<li>Signals can prompt a review</li>
+					<li>A human reviewer records a decision</li>
+					<li>Timestamped audit trail of actions and handoffs</li>
+					<li>Designed to reduce silent drift, not replace care</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="strip">
+			Tokenised. No EPR write‑back. Human review required for escalation.
+		</div>
+	</div>
+</div>
+
+<div class="bottom-nav" aria-label="Page navigation">
+	<a class="nav-btn" href="/continuity/guided-demos.html" aria-label="Back">←</a>
+	<a class="nav-btn nav-next" href="/continuity/reporting.html" aria-label="Next"><span>Next: Reporting</span> →</a>
+</div>
+
+</body>
+</html>

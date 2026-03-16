@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OTOS Continuity — Cambridge Pilot · Architecture Map</title>
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --card: #ffffff;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --actor: #111827;
+      --touch: #6b7280;
+      --otos-bg: #fff7ed;
+      --otos: #f97316;
+      --store: #111827;
+      --gov: #2563eb;
+      --safety-bg: #ecfeff;
+      --safety: #0891b2;
+      --out: #ef4444;
+      --font: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Text", "Segoe UI", sans-serif;
+      --shadow: 0 2px 12px rgba(0,0,0,0.06);
+      --r: 10px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--font); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+    .poster { max-width: 1200px; margin: 0 auto; padding: 32px 24px 48px; }
+    .head { text-align: center; margin-bottom: 28px; }
+    .head h1 { font-size: 1.75rem; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 6px; }
+    .head p { font-size: 0.9375rem; color: var(--muted); margin: 0; }
+    .canvas { background: var(--card); border-radius: 16px; box-shadow: var(--shadow); padding: 32px; position: relative; overflow: hidden; }
+    .grid { display: grid; grid-template-columns: 1fr minmax(420px, 1.4fr) 1fr; grid-template-rows: auto 1fr auto; gap: 20px; align-items: start; min-height: 720px; }
+    .col-left { grid-column: 1; display: flex; flex-direction: column; gap: 16px; }
+    .col-center { grid-column: 2; display: flex; flex-direction: column; gap: 14px; }
+    .col-right { grid-column: 3; display: flex; flex-direction: column; gap: 16px; }
+    .section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin-bottom: 4px; }
+    .box { padding: 10px 12px; border-radius: var(--r); font-size: 12px; line-height: 1.35; border: 1px solid; }
+    .box.actor { background: var(--card); border-color: var(--actor); color: var(--text); }
+    .box.touch { background: var(--card); border-color: var(--touch); color: var(--text); }
+    .box.otos { background: var(--otos-bg); border: 2px solid var(--otos); color: var(--text); }
+    .box.store { background: var(--card); border: 1px dashed var(--store); color: var(--text); }
+    .box.gov { background: var(--card); border-color: var(--gov); color: var(--text); }
+    .box.safety { background: var(--safety-bg); border-color: var(--safety); color: var(--text); }
+    .box.out { background: var(--card); border: 1px dashed var(--out); color: var(--text); }
+    .flow-hint { font-size: 11px; color: var(--muted); margin-top: 4px; padding: 8px 10px; background: rgba(0,0,0,0.02); border-radius: var(--r); }
+    .cluster { border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; padding: 12px; background: rgba(255,255,255,0.6); }
+    .cluster .section-title { margin-bottom: 8px; }
+    .cluster .flow { display: flex; flex-wrap: wrap; gap: 8px; }
+    .cluster .flow .box { flex: 1 1 auto; min-width: 0; }
+    .footer-note { text-align: center; margin-top: 20px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.06); font-size: 11px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="poster">
+    <div class="head">
+      <h1>OTOS Continuity — Cambridge Pilot</h1>
+      <p>SaaS-style architecture map · Boxes, lines, labels</p>
+    </div>
+
+    <div class="canvas">
+      <div class="grid">
+        <!-- Left: Actors + Governance -->
+        <div class="col-left">
+          <div class="cluster">
+            <div class="section-title">Actors</div>
+            <div class="flow">
+              <div class="box actor">Participant (tokenised)</div>
+              <div class="box actor">Continuity support (ops)</div>
+              <div class="box actor">Reviewer (human decision)</div>
+              <div class="box actor">Service / clinical lead (view-only where agreed)</div>
+              <div class="box actor">Admin (config + access)</div>
+            </div>
+          </div>
+          <div class="cluster">
+            <div class="section-title">Governance / Oversight (pilot-grade)</div>
+            <div class="flow">
+              <div class="box gov">NHS Commissioners / ICS (pilot reporting)</div>
+              <div class="box gov">NHS (national / policy context)</div>
+              <div class="box gov">Government / policy context</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center: OTOS Continuity Layer -->
+        <div class="col-center">
+          <div class="section-title">OTOS Continuity Layer (Phase 1) — web-first, low-integration, UK-hosted</div>
+          <div class="cluster" style="border-color: rgba(249,115,22,0.3); background: rgba(255,247,237,0.5);">
+            <div class="section-title">Surfaces</div>
+            <div class="flow">
+              <div class="box otos">Participant web UI (check-ins, prompts, receipts)</div>
+              <div class="box otos">Ops UI (cohort, flags, exports)</div>
+              <div class="box otos">Reviewer UI (human review + decisions)</div>
+              <div class="box otos">Admin UI (RBAC + config)</div>
+              <div class="box otos">Lead view (read-only where agreed)</div>
+            </div>
+          </div>
+          <div class="cluster" style="border-color: rgba(249,115,22,0.3); background: rgba(255,247,237,0.4);">
+            <div class="section-title">Core capabilities</div>
+            <div class="flow">
+              <div class="box otos">Tokenised onboarding + consent</div>
+              <div class="box otos">Micro check-ins (10–30s)</div>
+              <div class="box otos">Follow-through prompts (non-clinical)</div>
+              <div class="box otos">Touchpoints + handoffs log</div>
+              <div class="box otos">Receipts (auditable)</div>
+              <div class="box otos">Drift / disengagement signals</div>
+              <div class="box otos">Escalation workflow (human-in-control)</div>
+              <div class="box otos">Pilot-grade dashboard + CSV export</div>
+            </div>
+          </div>
+          <div class="flow">
+            <div class="box store">Pilot data store (tokenised, minimal payload)</div>
+            <div class="box store">Audit log (workflow actions + timestamps)</div>
+          </div>
+          <p class="flow-hint">Participant → token link → UI → check-ins / prompts → store & audit. Ops → TouchLog → receipts. Touchpoints log back into TouchLog / receipts. Escalation → Reviewer UI → human decision.</p>
+        </div>
+
+        <!-- Right: Touchpoints + Out of scope -->
+        <div class="col-right">
+          <div class="cluster">
+            <div class="section-title">Pilot touchpoints (end connections — not endorsements)</div>
+            <div class="flow">
+              <div class="box touch">Addenbrooke's Hospital (A&E)</div>
+              <div class="box touch">GPs</div>
+              <div class="box touch">CPFT / Adult ADHD / Hub Wellbeing</div>
+              <div class="box touch">HAY Directory · JOY · IAPT</div>
+              <div class="box touch">CGL / CRS · Cambridge Recovery + Aftercare</div>
+              <div class="box touch">MIND · SUN · Arts & Minds · Peer · Exercise · SMART</div>
+              <div class="box touch">BPHA Housing · DWP · Employment Support</div>
+              <div class="box touch">Support (other VCSE touchpoints)</div>
+            </div>
+          </div>
+          <div class="cluster">
+            <div class="section-title">Out of scope / Options (post-pilot pricing)</div>
+            <div class="flow">
+              <div class="box out">Nightingale Hospital</div>
+              <div class="box out">Castle Craig</div>
+              <div class="box out">HelpMeStop / DayHab</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom: Safety pins (full width) -->
+        <div style="grid-column: 1 / -1; margin-top: 8px;">
+          <div class="section-title">Safety pins (non-negotiables)</div>
+          <div class="flow" style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <div class="box safety">No NHS record write-back</div>
+            <div class="box safety">No diagnostic claims</div>
+            <div class="box safety">No prescribing claims</div>
+            <div class="box safety">Human-in-control escalation always</div>
+            <div class="box safety">Auditable receipts always</div>
+            <div class="box safety">Low integration by design</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="footer-note">Touchpoints are end connections; traffic returns as logged events. Out of scope options are separate, post-pilot pricing.</p>
+  </div>
+</body>
+</html>

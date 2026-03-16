@@ -1,0 +1,163 @@
+/* OTOS Continuity Layer — shared diagram styling (3 presentation images) */
+:root {
+  --otos-bg: #fafbfc;
+  --otos-text: #1e293b;
+  --otos-text-muted: #64748b;
+  --otos-pink: #e11d48;
+  --otos-pink-light: #fce7eb;
+  --otos-teal: #0d9488;
+  --otos-teal-light: #ccfbf1;
+  --otos-blue: #1e40af;
+  --otos-blue-light: #dbeafe;
+  --otos-gray-box: #f1f5f9;
+  --otos-gray-border: #cbd5e1;
+  --otos-yellow: #fef08a;
+  --otos-yellow-border: #eab308;
+  --otos-green: #059669;
+  --otos-silhouette: #334155;
+  --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 24px;
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--otos-text);
+  background: var(--otos-bg);
+  line-height: 1.4;
+}
+
+.diagram-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.diagram-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--otos-text);
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+.diagram-subtitle {
+  font-size: 12px;
+  color: var(--otos-text-muted);
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+/* Service/node boxes */
+.service-box {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--otos-gray-box);
+  border: 1px solid var(--otos-gray-border);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--otos-text);
+  text-align: center;
+  max-width: 160px;
+}
+
+.service-box .label { font-weight: 600; }
+.service-box .sublabel { font-size: 10px; color: var(--otos-text-muted); margin-top: 2px; }
+
+/* Legend items */
+.legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--otos-text);
+}
+
+.legend-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--otos-teal-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--otos-teal);
+  font-weight: 600;
+}
+
+/* Annotation (yellow sticky) */
+.annotation {
+  background: var(--otos-yellow);
+  border: 1px solid var(--otos-yellow-border);
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--otos-text);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+
+.annotation-title { font-weight: 600; margin-bottom: 4px; }
+.annotation ul { margin: 4px 0 0 0; padding-left: 18px; }
+
+/* Functionality pills */
+.func-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.func-pill {
+  background: var(--otos-yellow);
+  border: 1px solid var(--otos-yellow-border);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--otos-text);
+}
+
+/* Tagline / footer text */
+.tagline {
+  text-align: center;
+  font-size: 11px;
+  color: var(--otos-text-muted);
+  margin-top: 12px;
+}
+
+.tagline strong { color: var(--otos-text); }
+
+/* SVG diagram container */
+.diagram-svg-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 420px;
+}
+
+.diagram-svg-wrap svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Connector line (dashed) - use in SVG */
+.connector { stroke: var(--otos-pink); stroke-dasharray: 6 4; stroke-width: 1.5; fill: none; }
+.connector-feedback { stroke: var(--otos-teal); stroke-width: 2; fill: none; }

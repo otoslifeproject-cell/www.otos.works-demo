@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>References — OTOS Continuity</title>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+
+	<style>
+	:root{
+		--bg:#f4f4f4;
+		--text:#111;
+		--muted:#555;
+		--panel:#ffffff;
+		--glass:rgba(255,255,255,0.72);
+
+		--stroke: rgba(0,0,0,0.06);
+		--stroke2: rgba(0,0,0,0.08);
+
+		--shadow:0 18px 50px rgba(0,0,0,0.08);
+
+		--accent:#ff8a00;
+		--accentSoft:rgba(255,138,0,0.12);
+	}
+
+	*{ box-sizing:border-box; }
+	html, body{ height:100%; }
+
+	body{
+		margin:0;
+		font-family:Inter, sans-serif;
+		background:var(--bg);
+		color:var(--text);
+
+		min-height:100svh;
+		overflow:hidden;
+
+		display:flex;
+		flex-direction:column;
+	}
+
+	.navbar{
+		position:fixed;
+		top:0; left:0; right:0;
+		z-index:50;
+
+		display:flex;
+		align-items:center;
+		justify-content:space-between;
+
+		padding:clamp(12px, 1.8vh, 18px) clamp(16px, 4vw, 60px);
+		background:var(--glass);
+		backdrop-filter:blur(14px);
+		-webkit-backdrop-filter:blur(14px);
+
+		border-bottom:1px solid rgba(0,0,0,0.06);
+		box-shadow:0 12px 30px rgba(0,0,0,0.08);
+	}
+
+	.nav-left{ display:flex; align-items:center; gap:clamp(14px, 2vw, 40px); }
+	.nav-logo{ height:36px; }
+
+	.nav-links a{
+		margin-right:clamp(12px, 1.6vw, 22px);
+		text-decoration:none;
+		color:#444;
+		font-weight:500;
+	}
+	.nav-links a:hover{ color:#000; }
+	.nav-links a.active{ color:#000; font-weight:600; }
+
+	.page{
+		height:calc(100svh - 76px);
+		margin:0 auto;
+		width:min(1320px, 100%);
+
+		padding:
+			clamp(18px, 2.4vh, 32px)
+			clamp(16px, 3.2vw, 46px)
+			calc(clamp(16px, 2.6vh, 26px) + 84px);
+
+		margin-top:76px;
+
+		display:flex;
+		flex-direction:column;
+		gap:clamp(10px, 1.4vh, 14px);
+	}
+
+	.hero{ text-align:center; }
+	.kicker{
+		font-size:12px;
+		letter-spacing:0.14em;
+		text-transform:uppercase;
+		color:#888;
+		margin:0 0 10px 0;
+	}
+	h1{
+		font-family:"Playfair Display", serif;
+		font-size:clamp(30px, 4.4vw, 46px);
+		line-height:1.12;
+		letter-spacing:-0.6px;
+		margin:0 0 10px 0;
+	}
+	.sub{
+		margin:0 auto;
+		max-width:980px;
+		font-size:clamp(14px, 1.5vw, 17px);
+		line-height:1.6;
+		color:var(--muted);
+	}
+
+	.panel{
+		flex:1 1 auto;
+		min-height:0;
+
+		margin-top:clamp(10px, 1.4vh, 18px);
+		background:var(--panel);
+		border-radius:22px;
+		padding:clamp(12px, 1.8vh, 18px);
+		box-shadow:var(--shadow);
+
+		overflow:auto;
+	}
+
+	.note{
+		border:1px solid var(--stroke);
+		background: rgba(255,138,0,0.08);
+		border-radius:18px;
+		padding: 12px 14px;
+		color:#5b3a00;
+		line-height:1.45;
+		margin-bottom: 14px;
+	}
+
+	.section{
+		border: 1px solid var(--stroke);
+		background: rgba(0,0,0,0.02);
+		border-radius: 18px;
+		padding: 14px;
+		margin-bottom: 12px;
+	}
+
+	.section h2{
+		margin:0 0 8px 0;
+		font-size: 16px;
+		letter-spacing: -0.2px;
+	}
+	.section p{
+		margin: 0 0 10px 0;
+		color:#555;
+		line-height:1.55;
+		font-size: 13.5px;
+	}
+
+	.list{
+		display:flex;
+		flex-direction:column;
+		gap:10px;
+	}
+
+	.item{
+		background:#fff;
+		border:1px solid var(--stroke);
+		border-radius:14px;
+		padding: 12px;
+		box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+	}
+
+	.item .t{
+		font-weight:800;
+		margin:0 0 4px 0;
+	}
+	.item .s{
+		margin:0 0 8px 0;
+		color:#666;
+		font-size: 13px;
+		line-height: 1.45;
+	}
+	.item a{
+		color:#0b5bd3;
+		word-break: break-word;
+	}
+	.tagRow{
+		margin-top: 8px;
+		display:flex;
+		flex-wrap:wrap;
+		gap:8px;
+	}
+	.tag{
+		display:inline-flex;
+		align-items:center;
+		gap:8px;
+		padding: 6px 10px;
+		border-radius: 999px;
+		border:1px solid var(--stroke);
+		background: rgba(255,255,255,0.75);
+		color:#666;
+		font-size: 12px;
+		font-weight: 700;
+	}
+	.dot{
+		width:10px;height:10px;border-radius:999px;background: var(--accent);
+		box-shadow: 0 0 0 4px var(--accentSoft);
+	}
+
+	hr{
+		border:none;
+		border-top:1px solid rgba(0,0,0,0.06);
+		margin: 14px 0;
+	}
+
+	.bottom-nav{
+		position:fixed;
+		left:50%;
+		transform:translateX(-50%);
+		bottom:16px;
+		z-index:60;
+
+		display:flex;
+		align-items:center;
+		justify-content:center;
+		gap:12px;
+
+		background:rgba(255,255,255,0.78);
+		backdrop-filter:blur(14px);
+		-webkit-backdrop-filter:blur(14px);
+
+		border:1px solid rgba(0,0,0,0.08);
+		box-shadow:0 14px 34px rgba(0,0,0,0.10);
+		border-radius:999px;
+		padding:10px 12px;
+	}
+
+	.nav-btn{
+		display:inline-flex;
+		align-items:center;
+		justify-content:center;
+		width:44px;
+		height:44px;
+		border-radius:999px;
+		text-decoration:none;
+		border:1px solid rgba(0,0,0,0.10);
+		background:#fff;
+		color:#111;
+		font-weight:700;
+		transition:.2s;
+	}
+
+	.nav-btn:hover{
+		transform:translateY(-1px);
+		box-shadow:0 12px 26px rgba(0,0,0,0.12);
+	}
+
+	.nav-next{
+		min-width:190px;
+		padding:0 16px;
+		width:auto;
+		gap:10px;
+		font-weight:700;
+	}
+
+	@media(max-width:980px){
+		.navbar{ padding:14px 18px; }
+		.page{
+			height:calc(100svh - 70px);
+			margin-top:70px;
+			padding:18px 18px calc(18px + 84px);
+		}
+		h1{ font-size:34px; }
+	}
+	@media (prefers-reduced-motion: reduce){
+		*{ transition:none !important; }
+	}
+	</style>
+</head>
+
+<body>
+	<div class="navbar">
+		<div class="nav-left">
+			<img src="../assets/brain.png" class="nav-logo" alt="" />
+			<div class="nav-links">
+				<a href="/continuity/index.html">Home</a>
+				<a href="/continuity/how-it-works.html">How it works</a>
+				<a href="/continuity/guided-demos.html">Guided demos</a>
+				<a href="/continuity/controls.html">Controls</a>
+				<a href="/continuity/reporting.html">Reporting</a>
+				<a href="/continuity/founder-story.html">Founder journey</a>
+				<a class="active" href="/continuity/references.html">References</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="page">
+		<div class="hero">
+			<p class="kicker">References</p>
+			<h1>References and sources</h1>
+			<p class="sub">
+				This is a plain-English source list for the Continuity portal.
+				It is here so partners can quickly verify what is being quoted and what is being assumed.
+				These links are references, not endorsements.
+			</p>
+		</div>
+
+		<div class="panel">
+			<div class="note">
+				<b>How to use this page:</b> if you see a quote or claim in the portal (or in a pilot conversation),
+				use the sections below to find the source link. If you think something is missing, we will add it.
+			</div>
+
+			<div class="section">
+				<h2>Core policy and guidance (the “why”)</h2>
+				<p>
+					These are the main documents that support the idea that continuity, joined-up working,
+					and “no wrong door” delivery are already expected in UK health and care.
+				</p>
+
+				<div class="list">
+					<div class="item">
+						<div class="t">NHS England — Independent ADHD Taskforce Report (Part 1 and Part 2)</div>
+						<div class="s">Background, pressures, and recommended direction of travel for ADHD care in England.</div>
+						<a href="https://www.england.nhs.uk/mental-health/adhd-taskforce/" target="_blank" rel="noreferrer">https://www.england.nhs.uk/mental-health/adhd-taskforce/</a>
+						<div class="tagRow">
+							<span class="tag"><span class="dot"></span>ADHD</span>
+							<span class="tag">Joined-up care</span>
+							<span class="tag">Service pressure</span>
+						</div>
+					</div>
+
+					<div class="item">
+						<div class="t">DHSC — Co-occurring mental health and substance use delivery framework</div>
+						<div class="s">National framing for co-occurring need and practical expectations for delivery partnerships.</div>
+						<a href="https://www.gov.uk/government/publications/co-occurring-substance-misuse-and-mental-health-conditions-delivery-framework" target="_blank" rel="noreferrer">https://www.gov.uk/government/publications/co-occurring-substance-misuse-and-mental-health-conditions-delivery-framework</a>
+						<div class="tagRow">
+							<span class="tag"><span class="dot"></span>Dual diagnosis</span>
+							<span class="tag">No wrong door</span>
+							<span class="tag">Partnership delivery</span>
+						</div>
+					</div>
+
+					<div class="item">
+						<div class="t">NICE guideline NG87 — Attention deficit hyperactivity disorder</div>
+						<div class="s">NICE recommendations for ADHD recognition, diagnosis, and management.</div>
+						<a href="https://www.nice.org.uk/guidance/ng87" target="_blank" rel="noreferrer">https://www.nice.org.uk/guidance/ng87</a>
+						<div class="tagRow">
+							<span class="tag"><span class="dot"></span>NICE</span>
+							<span class="tag">ADHD</span>
+						</div>
+					</div>
+
+					<div class="item">
+						<div class="t">Royal College of Psychiatrists — CR235 (ADHD in adults)</div>
+						<div class="s">Good practice guidance for adult ADHD services and pathways.</div>
+						<a href="https://www.rcpsych.ac.uk/improving-care/campaigning-for-better-mental-health-policy/college-reports/2023-college-reports/cr235" target="_blank" rel="noreferrer">https://www.rcpsych.ac.uk/.../cr235</a>
+						<div class="tagRow">
+							<span class="tag"><span class="dot"></span>RCPsych</span>
+							<span class="tag">Adult ADHD</span>
+							<span class="tag">Pathway quality</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<hr />
+
+			<div class="section">
+				<h2>Piloting and evaluation (what “good pilot feedback” looks like)</h2>
+				<p>
+					These sources support the idea that pilots are meant to reduce uncertainty, understand workflow impact,
+					and create decision-grade evidence before wider adoption.
+				</p>
+
+				<div class="list">
+					<div class="item">
+						<div class="t">AI and Digital Regulations Service — Piloting digital technologies in a health or care service</div>
+						<div class="s">Practical guidance for what local piloting is for, and why evidence and monitoring matter.</div>
+						<a href="https://www.digitalregulations.innovation.nhs.uk/regulations-and-guidance-for-adopters/all-adopters-guidance/piloting-digital-technologies-in-a-health-or-care-service/" target="_blank" rel="noreferrer">https://www.digitalregulations.innovation.nhs.uk/.../piloting-digital-technologies...</a>
+						<div class="tagRow">
+							<span class="tag"><span class="dot"></span>Piloting</span>
+							<span class="tag">Workflow impact</span>
+							<span class="tag">Evidence plan</span>
+						</div>
+					</div>
+
+					<div class="item">
+						<div class="t">NHS England — How-to guide for measurement for improvement (Outcome / Process / Balancing)</div>
+						<div class="s">Common NHS approach to choosing measures that are safe and realistic.</div>
+						<a href="https://www.england.nhs.uk/improvement-hub/wp-content/uploads/sites/44/2017/11/How-to-Guide-for-Measurement-for-Improvement.pdf" target="_blank" rel="noreferrer">https://www.england.nhs.uk/.../How-to-Guide-for-Measurement-for-Improvement.pdf</a>
+						<div class="tagRow">
+							<span class="tag"><span class="dot"></span>KPIs</span>
+							<span class="tag">Balancing measures</span>
+							<span class="tag">Improvement</span>
+						</div>
+					</div>
+
+					<div class="item">
+						<div class="t">NIHR — Guidance on applying for feasibility studies (RfPB)</div>
+						<div class="s">What funders expect: demonstrate promise and name the uncertainties you are testing.</div>
+						<a href="https://www.nihr.ac.uk/guidance-applying-feasibility-studies" target="_blank" rel="noreferrer">https://www.nihr.ac.uk/guidance-applying-feasibility-studies</a>
+						<div class="tagRow">
+							<span class="tag"><span class="dot"></span>Feasibility</span>
+							<span class="tag">Uncertainty reduction</span>
+							<span class="tag">Credible claims</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<hr />
+
+			<div class="section">
+				<h2>Assurance and safety (what partners often ask for)</h2>
+				<p>
+					These sources are commonly referenced in NHS digital assurance conversations.
+					We do not claim certification unless evidenced, but we design the pilot to be governance-safe.
+				</p>
+
+				<div class="list">
+					<div class="item">
+						<div class="t">DTAC — Digital Technology Assessment Criteria (guidance for buyers and suppliers)</div>
+						<div class="s">Baseline assurance framework used in NHS procurement and due diligence conversations.</div>
+						<a href="https://transform.england.nhs.uk/key-tools-and-info/digital-technology-assessment-criteria-dtac/" target="_blank" rel="noreferrer">https://transform.england.nhs.uk/.../dtac/</a>
+						<div class="tagRow">
+							<span class="tag"><span class="dot"></span>DTAC</span>
+							<span class="tag">Assurance</span>
+							<span class="tag">Buyer questions</span>
+						</div>
+					</div>
+
+					<div class="item">
+						<div class="t">NHS England Digital — Information standards for health and care</div>
+						<div class="s">How standards support consistent processing and exchange of information.</div>
+						<a href="https://digital.nhs.uk/data-and-information/information-standards" target="_blank" rel="noreferrer">https://digital.nhs.uk/.../information-standards</a>
+						<div class="tagRow">
+							<span class="tag"><span class="dot"></span>Information standards</span>
+							<span class="tag">Governance</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<hr />
+
+			<div class="section">
+				<h2>Quotes and claims used in the portal (traceability)</h2>
+				<p>
+					This section is here so partners can check where a quote came from.
+					If a quote is removed from the portal, we will remove it from this list too.
+				</p>
+
+				<div class="list">
+					<div class="item">
+						<div class="t">“The opposite of addiction is human connection.” — Johann Hari</div>
+						<div class="s">Used as a framing quote. Not a clinical claim. Not an endorsement of OTOS.</div>
+						<a href="https://www.theguardian.com/society/2015/jan/18/johann-hari-addiction-isolation-interview" target="_blank" rel="noreferrer">Guardian interview link</a>
+						<div class="tagRow">
+							<span class="tag"><span class="dot"></span>Framing quote</span>
+						</div>
+					</div>
+
+					<div class="item">
+						<div class="t">Portal statements about “between-space” and “follow-through”</div>
+						<div class="s">These are operational continuity concepts, not medical outcome claims.</div>
+						<div class="tagRow">
+							<span class="tag"><span class="dot"></span>Operational continuity</span>
+							<span class="tag">Claims-safe</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<hr />
+
+			<div class="section">
+				<h2>Partner support (wording we will add as it arrives)</h2>
+				<p>
+					As partners provide wording, we will add it here so it can be referenced consistently.
+					Nothing here implies procurement commitment unless explicitly stated in writing.
+				</p>
+
+				<div class="list">
+					<div class="item">
+						<div class="t">CPFT (draft placeholder)</div>
+						<div class="s">Paste partner wording here when received.</div>
+					</div>
+					<div class="item">
+						<div class="t">CGL (draft placeholder)</div>
+						<div class="s">Paste partner wording here when received.</div>
+					</div>
+					<div class="item">
+						<div class="t">CRS / VCSE partner (draft placeholder)</div>
+						<div class="s">Paste partner wording here when received.</div>
+					</div>
+					<div class="item">
+						<div class="t">WorkWell / MIND / therapy partner (draft placeholder)</div>
+						<div class="s">Paste partner wording here when received.</div>
+					</div>
+				</div>
+			</div>
+
+			<hr />
+
+			<div class="section">
+				<h2>Contact</h2>
+				<p>
+					If you spot a quote that needs a better reference, or you want to add an additional source,
+					reply to the pilot invite email and we will update this list.
+				</p>
+				<div class="item">
+					<div class="t">Dean Butler — OTOS Digital</div>
+					<div class="s">otoslifeproject@gmail.com</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="bottom-nav" aria-label="Page navigation">
+		<a class="nav-btn" href="/continuity/reporting.html" aria-label="Back">←</a>
+		<a class="nav-btn nav-next" href="/continuity/founder-story.html" aria-label="Next"><span>Next: Founder journey</span> →</a>
+	</div>
+</body>
+</html>

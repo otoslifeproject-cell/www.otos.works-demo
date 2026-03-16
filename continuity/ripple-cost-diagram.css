@@ -1,0 +1,288 @@
+/* Ripple Cost Diagram — Scott proposal. Apple-grade, proposal + web. */
+
+:root {
+  --ripple-bg: #ffffff;
+  --ripple-bg-subtle: #fafbfc;
+  --ripple-text: #0f172a;
+  --ripple-text-secondary: #334155;
+  --ripple-text-muted: #64748b;
+  --ripple-border: #e2e8f0;
+  --otos-green: #059669;
+  --otos-green-soft: #d1fae5;
+  --otos-green-muted: #047857;
+  --otos-teal: #0d9488;
+  --otos-teal-soft: #ccfbf1;
+  --wave-orange: #ea580c;
+  --wave-orange-soft: #fff7ed;
+  --breakwater-blue: #1e40af;
+  --breakwater-blue-soft: #dbeafe;
+  --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  --space-xs: 6px;
+  --space-sm: 12px;
+  --space-md: 20px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --transition: 0.2s ease;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font);
+  font-size: 15px;
+  color: var(--ripple-text);
+  background: var(--ripple-bg);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ripple-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-md) var(--space-lg);
+  background: var(--ripple-bg);
+}
+
+/* —— Hero —— */
+.ripple-hero {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.ripple-title {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 700;
+  color: var(--ripple-text);
+  margin: 0 0 var(--space-sm);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.ripple-subtitle {
+  font-size: 1.0625rem;
+  color: var(--ripple-text-secondary);
+  margin: 0 auto;
+  max-width: 580px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* —— Main diagram container —— */
+.diagram-section {
+  margin-bottom: var(--space-xl);
+}
+
+.diagram-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.ripple-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+}
+
+/* One-line legend under the circle: inner → outer cost layers */
+.ripple-legend {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--ripple-text-muted);
+  margin-top: var(--space-sm);
+  margin-bottom: 0;
+}
+
+.ripple-legend__sep {
+  margin: 0 0.35em;
+  color: var(--ripple-border);
+  font-weight: 500;
+}
+
+.ripple-legend__inner { font-weight: 600; color: var(--ripple-text-secondary); }
+.ripple-legend__outer { font-weight: 600; color: var(--ripple-text-secondary); }
+
+/* —— Data cards (floating) —— */
+.ripple-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-sm);
+  max-width: 900px;
+  margin: var(--space-lg) auto 0;
+  justify-content: center;
+}
+
+.ripple-card {
+  background: var(--ripple-bg);
+  border: 1px solid var(--ripple-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), border-color var(--transition);
+}
+
+.ripple-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #cbd5e1;
+}
+
+.ripple-card--hero {
+  background: linear-gradient(135deg, var(--otos-green-soft) 0%, #ecfdf5 100%);
+  border-color: rgba(5, 150, 105, 0.25);
+}
+
+.ripple-card--hero .ripple-card__value { color: var(--otos-green-muted); }
+
+.ripple-card__label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ripple-text-muted);
+  margin-bottom: 2px;
+}
+
+.ripple-card__value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ripple-text);
+  letter-spacing: -0.02em;
+}
+
+.ripple-card__meta {
+  font-size: 0.75rem;
+  color: var(--ripple-text-muted);
+  margin-top: 2px;
+}
+
+/* —— Quote block —— */
+.ripple-quote {
+  max-width: 720px;
+  margin: var(--space-lg) auto 0;
+  padding: var(--space-md) var(--space-lg);
+  background: var(--ripple-bg-subtle);
+  border-left: 4px solid var(--otos-green);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.ripple-quote__text {
+  font-size: 0.9375rem;
+  font-style: italic;
+  color: var(--ripple-text-secondary);
+  margin: 0 0 var(--space-xs);
+  line-height: 1.55;
+}
+
+.ripple-quote__attr {
+  font-size: 0.75rem;
+  color: var(--ripple-text-muted);
+}
+
+/* —— Wave / Breakwater section —— */
+.wave-section {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--ripple-border);
+}
+
+.wave-section__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ripple-text);
+  margin: 0 0 var(--space-sm);
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.wave-section__subtitle {
+  font-size: 0.875rem;
+  color: var(--ripple-text-muted);
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto var(--space-xs);
+  line-height: 1.5;
+}
+
+.wave-section__bridge {
+  font-size: 0.8125rem;
+  color: var(--otos-green-muted);
+  text-align: center;
+  max-width: 480px;
+  margin: 0 auto var(--space-lg);
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.wave-diagram-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--ripple-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--ripple-border);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* —— Before / After —— */
+.before-after-section {
+  margin-top: var(--space-xl);
+}
+
+.before-after-section__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ripple-text-secondary);
+  margin: 0 0 var(--space-xs);
+  text-align: center;
+}
+
+.before-after-section__desc {
+  font-size: 0.875rem;
+  color: var(--ripple-text-muted);
+  text-align: center;
+  max-width: 520px;
+  margin: 0 auto var(--space-md);
+  line-height: 1.5;
+}
+
+.diagram-wrap--split {
+  max-width: 720px;
+  margin: 0 auto;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--ripple-border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* —— Disclaimer —— */
+.disclaimer {
+  font-size: 0.6875rem;
+  color: var(--ripple-text-muted);
+  text-align: center;
+  max-width: 720px;
+  margin: var(--space-lg) auto 0;
+  line-height: 1.5;
+}
+
+/* —— Print —— */
+@media print {
+  body { background: #fff; }
+  .ripple-page { padding: 16px 0; max-width: 100%; }
+  .ripple-card { box-shadow: none; border: 1px solid #e2e8f0; }
+  .ripple-svg { max-height: 80vh; }
+  .wave-diagram-wrap { break-inside: avoid; }
+}
+
+@media (min-width: 640px) {
+  .ripple-cards { grid-template-columns: repeat(4, 1fr); }
+}

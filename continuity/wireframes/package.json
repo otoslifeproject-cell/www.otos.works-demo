@@ -1,0 +1,13 @@
+{
+  "name": "otos-wireframes-export",
+  "private": true,
+  "description": "Export OTOS Continuity wireframe screens to PNG at 2x",
+  "scripts": {
+    "export": "node export-png.js",
+    "export-pdf": "node export-pdf.js"
+  },
+  "devDependencies": {
+    "puppeteer": "^21.0.0",
+    "pdf-lib": "^1.17.1"
+  }
+}

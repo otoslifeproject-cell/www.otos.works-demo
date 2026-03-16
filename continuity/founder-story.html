@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dean's story — OTOS Continuity</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --orange: #ff8a00;
+      --teal: #5eead4;
+      --navy: #0f172a;
+      --bg: #f4f5f7;
+      --road-pre: #2d3748;
+      --road-worn: #1a202c;
+      --road-crisis: #0f1117;
+      --road-otos: #ff8a00;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--navy); overflow: hidden; }
+
+    .app { display: flex; width: 100%; height: 100vh; }
+    .panel-map {
+      width: calc(100% - 340px);
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel-info {
+      width: 340px;
+      flex-shrink: 0;
+      height: 100%;
+      background: #fff;
+      border-left: 1px solid rgba(15,23,42,0.08);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    .map-wrap {
+      position: absolute;
+      inset: 0;
+      transition: transform 0.4s ease-out;
+    }
+    .map-wrap.shake { animation: shake 0.6s ease-in-out; }
+    @keyframes shake {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-8px, 2px); }
+      40% { transform: translate(8px, -2px); }
+      60% { transform: translate(-6px, 2px); }
+      80% { transform: translate(6px, -2px); }
+    }
+
+    #main-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .road-bg {
+      fill: none;
+      stroke: rgba(15,23,42,0.12);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .road-glow {
+      fill: none;
+      stroke: rgba(15,23,42,0.06);
+      stroke-width: 18;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .road-fill {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 8;
+      transition: stroke-dashoffset 0.6s ease-out, stroke 0.4s ease;
+    }
+    .road-fill.cracked {
+      stroke: var(--road-crisis);
+    }
+    .road-fill.otos-phase {
+      stroke: var(--orange);
+    }
+
+    .crack-pattern {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+    #road-fill-layer.has-cracks .crack-pattern { opacity: 0.3; }
+    #road-fill-layer.otos-phase .crack-pattern { opacity: 0; }
+
+    .node-circle {
+      fill: #fff;
+      stroke: rgba(15,23,42,0.15);
+      stroke-width: 1.5;
+    }
+    .node-circle.pivot {
+      fill: #22c55e;
+      stroke: rgba(34,197,94,0.5);
+      filter: drop-shadow(0 0 12px rgba(34,197,94,0.5));
+    }
+    .node-initials {
+      font-family: Inter, sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      fill: var(--navy);
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+    .node-pivot .node-initials { fill: #fff; }
+
+    .break-marker {
+      stroke: rgba(15,23,42,0.4);
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+    .break-dot { fill: rgba(15,23,42,0.2); }
+
+    .foot-ellipse {
+      fill: rgba(15,23,42,0.22);
+      opacity: 0.7;
+    }
+
+    .phase-pill {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .phase-pill.phase1 { background: rgba(245,158,11,0.2); color: #b45309; }
+    .phase-pill.phase2 { background: rgba(34,197,94,0.2); color: #15803d; }
+    .phase-pill.phase3 { background: rgba(15,23,42,0.08); color: var(--navy); }
+
+    .running-total-wrap {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+    .running-total-label { font-size: 11px; color: #64748b; }
+    .running-total-value { font-size: 24px; font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; }
+    .running-total-value.flash-red { animation: flashRed 0.6s ease; }
+    @keyframes flashRed {
+      0% { color: #dc2626; }
+      100% { color: var(--navy); }
+    }
+
+    .step-badge { font-size: 12px; color: #64748b; margin-bottom: 6px; }
+    .step-title { font-size: 17px; font-weight: 700; color: var(--navy); line-height: 1.3; margin-bottom: 8px; }
+    .step-service { font-size: 13px; color: #475569; margin-bottom: 10px; }
+    .step-desc { font-size: 14px; color: #64748b; line-height: 1.5; margin-bottom: 12px; }
+    .step-cost { font-size: 15px; font-weight: 600; color: var(--navy); font-variant-numeric: tabular-nums; }
+
+    .bottom-bar {
+      position: absolute;
+      left: 0;
+      right: 340px;
+      bottom: 0;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      background: linear-gradient(transparent, rgba(244,245,247,0.95));
+      pointer-events: none;
+    }
+    .bottom-bar .controls { pointer-events: auto; display: flex; align-items: center; gap: 12px; }
+    .bottom-bar .step-readout { font-size: 13px; color: #64748b; }
+    .btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: Inter, sans-serif;
+      border: 1px solid rgba(15,23,42,0.15);
+      background: #fff;
+      color: var(--navy);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn:hover { background: #f1f5f9; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .overlay-message {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 20;
+    }
+    .overlay-message .text-line {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: 56px;
+      color: var(--navy);
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      max-width: 90%;
+    }
+    .overlay-message .text-line.visible { opacity: 1; }
+
+    .overlay-final {
+      position: absolute;
+      inset: 0;
+      background: rgba(15,23,42,0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 25;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+    }
+    .overlay-final.visible { opacity: 1; pointer-events: auto; }
+    .overlay-final .final-text {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: 48px;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 32px;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.2s;
+    }
+    .overlay-final.visible .final-text { opacity: 1; }
+    .overlay-final .cta-btn {
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: Inter, sans-serif;
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.4s;
+    }
+    .overlay-final.visible .cta-btn { opacity: 1; }
+    .overlay-final .cta-btn:hover { filter: brightness(1.08); }
+    .overlay-final .small-credit {
+      margin-top: 20px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      opacity: 0;
+      transition: opacity 0.5s ease 0.6s;
+    }
+    .overlay-final.visible .small-credit { opacity: 1; }
+
+    .synapse-arc { fill: none; stroke: rgba(255,138,0,0.7); stroke-width: 1.5; }
+    .synapse-dot { fill: var(--orange); }
+
+    @media (max-width: 900px) {
+      .app { flex-direction: column; }
+      .panel-map { width: 100%; }
+      .panel-info { width: 100%; max-height: 40vh; }
+      .bottom-bar { right: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="panel-map">
+      <div class="map-wrap" id="map-wrap">
+        <svg id="main-svg" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Care pathway map">
+          <defs>
+            <filter id="road-glow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="crack-pattern" patternUnits="userSpaceOnUse" width="20" height="20">
+              <path d="M0 10 L20 10 M10 0 L10 20" stroke="rgba(0,0,0,0.4)" stroke-width="0.5" fill="none"/>
+              <path d="M2 2 L8 8 M14 4 L18 10" stroke="rgba(0,0,0,0.3)" stroke-width="0.4" fill="none"/>
+            </pattern>
+          </defs>
+
+          <g id="road-layer">
+            <path id="road-path" class="road-glow" filter="url(#road-glow)" d="M 120 120 C 220 60 320 80 420 140 C 520 210 620 170 710 120 C 820 60 940 90 1020 170 C 1120 270 1060 350 980 400 C 890 455 810 440 730 400 C 610 340 520 360 440 430 C 330 520 220 520 160 460 C 90 390 110 300 190 250 C 260 205 300 210 360 240"/>
+            <path id="road-stroke" class="road-bg" d="M 120 120 C 220 60 320 80 420 140 C 520 210 620 170 710 120 C 820 60 940 90 1020 170 C 1120 270 1060 350 980 400 C 890 455 810 440 730 400 C 610 340 520 360 440 430 C 330 520 220 520 160 460 C 90 390 110 300 190 250 C 260 205 300 210 360 240"/>
+          </g>
+
+          <g id="road-fill-layer">
+            <path id="road-fill" class="road-fill" stroke="var(--road-pre)" d="M 120 120 C 220 60 320 80 420 140 C 520 210 620 170 710 120 C 820 60 940 90 1020 170 C 1120 270 1060 350 980 400 C 890 455 810 440 730 400 C 610 340 520 360 440 430 C 330 520 220 520 160 460 C 90 390 110 300 190 250 C 260 205 300 210 360 240"/>
+            <rect id="crack-rect" class="crack-pattern" x="0" y="0" width="1200" height="720" fill="url(#crack-pattern)"/>
+          </g>
+
+          <g id="breaks-layer">
+            <g><circle class="break-dot" cx="420" cy="140" r="6"/><line class="break-marker" x1="414" y1="134" x2="426" y2="146"/><line class="break-marker" x1="426" y1="134" x2="414" y2="146"/></g>
+            <g><circle class="break-dot" cx="980" cy="400" r="6"/><line class="break-marker" x1="974" y1="394" x2="986" y2="406"/><line class="break-marker" x1="986" y1="394" x2="974" y2="406"/></g>
+            <g><circle class="break-dot" cx="440" cy="430" r="6"/><line class="break-marker" x1="434" y1="424" x2="446" y2="436"/><line class="break-marker" x1="446" y1="424" x2="434" y2="436"/></g>
+          </g>
+
+          <g id="nodes-layer"></g>
+          <g id="walkers-layer"></g>
+          <g id="synapses-layer"></g>
+        </svg>
+      </div>
+
+      <div class="overlay-message" id="joined-message">
+        <p class="text-line" id="joined-text">A joined-up pathway.</p>
+      </div>
+
+      <div class="overlay-final" id="overlay-final">
+        <p class="final-text">No joined-up pathway.<br>Until now.</p>
+        <a href="/continuity/guided-demos.html" class="cta-btn">See the OTOS demo →</a>
+        <p class="small-credit">OTOS Continuity — Cambridge Pilot Proposal 2026</p>
+      </div>
+
+      <div class="bottom-bar">
+        <div class="controls">
+          <button type="button" class="btn" id="back-btn" disabled>Back</button>
+          <button type="button" class="btn" id="start-btn">Start</button>
+          <span class="step-readout" id="step-readout">Step 0 / 72</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-info">
+      <div class="phase-pill phase1" id="phase-pill">Phase 1 — Journey</div>
+      <div class="running-total-wrap">
+        <div class="running-total-label">Running total (known costs)</div>
+        <div class="running-total-value" id="running-total">£0</div>
+      </div>
+      <div class="step-badge" id="step-badge">Step 0</div>
+      <h2 class="step-title" id="step-title">35 years of successfully self-medicating</h2>
+      <div class="step-service" id="step-service">Self / Undiagnosed ADHD</div>
+      <p class="step-desc" id="step-desc">35 years of self-medicating with alcohol every day before crossing the invisible line. Addiction and dependency kicked in. The journey begins here.</p>
+      <div class="step-cost" id="step-cost">£0</div>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  'use strict';
+
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+
+  var STEPS = [
+    { id:0,  title:"35 years of successfully self-medicating",        service:"Self / Undiagnosed ADHD",          cost:0,      description:"35 years of self-medicating with alcohol every day before crossing the invisible line. Addiction and dependency kicked in. The journey begins here." },
+    { id:1,  title:"Psymplicity — ADHD Diagnosis",                    service:"Psymplicity Healthcare",           cost:900,    description:"Parental intervention seeking ADHD psychiatric assessment. First formal diagnosis. Self-funded. Prescribed small dose of methylphenidate." },
+    { id:2,  title:"GP Sutton — initial contact",                     service:"GP (Sutton)",                      cost:0,      description:"GP registration and initial contact following diagnosis. No shared care arrangement in place yet." },
+    { id:3,  title:"Diagnosed with Depression & Anxiety",             service:"GP (Comberton)",                   cost:0,      description:"Diagnosed with Depression and Anxiety. Anti-depressants started. Root cause — ADHD — not identified." },
+    { id:4,  title:"Moved to Spain — 3 years",                        service:"Self",                             cost:0,      description:"Moved to Spain for 3 years. Constant heavy drinking. Self-medicating now for alcoholism, not just ADHD." },
+    { id:5,  title:"Ambulance — Spain",                               service:"Ambulance Service (Spain)",        cost:0,      description:"Emergency call in Spain. Escalating crisis. No continuity of care." },
+    { id:6,  title:"La Linea Hospital — Pancreatic Attack",           service:"La Linea Hospital, Spain",         cost:0,      description:"Hospital admission in Spain. Pancreatic attack. Spanish doctor says: 'You can never drink again.' First time this was said clearly. Dean felt relief — not fear." },
+    { id:7,  title:"Spain Doctor — 'You can never drink again'",      service:"La Linea Hospital",                cost:0,      description:"Doctor delivers clear verdict. First honest clinical conversation. Dean felt relief, not fear. The threat of death felt like permission to stop." },
+    { id:8,  title:"Move back to UK",                                 service:"Self",                             cost:0,      description:"Returns to the UK after Spain. Re-entering the system. No continuity of care transferred. Starting again from zero." },
+    { id:9,  title:"UK GP — 'You're healthy enough to drink'",        service:"GP (UK)",                          cost:0,      description:"UK GP tells Dean he is healthy enough and gives permission to continue drinking. Direct contradiction of the Spanish doctor's clear advice." },
+    { id:10, title:"Police called — missing / suicide risk",          service:"Police",                           cost:0,      description:"Police called after Dean goes missing. Suicide risk flagged. No health referral pathway triggered." },
+    { id:11, title:"Assaulted by Neighbour — Addenbrookes ICU",       service:"Addenbrookes ICU",                 cost:0,      description:"Assault by neighbour. ICU admission. No connection made to ADHD or addiction history." },
+    { id:12, title:"Arrested — Retaliation incident",                 service:"Police",                           cost:0,      description:"Arrested following retaliation incident. Cautioned. First entry into the criminal justice system." },
+    { id:13, title:"Psymplicity — GP Comberton shared care",          service:"GP Comberton / Psymplicity",       cost:0,      description:"Comberton GP opens old files to find original shared care arrangement. No other GP will accept. Psymplicity not on Right To Choose register." },
+    { id:14, title:"Self-medicating continues",                       service:"Self",                             cost:0,      description:"No pathway in place. Self-medicating resumes. Cycle continues." },
+    { id:15, title:"GP Comberton — shared care confirmed",            service:"GP Comberton",                     cost:0,      description:"Shared care arrangement confirmed with GP Comberton. Brief window of stability." },
+    { id:16, title:"Self-medicating continues — drinking escalates",  service:"Self",                             cost:0,      description:"Shared care breaks down. Drinking escalates. ADHD medication not stabilised." },
+    { id:17, title:"Move to Northampton",                             service:"Self",                             cost:0,      description:"Moves to Northampton. Medical continuity broken again. No records follow." },
+    { id:18, title:"Fall into withdrawal — collapse and seizures",    service:"Self / 999",                       cost:0,      description:"Falls into alcohol withdrawal. Collapse. Fitting with seizures." },
+    { id:19, title:"999 Ambulance — Northampton",                     service:"Ambulance Service",                cost:0,      description:"Emergency ambulance called. Seizure episode in Northampton. Out of area — no Cambridge records available." },
+    { id:20, title:"Northampton A&E",                                 service:"Northampton A&E",                  cost:0,      description:"A&E attendance following seizures. Out of area. No Cambridge records available. System blind spot." },
+    { id:21, title:"Northampton Ward — detox admission",              service:"Northampton Hospital",             cost:0,      description:"Inpatient ward admission for detox in Northampton. No connection to Cambridge services." },
+    { id:22, title:"Head Injury — fight",                             service:"A&E",                              cost:0,      description:"Head injury following fight. A&E attendance. Another isolated crisis, no pathway response." },
+    { id:23, title:"999 Ambulance — second episode",                  service:"Ambulance Service",                cost:0,      description:"Second emergency ambulance call. The system responds to the acute. It cannot see what is causing it." },
+    { id:24, title:"Delirium Tremens — 2nd floor balcony jump",       service:"Addenbrookes ICU",                 cost:0,      description:"Severe delirium tremens withdrawal. 2nd floor balcony jump. ICU admission. Life-threatening crisis." },
+    { id:25, title:"Addenbrookes ICU admission",                      service:"Addenbrookes ICU",                 cost:0,      description:"ICU admission following balcony fall. The system saves Dean's life — then discharges him with no pathway." },
+    { id:26, title:"999 Ambulance — Addenbrookes",                    service:"Ambulance / Addenbrookes",         cost:0,      description:"Emergency ambulance to Addenbrookes. Another crisis response. No prevention in place." },
+    { id:27, title:"Addenbrookes Ward — detox admission",             service:"Addenbrookes",                     cost:0,      description:"Ward admission for detox at Addenbrookes. Same ward. Different crisis. No link between admissions in the record." },
+    { id:28, title:"Meet CPFT Helen — bedside, 1st time",             service:"CPFT / Addenbrookes",              cost:0,      description:"CPFT alcohol liaison nurse Helen visits bedside. First contact. She begins to understand the full picture — the first professional to try to join it up." },
+    { id:29, title:"Nightingale Hospital — 2-week detox",             service:"Nightingale Hospital",             cost:26000,  description:"2-week inpatient detox at Nightingale Hospital. First formal treatment setting. ADHD still not addressed." },
+    { id:30, title:"Help Me Stop — 6-week DayHab",                    service:"HelpMeStop",                       cost:3600,   description:"6-week day rehabilitation programme. Structured support. ADHD still not addressed in the programme." },
+    { id:31, title:"AA — regular attendance",                         service:"AA",                               cost:0,      description:"Joins AA and attends regularly for approximately one year. Some benefit, but ADHD makes the repetition increasingly difficult." },
+    { id:32, title:"AA starts to feel wrong",                         service:"AA / Self",                        cost:0,      description:"AA starts to drag. The repetition isn't helpful. ADHD still unmedicated. It's not a character defect — it's the ADHD." },
+    { id:33, title:"Relapse experiment begins",                       service:"Self",                             cost:0,      description:"Begins controlled drinking experiment. Medically unsupported. 9 months." },
+    { id:34, title:"6 months sober — starts business",               service:"Self",                             cost:0,      description:"6 months sober. Sets up Vintage and Retro Antique Business. Medication working, dopamine restored. Business eventually fails. Depression follows. Addiction returns hard." },
+    { id:35, title:"Experiment turns into crisis",                    service:"Self / 999",                       cost:0,      description:"11 months into experiment. Things got slowly, then quickly, worse. Paranoia. Real fear of survival. Now in very real crisis again." },
+    { id:36, title:"GP Cambridge — collapse, refused admission",      service:"GP Cambridge",                     cost:0,      description:"Collapse. GP refuses admission. Told to come back when in full withdrawal. System turns Dean away at the door." },
+    { id:37, title:"111 — CPFT Sanctuary Service",                    service:"CPFT Sanctuary / 111",             cost:0,      description:"111 call. Directed to CPFT Sanctuary Service." },
+    { id:38, title:"999 Ambulance — Refused",                         service:"999 / Ambulance",                  cost:0,      description:"999 Ambulance refuses to take Dean. Ropes in parents. Begins to cause himself physical injury to ensure admission and get the detox required to reach the medication." },
+    { id:39, title:"Addenbrookes A&E — refused, then admitted",       service:"Addenbrookes A&E",                 cost:300,    description:"A&E refuses again. Dean articulates his case exactly to the Psychological Director. She believes him. She backs him. Dean is admitted." },
+    { id:40, title:"Addenbrookes Ward — one final detox",             service:"Addenbrookes",                     cost:1500,   description:"Third Addenbrookes detox ward admission. The system intervenes again. The system still cannot see the cause." },
+    { id:41, title:"CPFT Helen — 'I have nowhere to send you'",       service:"CPFT @ Addenbrookes",              cost:0,      description:"Helen confirms she remembers Dean. 'I have nowhere to send you — he has been through everything I can signpost.' Dean promises to come back as a Partner, not a Patient. Helen writes the discharge letter." },
+    { id:42, title:"I know what I need to do",                        service:"Self",                             cost:0,      description:"Dean maps his own rescue route: get detoxed, get to CGL, get the right letters, get to the medication. He has worked out the system himself." },
+    { id:43, title:"CGL — assessment, detox nurse appointment",       service:"CGL",                              cost:0,      description:"CGL assessment completed. Detox nurse appointment scheduled but too far away. Needs detox urgently." },
+    { id:44, title:"Annie — CGL worker",                              service:"CGL (Annie)",                      cost:0,      description:"Introduced to Annie at CGL. Key relationship. First person who holds the thread." },
+    { id:45, title:"Annie writes the letter",                         service:"CGL (Annie)",                      cost:0,      description:"Annie writes the letter Psymplicity needs — confirming CGL attendance and confirming no risk." },
+    { id:46, title:"Rak backs Dean up with psychiatrist",             service:"CGL (Rak)",                        cost:0,      description:"Rak speaks with psychiatrist and backs Dean up as committed to recovery — blowing zeros, attending groups." },
+    { id:47, title:"Psymplicity — agrees to prescribe Elvanse",       service:"Psymplicity",                      cost:600,    description:"Psymplicity agrees to change to Elvanse but needs medical detox completion and CGL registration confirmed." },
+    { id:48, title:"Register with CGL",                               service:"CGL",                              cost:0,      description:"Formally registered with CGL. Criminal justice route." },
+    { id:49, title:"CGL — Sally, Criminal Justice",                   service:"CGL (Sally)",                       cost:0,      description:"Working with Sally at CGL via criminal justice route. First real system advocate." },
+    { id:50, title:"Police Arrest — Drink Driving",                   service:"Police",                           cost:0,      description:"Arrested for drink driving. Criminal justice re-entry. 2-year ban." },
+    { id:51, title:"Court appearance — convicted, 2-year ban",        service:"HM Courts",                        cost:0,      description:"Court attendance. Convicted. 2-year driving ban issued." },
+    { id:52, title:"50 hours community service",                      service:"Probation",                        cost:0,      description:"50 hours community service ordered. Probation begins." },
+    { id:53, title:"Probation",                                       service:"Probation",                        cost:0,      description:"Ongoing probation supervision. No health pathway connected." },
+    { id:54, title:"Honest with parents — they fund Psymplicity",     service:"Family / Psymplicity",             cost:900,    description:"Dean is honest with his parents about everything. They understand for the first time. They agree to help fund the psychiatric assessment." },
+    { id:55, title:"GP refuses new shared care — fit note issued",    service:"GP Cambridge",                     cost:0,      description:"GP refuses new shared care arrangement. Issues 3-month fit note. Signed off sick with Depression, Alcohol Dependency and Suicidal Thoughts. Told to get another surgery." },
+    { id:56, title:"GP Cambridge — tries other surgeries",            service:"GP (Cambridge)",                   cost:0,      description:"Tries to register with other Cambridge surgeries. None will take him because Psymplicity is not on the Right To Choose register." },
+    { id:57, title:"GP Newnham — refused",                            service:"GP (Newnham)",                     cost:0,      description:"Attempts shared care with Newnham GP. Refused." },
+    { id:58, title:"Castle Craig — Residential Rehab (Dual-Diagnosis)", service:"Castle Craig",                   cost:90000,  description:"Residential dual-diagnosis rehabilitation hospital. Funded by CGL (£90,000). ADHD medication removed on arrival because it was a stimulant. £45,000 wasted. System-created relapse." },
+    { id:59, title:"CPFT — Psychological Wellbeing Service",          service:"CPFT",                             cost:0,      description:"6-week CPFT Psychological Wellbeing programme post-rehab." },
+    { id:60, title:"Counselling course — leaves rehab",               service:"Community / DWP",                  cost:0,      description:"Counselling course booked many months before, started as he left rehab. Re-entering the world. Feeling strange but good." },
+    { id:61, title:"SMART Recovery — meet Inertia",                   service:"SMART Recovery",                   cost:0,      description:"Attends SMART Recovery groups again. Reconnects with Inertia who is keen to know more about how OTOS can help Cambridge Recovery Service. She is added to the list of potential Pilot Partners." },
+    { id:62, title:"Meet Franceska — RCE Hub Wellbeing Course",       service:"CPFT Hub (Franceska)",             cost:0,      description:"Meets Franceska on an RCE Hub Wellbeing Course. She really gets the ADHD and Addiction connection. Added to the list of potential Pilot Partners." },
+    { id:63, title:"Meet Andrea — transferred to Cambridge Recovery Service", service:"CRS (Andrea)",             cost:0,      description:"Meets Andrea. Transferred from CGL to Cambridge Recovery Service (CRS). Andrea totally gets Dean and promises to help. Introduces to KC at The SUN Network. Added to the list of potential Pilot Partners." },
+    { id:64, title:"Introduced to KC @ SUN Network",                  service:"SUN Network (KC)",                 cost:0,      description:"Introduced to KC at the SUN Network. KC happy to talk more and get in front of Scott at NHS ICB. First meeting." },
+    { id:65, title:"Join NA",                                          service:"Narcotics Anonymous",              cost:0,      description:"Joins NA. Attends regularly. Better vibe and more real than AA." },
+    { id:66, title:"Regular Gym Attendance",                           service:"Self / Community",                 cost:0,      description:"Begins regular gym attendance as part of recovery." },
+    { id:67, title:"Regular attendance at Buddhist Centre",           service:"Buddhist Centre",                  cost:0,      description:"Regular attendance at Buddhist Centre. Spiritual practice as part of recovery." },
+    { id:68, title:"Decorates flat — massive focus and drive",        service:"Self",                             cost:0,      description:"Decorates flat at the same time as building OTOS. Everything is suddenly achievable. Focus is sharp. Motivation at a perfect level. Executive function felt for the first time." },
+    { id:69, title:"Amazing reconnection with parents",               service:"Family",                           cost:0,      description:"Amazing reconnection with parents. Their understanding has lifted the world off his shoulders. He's performing higher than ever. All he needs is 1 tablet he can't get." },
+    { id:70, title:"Meet Paula — CPFT ADHD Team",                     service:"CPFT ADHD Team (Paula)",           cost:0,      description:"Meets Paula at the CPFT ADHD Team. A very interesting conversation. Specialist input begins. Paula is added to the list of potential Pilot Partners." },
+    { id:71, title:"Jo Fenton — Therapist (WorkWell / MIND)",         service:"Jo Fenton (Therapist)",            cost:360,    description:"6 weeks with Jo Fenton, Integrated Therapist via MIND-funded WorkWell scheme. Great therapeutic work begins. Jo is keen to hear more — she sees the ADHD and addiction connection every day." },
+    { id:72, title:"Psymplicity prescribe Elvanse — my whole life changed in 3 days", service:"Psymplicity Healthcare", cost:200, description:"Psychiatrist is more than happy with the explanation, proof of CGL engagement and medical detox. Prescribes Elvanse. Dean's whole life changed in 3 days. This is the moment." }
+  ];
+
+  var NODES = [
+    { id: 'cpft', x: 140, y: 150, label: 'CPFT', logo: '/assets/partners/NHS_CPFT_Logo.png', initials: 'CP' },
+    { id: 'addenbrookes', x: 260, y: 120, label: 'Addenbrookes', logo: '/assets/partners/Addenbrookes_Logo.png', initials: 'AD' },
+    { id: 'psymplicity', x: 380, y: 260, label: 'Psymplicity', logo: '/assets/partners/Psymplicity_Logo.png', initials: 'PS' },
+    { id: 'cgl', x: 470, y: 140, label: 'CGL', logo: '/assets/partners/CGL_Logo.png', initials: 'CG' },
+    { id: 'northampton', x: 600, y: 120, label: 'Northampton', logo: '/assets/founders/Northampton_Logo.png', initials: 'NO' },
+    { id: 'nightingale', x: 760, y: 150, label: 'Nightingale', logo: '/assets/founders/Nightingale_Logo.png', initials: 'NI' },
+    { id: 'helpmestop', x: 900, y: 170, label: 'Help Me Stop', logo: '/assets/founders/Help_Me_Stop_Logo.png', initials: 'HM' },
+    { id: 'workwell', x: 1030, y: 250, label: 'WorkWell', logo: '/assets/partners/WorkWell_Logo.png', initials: 'WW' },
+    { id: 'mind', x: 1040, y: 420, label: 'MIND', logo: '/assets/partners/MIND_Logo.png', initials: 'MI' },
+    { id: 'jofenton', x: 910, y: 520, label: 'Jo Fenton', logo: '/assets/partners/Jo_Fenton_Logo.png', initials: 'JF' },
+    { id: 'adhdteam', x: 760, y: 520, label: 'ADHD Team', logo: '/assets/partners/ADHD_Team_Logo.png', initials: 'AH' },
+    { id: 'crs', x: 560, y: 580, label: 'CRS', logo: '/assets/partners/CRS_Logo.png', initials: 'CR' },
+    { id: 'police', x: 720, y: 340, label: 'Police', logo: '/assets/founders/Police_Logo.jpeg', initials: 'PO' },
+    { id: 'courts', x: 850, y: 340, label: 'Courts', logo: '/assets/founders/HM_Courts_Logo.png', initials: 'CO' },
+    { id: 'probation', x: 780, y: 420, label: 'Probation', logo: '/assets/founders/Probation_Logo.png', initials: 'PR' },
+    { id: 'castlecraig', x: 610, y: 300, label: 'Castle Craig', logo: '/assets/founders/Castle_Craig_Logo.png', initials: 'CC' },
+    { id: 'sunnetwork', x: 420, y: 520, label: 'SUN Network', logo: '/assets/partners/SUN_Network_Logo.png', initials: 'SU' }
+  ];
+
+  var roadPath = document.getElementById('road-path');
+  var roadFill = document.getElementById('road-fill');
+  var nodesLayer = document.getElementById('nodes-layer');
+  var walkersLayer = document.getElementById('walkers-layer');
+  var synapsesLayer = document.getElementById('synapses-layer');
+  var mapWrap = document.getElementById('map-wrap');
+  var backBtn = document.getElementById('back-btn');
+  var startBtn = document.getElementById('start-btn');
+  var stepReadout = document.getElementById('step-readout');
+  var runningTotalEl = document.getElementById('running-total');
+  var phasePill = document.getElementById('phase-pill');
+  var stepBadge = document.getElementById('step-badge');
+  var stepTitle = document.getElementById('step-title');
+  var stepService = document.getElementById('step-service');
+  var stepDesc = document.getElementById('step-desc');
+  var stepCost = document.getElementById('step-cost');
+  var joinedMessage = document.getElementById('joined-message');
+  var joinedText = document.getElementById('joined-text');
+  var overlayFinal = document.getElementById('overlay-final');
+
+  var pathD = 'M 120 120 C 220 60 320 80 420 140 C 520 210 620 170 710 120 C 820 60 940 90 1020 170 C 1120 270 1060 350 980 400 C 890 455 810 440 730 400 C 610 340 520 360 440 430 C 330 520 220 520 160 460 C 90 390 110 300 190 250 C 260 205 300 210 360 240';
+  var pathLen = 0;
+  var state = 1;
+  var currentStep = 0;
+  var runningTotal = 0;
+  var walkers = [];
+  var walkerAnimId = null;
+  var isTransitioning = false;
+  var roadFillLayer = document.getElementById('road-fill-layer');
+
+  function fmtGBP(n) { return (n == null || n === 0) ? '£0' : '£' + Number(n).toLocaleString('en-GB'); }
+
+  function initPathLength() {
+    pathLen = roadPath.getTotalLength();
+  }
+
+  function drawNodes() {
+    NODES.forEach(function (node) {
+      var g = document.createElementNS(SVG_NS, 'g');
+      g.setAttribute('class', 'service-node' + (node.id === 'psymplicity' ? ' node-pivot-wrap' : ''));
+      g.setAttribute('data-node-id', node.id);
+
+      var circle = document.createElementNS(SVG_NS, 'circle');
+      circle.setAttribute('class', 'node-circle');
+      circle.setAttribute('cx', node.x);
+      circle.setAttribute('cy', node.y);
+      circle.setAttribute('r', 52);
+
+      var img = document.createElementNS(SVG_NS, 'image');
+      img.setAttribute('href', node.logo);
+      img.setAttribute('x', node.x - 52);
+      img.setAttribute('y', node.y - 52);
+      img.setAttribute('width', 104);
+      img.setAttribute('height', 104);
+      img.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+      img.onerror = function () {
+        img.setAttribute('href', '');
+        img.style.display = 'none';
+        initials.style.visibility = 'visible';
+        circle.setAttribute('fill', '#e2e8f0');
+      };
+
+      var initials = document.createElementNS(SVG_NS, 'text');
+      initials.setAttribute('class', 'node-initials');
+      initials.setAttribute('x', node.x);
+      initials.setAttribute('y', node.y);
+      initials.setAttribute('visibility', 'hidden');
+      initials.textContent = node.initials;
+
+      g.appendChild(circle);
+      g.appendChild(img);
+      g.appendChild(initials);
+      nodesLayer.appendChild(g);
+    });
+  }
+
+  function createWalker() {
+    var g = document.createElementNS(SVG_NS, 'g');
+    var e1 = document.createElementNS(SVG_NS, 'ellipse');
+    e1.setAttribute('rx', 3);
+    e1.setAttribute('ry', 6);
+    e1.setAttribute('class', 'foot-ellipse');
+    var e2 = document.createElementNS(SVG_NS, 'ellipse');
+    e2.setAttribute('cx', 8);
+    e2.setAttribute('rx', 3);
+    e2.setAttribute('ry', 6);
+    e2.setAttribute('class', 'foot-ellipse');
+    g.appendChild(e1);
+    g.appendChild(e2);
+    walkersLayer.appendChild(g);
+    var L = pathLen;
+    var pos = Math.random() * L;
+    var dir = Math.random() > 0.5 ? 1 : -1;
+    var speed = (0.3 + Math.random() * 0.6) * dir;
+    walkers.push({ g: g, pos: pos, speed: speed, L: L });
+  }
+
+  function animateWalkers() {
+    if (state !== 1 || isTransitioning) {
+      walkerAnimId = requestAnimationFrame(animateWalkers);
+      return;
+    }
+    walkers.forEach(function (w) {
+      w.pos += w.speed;
+      if (w.pos > w.L) w.pos -= w.L;
+      if (w.pos < 0) w.pos += w.L;
+      var pt = roadPath.getPointAtLength(w.pos);
+      w.g.setAttribute('transform', 'translate(' + pt.x + ',' + pt.y + ')');
+    });
+    walkerAnimId = requestAnimationFrame(animateWalkers);
+  }
+
+  function setRoadFillProgress(t) {
+    var drawn = t * pathLen;
+    roadFill.setAttribute('stroke-dasharray', String(pathLen));
+    roadFill.setAttribute('stroke-dashoffset', String(pathLen - drawn));
+  }
+
+  function updateRoadFillStyle(stepIndex) {
+    roadFill.classList.remove('cracked', 'otos-phase');
+    roadFillLayer.classList.remove('has-cracks');
+    if (stepIndex >= 58) {
+      roadFill.style.stroke = 'var(--road-crisis)';
+      roadFill.classList.add('cracked');
+      roadFillLayer.classList.add('has-cracks');
+    } else if (stepIndex >= 45) {
+      roadFill.style.stroke = 'var(--road-worn)';
+      roadFillLayer.classList.add('has-cracks');
+    } else if (stepIndex >= 30) {
+      roadFill.style.stroke = 'var(--road-worn)';
+    } else {
+      roadFill.style.stroke = 'var(--road-pre)';
+    }
+  }
+
+  function updatePanel(step) {
+    stepBadge.textContent = 'Step ' + step.id;
+    stepTitle.textContent = step.title;
+    stepService.textContent = step.service;
+    stepDesc.textContent = step.description;
+    stepCost.textContent = fmtGBP(step.cost);
+    stepReadout.textContent = 'Step ' + step.id + ' / 72';
+    runningTotalEl.textContent = fmtGBP(runningTotal);
+    if (step.id === 58) {
+      runningTotalEl.classList.add('flash-red');
+      setTimeout(function () { runningTotalEl.classList.remove('flash-red'); }, 600);
+    }
+  }
+
+  function highlightPivotNode() {
+    var nodes = nodesLayer.querySelectorAll('.service-node');
+    var psymNode = NODES.filter(function (o) { return o.id === 'psymplicity'; })[0];
+    var cx = psymNode ? psymNode.x : 380;
+    var cy = psymNode ? psymNode.y : 260;
+    nodes.forEach(function (n) {
+      var id = n.getAttribute('data-node-id');
+      if (id === 'psymplicity') {
+        n.classList.add('node-pivot');
+        n.setAttribute('transform', 'translate(' + cx + ',' + cy + ') scale(1.25) translate(' + (-cx) + ',' + (-cy) + ')');
+        var c = n.querySelector('.node-circle');
+        if (c) c.classList.add('pivot');
+      } else {
+        n.classList.remove('node-pivot');
+        n.removeAttribute('transform');
+        var c2 = n.querySelector('.node-circle');
+        if (c2) c2.classList.remove('pivot');
+      }
+    });
+  }
+
+  function advanceToStep(next, callback) {
+    if (next < 0 || next > 72) {
+      if (callback) callback();
+      return;
+    }
+    var fromT = currentStep / 72;
+    var toT = next / 72;
+    currentStep = next;
+    var step = STEPS[next];
+
+    updateRoadFillStyle(next);
+    if (next === 58) {
+      mapWrap.classList.add('shake');
+      setTimeout(function () { mapWrap.classList.remove('shake'); }, 600);
+    }
+
+    if (step.cost > 0) {
+      runningTotal += step.cost;
+    }
+    updatePanel(step);
+    backBtn.disabled = false;
+    startBtn.textContent = next < 72 ? 'Next' : 'Next';
+
+    var startTime = null;
+    function tick(now) {
+      if (!startTime) startTime = now;
+      var elapsed = (now - startTime) / 1000;
+      var dur = 0.6;
+      var t = Math.min(1, elapsed / dur);
+      t = 1 - Math.pow(1 - t, 2);
+      var currentT = fromT + (toT - fromT) * t;
+      setRoadFillProgress(currentT);
+      if (t < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        setRoadFillProgress(toT);
+        if (next === 72) highlightPivotNode();
+        if (callback) callback();
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function phase2Transition() {
+    isTransitioning = true;
+    phasePill.textContent = 'Phase 2 — OTOS';
+    phasePill.className = 'phase-pill phase2';
+    runningTotalEl.textContent = 'With OTOS: £0 in fragmentation costs. One pathway.';
+    runningTotalEl.style.fontSize = '18px';
+
+    setTimeout(function () {
+      roadFillLayer.classList.add('has-cracks');
+      roadFill.style.stroke = 'var(--road-crisis)';
+      var glow = document.createElementNS(SVG_NS, 'path');
+      glow.setAttribute('d', pathD);
+      glow.setAttribute('fill', 'none');
+      glow.setAttribute('stroke', 'rgba(255,138,0,0.6)');
+      glow.setAttribute('stroke-width', '14');
+      glow.setAttribute('stroke-linecap', 'round');
+      glow.setAttribute('stroke-linejoin', 'round');
+      glow.setAttribute('class', 'road-fill');
+      glow.style.strokeDasharray = pathLen;
+      glow.style.strokeDashoffset = 0;
+      roadFill.parentNode.insertBefore(glow, roadFill);
+      glow.style.transition = 'opacity 1s';
+      glow.style.opacity = '0.6';
+      setTimeout(function () {
+        glow.style.opacity = '0';
+        setTimeout(function () { glow.remove(); }, 1000);
+      }, 1000);
+    }, 1500);
+
+    setTimeout(function () {
+      roadFillLayer.classList.remove('has-cracks');
+      roadFillLayer.classList.add('otos-phase');
+      roadFill.classList.remove('has-cracks');
+      roadFill.classList.add('otos-phase');
+      roadFill.style.stroke = 'var(--road-otos)';
+    }, 1500 + 1000 + 1500);
+
+    setTimeout(function () {
+      joinedText.classList.add('visible');
+    }, 1500 + 1000 + 1500 + 800);
+
+    setTimeout(function () {
+      joinedText.classList.remove('visible');
+    }, 1500 + 1000 + 1500 + 800 + 500 + 2500);
+
+    setTimeout(function () {
+      drawSynapses();
+    }, 1500 + 1000 + 1500 + 800 + 500 + 2500 + 500);
+  }
+
+  function drawSynapses() {
+    var used = [];
+    var target = 6 + Math.floor(Math.random() * 3);
+    var attempts = 0;
+    while (used.length < target && attempts < 30) {
+      attempts++;
+      var a = Math.floor(Math.random() * NODES.length);
+      var b = Math.floor(Math.random() * NODES.length);
+      if (a !== b && used.indexOf(a + '-' + b) === -1 && used.indexOf(b + '-' + a) === -1) {
+        used.push(a + '-' + b);
+        addSynapseArc(NODES[a], NODES[b]);
+      }
+    }
+  }
+
+  function addSynapseArc(n1, n2) {
+    var midx = (n1.x + n2.x) / 2;
+    var midy = (n1.y + n2.y) / 2;
+    var dx = n2.x - n1.x;
+    var dy = n2.y - n1.y;
+    var bend = 0.4;
+    var cx1 = midx - dy * bend;
+    var cy1 = midy + dx * bend;
+    var d = 'M ' + n1.x + ' ' + n1.y + ' Q ' + cx1 + ' ' + cy1 + ' ' + n2.x + ' ' + n2.y;
+    var path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('class', 'synapse-arc');
+    var pathId = 'syn-path-' + Math.random().toString(36).slice(2);
+    path.setAttribute('id', pathId);
+    synapsesLayer.appendChild(path);
+    var circle = document.createElementNS(SVG_NS, 'circle');
+    circle.setAttribute('r', 4);
+    circle.setAttribute('class', 'synapse-dot');
+    var anim = document.createElementNS(SVG_NS, 'animateMotion');
+    anim.setAttribute('dur', '2s');
+    anim.setAttribute('repeatCount', 'indefinite');
+    var mpath = document.createElementNS(SVG_NS, 'mpath');
+    mpath.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + pathId);
+    anim.appendChild(mpath);
+    circle.appendChild(anim);
+    synapsesLayer.appendChild(circle);
+  }
+
+  function phase3Show() {
+    state = 3;
+    phasePill.textContent = 'Phase 3 — Finale';
+    phasePill.className = 'phase-pill phase3';
+    var svg = document.getElementById('main-svg');
+    svg.setAttribute('viewBox', '0 0 1200 720');
+    overlayFinal.classList.add('visible');
+  }
+
+  function onStart() {
+    if (state === 1) {
+      state = 2;
+      startBtn.textContent = 'Next';
+      startBtn.disabled = true;
+      advanceToStep(1, function () {
+        startBtn.disabled = false;
+        startBtn.textContent = 'Next';
+      });
+      return;
+    }
+    if (state === 2 && currentStep < 72) {
+      startBtn.disabled = true;
+      advanceToStep(currentStep + 1, function () {
+        startBtn.disabled = false;
+        if (currentStep === 72) {
+          phase2Transition();
+          setTimeout(function () {
+            phase3Show();
+          }, 1500 + 1000 + 1500 + 800 + 500 + 2500 + 500 + 2000);
+        }
+      });
+    }
+  }
+
+  function onBack() {
+    if (state !== 2 || currentStep <= 0) return;
+    var leavingStep = STEPS[currentStep];
+    if (leavingStep && leavingStep.cost > 0) runningTotal -= leavingStep.cost;
+    currentStep--;
+    var step = STEPS[currentStep];
+    setRoadFillProgress(currentStep / 72);
+    updateRoadFillStyle(currentStep);
+    updatePanel(step);
+    stepReadout.textContent = 'Step ' + currentStep + ' / 72';
+    if (currentStep === 0) backBtn.disabled = true;
+    highlightPivotNode();
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.code === 'Space') {
+      e.preventDefault();
+      if (state === 1) onStart();
+      else if (state === 2 && currentStep < 72) onStart();
+    }
+  });
+
+  backBtn.addEventListener('click', onBack);
+  startBtn.addEventListener('click', onStart);
+
+  initPathLength();
+  setRoadFillProgress(0);
+  drawNodes();
+  for (var w = 0; w < 50; w++) createWalker();
+  animateWalkers();
+})();
+  </script>
+</body>
+</html>

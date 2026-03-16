@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Reporting — OTOS Continuity</title>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+
+	<style>
+	:root{
+		--bg:#f4f4f4;
+		--text:#111;
+		--muted:#555;
+		--panel:#ffffff;
+		--glass:rgba(255,255,255,0.72);
+
+		--stroke: rgba(0,0,0,0.06);
+		--stroke2: rgba(0,0,0,0.08);
+		--shadow: 0 18px 50px rgba(0,0,0,0.08);
+
+		--accent: #ff8a00;
+		--accentSoft: rgba(255,138,0,0.16);
+	}
+
+	*{ box-sizing:border-box; }
+	html, body{ height:100%; }
+
+	body{
+		margin:0;
+		font-family:Inter, sans-serif;
+		background:var(--bg);
+		color:var(--text);
+		min-height:100svh;
+		overflow:hidden;
+		display:flex;
+		flex-direction:column;
+	}
+
+	.navbar{
+		position:fixed;
+		top:0; left:0; right:0;
+		z-index:50;
+
+		display:flex;
+		align-items:center;
+		justify-content:space-between;
+
+		padding:clamp(12px, 1.8vh, 18px) clamp(16px, 4vw, 60px);
+		background:var(--glass);
+		backdrop-filter:blur(14px);
+		-webkit-backdrop-filter:blur(14px);
+
+		border-bottom:1px solid var(--stroke);
+		box-shadow:0 12px 30px rgba(0,0,0,0.08);
+	}
+
+	.nav-left{
+		display:flex;
+		align-items:center;
+		gap:clamp(14px, 2vw, 40px);
+	}
+
+	.nav-logo{ height:36px; }
+
+	.nav-links a{
+		margin-right:clamp(12px, 1.6vw, 24px);
+		text-decoration:none;
+		color:#444;
+		font-weight:500;
+	}
+	.nav-links a:hover{ color:#000; }
+	.nav-links a.active{ color:#000; font-weight:600; }
+
+	/* Logged-in org (SUN) */
+	.nav-right{
+		display:flex;
+		align-items:center;
+		gap:12px;
+	}
+
+	.orgBadge{
+		display:flex;
+		align-items:center;
+		gap:10px;
+
+		border:1px solid var(--stroke2);
+		background:rgba(255,255,255,0.78);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+		border-radius: 999px;
+		padding: 8px 10px;
+		box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+	}
+
+	.orgLogo{
+		width:30px;
+		height:30px;
+		border-radius: 999px;
+		background:#fff;
+		border:1px solid var(--stroke);
+		padding:4px;
+		object-fit: contain;
+	}
+
+	.orgText{
+		display:flex;
+		flex-direction:column;
+		line-height:1.05;
+	}
+	.orgText .t{
+		font-size:12px;
+		font-weight:700;
+		color:#111;
+	}
+	.orgText .s{
+		font-size:11px;
+		color:#666;
+	}
+
+	.page{
+		height:calc(100svh - 76px);
+		margin:0 auto;
+		width:min(1320px, 100%);
+
+		padding:
+			clamp(18px, 2.4vh, 32px)
+			clamp(16px, 3.2vw, 46px)
+			calc(clamp(16px, 2.6vh, 26px) + 84px);
+
+		margin-top:76px;
+
+		display:flex;
+		flex-direction:column;
+		gap:clamp(10px, 1.4vh, 14px);
+	}
+
+	.hero{ text-align:center; }
+
+	.kicker{
+		font-size:12px;
+		letter-spacing:0.14em;
+		text-transform:uppercase;
+		color:#888;
+		margin:0 0 10px 0;
+	}
+
+	h1{
+		font-family:"Playfair Display", serif;
+		font-size:clamp(30px, 4.4vw, 46px);
+		line-height:1.12;
+		letter-spacing:-0.6px;
+		margin:0 0 10px 0;
+	}
+
+	.sub{
+		margin:0 auto;
+		max-width:1120px;
+		font-size:clamp(14px, 1.5vw, 17px);
+		line-height:1.6;
+		color:var(--muted);
+	}
+
+	.panel{
+		flex:1 1 auto;
+		min-height:0;
+
+		margin-top:clamp(10px, 1.4vh, 18px);
+		background:var(--panel);
+		border-radius:22px;
+		padding:clamp(12px, 1.8vh, 18px);
+		box-shadow:var(--shadow);
+
+		display:flex;
+		flex-direction:column;
+		gap: 12px;
+	}
+
+	.topNote{
+		display:flex;
+		align-items:flex-start;
+		justify-content:space-between;
+		gap: 12px;
+		flex-wrap: wrap;
+
+		border:1px solid var(--stroke);
+		background: rgba(0,0,0,0.02);
+		border-radius: 18px;
+		padding: 12px 14px;
+	}
+
+	.topNote .left{
+		max-width: 860px;
+	}
+	.topNote .left .t{
+		font-weight:800;
+		margin-bottom: 4px;
+	}
+	.topNote .left .s{
+		color:#555;
+		line-height:1.45;
+		font-size: 13px;
+	}
+	.badge{
+		display:inline-flex;
+		align-items:center;
+		gap:8px;
+		padding: 8px 10px;
+		border-radius: 999px;
+		border:1px solid rgba(255,138,0,0.28);
+		background: rgba(255,138,0,0.10);
+		color:#6a3c00;
+		font-weight:700;
+		font-size: 12px;
+		white-space: nowrap;
+	}
+	.dot{
+		width:10px;height:10px;border-radius:999px;background: var(--accent);
+		box-shadow: 0 0 0 4px var(--accentSoft);
+	}
+
+	.dash-grid{
+		display:grid;
+		grid-template-columns:1fr 1fr;
+		gap:clamp(10px, 1.4vh, 14px);
+		flex:1 1 auto;
+		min-height:0;
+	}
+
+	.dash{
+		border-radius:18px;
+		background:rgba(0,0,0,0.03);
+		border:1px solid var(--stroke);
+		padding:clamp(12px, 1.8vh, 16px);
+		display:flex;
+		flex-direction:column;
+		gap:10px;
+		min-height: 0;
+	}
+
+	.dashHead{
+		display:flex;
+		align-items:flex-start;
+		justify-content:space-between;
+		gap:10px;
+		flex-wrap: wrap;
+	}
+
+	.dash h3{
+		margin:0;
+		font-size:clamp(15px, 1.4vw, 18px);
+		font-weight:700;
+		color:#111;
+		line-height:1.25;
+	}
+
+	.smallHint{
+		font-size: 12px;
+		color:#666;
+		border: 1px solid var(--stroke);
+		background: rgba(255,255,255,0.70);
+		border-radius: 999px;
+		padding: 6px 10px;
+		white-space: nowrap;
+	}
+
+	.tiles{
+		display:grid;
+		grid-template-columns:repeat(3, 1fr);
+		gap:10px;
+	}
+
+	.tile{
+		background:#fff;
+		border:1px solid var(--stroke);
+		border-radius:14px;
+		padding:10px 12px;
+		box-shadow:0 10px 25px rgba(0,0,0,0.06);
+	}
+
+	.tile .label{
+		font-size:12px;
+		color:#777;
+		margin:0 0 6px 0;
+		letter-spacing:0.08em;
+		text-transform:uppercase;
+	}
+
+	.tile .val{
+		margin:0;
+		font-size:18px;
+		font-weight:700;
+		color:#111;
+	}
+
+	.note{
+		margin-top:auto;
+		font-size:clamp(12.5px, 1.1vw, 13.5px);
+		line-height:1.45;
+		color:#555;
+	}
+
+	/* Chart + table blocks */
+	.chartBox, .tableBox{
+		background:#fff;
+		border:1px solid var(--stroke);
+		border-radius:14px;
+		padding:12px;
+		box-shadow:0 10px 25px rgba(0,0,0,0.06);
+	}
+
+	.chartTitle{
+		font-size: 12px;
+		letter-spacing: 0.10em;
+		text-transform: uppercase;
+		color:#777;
+		margin: 0 0 10px 0;
+	}
+
+	/* Simple inline SVG chart placeholder */
+	.chartSvg{
+		width:100%;
+		height:160px;
+		display:block;
+		border-radius: 10px;
+		background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(0,0,0,0.02));
+		border:1px dashed rgba(0,0,0,0.10);
+	}
+
+	table{
+		width:100%;
+		border-collapse: collapse;
+		font-size: 13px;
+	}
+	th, td{
+		padding: 10px 8px;
+		border-bottom: 1px solid rgba(0,0,0,0.06);
+		vertical-align: top;
+	}
+	th{
+		text-align:left;
+		color:#666;
+		font-size: 12px;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	td{
+		color:#111;
+	}
+	.mono{
+		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+		font-size: 12px;
+		color:#222;
+	}
+
+	.strip{
+		margin-top:clamp(10px, 1.6vh, 12px);
+		padding:12px 16px;
+		border-radius:16px;
+		background:var(--glass);
+		backdrop-filter:blur(14px);
+		-webkit-backdrop-filter:blur(14px);
+		border:1px solid var(--stroke);
+		box-shadow:0 10px 28px rgba(0,0,0,0.06);
+		text-align:center;
+		color:#555;
+		font-size:clamp(12.5px, 1.1vw, 13.5px);
+		line-height:1.35;
+	}
+
+	/* BOTTOM NAV */
+	.bottom-nav{
+		position:fixed;
+		left:50%;
+		transform:translateX(-50%);
+		bottom:16px;
+		z-index:60;
+
+		display:flex;
+		align-items:center;
+		justify-content:center;
+		gap:12px;
+
+		background:rgba(255,255,255,0.78);
+		backdrop-filter:blur(14px);
+		-webkit-backdrop-filter:blur(14px);
+
+		border:1px solid rgba(0,0,0,0.08);
+		box-shadow:0 14px 34px rgba(0,0,0,0.10);
+		border-radius:999px;
+		padding:10px 12px;
+	}
+
+	.nav-btn{
+		display:inline-flex;
+		align-items:center;
+		justify-content:center;
+		width:44px;
+		height:44px;
+		border-radius:999px;
+		text-decoration:none;
+		border:1px solid rgba(0,0,0,0.10);
+		background:#fff;
+		color:#111;
+		font-weight:700;
+		transition:.2s;
+	}
+
+	.nav-btn:hover{
+		transform:translateY(-1px);
+		box-shadow:0 12px 26px rgba(0,0,0,0.12);
+	}
+
+	.nav-next{
+		min-width:168px;
+		padding:0 16px;
+		width:auto;
+		gap:10px;
+		font-weight:700;
+	}
+
+	@media (max-height: 900px){
+		.page{ height:calc(100svh - 72px); margin-top:72px; }
+		.navbar{ padding:12px clamp(16px, 4vw, 60px); }
+	}
+
+	@media(max-width:980px){
+		.navbar{ padding:14px 18px; }
+		.page{
+			height:calc(100svh - 70px);
+			margin-top:70px;
+			padding:18px 18px calc(18px + 84px);
+		}
+		.dash-grid{ grid-template-columns:1fr; }
+		.tiles{ grid-template-columns:repeat(2, 1fr); }
+		h1{ font-size:34px; }
+		.orgText{ display:none; } /* keep nav clean on mobile */
+	}
+	@media (prefers-reduced-motion: reduce){
+		*{ transition:none !important; }
+	}
+	</style>
+</head>
+
+<body>
+	<div class="navbar">
+		<div class="nav-left">
+			<img src="../assets/brain.png" class="nav-logo" alt="" />
+			<div class="nav-links">
+				<a href="/continuity/index.html">Home</a>
+				<a href="/continuity/how-it-works.html">How it works</a>
+				<a href="/continuity/guided-demos.html">Guided demos</a>
+				<a href="/continuity/controls.html">Controls</a>
+				<a class="active" href="/continuity/reporting.html">Reporting</a>
+				<a href="/continuity/references.html">References</a>
+			</div>
+		</div>
+
+		<div class="nav-right">
+			<div class="orgBadge" title="Demo fixture only. Not an endorsement.">
+				<img class="orgLogo" src="../assets/partners/The_Sun_Network_Logo.png" alt="SUN Network logo" />
+				<div class="orgText">
+					<div class="t">SUN Network</div>
+					<div class="s">Demo org (fixture)</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="page">
+		<div class="hero">
+			<p class="kicker">Reporting</p>
+			<h1>Anonymous continuity insight</h1>
+			<p class="sub">
+				Reporting is based on anonymous journey signals and touchpoints.<br />
+				It does not display identifiers or clinical record fields.
+			</p>
+		</div>
+
+		<div class="panel">
+			<div class="topNote">
+				<div class="left">
+					<div class="t">What this dashboard is for (pilot-safe)</div>
+					<div class="s">
+						In a 12‑week pilot, the credible wins are operational: follow‑through visibility, drift detection, and human review workflow.
+						Any downstream savings are treated as hypothesis and proxies only.
+					</div>
+				</div>
+				<div class="badge">
+					<span class="dot"></span>
+					Demo fixture (not real data)
+				</div>
+			</div>
+
+			<div class="dash-grid">
+				<!-- Oversight -->
+				<div class="dash">
+					<div class="dashHead">
+						<h3>Oversight view (illustrative)</h3>
+						<div class="smallHint">Network view</div>
+					</div>
+
+					<div class="tiles">
+						<div class="tile"><p class="label">Participants active</p><p class="val">—</p></div>
+						<div class="tile"><p class="label">Handoff receipts</p><p class="val">—</p></div>
+						<div class="tile"><p class="label">Follow-through</p><p class="val">—</p></div>
+
+						<div class="tile"><p class="label">Drift signals</p><p class="val">—</p></div>
+						<div class="tile"><p class="label">Human reviews</p><p class="val">—</p></div>
+						<div class="tile"><p class="label">Time-to-drift (median days)</p><p class="val">—</p></div>
+					</div>
+
+					<div class="chartBox">
+						<p class="chartTitle">Follow-through completion trend (by week)</p>
+						<svg class="chartSvg" viewBox="0 0 600 160" role="img" aria-label="Follow-through completion trend chart placeholder">
+							<text x="16" y="28" fill="#888" font-size="12">Chart placeholder</text>
+							<text x="16" y="48" fill="#888" font-size="12">No performance stats shown in demo</text>
+							<polyline points="60,120 160,92 260,98 360,70 460,74 540,62"
+								fill="none" stroke="rgba(255,138,0,0.55)" stroke-width="4" stroke-linecap="round" />
+							<circle cx="60" cy="120" r="5" fill="rgba(255,138,0,0.65)"></circle>
+							<circle cx="160" cy="92" r="5" fill="rgba(255,138,0,0.65)"></circle>
+							<circle cx="260" cy="98" r="5" fill="rgba(255,138,0,0.65)"></circle>
+							<circle cx="360" cy="70" r="5" fill="rgba(255,138,0,0.65)"></circle>
+							<circle cx="460" cy="74" r="5" fill="rgba(255,138,0,0.65)"></circle>
+							<circle cx="540" cy="62" r="5" fill="rgba(255,138,0,0.65)"></circle>
+						</svg>
+					</div>
+
+					<p class="note">
+						This is a demo fixture. In the pilot, the exact KPI set and reporting language is agreed with delivery partners and kept governance-safe.
+					</p>
+				</div>
+
+				<!-- Provider -->
+				<div class="dash">
+					<div class="dashHead">
+						<h3>Service provider view (illustrative)</h3>
+						<div class="smallHint">Provider view</div>
+					</div>
+
+					<div class="tiles">
+						<div class="tile"><p class="label">Participants active</p><p class="val">—</p></div>
+						<div class="tile"><p class="label">Handoff receipts</p><p class="val">—</p></div>
+						<div class="tile"><p class="label">Follow-through</p><p class="val">—</p></div>
+
+						<div class="tile"><p class="label">Drift signals</p><p class="val">—</p></div>
+						<div class="tile"><p class="label">Human reviews</p><p class="val">—</p></div>
+						<div class="tile"><p class="label">Time-to-drift (median days)</p><p class="val">—</p></div>
+					</div>
+
+					<div class="tableBox">
+						<p class="chartTitle">Open drift items (token only)</p>
+						<table aria-label="Open drift items table placeholder">
+							<thead>
+								<tr>
+									<th>Journey token</th>
+									<th>Signal</th>
+									<th>Age</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="mono">JRN-9F3A</td>
+									<td>Missed contact threshold</td>
+									<td>2d</td>
+									<td>Open</td>
+								</tr>
+								<tr>
+									<td class="mono">JRN-1B7C</td>
+									<td>Drop-off after signpost</td>
+									<td>4d</td>
+									<td>Open</td>
+								</tr>
+								<tr>
+									<td class="mono">JRN-6D20</td>
+									<td>Repeated backtrack / re-entry flag</td>
+									<td>1d</td>
+									<td>In review</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<p class="note">
+						No personal data. No clinical records. Signals only, for continuity oversight and human-controlled follow-up.
+					</p>
+				</div>
+			</div>
+
+			<div class="strip">
+				Tokenised. No EPR write‑back. Human review required for escalation.
+			</div>
+		</div>
+	</div>
+
+	<div class="bottom-nav" aria-label="Page navigation">
+		<a class="nav-btn" href="/continuity/controls.html" aria-label="Back">←</a>
+		<a class="nav-btn nav-next" href="/continuity/references.html" aria-label="Next"><span>Next: References</span> →</a>
+	</div>
+</body>
+</html>

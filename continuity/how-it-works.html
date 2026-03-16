@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How it works — OTOS Continuity</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+/* BASE */
+:root{
+	--bg:#f4f4f4;
+	--text:#111;
+	--muted:#555;
+	--panel:#ffffff;
+	--glass:rgba(255,255,255,0.72);
+}
+
+*{ box-sizing:border-box; }
+html, body{ height:100%; }
+
+body{
+	margin:0;
+	font-family:Inter, sans-serif;
+	background:var(--bg);
+	color:var(--text);
+
+	/* TEMPLATE: full-screen, no-scroll */
+	min-height:100svh;
+	overflow:hidden;
+
+	display:flex;
+	flex-direction:column;
+}
+
+/* FIXED GLASS NAV */
+.navbar{
+	position:fixed;
+	top:0; left:0; right:0;
+	z-index:50;
+
+	display:flex;
+	align-items:center;
+	justify-content:space-between;
+
+	padding:clamp(12px, 1.8vh, 18px) clamp(16px, 4vw, 60px);
+	background:var(--glass);
+	backdrop-filter:blur(14px);
+	-webkit-backdrop-filter:blur(14px);
+
+	border-bottom:1px solid rgba(0,0,0,0.06);
+	box-shadow:0 12px 30px rgba(0,0,0,0.08);
+}
+
+.nav-left{ display:flex; align-items:center; gap:clamp(14px, 2vw, 40px); }
+.nav-logo{ height:36px; }
+
+.nav-links a{
+	margin-right:clamp(12px, 1.6vw, 24px);
+	text-decoration:none;
+	color:#444;
+	font-weight:500;
+}
+.nav-links a:hover{ color:#000; }
+.nav-links a.active{ color:#000; font-weight:600; }
+
+/* PAGE */
+.page{
+	height:calc(100svh - 76px);
+	margin:0 auto;
+	width:min(1320px, 100%);
+
+	padding:
+		clamp(18px, 2.4vh, 32px)
+		clamp(16px, 3.2vw, 46px)
+		/* reserve space for the bottom controls */
+		calc(clamp(16px, 2.6vh, 26px) + 84px);
+
+	margin-top:76px;
+
+	display:flex;
+	flex-direction:column;
+	gap:clamp(10px, 1.4vh, 14px);
+}
+
+/* HERO */
+.hero{ text-align:center; flex:0 0 auto; }
+
+.kicker{
+	font-size:12px;
+	letter-spacing:0.14em;
+	text-transform:uppercase;
+	color:#888;
+	margin:0 0 10px 0;
+}
+
+h1{
+	font-family:"Playfair Display", serif;
+	font-size:clamp(30px, 4.4vw, 46px);
+	line-height:1.12;
+	letter-spacing:-0.6px;
+	margin:0 0 10px 0;
+}
+
+.sub{
+	margin:0 auto;
+	max-width:1120px;
+	font-size:clamp(14px, 1.5vw, 17px);
+	line-height:1.6;
+	color:var(--muted);
+}
+
+/* QUOTE STRIP */
+.quote-strip{
+	margin:clamp(10px, 1.4vh, 16px) auto 0 auto;
+	max-width:1120px;
+
+	background:var(--glass);
+	backdrop-filter:blur(14px);
+	-webkit-backdrop-filter:blur(14px);
+
+	padding:clamp(8px, 1.2vh, 10px) 16px;
+	border-radius:14px;
+	border:1px solid rgba(0,0,0,0.06);
+	box-shadow:0 10px 28px rgba(0,0,0,0.06);
+}
+
+.quote-strip .quote-line{
+	margin:0;
+	font-family:"Playfair Display", serif;
+	font-size:clamp(15px, 1.5vw, 18px);
+	font-weight:600;
+	line-height:1.25;
+	color:#1f1f1f;
+
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+.quote-strip .quote-source{
+	font-family:Inter, sans-serif;
+	font-weight:500;
+	font-size:clamp(12px, 1.1vw, 13px);
+	color:#666;
+}
+
+/* PANEL */
+.panel{
+	flex:1 1 auto;
+	min-height:0;
+
+	margin-top:clamp(10px, 1.4vh, 18px);
+	background:var(--panel);
+	border-radius:22px;
+	padding:clamp(12px, 1.8vh, 18px);
+	box-shadow:0 18px 50px rgba(0,0,0,0.08);
+
+	display:flex;
+	flex-direction:column;
+}
+
+/* STEPS */
+.steps{
+	display:grid;
+	grid-template-columns:1fr 1fr;
+	gap:clamp(10px, 1.4vh, 14px);
+	margin-top:clamp(10px, 1.4vh, 12px);
+	flex:1 1 auto;
+	min-height:0;
+}
+
+.step{
+	display:grid;
+	grid-template-columns:56px 1fr;
+	gap:12px;
+	align-items:flex-start;
+
+	padding:clamp(12px, 1.8vh, 16px);
+	border-radius:18px;
+	background:rgba(0,0,0,0.03);
+	border:1px solid rgba(0,0,0,0.06);
+}
+
+.step-num{
+	height:44px;
+	width:44px;
+	border-radius:999px;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	background:#fff;
+	box-shadow:0 10px 25px rgba(0,0,0,0.10);
+	font-weight:600;
+	color:#111;
+}
+
+.step h3{
+	margin:0;
+	font-size:clamp(14px, 1.3vw, 16px);
+	font-weight:600;
+	color:#111;
+	line-height:1.3;
+}
+
+.step .copy{
+	margin-top:8px;
+	font-size:clamp(12.5px, 1.2vw, 14.5px);
+	line-height:1.5;
+	color:#555;
+}
+
+/* PILLS */
+.pills{
+	margin-top:clamp(10px, 1.4vh, 12px);
+	display:flex;
+	flex-wrap:wrap;
+	gap:10px;
+	justify-content:center;
+}
+
+.pill{
+	padding:10px 14px;
+	border-radius:999px;
+	background:rgba(255,255,255,0.72);
+	border:1px solid rgba(0,0,0,0.06);
+	box-shadow:0 10px 25px rgba(0,0,0,0.06);
+	font-size:12.5px;
+	font-weight:600;
+	color:#444;
+	white-space:nowrap;
+}
+
+/* BOTTOM NAV (consistent across pages) */
+.bottom-nav{
+	position:fixed;
+	left:50%;
+	transform:translateX(-50%);
+	bottom:16px;
+	z-index:60;
+
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	gap:12px;
+
+	background:rgba(255,255,255,0.78);
+	backdrop-filter:blur(14px);
+	-webkit-backdrop-filter:blur(14px);
+
+	border:1px solid rgba(0,0,0,0.08);
+	box-shadow:0 14px 34px rgba(0,0,0,0.10);
+	border-radius:999px;
+	padding:10px 12px;
+}
+
+.nav-btn{
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	width:44px;
+	height:44px;
+	border-radius:999px;
+	text-decoration:none;
+	border:1px solid rgba(0,0,0,0.10);
+	background:#fff;
+	color:#111;
+	font-weight:700;
+	transition:.2s;
+}
+
+.nav-btn:hover{
+	transform:translateY(-1px);
+	box-shadow:0 12px 26px rgba(0,0,0,0.12);
+}
+
+.nav-next{
+	min-width:168px;
+	padding:0 16px;
+	width:auto;
+	gap:10px;
+	font-weight:700;
+}
+
+.nav-next span{
+	font-weight:700;
+}
+
+/* HEIGHT + RESPONSIVE */
+@media (max-height: 900px){
+	.page{ height:calc(100svh - 72px); margin-top:72px; }
+	.navbar{ padding:12px clamp(16px, 4vw, 60px); }
+	.panel{ border-radius:20px; }
+}
+
+@media(max-width:980px){
+	.navbar{ padding:14px 18px; }
+	.page{
+		height:calc(100svh - 70px);
+		margin-top:70px;
+		padding:18px 18px calc(18px + 84px);
+	}
+	.steps{ grid-template-columns:1fr; }
+	h1{ font-size:34px; }
+	.quote-strip .quote-line{ white-space:normal; }
+}
+
+@media (prefers-reduced-motion: reduce){
+	*{ transition:none !important; }
+}
+</style>
+</head>
+
+<body>
+<div class="navbar">
+	<div class="nav-left">
+		<img src="../assets/brain.png" class="nav-logo" alt="">
+		<div class="nav-links">
+			<a href="/continuity/index.html">Home</a>
+			<a class="active" href="/continuity/how-it-works.html">How it works</a>
+			<a href="/continuity/guided-demos.html">Guided demos</a>
+			<a href="/continuity/controls.html">Controls</a>
+			<a href="/continuity/reporting.html">Reporting</a>
+			<a href="/continuity/references.html">References</a>
+		</div>
+	</div>
+</div>
+
+<div class="page">
+	<div class="hero">
+		<p class="kicker">How it works</p>
+		<h1>A single encrypted thread joins every journey</h1>
+
+		<p class="sub">
+			OTOS Continuity provides a safe, anonymous way for the Cambridge ecosystem to understand how people move between touchpoints.
+			This supports an ecosystem-wide view with minimal clinical risk.
+			It does this without changing clinical ownership and without replacing existing systems.
+			From this point on, this portal refers to it as <strong>Continuity</strong>.
+		</p>
+
+		<div class="quote-strip">
+			<p class="quote-line">— “There should be a single, accessible front door.” — <span class="quote-source">Independent…</span></p>
+		</div>
+	</div>
+
+	<div class="panel">
+		<div class="steps">
+			<div class="step">
+				<div class="step-num">1</div>
+				<div>
+					<h3>Anonymous token at first contact</h3>
+					<div class="copy">
+						At a touchpoint, staff tap <strong>Register touchpoint</strong> or scan a QR code. Continuity creates an anonymous journey ID.
+						<br><br>
+						<strong>No name.</strong> No date of birth. No diagnosis. Just a secure journey thread.
+					</div>
+				</div>
+			</div>
+
+			<div class="step">
+				<div class="step-num">2</div>
+				<div>
+					<h3>Touchpoints, not records</h3>
+					<div class="copy">
+						As someone moves through services and community support, each provider can note that a touchpoint happened against the same journey ID:
+						<br><br>
+						Attended. Missed. Contacted. Referred. Stabilising.
+					</div>
+				</div>
+			</div>
+
+			<div class="step">
+				<div class="step-num">3</div>
+				<div>
+					<h3>Silent orchestration</h3>
+					<div class="copy">
+						Continuity highlights early patterns such as repeated missed contacts and ping‑pong referrals.
+						<br><br>
+						It is designed to avoid creating additional admin burden.
+						<br><br>
+						It is designed to give teams clearer, earlier continuity.
+					</div>
+				</div>
+			</div>
+
+			<div class="step">
+				<div class="step-num">4</div>
+				<div>
+					<h3>Pilot reporting</h3>
+					<div class="copy">
+						Leads can see where journeys stall.
+						<br><br>
+						They can see where drop‑off is happening.
+						<br><br>
+						They can see where continuity is working.
+						<br><br>
+						Reporting uses anonymous journey signals.
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="pills" aria-label="Key points">
+			<div class="pill">Touchpoints, not records.</div>
+			<div class="pill">No system integration.</div>
+			<div class="pill">No extra paperwork.</div>
+			<div class="pill">No disruption.</div>
+		</div>
+	</div>
+</div>
+
+<!-- CONSISTENT BOTTOM NAV -->
+<div class="bottom-nav" aria-label="Page navigation">
+	<a class="nav-btn" href="/continuity/index.html" aria-label="Back">←</a>
+	<a class="nav-btn nav-next" href="/continuity/guided-demos.html" aria-label="Next"><span>Next: Guided demos</span> →</a>
+</div>
+
+</body>
+</html>

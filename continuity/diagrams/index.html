@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OTOS Continuity — Diagrams & wireframes</title>
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: #f1f5f9; }
+    .header { background: #1e293b; color: #fff; padding: 16px 24px; }
+    .header h1 { margin: 0 0 4px 0; font-size: 20px; }
+    .header p { margin: 0; opacity: 0.9; font-size: 14px; }
+    .nav { display: flex; gap: 8px; padding: 12px 24px; background: #fff; border-bottom: 1px solid #e2e8f0; }
+    .nav a { padding: 8px 14px; border-radius: 6px; text-decoration: none; color: #475569; font-size: 14px; font-weight: 500; }
+    .nav a:hover { background: #f1f5f9; color: #1e293b; }
+    .nav a.active { background: #e11d48; color: #fff; }
+    section { padding: 24px; max-width: 1000px; margin: 0 auto; }
+    section:target { scroll-margin-top: 0; }
+    h2 { margin: 0 0 12px 0; font-size: 16px; color: #1e293b; }
+    .frame-wrap { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: hidden; }
+    .frame-wrap iframe { display: block; width: 100%; border: none; min-height: 620px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>OTOS Continuity — Diagrams & wireframes</h1>
+    <p>Presentation diagrams and Cambridge Pilot interface wireframes. Use the links above to jump, or scroll.</p>
+  </div>
+  <nav class="nav">
+    <a href="#diagram1" id="link1">1. Pilot Map</a>
+    <a href="#diagram2" id="link2">2. How it works</a>
+    <a href="#diagram3" id="link3">3. Canonical system</a>
+    <a href="#wireframes" id="link4">4. Pilot UI wireframes</a>
+  </nav>
+
+  <section id="diagram1">
+    <h2>1. Cambridge Pilot Map</h2>
+    <div class="frame-wrap">
+      <iframe src="1-pilot-map.html" title="Cambridge Pilot Map"></iframe>
+    </div>
+  </section>
+
+  <section id="diagram2">
+    <h2>2. How it works (annotated)</h2>
+    <div class="frame-wrap">
+      <iframe src="2-how-it-works.html" title="How it works"></iframe>
+    </div>
+  </section>
+
+  <section id="diagram3">
+    <h2>3. Canonical diagram</h2>
+    <div class="frame-wrap">
+      <iframe src="3-canonical-system.html" title="Canonical system"></iframe>
+    </div>
+  </section>
+
+  <section id="wireframes">
+    <h2>4. Cambridge Pilot UI wireframes</h2>
+    <p style="margin: 0 0 12px 0; font-size: 14px; color: #475569;">Four interface views: Participant onboarding, Bedside (Helen), Coordinator dashboard (CGL/CRS), Commissioner reporting (Scott). NHS-adjacent style, 1440px desktop &amp; iPhone 14 Pro mobile.</p>
+    <div class="frame-wrap">
+      <iframe src="../wireframes/index.html" title="Pilot UI wireframes" style="min-height: 720px;"></iframe>
+    </div>
+  </section>
+
+  <script>
+    // Highlight nav when section is in view
+    var sections = [
+      { id: 'diagram1', link: document.getElementById('link1') },
+      { id: 'diagram2', link: document.getElementById('link2') },
+      { id: 'diagram3', link: document.getElementById('link3') },
+      { id: 'wireframes', link: document.getElementById('link4') }
+    ];
+    function updateActive() {
+      var y = window.scrollY + 120;
+      sections.forEach(function(s) {
+        var el = document.getElementById(s.id);
+        if (el && el.offsetTop <= y && el.offsetTop + el.offsetHeight > y) {
+          sections.forEach(function(x) { x.link.classList.remove('active'); });
+          s.link.classList.add('active');
+        }
+      });
+    }
+    window.addEventListener('scroll', updateActive);
+    window.addEventListener('hashchange', function() { setTimeout(updateActive, 50); });
+    updateActive();
+  </script>
+</body>
+</html>

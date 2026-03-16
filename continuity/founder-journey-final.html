@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTOS Continuity™ — Founder Journey</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --map-bg: #0a1628;
+      --info-bg: #0D1B2A;
+      --info-border: rgba(255,255,255,0.1);
+      --text: #fff;
+      --text-muted: rgba(255,255,255,0.8);
+      --teal: #0D9488;
+      --orange: #F97316;
+      --red: #EF4444;
+      --red-dark: #DC2626;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--map-bg); color: var(--text); overflow: hidden; }
+
+    /* ========== LAYOUT — TWO PANEL ========== */
+    .app { display: flex; width: 100%; height: 100vh; }
+    .panel-map { width: 65%; height: 100%; position: relative; overflow: hidden; flex-shrink: 0; }
+    .panel-info { width: 35%; height: 100%; display: flex; flex-direction: column; background: var(--info-bg); border-left: 1px solid var(--info-border); flex-shrink: 0; }
+    @media (max-width: 768px) {
+      .app { flex-direction: column; }
+      .panel-map { width: 100%; height: 50vh; }
+      .panel-info { width: 100%; height: 50vh; border-left: none; border-top: 1px solid var(--info-border); }
+    }
+
+    /* ========== LAYER 1 — THE MAP (base, z-index: 1) ========== */
+    .map-container { position: absolute; inset: 0; z-index: 1; background: var(--map-bg); transition: transform 0.1s; }
+    .map-container.shake { animation: panelShake 0.4s ease-in-out; }
+    @keyframes panelShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(6px); }
+      75% { transform: translateX(-6px); }
+    }
+    #map-svg { width: 100%; height: 100%; display: block; }
+    .road-path { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 22; stroke-linecap: round; stroke-linejoin: round; }
+    .road-border { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ========== SELF-MED LAYER (background pulse) ========== */
+    .layer-selfmed { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+    .selfmed-pulse { position: absolute; inset: 0; background: transparent; opacity: 0; transform-origin: center; }
+    .selfmed-pulse.pulsing { animation: selfMedPulse 1.5s ease-in-out infinite; }
+    @keyframes selfMedPulse {
+      0%, 100% { transform: scale(1); opacity: 0.4; }
+      50% { transform: scale(1.03); opacity: 1; }
+    }
+
+    /* ========== LAYER 2 — SERVICE NODES (z-index: 2) ========== */
+    .layer-nodes { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+    .layer-nodes svg { width: 100%; height: 100%; }
+    .node-connector { stroke: rgba(255,255,255,0.2); stroke-width: 1; stroke-dasharray: 4 3; fill: none; }
+    .service-node { pointer-events: auto; cursor: default; }
+    .service-node circle { stroke: rgba(255,255,255,0.3); stroke-width: 1.5; }
+    .service-node text { font-family: Inter, sans-serif; font-size: 10px; fill: #fff; font-weight: 500; }
+
+    /* ========== LAYER 3 — JOURNEY FILL (z-index: 3) ========== */
+    .layer-journey { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+    .layer-journey svg { width: 100%; height: 100%; }
+    .journey-segment { stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.3s; }
+
+    /* ========== LAYER 5 — CHAOS EXPLOSION (z-index: 5) ========== */
+    .layer-chaos { position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; opacity: 0; }
+    .layer-chaos.visible { opacity: 1; }
+    .chaos-particle { position: absolute; border-radius: 50%; background: #EF4444; animation: chaosBurst 0.8s ease-out forwards; }
+    @keyframes chaosBurst {
+      0% { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+    }
+    .road-flash { position: absolute; inset: 0; background: rgba(255,255,255,0.4); pointer-events: none; opacity: 0; z-index: 4; }
+    .road-flash.visible { animation: flashWhite 0.6s ease-out; }
+    @keyframes flashWhite {
+      0% { opacity: 0.8; }
+      100% { opacity: 0; }
+    }
+
+    /* ========== LAYER 6 — OTOS BRAIN + NEURONS (z-index: 6) ========== */
+    .layer-otos { position: absolute; inset: 0; z-index: 6; pointer-events: none; opacity: 0; }
+    .layer-otos.visible { opacity: 1; }
+    .otos-brain { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0); width: 120px; height: 120px; }
+    .layer-otos.phase2 .otos-brain { animation: brainRise 1s ease-out forwards; }
+    @keyframes brainRise {
+      to { transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 24px rgba(249,115,22,0.8)); }
+    }
+    .neuron-line { stroke: rgba(249,115,22,0.4); stroke-width: 1; fill: none; }
+    .neuron-dot { fill: #F97316; }
+    .node-pulse { animation: nodePulse 0.6s ease-out; }
+    @keyframes nodePulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+
+    /* ========== LAYER 4 — INFO BOX (right panel only) ========== */
+    .info-box { flex: 1; padding: 28px; display: flex; flex-direction: column; min-height: 0; }
+    .info-box .running-total { font-size: 2.5rem; font-weight: 700; color: #22C55E; font-variant-numeric: tabular-nums; margin-bottom: 4px; }
+    .info-box .running-total-sub { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 20px; }
+    .info-box .step-badge { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+    .info-box .step-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; line-height: 1.3; }
+    .info-box .step-desc { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; flex: 1; min-height: 0; overflow-y: auto; }
+    .info-box .step-cost { font-size: 13px; color: var(--teal); font-weight: 600; font-variant-numeric: tabular-nums; margin-bottom: 20px; }
+    .progress-wrap { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-bottom: 20px; }
+    .progress-bar { height: 100%; background: var(--teal); border-radius: 3px; width: 0%; transition: width 0.3s ease; }
+    .controls { display: flex; align-items: center; justify-content: center; gap: 16px; font-size: 12px; color: rgba(255,255,255,0.6); flex-wrap: wrap; }
+    .controls button { background: rgba(255,255,255,0.1); border: 1px solid var(--info-border); color: #fff; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: Inter; font-size: 12px; }
+    .controls button:hover { background: rgba(255,255,255,0.15); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- ========== LEFT PANEL — MAP + LAYERS 1,2,3,5,6 ========== -->
+    <div class="panel-map">
+      <div class="map-container" id="map-container">
+        <!-- LAYER 1: Base map (roads) -->
+        <svg id="map-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
+          <rect width="1600" height="900" fill="#0a1628"/>
+          <g id="roads-layer"></g>
+        </svg>
+      </div>
+      <!-- SELF-MED BACKGROUND PULSE -->
+      <div class="layer-selfmed">
+        <div id="selfmed-pulse" class="selfmed-pulse"></div>
+      </div>
+      <!-- LAYER 2: Service nodes (injected by JS) -->
+      <div class="layer-nodes">
+        <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet"><g id="nodes-layer"></g></svg>
+      </div>
+      <!-- LAYER 3: Journey fill (injected by JS) -->
+      <div class="layer-journey">
+        <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet"><g id="journey-layer"></g></svg>
+      </div>
+      <!-- LAYER 5: Chaos explosion -->
+      <div class="layer-chaos" id="chaos-layer"></div>
+      <div class="road-flash" id="road-flash"></div>
+      <!-- LAYER 6: OTOS brain + neurons -->
+      <div class="layer-otos" id="otos-layer">
+        <svg class="otos-brain" id="otos-brain-svg" viewBox="0 0 64 64" aria-hidden="true">
+          <path fill="#F97316" d="M32 8c-4 0-8 2-10 6-2 4-2 10 0 14 2 4 4 8 8 10 4 2 8 2 12 0 4-2 8-6 10-10 2-4 2-10 0-14C40 10 36 8 32 8zm-4 12c-2 0-4 2-4 4s2 4 4 4 4-2 4-4-2-4-4-4zm8 0c-2 0-4 2-4 4s2 4 4 4 4-2 4-4-2-4-4-4zm-6 14c-2 2-2 6 0 8 2 2 6 2 8 0 2-2 2-6 0-8s-6-2-8 0z"/>
+        </svg>
+        <svg id="neurons-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:0;width:100%;height:100%;"></svg>
+      </div>
+    </div>
+
+    <!-- ========== RIGHT PANEL — INFO BOX (Layer 4) ========== -->
+    <div class="panel-info">
+      <div class="info-box">
+        <div class="running-total" id="running-total">£0</div>
+        <div class="running-total-sub">Known costs only — true cost £150,000+</div>
+        <div class="step-badge" id="step-badge">Step 0 of 38</div>
+        <div class="step-title" id="step-title">—</div>
+        <div class="step-desc" id="step-desc">Click Next or press Space to begin the journey.</div>
+        <div class="step-cost" id="step-cost">This step: — · Running total: £0</div>
+        <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+      </div>
+      <div class="controls">
+        <button type="button" id="btn-prev">← Previous</button>
+        <span>SPACE play/pause</span>
+        <button type="button" id="btn-next">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/founder-journey-final-data.js"></script>
+  <script src="../js/founder-journey-crafted-data.js"></script>
+  <script>
+(function() {
+  "use strict";
+
+  if (typeof window.FounderJourneyFinalData === "undefined") {
+    document.body.innerHTML = "<p style='padding:20px;color:#fff;'>Data not loaded. Ensure js/founder-journey-final-data.js is available.</p>";
+    return;
+  }
+
+  var Data = window.FounderJourneyFinalData;
+  var VIEWBOX_W = Data.VIEWBOX_W;
+  var VIEWBOX_H = Data.VIEWBOX_H;
+  var ROADS = Data.ROADS;
+  var NODES = Data.NODES;
+  var CALLOUTS = Data.CALLOUTS;
+
+  // New structured journey data (62 events)
+  var EVENTS = (typeof window.JOURNEY_EVENTS !== "undefined") ? window.JOURNEY_EVENTS : [];
+  var SELF_MED_LAYER = (typeof window.SELF_MED_LAYER !== "undefined") ? window.SELF_MED_LAYER : null;
+  var TOTAL_STEPS = EVENTS.length || 0;
+
+  // Map location labels to canonical node IDs on the road network
+  var LOCATION_NODE_ID = {
+    "GP Surgery": "N02_GP_COMBERTON",
+    "Northampton A&E": "N10_NORTHAMPTON_GENERAL",
+    "A&E": "N09_ADDENBROOKES",
+    "CPFT": "N07_CPFT_PWS",
+    "CGL": "N14_CGL",
+    "Peer Support": "N16_SMART",
+    "SUN Network": "N22_SUN_NETWORK",
+    "CRS": "N15_CRS",
+    "Probation": "N23_PROBATION",
+    "DWP": "N21_WORKWELL"
+  };
+
+  function getNodeIdForEvent(index) {
+    var ev = EVENTS[index];
+    if (!ev) return null;
+    if (ev.location) {
+      var mapped = LOCATION_NODE_ID[ev.location];
+      if (mapped) return mapped;
+    }
+    if (index === 0) return "N01_GP_SUTTON";
+    // Fallback to previous event's node
+    for (var i = index - 1; i >= 0; i--) {
+      var prev = EVENTS[i];
+      if (prev && prev.location && LOCATION_NODE_ID[prev.location]) {
+        return LOCATION_NODE_ID[prev.location];
+      }
+    }
+    return "N01_GP_SUTTON";
+  }
+
+  // Node category colours (Layer 2)
+  var NODE_COLORS = {
+    "CPFT": "#8B5CF6",
+    "CGL": "#F59E0B",
+    "CRS": "#10B981",
+    "SUN Network": "#3B82F6",
+    "A&E": "#EF4444",
+    "GP Surgery": "#06B6D4",
+    "MIND": "#EC4899",
+    "Housing": "#F97316",
+    "DWP": "#6B7280",
+    "Probation": "#DC2626",
+    "Rehab": "#7C3AED",
+    "Peer Support": "#34D399"
+  };
+
+  function getNodeCategory(node) {
+    var label = (node.label || "").toLowerCase();
+    var sec = (node.secondaryType || "").toLowerCase();
+    if (label.indexOf("cpft") !== -1) return "CPFT";
+    if (label.indexOf("cgl") !== -1) return "CGL";
+    if (label.indexOf("recovery service") !== -1 || label.indexOf("crs") !== -1) return "CRS";
+    if (label.indexOf("sun") !== -1) return "SUN Network";
+    if (label.indexOf("addenbrooke") !== -1 || label.indexOf("a&e") !== -1 || label.indexOf("northampton") !== -1 || label.indexOf("nightingale") !== -1 || label.indexOf("ambulance") !== -1 || label.indexOf("police") !== -1) return "A&E";
+    if (label.indexOf("gp ") === 0 || sec.indexOf("gp") !== -1) return "GP Surgery";
+    if (label.indexOf("mind") !== -1) return "MIND";
+    if (label.indexOf("workwell") !== -1) return "DWP";
+    if (label.indexOf("probation") !== -1) return "Probation";
+    if (label.indexOf("castle craig") !== -1 || label.indexOf("rehab") !== -1) return "Rehab";
+    if (label.indexOf("aa") !== -1 || label.indexOf("smart") !== -1 || label.indexOf("peer") !== -1) return "Peer Support";
+    return "Peer Support";
+  }
+
+  // Running total from structured events (by cost on each event)
+  var runningTotals = [];
+  var cum = 0;
+  for (var s = 0; s < TOTAL_STEPS; s++) {
+    var cost = Number(EVENTS[s] && EVENTS[s].cost) || 0;
+    cum += cost;
+    runningTotals.push(cum);
+  }
+  // Chaos peak = pivotPoint event id 15
+  var chaosPivotIndex = 0;
+  for (var i = 0; i < TOTAL_STEPS; i++) {
+    if (EVENTS[i] && EVENTS[i].pivotPoint) { chaosPivotIndex = i; break; }
+  }
+  // OTOS introduction = breakthrough event id 61
+  var OTOS_STEP_INDEX = 0;
+  for (var j = 0; j < TOTAL_STEPS; j++) {
+    if (EVENTS[j] && EVENTS[j].breakthrough) { OTOS_STEP_INDEX = j; break; }
+  }
+  var JOURNEY_START = { x: 180, y: 180 };
+
+  var state = {
+    stepIndex: -1,
+    playing: false,
+    timer: null,
+    segmentPassCount: {},
+    chaosDone: false,
+    otosDone: false,
+    displayedTotal: 0,
+    animatingTotal: null
+  };
+
+  var AUTO_ADVANCE_MS = 3000;
+  var LINE_ANIM_MS = 600;
+  var injectedShake = {};
+
+  function getNodeById(id) {
+    for (var i = 0; i < NODES.length; i++) if (NODES[i].id === id) return NODES[i];
+    return null;
+  }
+
+  // ========== LAYER 1: Draw roads ==========
+  function initLayer1() {
+    var g = document.getElementById("roads-layer");
+    for (var i = 0; i < ROADS.length; i++) {
+      var road = ROADS[i];
+      var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", road.d);
+      path.setAttribute("class", "road-path");
+      g.appendChild(path);
+      var border = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      border.setAttribute("d", road.d);
+      border.setAttribute("class", "road-border");
+      g.appendChild(border);
+    }
+  }
+
+  // ========== LAYER 2: Service nodes + connectors ==========
+  function initLayer2() {
+    var g = document.getElementById("nodes-layer");
+    for (var i = 0; i < NODES.length; i++) {
+      var n = NODES[i];
+      var cat = getNodeCategory(n);
+      var color = NODE_COLORS[cat] || NODE_COLORS["Peer Support"];
+      var cx = n.x, cy = n.y;
+      var connLen = 35;
+      var tx = cx + connLen;
+      var ty = cy;
+      var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", cx);
+      line.setAttribute("y1", cy);
+      line.setAttribute("x2", tx);
+      line.setAttribute("y2", ty);
+      line.setAttribute("class", "node-connector");
+      g.appendChild(line);
+      var nodeG = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      nodeG.setAttribute("class", "service-node");
+      nodeG.setAttribute("data-node-id", n.id);
+      var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", tx);
+      circle.setAttribute("cy", ty);
+      circle.setAttribute("r", 14);
+      circle.setAttribute("fill", color);
+      nodeG.appendChild(circle);
+      var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", tx);
+      text.setAttribute("y", ty + 28);
+      text.setAttribute("text-anchor", "middle");
+      text.textContent = n.label.length > 18 ? n.label.slice(0, 16) + "…" : n.label;
+      nodeG.appendChild(text);
+      g.appendChild(nodeG);
+    }
+  }
+
+  // ========== LAYER 3: Journey fill + pass tracking + shake ==========
+  function mixColor(hex1, hex2, r) {
+    var R = function(h) { return parseInt(h.slice(1, 3), 16); };
+    var G = function(h) { return parseInt(h.slice(3, 5), 16); };
+    var B = function(h) { return parseInt(h.slice(5, 7), 16); };
+    var r1 = R(hex1), g1 = G(hex1), b1 = B(hex1);
+    var r2 = R(hex2), g2 = G(hex2), b2 = B(hex2);
+    var rr = Math.round(r1 + (r2 - r1) * r), gg = Math.round(g1 + (g2 - g1) * r), bb = Math.round(b1 + (b2 - b1) * r);
+    return "#" + [rr, gg, bb].map(function(x) { return ("0" + x.toString(16)).slice(-2); }).join("");
+  }
+
+  function injectShakeKeyframe(amp, freq) {
+    var key = "s" + amp + "f" + freq;
+    if (injectedShake[key]) return key;
+    injectedShake[key] = true;
+    var id = "shake-" + key;
+    var period = 1000 / freq;
+    var style = document.getElementById("shake-styles") || (function() {
+      var el = document.createElement("style");
+      el.id = "shake-styles";
+      document.head.appendChild(el);
+      return el;
+    })();
+    style.textContent += "." + id + " { animation: " + id + " " + (period / 1000) + "s ease-in-out infinite; } @keyframes " + id + " { 0%,100% { transform: translateX(0); } 25% { transform: translateX(" + amp + "px); } 75% { transform: translateX(-" + amp + "px); } }";
+    return id;
+  }
+
+  var ROAD_STROKE_WIDTH = 20;
+
+  function addFirstSegment(fromX, fromY, toNodeId) {
+    var to = getNodeById(toNodeId);
+    if (!to) return;
+    var x1 = fromX, y1 = fromY, x2 = to.x, y2 = to.y;
+    var len = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+    var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", "M" + x1 + " " + y1 + " L" + x2 + " " + y2);
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", "rgba(13, 148, 136, 0.85)");
+    path.setAttribute("stroke-width", ROAD_STROKE_WIDTH);
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-dasharray", len);
+    path.setAttribute("stroke-dashoffset", len);
+    path.setAttribute("class", "journey-segment");
+    document.getElementById("journey-layer").appendChild(path);
+    var start = performance.now();
+    function anim() {
+      var t = (performance.now() - start) / LINE_ANIM_MS;
+      if (t >= 1) { path.setAttribute("stroke-dashoffset", 0); return; }
+      var p = t * t * (3 - 2 * t);
+      path.setAttribute("stroke-dashoffset", len * (1 - p));
+      requestAnimationFrame(anim);
+    }
+    requestAnimationFrame(anim);
+  }
+
+  function addJourneySegment(fromNodeId, toNodeId) {
+    var from = getNodeById(fromNodeId);
+    var to = getNodeById(toNodeId);
+    if (!from || !to) return;
+    var key = [fromNodeId, toNodeId].sort().join("-");
+    state.segmentPassCount[key] = (state.segmentPassCount[key] || 0) + 1;
+    var pass = state.segmentPassCount[key];
+    var x1 = from.x, y1 = from.y, x2 = to.x, y2 = to.y;
+    var len = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+    var strokeColor = "rgba(13, 148, 136, 0.85)";
+    if (pass >= 4) strokeColor = "#DC2626";
+    else if (pass === 3) strokeColor = mixColor("#0D9488", "#EF4444", 0.7);
+    else if (pass === 2) strokeColor = mixColor("#0D9488", "#F97316", 0.5);
+    var amp = 0, freq = 0;
+    if (pass >= 4) { amp = 8; freq = 18; }
+    else if (pass === 3) { amp = 4; freq = 12; }
+    else if (pass === 2) { amp = 2; freq = 8; }
+    var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", "M" + x1 + " " + y1 + " L" + x2 + " " + y2);
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", strokeColor);
+    path.setAttribute("stroke-width", ROAD_STROKE_WIDTH);
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-dasharray", len);
+    path.setAttribute("stroke-dashoffset", len);
+    path.setAttribute("class", "journey-segment");
+    var wrap = path;
+    if (pass >= 2 && amp > 0) {
+      var shakeId = injectShakeKeyframe(amp, freq);
+      wrap = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      wrap.setAttribute("class", "journey-segment " + shakeId);
+      wrap.appendChild(path);
+    }
+    document.getElementById("journey-layer").appendChild(wrap);
+    var start = performance.now();
+    function anim() {
+      var t = (performance.now() - start) / LINE_ANIM_MS;
+      if (t >= 1) { path.setAttribute("stroke-dashoffset", 0); return; }
+      var p = t * t * (3 - 2 * t);
+      path.setAttribute("stroke-dashoffset", len * (1 - p));
+      requestAnimationFrame(anim);
+    }
+    requestAnimationFrame(anim);
+  }
+
+  // ========== LAYER 5: Chaos explosion ==========
+  function triggerChaosExplosion() {
+    if (state.chaosDone) return;
+    state.chaosDone = true;
+    var nodeId = getNodeIdForEvent(state.stepIndex);
+    var node = nodeId ? getNodeById(nodeId) : null;
+    var vx = node ? node.x : 800;
+    var vy = node ? node.y : 450;
+    var panel = document.querySelector(".panel-map");
+    var w = panel.offsetWidth;
+    var h = panel.offsetHeight;
+    var scale = Math.min(w / VIEWBOX_W, h / VIEWBOX_H);
+    var ox = (w - VIEWBOX_W * scale) / 2;
+    var oy = (h - VIEWBOX_H * scale) / 2;
+    var cx = ox + vx * scale;
+    var cy = oy + vy * scale;
+    var layer = document.getElementById("chaos-layer");
+    layer.classList.add("visible");
+    for (var i = 0; i < 25; i++) {
+      var p = document.createElement("div");
+      p.className = "chaos-particle";
+      var angle = Math.random() * Math.PI * 2;
+      var dist = 40 + Math.random() * 80;
+      var dx = Math.cos(angle) * dist;
+      var dy = Math.sin(angle) * dist;
+      p.style.width = (4 + Math.random() * 4) + "px";
+      p.style.height = p.style.width;
+      p.style.left = cx + "px";
+      p.style.top = cy + "px";
+      p.style.setProperty("--dx", dx + "px");
+      p.style.setProperty("--dy", dy + "px");
+      layer.appendChild(p);
+      setTimeout(function(elm) { elm.remove(); }, 800, p);
+    }
+    document.getElementById("road-flash").classList.add("visible");
+    setTimeout(function() { document.getElementById("road-flash").classList.remove("visible"); }, 600);
+    document.getElementById("map-container").classList.add("shake");
+    setTimeout(function() { document.getElementById("map-container").classList.remove("shake"); }, 400);
+  }
+
+  // ========== LAYER 6: OTOS brain + neurons ==========
+  function triggerOtosLayer() {
+    if (state.otosDone) return;
+    state.otosDone = true;
+    var layer = document.getElementById("otos-layer");
+    layer.classList.add("visible");
+    // Phase 1 (500ms): reset — all journey segments to teal, remove shake
+    var journeyLayer = document.getElementById("journey-layer");
+    var paths = journeyLayer.querySelectorAll("path.journey-segment, g.journey-segment path");
+    for (var i = 0; i < paths.length; i++) paths[i].setAttribute("stroke", "rgba(13, 148, 136, 0.85)");
+    var groups = journeyLayer.querySelectorAll("g.journey-segment");
+    for (var k = 0; k < groups.length; k++) groups[k].className = "journey-segment";
+    setTimeout(function() {
+      layer.classList.add("phase2");
+      setTimeout(function() {
+        fireNeurons();
+      }, 1000);
+    }, 500);
+  }
+
+  function fireNeurons() {
+    var svg = document.getElementById("neurons-svg");
+    var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    var brainX = 800, brainY = 450;
+    var nodePositions = [];
+    for (var i = 0; i < NODES.length; i++) {
+      var n = NODES[i];
+      if (n.brokenVisible) nodePositions.push({ x: n.x, y: n.y, id: n.id });
+    }
+    var count = Math.min(16, Math.max(12, nodePositions.length));
+    for (var j = 0; j < count; j++) {
+      var np = nodePositions[j];
+      var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", brainX);
+      line.setAttribute("y1", brainY);
+      line.setAttribute("x2", np.x);
+      line.setAttribute("y2", np.y);
+      line.setAttribute("class", "neuron-line");
+      g.appendChild(line);
+      var dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      dot.setAttribute("class", "neuron-dot");
+      dot.setAttribute("r", 4);
+      dot.setAttribute("fill", "#F97316");
+      dot.setAttribute("cx", brainX);
+      dot.setAttribute("cy", brainY);
+      g.appendChild(dot);
+      animateNeuronDot(dot, brainX, brainY, np.x, np.y, j * 120);
+    }
+    svg.appendChild(g);
+  }
+
+  function animateNeuronDot(dot, x1, y1, x2, y2, delayMs) {
+    var start = performance.now();
+    var dur = 2000;
+    function tick() {
+      var elapsed = performance.now() - start - delayMs;
+      if (elapsed < 0) { requestAnimationFrame(tick); return; }
+      var t = (elapsed % dur) / dur;
+      var x = x1 + (x2 - x1) * t;
+      var y = y1 + (y2 - y1) * t;
+      dot.setAttribute("cx", x);
+      dot.setAttribute("cy", y);
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // ========== Info box + controls ==========
+  function updateInfoBox() {
+    var total = state.stepIndex < 0 ? 0 : runningTotals[state.stepIndex] || 0;
+    animateTotalTo(total);
+    var badge = document.getElementById("step-badge");
+    var title = document.getElementById("step-title");
+    var desc = document.getElementById("step-desc");
+    var costEl = document.getElementById("step-cost");
+    var progress = document.getElementById("progress-bar");
+    if (state.stepIndex < 0) {
+      badge.textContent = "Step 0 of " + TOTAL_STEPS;
+      title.textContent = "—";
+      desc.textContent = "Click Next or press Space to begin the journey.";
+      costEl.textContent = "This step: — · Running total: £0";
+      progress.style.width = "0%";
+      return;
+    }
+    var ev = EVENTS[state.stepIndex];
+    var stepCost = Number(ev && ev.cost) || 0;
+    badge.textContent = "Step " + (state.stepIndex + 1) + " of " + TOTAL_STEPS;
+    title.textContent = ev ? ev.title : "—";
+    desc.textContent = ev ? ev.description : "";
+    costEl.textContent = "This step: £" + (stepCost > 0 ? stepCost.toLocaleString("en-GB") : "—") + " · Running total: £" + total.toLocaleString("en-GB");
+    progress.style.width = (TOTAL_STEPS ? ((state.stepIndex + 1) / TOTAL_STEPS * 100) : 0) + "%";
+    updateSelfMedLayer(ev);
+  }
+
+  function animateTotalTo(target) {
+    var el = document.getElementById("running-total");
+    var start = state.displayedTotal;
+    var startTime = performance.now();
+    function tick() {
+      var t = (performance.now() - startTime) / 500;
+      if (t >= 1) { state.displayedTotal = target; el.textContent = "£" + target.toLocaleString("en-GB"); return; }
+      var p = 1 - Math.pow(1 - t, 3);
+      state.displayedTotal = Math.round(start + (target - start) * p);
+      el.textContent = "£" + state.displayedTotal.toLocaleString("en-GB");
+      requestAnimationFrame(tick);
+    }
+    if (state.animatingTotal) cancelAnimationFrame(state.animatingTotal);
+    state.animatingTotal = requestAnimationFrame(tick);
+  }
+
+  function advance() {
+    if (state.stepIndex >= TOTAL_STEPS - 1) return;
+    var prevNodeId = null;
+    if (state.stepIndex >= 0) prevNodeId = getNodeIdForEvent(state.stepIndex);
+    state.stepIndex++;
+    var currentNodeId = getNodeIdForEvent(state.stepIndex);
+    if (state.stepIndex === 0) {
+      addFirstSegment(JOURNEY_START.x, JOURNEY_START.y, currentNodeId);
+    } else if (prevNodeId && currentNodeId) {
+      addJourneySegment(prevNodeId, currentNodeId);
+    }
+    updateInfoBox();
+    if (state.stepIndex === chaosPivotIndex) setTimeout(triggerChaosExplosion, 400);
+    if (state.stepIndex === OTOS_STEP_INDEX) setTimeout(triggerOtosLayer, 600);
+  }
+
+  function retreat() {
+    if (state.stepIndex < 0) return;
+    if (state.stepIndex >= 1) {
+      var fromId = getNodeIdForEvent(state.stepIndex - 1);
+      var toId = getNodeIdForEvent(state.stepIndex);
+      var key = [fromId, toId].sort().join("-");
+      if (state.segmentPassCount[key]) state.segmentPassCount[key]--;
+    }
+    state.stepIndex--;
+    var layer = document.getElementById("journey-layer");
+    if (layer.lastElementChild) layer.removeChild(layer.lastElementChild);
+    updateInfoBox();
+  }
+
+  function playPause() {
+    state.playing = !state.playing;
+    if (state.playing) scheduleNext();
+    else if (state.timer) clearTimeout(state.timer);
+  }
+
+  function scheduleNext() {
+    if (!state.playing || state.stepIndex >= 37) return;
+    state.timer = setTimeout(function() {
+      advance();
+      scheduleNext();
+    }, AUTO_ADVANCE_MS);
+  }
+
+  // Self-medicating persistent layer: background pulse
+  function updateSelfMedLayer(ev) {
+    var pulseEl = document.getElementById("selfmed-pulse");
+    if (!SELF_MED_LAYER || !pulseEl || !ev) return;
+    var id = ev.id;
+    var phase = null;
+    for (var i = 0; i < SELF_MED_LAYER.phases.length; i++) {
+      var r = SELF_MED_LAYER.phases[i].range;
+      if (id >= r[0] && id <= r[1]) { phase = SELF_MED_LAYER.phases[i]; break; }
+    }
+    if (!phase || !phase.colour || !phase.opacity) {
+      pulseEl.style.background = "transparent";
+      pulseEl.style.opacity = "0";
+      pulseEl.classList.remove("pulsing");
+      return;
+    }
+    pulseEl.style.background = "radial-gradient(circle at 50% 50%, " + phase.colour + " 0%, transparent 60%)";
+    pulseEl.style.opacity = phase.opacity;
+    var pulseSpeed = phase.pulse || 1;
+    var dur = Math.max(0.5, 3 / pulseSpeed);
+    pulseEl.style.animationDuration = dur + "s";
+    pulseEl.classList.add("pulsing");
+  }
+
+  function init() {
+    initLayer1();
+    initLayer2();
+    updateInfoBox();
+    document.getElementById("btn-next").addEventListener("click", advance);
+    document.getElementById("btn-prev").addEventListener("click", retreat);
+    document.addEventListener("keydown", function(e) {
+      if (e.code === "Space") { e.preventDefault(); playPause(); }
+    });
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+  </script>
+</body>
+</html>

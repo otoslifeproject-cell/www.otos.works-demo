@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OTOS Continuity Layer — Canonical Diagram</title>
+  <link rel="stylesheet" href="otos-continuity-shared.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    .canon-wrap { position: relative; width: 920px; height: 640px; margin: 0 auto; }
+    .canon-wrap svg { position: absolute; left: 0; top: 0; }
+    .section-box { background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 14px; font-size: 12px; color: #1e293b; max-width: 200px; }
+    .section-box .heading { font-weight: 600; margin-bottom: 6px; }
+    .section-box ul { margin: 0; padding-left: 18px; }
+    .gov-box { position: absolute; left: 20px; top: 60px; }
+    .hub-box { position: absolute; right: 20px; top: 60px; }
+    .core-box { position: absolute; left: 20px; top: 300px; }
+    .digital-box { position: absolute; right: 20px; top: 300px; }
+    .bottom-left-box { position: absolute; left: 20px; bottom: 20px; max-width: 280px; }
+    .bottom-right-box { position: absolute; right: 20px; bottom: 20px; max-width: 280px; }
+    .joy-label { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); background: #e2e8f0; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="diagram-page">
+    <h1 class="diagram-title">OTOS Continuity Layer — Canonical Diagram</h1>
+    <p class="diagram-subtitle">Governance, hub wellbeing, core NHS, digital layer & aggregated feedback</p>
+
+    <div class="canon-wrap">
+      <svg width="920" height="640" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="mArrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0 0, 8 4, 0 8" fill="#0d9488"/></marker>
+          <marker id="mArrowPink" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0 0, 8 4, 0 8" fill="#e11d48"/></marker>
+        </defs>
+        <!-- Upper central figure -->
+        <ellipse cx="460" cy="165" rx="95" ry="75" fill="none" stroke="#e11d48" stroke-width="1.5" stroke-dasharray="6 5"/>
+        <text x="460" y="155" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#1e293b">OTOS CONTINUITY LAYER</text>
+        <ellipse cx="460" cy="168" rx="24" ry="32" fill="#334155"/>
+        <circle cx="460" cy="138" r="18" fill="#334155"/>
+        <ellipse cx="460" cy="162" rx="12" ry="10" fill="#93c5fd" opacity="0.8"/>
+        <line x1="460" y1="88" x2="460" y2="105" stroke="#94a3b8" stroke-dasharray="4 3"/>
+        <!-- Lower central figure -->
+        <ellipse cx="460" cy="395" rx="95" ry="75" fill="none" stroke="#e11d48" stroke-width="1.5" stroke-dasharray="6 5"/>
+        <text x="460" y="385" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#1e293b">OTOS CONTINUITY LAYER</text>
+        <ellipse cx="460" cy="398" rx="24" ry="32" fill="#334155"/>
+        <circle cx="460" cy="368" r="18" fill="#334155"/>
+        <ellipse cx="460" cy="392" rx="12" ry="10" fill="#93c5fd" opacity="0.8"/>
+        <!-- Central bridge -->
+        <rect x="380" y="268" width="160" height="44" rx="6" fill="none" stroke="#e11d48" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text x="460" y="291" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#1e293b">OTOS Continuity Layer</text>
+        <!-- Aggregated feedback arrows -->
+        <path d="M 380 240 Q 320 280 380 290" fill="none" stroke="#0d9488" stroke-width="2" marker-end="url(#mArrow)"/>
+        <path d="M 540 240 Q 600 280 540 290" fill="none" stroke="#0d9488" stroke-width="2" marker-end="url(#mArrow)"/>
+        <text x="320" y="262" font-size="10" fill="#0d9488" font-weight="600">Aggregated Feedback</text>
+        <text x="555" y="262" font-size="10" fill="#0d9488" font-weight="600">Aggregated Feedback</text>
+        <!-- Links from bridge to Core NHS and Digital -->
+        <line x1="380" y1="290" x2="220" y2="320" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="540" y1="290" x2="700" y2="320" stroke="#64748b" stroke-width="1.5"/>
+        <!-- Dashed to JOY -->
+        <line x1="460" y1="88" x2="460" y2="65" stroke="#94a3b8" stroke-dasharray="4 3"/>
+      </svg>
+
+      <div class="joy-label">JOY</div>
+
+      <div class="section-box gov-box">
+        <div class="heading">Governance & System Context</div>
+        <ul>
+          <li>Government</li>
+          <li>NHS (national)</li>
+          <li>NHS Commissioners (foundation / ICS layer)</li>
+        </ul>
+        <div style="margin-top:8px; font-size:11px">NHS SPPEL Communities · GP & Therapists</div>
+      </div>
+
+      <div class="section-box hub-box">
+        <div class="heading">Hub Wellbeing</div>
+        <ul>
+          <li>CPFT / Zoom</li>
+          <li>QPII + Retail services</li>
+          <li>SMART Recovery (Online)</li>
+          <li>SUN Network</li>
+        </ul>
+        <div style="margin-top:8px; font-size:11px">NHS Commissioners | ICS Future Community Hubs · BPHA Housing</div>
+      </div>
+
+      <div class="section-box core-box">
+        <div class="heading">Core NHS & Statutory Services</div>
+        <ul>
+          <li>CPFT (Adult ADHD Team)</li>
+          <li>Addenbrooke's Hospital / (A&E)</li>
+          <li>GPs</li>
+          <li>Therapists</li>
+        </ul>
+      </div>
+
+      <div class="section-box digital-box">
+        <div class="heading">Digital / OTOS Continuity Layer (THE PINK)</div>
+        <ul>
+          <li>QR Referral → Mental Health & Addiction Support</li>
+          <li>Key-Worker Dashboards</li>
+          <li>Worker Dashboards</li>
+        </ul>
+      </div>
+
+      <div class="section-box bottom-left-box">
+        <div class="heading">Housing / Social / Employment</div>
+        <ul>
+          <li>BPHA Housing Association (Housing officers)</li>
+          <li>DWP Employment</li>
+          <li>Carers & Family</li>
+          <li>People + CPFT (alcohol nurse, Addenbrooke's)</li>
+          <li>Jo (therapist → Key workers (roles))</li>
+          <li>Key workers (roles)</li>
+        </ul>
+      </div>
+
+      <div class="section-box bottom-right-box">
+        <div class="heading">Digital / OTOS Continuity Layer (THE PINK)</div>
+        <ul>
+          <li>QR Referral → Mental Health & Addiction Support</li>
+          <li>Key-Worker Dashboards</li>
+          <li>Daily Check-Ins & Nudges</li>
+          <li>Aggregates non-clinical feedback to key workers</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="tagline" style="margin-top: 16px">Connecting Mental Health, Addiction, Housing & Support. No patient records · GDPR safe.</p>
+  </div>
+</body>
+</html>

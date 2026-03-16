@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+
+	<title>OTOS Digital</title>
+
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+	<style>
+		:root{
+			--bg:#f5f3ee;
+			--bg2:#eef1f4;
+			--text:#151515;
+			--muted:#667085;
+			--button:0 14px 30px rgba(0,0,0,.18);
+		}
+
+		*{ box-sizing:border-box; }
+
+		body{
+			margin:0;
+			font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+			color:var(--text);
+			background:
+				radial-gradient(circle at 20% 0%, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 30%),
+				linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
+			-webkit-font-smoothing:antialiased;
+			display:flex;
+			flex-direction:column;
+			min-height:100vh;
+		}
+
+		.page{
+			max-width:1640px;
+			margin:0 auto;
+			padding:100px 34px 26px; /* keep your current top spacing */
+			width:100%;
+		}
+
+		/* Layout:
+		   - Row 1: H1 left + Brain right
+		   - Row 2: Intro + Actions span full width (so copy can run under the brain)
+		*/
+		.hero{
+			display:grid;
+			grid-template-columns:1.02fr .98fr;
+			column-gap:46px; /* more separation so the brain never feels “in the middle” */
+			row-gap:14px;
+			align-items:start;
+
+			/* KEY: remove forced height so the footer can stay visible */
+			min-height:0; /* was: calc(100vh - 110px) */
+		}
+
+		.hero-left-top{
+			grid-column:1;
+			padding:6px 6px 0;
+		}
+
+		.hero-right{
+			grid-column:2;
+			display:flex;
+			flex-direction:column;
+			align-items:flex-end;     /* anchor brain to the right */
+			justify-content:flex-start;
+			padding:6px 0 0 0;
+		}
+
+		.hero-wide{
+			grid-column:1 / -1;
+			padding:0 6px;
+		}
+
+		h1{
+			font-family:"Playfair Display",serif;
+			font-size:82px;
+			line-height:.92;
+			letter-spacing:-1.8px;
+			margin:0;
+			max-width:900px;
+		}
+
+		/* Brain: moved left more + slightly larger */
+		.brain-wrap{
+			width:min(500px, 100%); /* was 460px */
+			aspect-ratio: 1 / 1;
+			display:flex;
+			align-items:center;
+			justify-content:flex-end;
+			margin-left:auto; /* keeps it from drifting toward the middle */
+			transform:translateX(-120px); /* NEW: pull left */
+		}
+
+		.brain{
+			width:88%; /* was 96% */
+			height:auto;
+			filter:
+				drop-shadow(0 10px 18px rgba(0,0,0,0.10))
+				drop-shadow(0 2px 6px rgba(0,0,0,0.06))
+				drop-shadow(0 -1px 0 rgba(255,255,255,0.45)); /* tiny “shine” */
+		}
+
+		/* Give the wide section more breathing room */
+		.intro{
+			display:grid;
+			gap:18px;
+			margin-top:0px;
+			margin-bottom:44px; /* was 30px */
+			max-width:1500px;   /* allow copy to run under the brain */
+		}
+
+		.intro p{
+			margin:0;
+			font-size:22px;
+			line-height:1.5;
+			color:#5f6978;
+		}
+
+		/* Significant balanced space above + below the buttons */
+		.actions{
+			display:flex;
+			align-items:center;
+			justify-content:flex-start;
+			gap:14px;
+			flex-wrap:wrap;
+			margin:22px 0 30px; /* was 16px 0 16px */
+		}
+
+		.primary{
+			display:inline-flex;
+			align-items:center;
+			justify-content:center;
+			padding:16px 24px;
+			background:#111;
+			color:#fff;
+			text-decoration:none;
+			font-size:15px;
+			font-weight:600;
+			border-radius:999px;
+			box-shadow:var(--button);
+			transition:transform .2s ease, box-shadow .2s ease;
+		}
+
+		.primary:hover{
+			transform:translateY(-1px);
+			box-shadow:0 18px 34px rgba(0,0,0,.20);
+		}
+
+		.secondary{
+			display:inline-flex;
+			align-items:center;
+			justify-content:center;
+			padding:16px 24px;
+			background:rgba(255,255,255,.58);
+			border:1px solid rgba(255,255,255,.82);
+			color:#2c2c2c;
+			text-decoration:none;
+			font-size:15px;
+			font-weight:600;
+			border-radius:999px;
+			box-shadow:0 10px 22px rgba(0,0,0,.06);
+			backdrop-filter:blur(16px);
+			-webkit-backdrop-filter:blur(16px);
+			transition:transform .2s ease, box-shadow .2s ease;
+		}
+
+		.secondary:hover{
+			transform:translateY(-1px);
+			box-shadow:0 16px 28px rgba(0,0,0,.10);
+		}
+
+		/* Removed bottom-left governance pill block completely */
+
+		footer{
+			padding:14px 8px 6px;
+			text-align:center;
+			font-size:12px;
+			color:#98a0ad;
+		}
+
+		footer a{
+			color:#8d96a4;
+			text-decoration:none;
+		}
+
+		footer a:hover{
+			text-decoration:underline;
+		}
+
+		@media (max-width:1220px){
+			.page{
+				max-width:1200px;
+				padding:22px 20px 26px;
+			}
+			.hero{
+				grid-template-columns:1fr;
+				row-gap:22px;
+				min-height:auto;
+				column-gap:0;
+			}
+			.hero-left-top,
+			.hero-right,
+			.hero-wide{
+				grid-column:1;
+				padding:0;
+				text-align:left;
+			}
+			.hero-right{
+				align-items:flex-start;
+			}
+			h1{
+				font-size:64px;
+			}
+			.brain-wrap{
+				margin-top:10px;
+				width:min(460px, 100%);
+				margin-left:0;
+				justify-content:flex-start;
+				transform:none; /* do not offset on stacked/mobile layout */
+			}
+			.intro{
+				max-width:920px;
+				margin-top:0;
+				margin-bottom:22px;
+			}
+		}
+
+		@media (max-width:760px){
+			.page{
+				padding:18px 16px 22px;
+			}
+			h1{
+				font-size:46px;
+				letter-spacing:-1px;
+			}
+			.intro p{
+				font-size:18px;
+			}
+		}
+
+		/* Height-aware compression: aim for “no scroll” down to ~820px height */
+		@media (max-height: 820px){
+			.page{ padding:70px 34px 18px; }
+			h1{ font-size:70px; }
+			.intro{ gap:16px; margin-bottom:28px; }
+			.intro p{ font-size:21px; }
+			.brain-wrap{ width:min(460px, 100%); transform:translateX(-110px); }
+			.actions{ margin:18px 0 22px; }
+			footer{ padding-top:10px; }
+		}
+
+		@media (max-height: 740px){
+			.page{ padding:54px 34px 14px; }
+			h1{ font-size:62px; }
+			.intro{ gap:14px; margin-bottom:22px; }
+			.intro p{ font-size:20px; }
+			.brain-wrap{ width:min(420px, 100%); transform:translateX(-90px); }
+			.actions a{ padding:14px 22px; }
+			.actions{ margin:16px 0 18px; }
+			footer{ padding:10px 8px 6px; }
+		}
+	</style>
+</head>
+
+<body>
+	<div class="page">
+		<section class="hero">
+			<div class="hero-left-top">
+				<h1>
+					The Silent Infrastructure<br>
+					For Managing Human Systems<br>
+					Across Complex Environments.
+				</h1>
+			</div>
+
+			<div class="hero-right" aria-hidden="true">
+				<div class="brain-wrap">
+					<img class="brain" src="/assets/brain.png" alt="">
+				</div>
+			</div>
+
+			<div class="hero-wide">
+				<div class="intro">
+					<p><strong>OTOS Continuity™</strong> is a silent infrastructure layer for understanding complex human systems.</p>
+					<p>It tracks engagement and routing across teams and services, helping organisations see how journeys move through operational environments.</p>
+					<p>The architecture sits quietly above existing systems, improving continuity without disrupting staff or workflows.</p>
+				</div>
+
+				<div class="actions">
+					<a class="primary" href="#" onclick="return login()">Private Access</a>
+					<a class="secondary" href="mailto:info@otos.life">Start the conversation</a>
+				</div>
+			</div>
+		</section>
+
+		<footer>
+			© OTOS Digital Limited 2026. Registered in England & Wales with Company No. 12345678. Phone +447466334143 <a href="mailto:info@otos.life">info@otos.life</a>
+		</footer>
+	</div>
+
+	<script>
+		function login(){
+			const pass = prompt("Enter password to access the OTOS Continuity demo");
+			if(pass === "CNHS"){
+				window.location.href="/continuity/index.html";
+			}else if(pass !== null){
+				alert("Incorrect password");
+			}
+			return false;
+		}
+	</script>
+</body>
+</html>

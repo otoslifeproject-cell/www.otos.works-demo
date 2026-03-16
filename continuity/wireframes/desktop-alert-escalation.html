@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OTOS Continuity — Escalation alert (Desktop)</title>
+  <link rel="stylesheet" href="otos-design-system.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .viewport { width: 1440px; min-height: 900px; margin: 0 auto; background: var(--bg-page); }
+    .header { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) var(--space-8); border-bottom: 1px solid var(--border); }
+    .logo { font-weight: 700; font-size: 1.25rem; color: var(--otos-blue); }
+    .main { padding: var(--space-8); }
+    .page-title { margin-bottom: var(--space-2); }
+    .page-sub { color: var(--text-muted); font-size: var(--text-sm); margin-bottom: var(--space-6); }
+    .alert-banner { margin-bottom: var(--space-6); }
+    .card { max-width: 720px; }
+    .card h2 { margin-bottom: var(--space-4); }
+    .meta { display: flex; gap: var(--space-6); margin-bottom: var(--space-4); font-size: var(--text-sm); color: var(--text-muted); }
+    .actions { display: flex; gap: var(--space-4); margin-top: var(--space-6); }
+  </style>
+</head>
+<body>
+  <div class="viewport">
+    <header class="header">
+      <div class="logo">OTOS Continuity</div>
+    </header>
+    <main class="main">
+      <h1 class="page-title">Reviewer UI — Escalation</h1>
+      <p class="page-sub">Human-in-control · Drift / disengagement signal</p>
+
+      <div class="alert-banner">
+        <div class="alert">
+          <strong>Action required</strong> — Drift signal for participant P-0842. No check-in for 12 days. Review and decide next step.
+        </div>
+      </div>
+
+      <div class="card panel">
+        <h2>Escalation details</h2>
+        <div class="meta">
+          <span>Participant: P-0842</span>
+          <span>Signal: Drift / disengagement</span>
+          <span>Raised: 14 Mar 2025</span>
+        </div>
+        <p class="text-secondary">Last check-in was 2 Mar 2025. Follow-through prompts have been sent with no response. Continuity support has been notified. Choose an outcome below.</p>
+        <div class="actions">
+          <button type="button" class="btn btn--primary">Close — no action</button>
+          <button type="button" class="btn btn--secondary">Assign to ops</button>
+          <button type="button" class="btn btn--secondary">Request outreach</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

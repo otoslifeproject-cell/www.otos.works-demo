@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wireframe exports — OTOS Continuity</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; margin: 0; padding: 24px; background: #f8fafc; color: #1e293b; max-width: 720px; margin-left: auto; margin-right: auto; }
+    h1 { font-size: 1.25rem; margin-bottom: 8px; }
+    p { margin: 0 0 24px; font-size: 14px; color: #64748b; }
+    section { margin-bottom: 32px; }
+    h2 { font-size: 1rem; color: #475569; margin: 0 0 12px; }
+    ul { list-style: none; margin: 0; padding: 0; }
+    li { margin-bottom: 6px; }
+    a { color: #0066CC; text-decoration: none; font-size: 14px; }
+    a:hover { text-decoration: underline; }
+    .note { background: #f1f5f9; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #475569; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <h1>Wireframe exports</h1>
+  <p><strong>Create one PDF with all screens:</strong> Open <a href="../print-all.html" target="_blank">print-all.html</a> in Chrome → File → Print → Save as PDF. One PDF, one page per wireframe.</p>
+  <p>Or open each screen below, then take a screenshot (e.g. Cmd+Shift+4 on Mac, or browser “Capture screenshot”) and upload to Notion. PNGs will appear here after you run <code>npm run export</code> in the <code>wireframes</code> folder (requires Puppeteer).</p>
+
+  <section>
+    <h2>1. Participant onboarding</h2>
+    <ul>
+      <li><a href="../mobile-onboarding-welcome.html" target="_blank">Welcome</a></li>
+      <li><a href="../mobile-onboarding-consent.html" target="_blank">Consent</a></li>
+      <li><a href="../mobile-onboarding-id.html" target="_blank">Anonymous ID</a></li>
+      <li><a href="../mobile-onboarding-checkin.html" target="_blank">First check-in</a></li>
+      <li><a href="../mobile-onboarding-nextstep.html" target="_blank">Next step</a></li>
+      <li><a href="../mobile-onboarding-done.html" target="_blank">Done</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>2. Bedside (Helen)</h2>
+    <ul>
+      <li><a href="../mobile-helen-scan.html" target="_blank">Scan QR / code</a></li>
+      <li><a href="../mobile-helen-participant.html" target="_blank">Participant found</a></li>
+      <li><a href="../mobile-helen-record.html" target="_blank">Record touchpoint</a></li>
+      <li><a href="../mobile-helen-adhd-route.html" target="_blank">ADHD referral route</a></li>
+      <li><a href="../mobile-helen-receipt.html" target="_blank">Receipt</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Coordinator dashboard</h2>
+    <ul>
+      <li><a href="../desktop-coordinator-dashboard.html" target="_blank">CGL / CRS dashboard</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. Commissioner report</h2>
+    <ul>
+      <li><a href="../desktop-commissioner-report.html" target="_blank">Scott view — Week 8</a></li>
+    </ul>
+  </section>
+
+  <div class="note"><strong>PDFs:</strong> Use <a href="../print-all.html">print-all.html</a> → Print → Save as PDF. <strong>PNGs:</strong> Run <code>npm run export</code> (or <code>npm run export-pdf</code>) in <code>continuity/wireframes</code>; if Puppeteer fails, use the links above and screenshot for Notion.</div>
+</body>
+</html>

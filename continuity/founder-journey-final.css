@@ -1,0 +1,311 @@
+/**
+ * Founder Journey Final — Structural blueprint.
+ * Map: 1600×900, layered roads (teal tarmac, grey-blue edges), two roundabouts.
+ * Restored full version: roads, pins, labels, journey red, story panel, playback.
+ */
+:root {
+  --bg-page: #F3F5F7;
+  --bg-card: #FFFFFF;
+  --bg-frame: #FFFFFF;
+  --stroke: rgba(0, 0, 0, 0.08);
+  --text: #1a1d24;
+  --text-muted: #5c6370;
+  --journey-path: #F2B705;
+  --journey-path-faint: rgba(242, 183, 5, 0.4);
+  --road-tarmac: #42C0C0;
+  --road-edge: #697B8F;
+  --road-shadow: #5a6b7d;
+  --road-centre: rgba(255, 255, 255, 0.5);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, system-ui, sans-serif; background: var(--bg-page); color: var(--text); }
+
+.page { min-height: 100vh; display: flex; flex-direction: column; }
+.header {
+  padding: 16px 24px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--stroke);
+  flex-shrink: 0;
+}
+.brand { display: flex; align-items: center; gap: 16px; }
+.brandImg { width: 48px; height: 48px; object-fit: contain; }
+.brandText { flex: 1; }
+.hTitle { margin: 0; font-size: 1.25rem; font-weight: 600; font-family: Playfair Display, serif; }
+.hSub { margin: 4px 0 0; font-size: 0.875rem; color: var(--text-muted); }
+
+.frame {
+  flex: 1;
+  position: relative;
+  background: var(--bg-frame);
+  min-height: 400px;
+}
+.diagramWrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.mapSvg { width: 100%; height: 100%; display: block; }
+
+/* —— Road layers (match reference map: teal tarmac, grey-blue edges) —— */
+.layerRoads,
+.layerBreaks,
+.layerIslands,
+.layerJourney,
+.layerStepMarkers,
+.layerEventMarkers,
+.layerContinuity,
+.layerSignals,
+.layerIntervention { display: block; }
+
+.roadSegment path { vector-effect: non-scaling-stroke; }
+.roadShadow {
+  fill: none;
+  stroke: var(--road-shadow);
+  stroke-width: 28;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: url(#roadShadow);
+  opacity: 0.85;
+}
+.roadEdge {
+  fill: none;
+  stroke: var(--road-edge);
+  stroke-width: 22;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.roadTarmac {
+  fill: none;
+  stroke: var(--road-tarmac);
+  stroke-width: 16;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.roadCentre {
+  fill: none;
+  stroke: var(--road-centre);
+  stroke-width: 4;
+  stroke-dasharray: 8 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.roadSegment.roadRoundabout .roadShadow { stroke-width: 32; }
+.roadSegment.roadRoundabout .roadEdge { stroke-width: 26; }
+.roadSegment.roadRoundabout .roadTarmac { stroke-width: 20; }
+.roadSegment.roadRoundabout .roadCentre { stroke-width: 5; stroke-dasharray: 10 8; }
+
+.breakDot { fill: var(--road-edge); r: 5; }
+.breakX { stroke: var(--text-muted); stroke-width: 2; opacity: 0.6; }
+
+/* —— Pins and labels —— */
+.layerIslands .nodePin { cursor: default; }
+.islandCircle.pinHead {
+  fill: var(--bg-card);
+  stroke: var(--road-edge);
+  stroke-width: 2;
+}
+.pinStem { fill: var(--bg-card); stroke: var(--road-edge); stroke-width: 1.5; }
+.pinInitials.pinLogo {
+  font-size: 20px;
+  font-weight: 800;
+  fill: var(--text);
+  pointer-events: none;
+}
+.islandLabel.islandLabelSmall {
+  font-size: 9px;
+  font-weight: 500;
+  fill: var(--text-muted);
+  pointer-events: none;
+}
+.nodeGp .pinHead { fill: #e8f4f8; stroke: #5a9fb8; }
+.nodeHospital .pinHead { fill: #fce8e8; stroke: #c45c5c; }
+.nodeSupport .pinHead { fill: #e8f5e9; stroke: #5a9e5a; }
+.nodePartner .pinHead { fill: #f3e5f5; stroke: #8e5a9e; }
+.nodeConsequence .pinHead { fill: #fff3e0; stroke: #c97a2d; }
+.nodeIntervention .pinHead { fill: #e3f2fd; stroke: #4285c4; }
+
+/* —— Journey overlay: red progress on road —— */
+.journeySeg {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.journeySegRed { stroke: #C41E3A; }
+.journeySegActive { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.journeySegActive.journeySegRed { stroke: #C41E3A; }
+.journeySegActive.deadEndReversal { stroke-dasharray: inherit; }
+
+/* —— Step markers (dot + number on current node) —— */
+.stepDot { fill: var(--journey-path); }
+.stepNum {
+  font-size: 14px;
+  font-weight: 700;
+  fill: var(--bg-card);
+  pointer-events: none;
+}
+.nodePulse {
+  fill: none;
+  stroke: var(--journey-path);
+  stroke-width: 3;
+  opacity: 0.5;
+  animation: nodePulseRing 1.2s ease-out infinite;
+}
+@keyframes nodePulseRing {
+  0%, 100% { r: 40; opacity: 0.35; }
+  50% { r: 55; opacity: 0; }
+}
+
+/* —— State-based layer visibility —— */
+[data-state="1"] .layerJourney,
+[data-state="1"] .layerStepMarkers,
+[data-state="1"] .layerEventMarkers { opacity: 0; pointer-events: none; }
+[data-state="2"] .layerRoads,
+[data-state="2"] .layerBreaks,
+[data-state="2"] .layerIslands { opacity: 0.76; }
+[data-state="2"] .layerJourney,
+[data-state="2"] .layerStepMarkers { opacity: 1; visibility: visible; }
+[data-state="3"] .layerRoads,
+[data-state="3"] .layerBreaks,
+[data-state="3"] .layerIslands { opacity: 0.62; }
+[data-state="4"] .layerRoads,
+[data-state="4"] .layerBreaks,
+[data-state="4"] .layerIslands { opacity: 0.82; }
+
+/* —— Story panel —— */
+.storyPanel {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 420px;
+  padding: 20px 24px;
+  background: var(--bg-card);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  z-index: 10;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.storyPanel[hidden] { display: none; }
+.storyPanel.show[hidden] { display: block; }
+.storyPanelInner { display: flex; flex-direction: column; gap: 14px; }
+.storyPanelStep { font-size: 12px; font-weight: 600; color: var(--journey-path); }
+.storyPanelTitle { font-size: 18px; font-weight: 700; line-height: 1.3; }
+.storyPanelDesc { font-size: 14px; color: var(--text-muted); line-height: 1.45; }
+.storyPanelCostBlock {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr;
+  gap: 8px 16px;
+  align-items: baseline;
+  font-size: 13px;
+}
+.storyPanelCostLabel { color: var(--text-muted); }
+.storyPanelCost,
+.storyPanelTotal { font-weight: 700; color: var(--journey-path); }
+
+/* —— Nav zones (left/right click to prev/next) —— */
+.navZone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 5;
+  cursor: pointer;
+}
+.navZone--left { left: 0; }
+.navZone--right { right: 0; }
+.navZone:hover { background: rgba(0,0,0,0.03); }
+
+/* —— Playback bar —— */
+.playbackBar {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 999px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+.playbackBtn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.06);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+.playbackBtn:hover { background: rgba(0,0,0,0.08); }
+.playbackBtn:active { transform: scale(0.96); }
+.playbackBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+.playbackBtn--play { background: rgba(242, 183, 5, 0.2); color: var(--journey-path); font-size: 20px; }
+.playbackBtn--play:hover { background: rgba(242, 183, 5, 0.3); }
+.playbackBtn--play.playing { background: rgba(242, 183, 5, 0.18); }
+.playbackReadout {
+  margin-left: 10px;
+  padding-left: 10px;
+  border-left: 1px solid rgba(0,0,0,0.08);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* —— Route caption (State 4) —— */
+.routeCaption {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 480px;
+  padding: 12px 20px;
+  background: var(--bg-card);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  z-index: 9;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.routeCaption[hidden] { display: none; }
+.routeCaptionTitle { font-weight: 600; font-size: 14px; }
+.routeCaptionDesc { font-size: 12px; color: var(--text-muted); }
+
+/* —— Event markers (crisis, etc.) —— */
+.eventMarker.crisisMarker .crisisFlare {
+  fill: none;
+  stroke: #C41E3A;
+  stroke-width: 2;
+  opacity: 0.7;
+}
+.eventLabel { font-size: 10px; font-weight: 600; fill: var(--text); }
+
+/* —— Continuity path (state 3) —— */
+.contGlow { fill: none; stroke: var(--journey-path-faint); stroke-width: 24; }
+.contPath { fill: none; stroke: var(--journey-path); stroke-width: 10; }
+
+/* —— Reduced motion —— */
+@media (prefers-reduced-motion: reduce) {
+  .storyPanel { transition: none; }
+  .footprint { animation: none; opacity: 0.8; }
+  .footprintMoving { opacity: 0.85; }
+  .nodePulse { animation: none; opacity: 0; }
+  .nodeGlow { animation: none; opacity: 0; }
+  .markerPulseRing { animation: none; opacity: 0; }
+  .crisisShockRing { animation: none; opacity: 0; }
+  .nodeMarkerGroup.markerSettled .markerPole { transition: none; }
+  .roundaboutChurn { transition: none; }
+  .journeySegActive.deadEndReversal { transition: none; }
+}

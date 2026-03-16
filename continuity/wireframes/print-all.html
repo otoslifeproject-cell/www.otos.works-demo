@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wireframes — Print to PDF</title>
+  <style>
+    body { margin: 0; padding: 0; background: #111; }
+    .page { page-break-after: always; page-break-inside: avoid; width: 100vw; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+    .page:last-child { page-break-after: auto; }
+    .page iframe { border: none; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    .page-label { position: absolute; top: 8px; left: 12px; font-family: -apple-system, sans-serif; font-size: 12px; color: #888; }
+    @media print {
+      #instructions, #spacer { display: none !important; }
+      body { background: #fff; }
+      .page { padding: 0; box-shadow: none; }
+      .page iframe { box-shadow: none; }
+      .page iframe[width="1440"] { width: 100%; max-width: 10in; height: auto; aspect-ratio: 1440/900; }
+      .page-label { color: #999; }
+    }
+  </style>
+</head>
+<body>
+  <div id="instructions" style="position:fixed;top:0;left:0;right:0;background:#0066CC;color:#fff;padding:12px 24px;font-family:-apple-system,sans-serif;font-size:14px;z-index:9999;text-align:center;">
+    <strong>To create PDFs:</strong> Open this page in Chrome, wait for all screens to load, then <strong>File → Print → Destination: Save as PDF</strong> → Save. (Hide this bar in print: it’s excluded automatically.)
+  </div>
+  <div id="spacer" style="height: 50px;"></div>
+  <div class="page">
+    <span class="page-label">1. Participant — Welcome</span>
+    <iframe src="mobile-onboarding-welcome.html" title="Welcome" width="417" height="956"></iframe>
+  </div>
+  <div class="page">
+    <span class="page-label">2. Participant — Consent</span>
+    <iframe src="mobile-onboarding-consent.html" title="Consent" width="417" height="956"></iframe>
+  </div>
+  <div class="page">
+    <span class="page-label">3. Participant — Anonymous ID</span>
+    <iframe src="mobile-onboarding-id.html" title="Anonymous ID" width="417" height="956"></iframe>
+  </div>
+  <div class="page">
+    <span class="page-label">4. Participant — First check-in</span>
+    <iframe src="mobile-onboarding-checkin.html" title="First check-in" width="417" height="956"></iframe>
+  </div>
+  <div class="page">
+    <span class="page-label">5. Participant — Next step</span>
+    <iframe src="mobile-onboarding-nextstep.html" title="Next step" width="417" height="956"></iframe>
+  </div>
+  <div class="page">
+    <span class="page-label">6. Participant — Done</span>
+    <iframe src="mobile-onboarding-done.html" title="Done" width="417" height="956"></iframe>
+  </div>
+  <div class="page">
+    <span class="page-label">7. Helen — Scan</span>
+    <iframe src="mobile-helen-scan.html" title="Scan" width="417" height="956"></iframe>
+  </div>
+  <div class="page">
+    <span class="page-label">8. Helen — Participant found</span>
+    <iframe src="mobile-helen-participant.html" title="Participant found" width="417" height="956"></iframe>
+  </div>
+  <div class="page">
+    <span class="page-label">9. Helen — Record touchpoint</span>
+    <iframe src="mobile-helen-record.html" title="Record touchpoint" width="417" height="956"></iframe>
+  </div>
+  <div class="page">
+    <span class="page-label">10. Helen — ADHD route</span>
+    <iframe src="mobile-helen-adhd-route.html" title="ADHD route" width="417" height="956"></iframe>
+  </div>
+  <div class="page">
+    <span class="page-label">11. Helen — Receipt</span>
+    <iframe src="mobile-helen-receipt.html" title="Receipt" width="417" height="956"></iframe>
+  </div>
+  <div class="page">
+    <span class="page-label">12. Coordinator dashboard</span>
+    <iframe src="desktop-coordinator-dashboard.html" title="Coordinator" width="1440" height="900"></iframe>
+  </div>
+  <div class="page">
+    <span class="page-label">13. Commissioner report</span>
+    <iframe src="desktop-commissioner-report.html" title="Commissioner" width="1440" height="900"></iframe>
+  </div>
+</body>
+</html>

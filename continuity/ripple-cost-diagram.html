@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ripple Cost Diagram — Scott Proposal | OTOS</title>
+  <link rel="stylesheet" href="ripple-cost-diagram.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="ripple-page">
+    <header class="ripple-hero">
+      <h1 class="ripple-title">The Ripple Cost of One Untreated ADHD + Addiction Case</h1>
+      <p class="ripple-subtitle">One case is not one cost. It is a stone dropped in water — every ring costs money that no single budget line ever captures.</p>
+    </header>
+
+    <section class="diagram-section" aria-labelledby="ripple-title-svg">
+      <div class="diagram-wrap">
+        <svg class="ripple-svg" viewBox="0 0 800 560" xmlns="http://www.w3.org/2000/svg" aria-labelledby="ripple-title-svg">
+          <title id="ripple-title-svg">Ripple cost diagram: concentric cost rings from one untreated ADHD and addiction case</title>
+
+          <defs>
+            <radialGradient id="stoneGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#0f172a"/>
+              <stop offset="0.7" stop-color="#1e293b"/>
+              <stop offset="1" stop-color="#334155"/>
+            </radialGradient>
+            <filter id="stoneShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.25"/>
+            </filter>
+          </defs>
+
+          <!-- Many rings: full circle, get thinner and lighter toward the outside -->
+          <g transform="translate(400, 280)">
+            <!-- Stone (centre) -->
+            <circle r="28" fill="url(#stoneGrad)" stroke="#0f172a" stroke-width="2" filter="url(#stoneShadow)"/>
+            <!-- Ripples: 16 rings, inner thicker/darker, outer thinner/lighter -->
+            <circle r="46" fill="none" stroke="#047857" stroke-width="2" stroke-opacity="0.42"/>
+            <circle r="62" fill="none" stroke="#047857" stroke-width="1.8" stroke-opacity="0.38"/>
+            <circle r="78" fill="none" stroke="#059669" stroke-width="1.6" stroke-opacity="0.34"/>
+            <circle r="93" fill="none" stroke="#059669" stroke-width="1.5" stroke-opacity="0.28"/>
+            <circle r="108" fill="none" stroke="#059669" stroke-width="1.4" stroke-opacity="0.24"/>
+            <circle r="122" fill="none" stroke="#0d9488" stroke-width="1.3" stroke-opacity="0.2"/>
+            <circle r="136" fill="none" stroke="#0d9488" stroke-width="1.2" stroke-opacity="0.17"/>
+            <circle r="149" fill="none" stroke="#0d9488" stroke-width="1.1" stroke-opacity="0.14"/>
+            <circle r="162" fill="none" stroke="#059669" stroke-width="1" stroke-opacity="0.12"/>
+            <circle r="174" fill="none" stroke="#059669" stroke-width="0.9" stroke-opacity="0.1"/>
+            <circle r="186" fill="none" stroke="#059669" stroke-width="0.9" stroke-opacity="0.08"/>
+            <circle r="198" fill="none" stroke="#059669" stroke-width="0.8" stroke-opacity="0.07"/>
+            <circle r="210" fill="none" stroke="#059669" stroke-width="0.8" stroke-opacity="0.06"/>
+            <circle r="222" fill="none" stroke="#059669" stroke-width="0.7" stroke-opacity="0.05"/>
+            <circle r="234" fill="none" stroke="#059669" stroke-width="0.7" stroke-opacity="0.04"/>
+            <circle r="246" fill="none" stroke="#059669" stroke-width="0.6" stroke-opacity="0.035"/>
+          </g>
+
+          <!-- Centre label only -->
+          <text x="400" y="272" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="Inter, sans-serif">1 PERSON</text>
+          <text x="400" y="285" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.9)" font-family="Inter, sans-serif">ADHD + Addiction</text>
+          <text x="400" y="298" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)" font-family="Inter, sans-serif">In crisis</text>
+
+          <!-- 877 callout -->
+          <g transform="translate(598, 56)">
+            <rect x="0" y="0" width="178" height="70" rx="10" fill="#f0fdf4" stroke="rgba(5,150,105,0.35)" stroke-width="1.5"/>
+            <text x="89" y="28" text-anchor="middle" font-size="28" font-weight="700" fill="#047857" font-family="Inter, sans-serif">877</text>
+            <text x="89" y="48" text-anchor="middle" font-size="11" font-weight="500" fill="#334155" font-family="Inter, sans-serif">people in CPFT region</text>
+            <text x="89" y="62" text-anchor="middle" font-size="10" fill="#64748b" font-family="Inter, sans-serif">ADHD + addiction (estimated)</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Legend: four cost layers, no cramming -->
+      <div class="ripple-legend">
+        <span class="ripple-legend__inner">Individual</span>
+        <span class="ripple-legend__sep" aria-hidden="true">→</span>
+        <span>Household</span>
+        <span class="ripple-legend__sep" aria-hidden="true">→</span>
+        <span>Community &amp; local system</span>
+        <span class="ripple-legend__sep" aria-hidden="true">→</span>
+        <span class="ripple-legend__outer">Economy</span>
+      </div>
+
+      <div class="ripple-cards">
+        <div class="ripple-card ripple-card--hero">
+          <div class="ripple-card__label">CPFT region · annual cost</div>
+          <div class="ripple-card__value">£3m–£6m</div>
+          <div class="ripple-card__meta">Direct costs only · ripple rings add more</div>
+        </div>
+        <div class="ripple-card">
+          <div class="ripple-card__label">Per high-risk individual</div>
+          <div class="ripple-card__value">£30k–£120k</div>
+          <div class="ripple-card__meta">Indicative annual system cost</div>
+        </div>
+        <div class="ripple-card">
+          <div class="ripple-card__label">ROI · integrated dual diagnosis</div>
+          <div class="ripple-card__value">£4.07 saved per £1</div>
+          <div class="ripple-card__meta">Turning Point / LSE</div>
+        </div>
+        <div class="ripple-card">
+          <div class="ripple-card__label">National · untreated ADHD</div>
+          <div class="ripple-card__value">~£17bn</div>
+          <div class="ripple-card__meta">NHS England ADHD Taskforce 2025</div>
+        </div>
+      </div>
+
+      <blockquote class="ripple-quote">
+        <p class="ripple-quote__text">The estimated cost to the UK economy of not treating ADHD is around £17 billion. Inaction is not an option for economic as well as ethical reasons.</p>
+        <footer class="ripple-quote__attr">— NHS England ADHD Taskforce, Part 2 (November 2025)</footer>
+      </blockquote>
+    </section>
+
+    <!-- Wave + Breakwater (Tsunami model) -->
+    <section class="wave-section" aria-labelledby="wave-title">
+      <h2 class="wave-section__title" id="wave-title">The surge — and where OTOS sits</h2>
+      <p class="wave-section__bridge">That surge is what drives each ripple. Stop it at the breakwater, and the rings never reach the outer cost layers.</p>
+      <p class="wave-section__subtitle">Unmanaged ADHD and addiction build like a wave. OTOS acts as a breakwater at the point of escalation, before the full cost hits every ring.</p>
+      <div class="wave-diagram-wrap">
+        <svg class="ripple-svg" viewBox="0 0 880 240" xmlns="http://www.w3.org/2000/svg" aria-label="Wave model: restriction to surge, OTOS breakwater">
+          <defs>
+            <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#fed7aa"/>
+              <stop offset="45%" stop-color="#fdba74"/>
+              <stop offset="100%" stop-color="#ea580c"/>
+            </linearGradient>
+            <linearGradient id="breakwaterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#2563eb"/>
+              <stop offset="100%" stop-color="#1e40af"/>
+            </linearGradient>
+          </defs>
+          <!-- Wave: builds left to right (crest rises), then breakwater -->
+          <path d="M 0 240 L 0 168 Q 220 128 420 98 T 600 78 L 600 240 Z" fill="url(#waveGrad)" opacity="0.94"/>
+          <path d="M 600 78 L 600 240 L 880 240 L 880 78 Q 740 60 600 78 Z" fill="url(#breakwaterGrad)"/>
+          <!-- Stage labels -->
+          <text x="120" y="218" text-anchor="middle" font-size="11" font-weight="600" fill="#78350f" font-family="Inter, sans-serif">RESTRICTION</text>
+          <text x="120" y="232" text-anchor="middle" font-size="9" fill="#64748b" font-family="Inter, sans-serif">Over-23 ADHD limits</text>
+          <text x="340" y="218" text-anchor="middle" font-size="11" font-weight="600" fill="#78350f" font-family="Inter, sans-serif">PRESSURE BUILDING</text>
+          <text x="340" y="232" text-anchor="middle" font-size="9" fill="#64748b" font-family="Inter, sans-serif">Unmanaged symptoms → maladaptive coping</text>
+          <text x="520" y="218" text-anchor="middle" font-size="11" font-weight="600" fill="#78350f" font-family="Inter, sans-serif">SURGE</text>
+          <text x="520" y="232" text-anchor="middle" font-size="9" fill="#64748b" font-family="Inter, sans-serif">Addiction → Crisis → A&amp;E → Relapse → Offending</text>
+          <text x="740" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="Inter, sans-serif">OTOS BREAKWATER</text>
+          <text x="740" y="136" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.95)" font-family="Inter, sans-serif">Daily continuity</text>
+          <text x="740" y="152" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.95)" font-family="Inter, sans-serif">ND pathways · Relapse interruption</text>
+          <text x="740" y="168" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.95)" font-family="Inter, sans-serif">Early warning · Community connection</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Before / After OTOS -->
+    <section class="before-after-section" aria-labelledby="before-after-title">
+      <h2 class="before-after-section__title" id="before-after-title">Impact: containing the ripple</h2>
+      <p class="before-after-section__desc">OTOS enters at Ring 0 — before the first ripple reaches the outer rings. The cost of the pilot is a rounding error on the cost of doing nothing.</p>
+      <div class="diagram-wrap diagram-wrap--split">
+        <svg class="ripple-svg" viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" aria-label="Before and after OTOS: full ripple vs dampened">
+          <defs>
+            <radialGradient id="r3B" cx="50%" cy="50%" r="50%"><stop offset="0.7" stop-color="#059669" stop-opacity="0.12"/><stop offset="1" stop-color="#059669" stop-opacity="0.03"/></radialGradient>
+            <radialGradient id="r0B" cx="50%" cy="50%" r="50%"><stop offset="0.75" stop-color="#047857" stop-opacity="0.2"/><stop offset="1" stop-color="#047857" stop-opacity="0.06"/></radialGradient>
+            <radialGradient id="stoneB" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#0f172a"/><stop offset="1" stop-color="#334155"/></radialGradient>
+          </defs>
+          <!-- Left: full ripple -->
+          <g transform="translate(180, 170)">
+            <circle r="125" fill="url(#r3B)" stroke="#059669" stroke-width="1" stroke-opacity="0.4"/>
+            <circle r="70" fill="url(#r0B)" stroke="#047857" stroke-width="1" stroke-opacity="0.5"/>
+            <circle r="26" fill="url(#stoneB)" stroke="#0f172a" stroke-width="2"/>
+          </g>
+          <text x="180" y="318" text-anchor="middle" font-size="12" font-weight="600" fill="#0f172a" font-family="Inter, sans-serif">Without OTOS</text>
+          <text x="180" y="332" text-anchor="middle" font-size="10" fill="#64748b" font-family="Inter, sans-serif">Ripple expands to all rings · full cost</text>
+          <!-- Right: dampened -->
+          <g transform="translate(540, 170)">
+            <circle r="26" fill="url(#stoneB)" stroke="#0f172a" stroke-width="2"/>
+            <circle r="70" fill="#059669" fill-opacity="0.06" stroke="#059669" stroke-width="1.5" stroke-opacity="0.5" stroke-dasharray="6 4"/>
+          </g>
+          <text x="540" y="318" text-anchor="middle" font-size="12" font-weight="600" fill="#0f172a" font-family="Inter, sans-serif">With OTOS at Ring 0</text>
+          <text x="540" y="332" text-anchor="middle" font-size="10" fill="#64748b" font-family="Inter, sans-serif">Ripple contained · cost avoided</text>
+        </svg>
+      </div>
+    </section>
+
+    <p class="disclaimer">Figures are indicative, based on published NHS England, Home Office, LSE and public-sector cost modelling sources. Methodology available on request. Individual costs vary. CPFT cohort estimate (877) based on OTOS internal analysis.</p>
+  </div>
+</body>
+</html>

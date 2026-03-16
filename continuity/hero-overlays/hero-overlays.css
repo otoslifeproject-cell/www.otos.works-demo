@@ -1,0 +1,360 @@
+/**
+ * OTOS Hero Image Overlays
+ * Glassmorphism stats card + logo, headline, sub-copy, CTA.
+ * Use with hero images generated from hero-image-briefs.md.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+/* —— Hero block: image + overlay stack —— */
+.hero-block {
+  position: relative;
+  overflow: hidden;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.hero-block__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-block__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 20px 0;
+  pointer-events: none;
+}
+
+.hero-block__overlay .hero-cta { pointer-events: auto; }
+
+/* —— Logo strip: centred top —— */
+.hero-logo-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.hero-logo-strip__brain {
+  height: 36px;
+  width: auto;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.hero-logo-strip__wordmark {
+  font-size: 22px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* —— Copy block: tight bottom band only — photo (faces) stay clear above —— */
+.hero-copy {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.35) 45%, transparent 100%);
+  margin: 0 -20px 0 -20px;
+  padding: 28px 20px 16px 20px;
+  max-height: 40%;
+}
+
+.hero-headline {
+  font-family: Inter, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.15rem, 2.8vw, 1.6rem);
+  line-height: 1.25;
+  color: #FFFFFF;
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  max-width: 90%;
+}
+
+.hero-sub {
+  font-family: Inter, sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  max-width: 90%;
+}
+
+/* Landscape: left-aligned copy */
+.hero-block--landscape .hero-copy { align-items: flex-start; }
+.hero-block--landscape .hero-headline,
+.hero-block--landscape .hero-sub { text-align: left; }
+
+/* Portrait: centred copy */
+.hero-block--portrait .hero-copy { align-items: center; }
+.hero-block--portrait .hero-headline,
+.hero-block--portrait .hero-sub { text-align: center; max-width: 92%; }
+
+/* —— CTA button —— */
+.hero-cta {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #0D3D3D;
+  color: #FFFFFF;
+  font-family: Inter, sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s, transform 0.1s;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.hero-block--portrait .hero-cta { align-self: center; }
+
+.hero-cta:hover {
+  background: #0a2f2f;
+  transform: translateY(-1px);
+}
+
+/* —— Glassmorphism stats card: smaller, more glass —— */
+.stats-overlay {
+  position: absolute;
+  background: rgba(0, 24, 48, 0.28);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: white;
+  font-family: Inter, sans-serif;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  min-width: 100px;
+  max-width: 140px;
+  pointer-events: none;
+}
+
+.stats-overlay .stat-block {
+  border-left: 2px solid rgba(255, 255, 255, 0.25);
+  padding-left: 8px;
+  margin-bottom: 6px;
+}
+
+.stats-overlay .stat-block:last-child { margin-bottom: 0; }
+
+.stats-overlay .stat-label {
+  font-size: 8px;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0;
+  line-height: 1.2;
+}
+
+.stats-overlay .stat-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 0;
+  line-height: 1.2;
+}
+
+.stats-overlay .stat-value.positive {
+  color: #4ADE80;
+}
+
+.stats-overlay .stat-value.alert {
+  color: #FCD34D;
+}
+
+/* Placement: landscape — right side, corner so people in frame stay clear */
+.hero-block--landscape .stats-overlay {
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hero-block--landscape .stats-overlay.stats-overlay--bottom {
+  top: auto;
+  bottom: 20px;
+  transform: none;
+}
+
+/* Placement: portrait — bottom centred (default) so face/subject stays clear */
+.hero-block--portrait .stats-overlay {
+  left: 50%;
+  right: auto;
+  bottom: 20px;
+  transform: translateX(-50%);
+}
+
+/* Portrait: right side, mid-height (e.g. Image 1 Bedside) */
+.hero-block--portrait .stats-overlay.stats-overlay--right-mid {
+  left: auto;
+  right: 20px;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+}
+
+.hero-block--portrait .stats-overlay.stats-overlay--bottom-right {
+  left: auto;
+  right: 20px;
+  bottom: 20px;
+  transform: none;
+}
+
+/* ========== SINGLE PAGE FULLSCREEN (singles/hero-*.html) ========== */
+.hero-single-page,
+.hero-single-page body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  overflow: hidden;
+}
+
+.hero-block--fullscreen {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-block--fullscreen .hero-block__img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.hero-block--fullscreen .hero-block__overlay {
+  padding: 20px 20px 0;
+  justify-content: space-between;
+}
+
+.hero-block--fullscreen .hero-copy {
+  max-height: 38%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, transparent 100%);
+  margin: 0 -20px 0 -20px;
+  padding: 24px 20px 20px;
+}
+
+.hero-block--fullscreen.hero-block--landscape .hero-headline {
+  font-size: 28px;
+  text-align: left;
+}
+
+.hero-block--fullscreen.hero-block--portrait .hero-headline {
+  font-size: 24px;
+  text-align: center;
+}
+
+.hero-block--fullscreen .hero-sub {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.hero-block--fullscreen.hero-block--landscape .hero-sub {
+  text-align: left;
+}
+
+.hero-block--fullscreen.hero-block--portrait .hero-sub {
+  text-align: center;
+}
+
+.hero-block--fullscreen .hero-cta {
+  padding: 10px 22px;
+  border: none;
+}
+
+/* Stats card: glassmorphism (single-page) */
+.hero-block--fullscreen .stats-overlay {
+  background: rgba(0, 20, 40, 0.30);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 10px 14px;
+  max-width: 150px;
+}
+
+.hero-block--fullscreen .stats-overlay .stat-label {
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.hero-block--fullscreen .stats-overlay .stat-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.hero-block--fullscreen .stats-overlay .stat-value.alert {
+  color: #F59E0B;
+}
+
+.hero-block--fullscreen .stats-overlay .stat-value.positive {
+  color: #34D399;
+}
+
+/* Stats placement — single pages only */
+.hero-block--fullscreen .stats-overlay--h1 {
+  right: 16px;
+  left: auto;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+}
+
+.hero-block--fullscreen .stats-overlay--h2 {
+  right: 16px;
+  left: auto;
+  top: auto;
+  bottom: 20%;
+  transform: none;
+}
+
+.hero-block--fullscreen .stats-overlay--h3 {
+  right: 20px;
+  left: auto;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+}
+
+.hero-block--fullscreen .stats-overlay--h5 {
+  right: 16px;
+  left: auto;
+  top: auto;
+  bottom: 22%;
+  transform: none;
+}
+
+.hero-block--fullscreen .stats-overlay--h6 {
+  right: 20px;
+  left: auto;
+  top: auto;
+  bottom: 80px;
+  transform: none;
+}
+
+.hero-block--fullscreen .stats-overlay--h7 {
+  right: 20px;
+  left: auto;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+}
