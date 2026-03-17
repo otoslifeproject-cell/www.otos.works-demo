@@ -140,13 +140,32 @@
       --heat: 0;
     }
 
+    .node .node-logo {
+      width: 64px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .node img {
-      max-width: 60px;
-      max-height: 40px;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
-      opacity: 0.5;
-      transition: opacity 300ms;
+      opacity: 0.55;
+      transition: opacity 300ms, transform 300ms;
       display: block;
+      transform: translateZ(0) scale(1.03);
+    }
+
+    .node .node-fallback {
+      font-family: Inter, sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      color: rgba(15, 23, 42, 0.62);
+      display: none;
+      user-select: none;
     }
 
     .node-unvisited {
@@ -162,6 +181,7 @@
 
     .node-active img {
       opacity: 1;
+      transform: translateZ(0) scale(1.05);
     }
 
     .node-visited {
@@ -533,64 +553,124 @@
       </svg>
 
       <div class="node" data-org="CPFT" data-node-index="0" style="left:8%; top:12%;">
-        <img src="/assets/partners/NHS_CPFT_Logo.png" alt="CPFT" />
+        <div class="node-logo">
+          <img src="/assets/partners/NHS_CPFT_Logo.png" alt="CPFT" />
+          <span class="node-fallback">CPFT</span>
+        </div>
       </div>
       <div class="node" data-org="Addenbrookes" data-node-index="1" style="left:22%; top:10%;">
-        <img src="/assets/partners/Addenbrookes_Logo.png" alt="Addenbrookes" />
+        <div class="node-logo">
+          <img src="/assets/partners/Addenbrookes_Logo.png" alt="Addenbrookes" />
+          <span class="node-fallback">AD</span>
+        </div>
       </div>
       <div class="node" data-org="Psymplicity" data-node-index="2" style="left:38%; top:8%;">
-        <img src="/assets/partners/Psymplicity_Logo.png" alt="Psymplicity" />
+        <div class="node-logo">
+          <img src="/assets/partners/Psymplicity_Logo.png" alt="Psymplicity" />
+          <span class="node-fallback">PS</span>
+        </div>
       </div>
       <div class="node" data-org="CGL" data-node-index="3" style="left:52%; top:12%;">
-        <img src="/assets/partners/CGL_Logo.png" alt="CGL" />
+        <div class="node-logo">
+          <img src="/assets/partners/CGL_Logo.png" alt="CGL" />
+          <span class="node-fallback">CGL</span>
+        </div>
       </div>
       <div class="node" data-org="Northampton" data-node-index="4" style="left:65%; top:10%;">
-        <img src="/assets/founders/Northampton_Logo.png" alt="Northampton" />
+        <div class="node-logo">
+          <img src="/assets/founders/Northampton_A&E_Logo.png" alt="Northampton" />
+          <span class="node-fallback">NO</span>
+        </div>
       </div>
       <div class="node" data-org="Nightingale" data-node-index="5" style="left:55%; top:25%;">
-        <img src="/assets/founders/Nightingale_Logo.png" alt="Nightingale" />
+        <div class="node-logo">
+          <img src="/assets/founders/Nightingale_Logo.png" alt="Nightingale" />
+          <span class="node-fallback">NI</span>
+        </div>
       </div>
       <div class="node" data-org="Help Me Stop" data-node-index="6" style="left:42%; top:28%;">
-        <img src="/assets/founders/Help_Me_Stop_Logo.png" alt="Help Me Stop" />
+        <div class="node-logo">
+          <img src="/assets/founders/Help_Me_Stop_Logo.png" alt="Help Me Stop" />
+          <span class="node-fallback">HM</span>
+        </div>
       </div>
       <div class="node" data-org="WorkWell" data-node-index="7" style="left:28%; top:30%;">
-        <img src="/assets/partners/WorkWell_Logo.png" alt="WorkWell" />
+        <div class="node-logo">
+          <img src="/assets/partners/WorkWell_Logo.png" alt="WorkWell" />
+          <span class="node-fallback">WW</span>
+        </div>
       </div>
       <div class="node" data-org="MIND" data-node-index="8" style="left:15%; top:35%;">
-        <img src="/assets/partners/MIND_Logo.png" alt="MIND" />
+        <div class="node-logo">
+          <img src="/assets/partners/MIND_Logo.png" alt="MIND" />
+          <span class="node-fallback">MI</span>
+        </div>
       </div>
       <div class="node" data-org="Jo Fenton" data-node-index="9" style="left:8%; top:48%;">
-        <img src="/assets/partners/Jo_Fenton_Logo.png" alt="Jo Fenton" />
+        <div class="node-logo">
+          <img src="/assets/partners/Jo_Fenton_Logo.png" alt="Jo Fenton" />
+          <span class="node-fallback">JF</span>
+        </div>
       </div>
       <div class="node" data-org="ADHD Team" data-node-index="10" style="left:18%; top:55%;">
-        <img src="/assets/partners/ADHD_Team_Logo.png" alt="ADHD Team" />
+        <div class="node-logo">
+          <img src="/assets/partners/ADHD_Team_Logo.png" alt="ADHD Team" />
+          <span class="node-fallback">AH</span>
+        </div>
       </div>
       <div class="node" data-org="CRS" data-node-index="11" style="left:32%; top:52%;">
-        <img src="/assets/partners/CRS_Logo.png" alt="CRS" />
+        <div class="node-logo">
+          <img src="/assets/partners/CRS_Logo.png" alt="CRS" />
+          <span class="node-fallback">CR</span>
+        </div>
       </div>
       <div class="node" data-org="Police" data-node-index="12" style="left:45%; top:50%;">
-        <img src="/assets/founders/Police_Logo.jpeg" alt="Police" />
+        <div class="node-logo">
+          <img src="/assets/founders/Police_Logo.jpeg" alt="Police" />
+          <span class="node-fallback">PO</span>
+        </div>
       </div>
       <div class="node" data-org="Courts" data-node-index="13" style="left:58%; top:48%;">
-        <img src="/assets/founders/HM_Courts_Logo.png" alt="Courts" />
+        <div class="node-logo">
+          <img src="/assets/founders/HM_Courts_Logo.png" alt="Courts" />
+          <span class="node-fallback">CO</span>
+        </div>
       </div>
       <div class="node" data-org="Probation" data-node-index="14" style="left:65%; top:58%;">
-        <img src="/assets/founders/Probation_Logo.png" alt="Probation" />
+        <div class="node-logo">
+          <img src="/assets/founders/Probation_Logo.png" alt="Probation" />
+          <span class="node-fallback">PR</span>
+        </div>
       </div>
       <div class="node" data-org="Castle Craig" data-node-index="15" style="left:52%; top:65%;">
-        <img src="/assets/founders/Castle_Craig_Logo.png" alt="Castle Craig" />
+        <div class="node-logo">
+          <img src="/assets/founders/Castle_Craig_Logo.png" alt="Castle Craig" />
+          <span class="node-fallback">CC</span>
+        </div>
       </div>
       <div class="node" data-org="SUN Network" data-node-index="16" style="left:38%; top:68%;">
-        <img src="/assets/partners/SUN_Network_Logo.png" alt="SUN Network" />
+        <div class="node-logo">
+          <img src="/assets/partners/The_Sun_Network_Logo.png" alt="SUN Network" />
+          <span class="node-fallback">SU</span>
+        </div>
       </div>
       <div class="node" data-org="GP (Cambridge)" data-node-index="17" style="left:22%; top:72%;">
-        <img src="/assets/partners/NHS_CPFT_Logo.png" alt="GP (Cambridge)" />
+        <div class="node-logo">
+          <img src="/assets/partners/Gillvray_Health_Logo.png" alt="GP (Cambridge)" />
+          <span class="node-fallback">GP</span>
+        </div>
       </div>
       <div class="node" data-org="Family" data-node-index="18" style="left:35%; top:80%;">
-        <img src="/assets/partners/NHS_CPFT_Logo.png" alt="Family" />
+        <div class="node-logo">
+          <img src="/assets/partners/NHS_CPFT_Logo.png" alt="Family" />
+          <span class="node-fallback">FM</span>
+        </div>
       </div>
       <div class="node" data-org="Self / Undiagnosed" data-node-index="19" style="left:50%; top:82%;">
-        <img src="/assets/partners/NHS_CPFT_Logo.png" alt="Self / Undiagnosed" />
+        <div class="node-logo">
+          <img src="/assets/partners/Keep_Your_Head_Logo.png" alt="Self / Undiagnosed" />
+          <span class="node-fallback">SELF</span>
+        </div>
       </div>
     </div>
   </main>
@@ -846,6 +926,23 @@
 
       function fmtGBP(n) {
         return n === 0 ? "£0" : "£" + Number(n).toLocaleString("en-GB");
+      }
+
+      function initLogoFallbacks() {
+        for (var i = 0; i < nodeEls.length; i++) {
+          var img = nodeEls[i].querySelector("img");
+          var fb = nodeEls[i].querySelector(".node-fallback");
+          if (!img || !fb) continue;
+
+          img.addEventListener("error", function (e) {
+            var target = e.currentTarget;
+            var wrap = target.closest(".node");
+            if (!wrap) return;
+            var fb2 = wrap.querySelector(".node-fallback");
+            target.style.display = "none";
+            if (fb2) fb2.style.display = "block";
+          });
+        }
       }
 
       function nodeCenterFromStyle(nodeEl) {
@@ -1191,6 +1288,7 @@
       });
 
       // Initial paint
+      initLogoFallbacks();
       goToStep(0);
     })();
   </script>
