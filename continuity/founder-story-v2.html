@@ -147,6 +147,44 @@
       overflow: hidden;
     }
 
+    .panel-fade {
+      opacity: 1;
+      transition: opacity 250ms ease;
+    }
+
+    .panel-fade.is-fading {
+      opacity: 0;
+    }
+
+    #storyOrg {
+      font-family: "Playfair Display", serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    body.post-diagnosis #storyOrg {
+      color: #ff8a00;
+    }
+
+    #storyTitle {
+      font-family: "Inter", sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: rgba(15, 23, 42, 0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+    }
+
+    #storyDesc {
+      font-family: "Inter", sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: rgba(15, 23, 42, 0.75);
+    }
+
     /* ZONE C — Cost panel (right side) */
     .zone-cost {
       position: fixed;
@@ -158,6 +196,58 @@
       border-left: 1px solid rgba(15, 23, 42, 0.08);
       padding: 32px 28px;
       overflow: hidden;
+    }
+
+    #costPhase {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-family: "Inter", sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(255, 138, 0, 0.14);
+      color: #ff8a00;
+      margin-bottom: 18px;
+    }
+
+    #costRunningLabel {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(15, 23, 42, 0.45);
+      margin-bottom: 4px;
+    }
+
+    #costRunningTotal {
+      font-family: "Playfair Display", serif;
+      font-size: 3rem;
+      font-weight: 600;
+      color: #0f172a;
+      letter-spacing: -0.04em;
+      margin-bottom: 18px;
+    }
+
+    #costStepTitle {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #0f172a;
+      margin: 24px 0 4px;
+    }
+
+    #costOrg {
+      font-size: 0.8rem;
+      color: #ff8a00;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    #costDesc {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: rgba(15, 23, 42, 0.72);
     }
 
     /* Navigation bar */
@@ -265,13 +355,13 @@
     </div>
   </main>
 
-  <aside class="zone-story" aria-label="Story panel">
+  <aside class="zone-story panel-fade" aria-label="Story panel" id="storyPanel">
     <div id="storyOrg"></div>
     <div id="storyTitle"></div>
     <div id="storyDesc"></div>
   </aside>
 
-  <aside class="zone-cost" aria-label="Cost panel">
+  <aside class="zone-cost panel-fade" aria-label="Cost panel" id="costPanel">
     <div id="costPhase"></div>
     <div id="costRunningLabel"></div>
     <div id="costRunningTotal"></div>
@@ -496,6 +586,7 @@
       var storyOrg = document.getElementById("storyOrg");
       var storyTitle = document.getElementById("storyTitle");
       var storyDesc = document.getElementById("storyDesc");
+      var storyPanel = document.getElementById("storyPanel");
 
       var costPhase = document.getElementById("costPhase");
       var costRunningLabel = document.getElementById("costRunningLabel");
@@ -503,6 +594,7 @@
       var costStepTitle = document.getElementById("costStepTitle");
       var costOrg = document.getElementById("costOrg");
       var costDesc = document.getElementById("costDesc");
+      var costPanel = document.getElementById("costPanel");
 
       var nodeEls = Array.prototype.slice.call(document.querySelectorAll(".node-map .node"));
       var lineEls = Array.prototype.slice.call(document.querySelectorAll("#lineLayer line"));
@@ -540,6 +632,22 @@
         if (phase === 2) return "Phase 2";
         if (phase === 3) return "Phase 3";
         return "Phase 4";
+      }
+
+      function crossfadePanels(update) {
+        if (!storyPanel || !costPanel) {
+          update();
+          return;
+        }
+        storyPanel.classList.add("is-fading");
+        costPanel.classList.add("is-fading");
+        window.setTimeout(function () {
+          update();
+          requestAnimationFrame(function () {
+            storyPanel.classList.remove("is-fading");
+            costPanel.classList.remove("is-fading");
+          });
+        }, 1);
       }
 
       function goToStep(n) {
@@ -589,23 +697,25 @@
         // Update lines
         updateLineStates(n);
 
-        // Update panels
-        var step = STEPS[n];
-        storyOrg.textContent = NODE_ORG_MAP[nodeIndex] || step.org;
-        storyTitle.textContent = step.title;
-        storyDesc.textContent = step.description;
+        crossfadePanels(function () {
+          // Update panels
+          var step = STEPS[n];
+          storyOrg.textContent = NODE_ORG_MAP[nodeIndex] || step.org;
+          storyTitle.textContent = step.title;
+          storyDesc.textContent = step.description;
 
-        costPhase.textContent = phaseLabel(step.phase);
-        costRunningLabel.textContent = "Running total";
-        costRunningTotal.textContent = fmtGBP(state.runningCost);
-        costStepTitle.textContent = step.title;
-        costOrg.textContent = step.org;
-        costDesc.textContent = step.description;
+          costPhase.textContent = phaseLabel(step.phase);
+          costRunningLabel.textContent = "Running total (known costs)";
+          costRunningTotal.textContent = fmtGBP(state.runningCost);
+          costStepTitle.textContent = step.title;
+          costOrg.textContent = step.org;
+          costDesc.textContent = step.description;
 
-        // Step counter and buttons
-        stepCounter.textContent = "Step " + (n + 1) + " / 72";
-        btnBack.disabled = n === 0;
-        btnNext.disabled = n === 71;
+          // Step counter and buttons
+          stepCounter.textContent = "Step " + (n + 1) + " / 72";
+          btnBack.disabled = n === 0;
+          btnNext.disabled = n === 71;
+        });
       }
 
       btnNext.addEventListener("click", function () {
