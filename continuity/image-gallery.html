@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTOS — Image Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      color: #fff;
+      font-family: Inter, sans-serif;
+    }
+    .page-header {
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .page-header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .gallery {
+      padding: 0 0 48px;
+    }
+    .card-wrap {
+      margin-bottom: 32px;
+    }
+    .card-filename {
+      font-size: 0.8rem;
+      color: #5eead4;
+      padding: 0 20px 8px;
+      margin: 0;
+    }
+    .card {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      overflow: hidden;
+    }
+    .card img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .card .gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(15,23,42,0.1), rgba(15,23,42,0.72));
+      pointer-events: none;
+    }
+    .card .glass {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      max-width: 520px;
+      background: rgba(15,23,42,0.5);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .card .glass h2 {
+      margin: 0 0 8px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: #fff;
+    }
+    .card .glass p {
+      margin: 0 0 12px;
+      font-size: 0.9rem;
+      font-weight: 400;
+      line-height: 1.4;
+      color: rgba(255,255,255,0.9);
+    }
+    .card .glass p:last-of-type {
+      margin-bottom: 0;
+    }
+    .card-cta {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 20px;
+      background: #0D3D3D;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 999px;
+      border: none;
+      transition: background 0.2s;
+    }
+    .card-cta:hover {
+      background: #0a2f2f;
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>OTOS — Image Gallery. Pick one per page.</h1>
+  </header>
+
+  <div class="gallery">
+    <div class="card-wrap">
+      <p class="card-filename">Waiting for consultation in corridor.png</p>
+      <div class="card">
+        <img src="images/Waiting for consultation in the corridor.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>This is where people are lost.</h2>
+          <p>Between appointments. Between services. In the silence after discharge. OTOS sees it.</p>
+          <a href="how-it-works.html" class="card-cta">See How OTOS Works</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <p class="card-filename">NHS A&E waiting room buzz.png</p>
+      <div class="card">
+        <img src="images/NHS A&E waiting room buzz.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>463 people waiting. How many will fall through the gap after this?</h2>
+          <p>OTOS gives A&E, CGL and CPFT a shared thread — so discharge is never the end of the story.</p>
+          <a href="guided-demos.html" class="card-cta">Start with A&E</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <p class="card-filename">NHS team making progress.png</p>
+      <div class="card">
+        <img src="images/NHS team meeting in progress.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>World-class services. No shared journey. Until now.</h2>
+          <p>Cambridge has everything it needs. OTOS is the connective tissue that joins it.</p>
+          <a href="how-it-works.html" class="card-cta">View System Overview</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <p class="card-filename">Morning reflections in a cozy room.png</p>
+      <div class="card">
+        <img src="images/Morning reflections in a cozy room.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>OTOS fills the space you cannot see.</h2>
+          <p>Quietly. Anonymously. Without changing anything you already do.</p>
+          <a href="how-it-works.html" class="card-cta">See How OTOS Works</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <p class="card-filename">Morning coffee and a smile.png</p>
+      <div class="card">
+        <img src="images/Morning coffee and a smile.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>This is what staying connected feels like.</h2>
+          <p>A daily check-in. A small signal. The system quietly noting: still here, still stable.</p>
+          <a href="guided-demos.html" class="card-cta">Start Guided Tour</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <p class="card-filename">Meaningful conversation in a cosy café.png</p>
+      <div class="card">
+        <img src="images/Meaningful conversation in a cosy café.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>Built for keyworkers. Engineered around real journeys.</h2>
+          <p>No new system. No extra forms. Just clarity about what happened next.</p>
+          <a href="guided-demos.html" class="card-cta">Keyworker View</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <p class="card-filename">Man checking phone outside community centre.png</p>
+      <div class="card">
+        <img src="images/Man checking phone outside community centre.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>One tap. The whole system knows.</h2>
+          <p>Frontline staff log a touchpoint in seconds. The system does the rest.</p>
+          <a href="guided-demos.html" class="card-cta">Start with A&E</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <p class="card-filename">Hesitant arrival at the community centre.png</p>
+      <div class="card">
+        <img src="images/Hesitant arrival at the community centre.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>The hardest step is the door. OTOS holds what comes after.</h2>
+          <p>Re-engagement after silence. OTOS turns a missed contact into a safe route back.</p>
+          <a href="how-it-works.html" class="card-cta">See How OTOS Works</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <p class="card-filename">Morning light and morning routine.png</p>
+      <div class="card">
+        <img src="images/Morning light and morning routine.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>Every morning is a data point.</h2>
+          <p>Anonymous. Encrypted. A quiet signal that someone is still on their journey.</p>
+          <a href="guided-demos.html" class="card-cta">Start Guided Tour</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <p class="card-filename">Man enjoying sunlight in the park.png</p>
+      <div class="card">
+        <img src="images/Man enjoying sunlight in the park.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>This is what stability looks like.</h2>
+          <p>Calm. Present. Connected. OTOS holds the pathway so this moment can last.</p>
+          <a href="how-it-works.html" class="card-cta">How It Works</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <p class="card-filename">hero-7-dean.png</p>
+      <div class="card">
+        <img src="images/hero-7-dean.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>I am the problem. I built the solution.</h2>
+          <p>Two ICU admissions. Seizures. Probation. Rehab. Cost, carnage and chaos. Undiagnosed ADHD driving it all.</p>
+          <a href="founder-story.html" class="card-cta">Read Dean's Story</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <p class="card-filename">Golden hour in Cambridge.png</p>
+      <div class="card">
+        <img src="images/Golden hour in Cambridge.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>The silent layer that connects every service.</h2>
+          <p>OTOS syncs CPFT, CGL, CRS, SUN, Primary Care and A&E into one encrypted continuity journey.</p>
+          <a href="how-it-works.html" class="card-cta">View System Overview</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <p class="card-filename">Contemplative moment in the park.png</p>
+      <div class="card">
+        <img src="images/Contemplative moment in the park.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>Six years in the system. Three days to change everything.</h2>
+          <p>The correct diagnosis and medication was the key. OTOS makes sure no one waits that long again.</p>
+          <a href="guided-demos.html" class="card-cta">Start Guided Tour</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <p class="card-filename">Contemplating the morning brew.png</p>
+      <div class="card">
+        <img src="images/Contemplating the morning brew.png" alt="">
+        <div class="gradient"></div>
+        <div class="glass">
+          <h2>Care happens in moments.</h2>
+          <p>Continuity happens in the days between. OTOS quietly fills that space.</p>
+          <a href="guided-demos.html" class="card-cta">Start Guided Tour</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

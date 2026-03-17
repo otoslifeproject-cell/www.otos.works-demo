@@ -18,67 +18,134 @@
 
     <section class="diagram-section" aria-labelledby="ripple-title-svg">
       <div class="diagram-wrap">
-        <svg class="ripple-svg" viewBox="0 0 800 560" xmlns="http://www.w3.org/2000/svg" aria-labelledby="ripple-title-svg">
+        <svg class="ripple-svg ripple-svg--main" viewBox="0 0 1100 820" xmlns="http://www.w3.org/2000/svg" aria-labelledby="ripple-title-svg">
           <title id="ripple-title-svg">Ripple cost diagram: concentric cost rings from one untreated ADHD and addiction case</title>
 
           <defs>
-            <radialGradient id="stoneGrad" cx="50%" cy="50%" r="50%">
-              <stop offset="0" stop-color="#0f172a"/>
-              <stop offset="0.7" stop-color="#1e293b"/>
-              <stop offset="1" stop-color="#334155"/>
+            <!-- Water base: still surface, slight depth at edges -->
+            <radialGradient id="waterBase" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#f0fdfa"/>
+              <stop offset="70%" stop-color="#ccfbf1"/>
+              <stop offset="95%" stop-color="#99f6e4"/>
+              <stop offset="100%" stop-color="#5eead4"/>
             </radialGradient>
-            <filter id="stoneShadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.25"/>
+            <!-- Light reflection: top-left highlight (photographic) -->
+            <radialGradient id="waterShine" cx="35%" cy="35%" r="60%">
+              <stop offset="0%" stop-color="#fff" stop-opacity="0.18"/>
+              <stop offset="50%" stop-color="#fff" stop-opacity="0.06"/>
+              <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="ring3Grad" cx="50%" cy="50%" r="50%">
+              <stop offset="0.72" stop-color="#059669" stop-opacity="0"/>
+              <stop offset="0.85" stop-color="#059669" stop-opacity="0.08"/>
+              <stop offset="1" stop-color="#059669" stop-opacity="0.03"/>
+            </radialGradient>
+            <radialGradient id="ring2Grad" cx="50%" cy="50%" r="50%">
+              <stop offset="0.68" stop-color="#0d9488" stop-opacity="0"/>
+              <stop offset="0.82" stop-color="#0d9488" stop-opacity="0.1"/>
+              <stop offset="1" stop-color="#0d9488" stop-opacity="0.04"/>
+            </radialGradient>
+            <radialGradient id="ring1Grad" cx="50%" cy="50%" r="50%">
+              <stop offset="0.58" stop-color="#059669" stop-opacity="0"/>
+              <stop offset="0.78" stop-color="#059669" stop-opacity="0.14"/>
+              <stop offset="1" stop-color="#059669" stop-opacity="0.05"/>
+            </radialGradient>
+            <radialGradient id="ring0Grad" cx="50%" cy="50%" r="50%">
+              <stop offset="0.48" stop-color="#047857" stop-opacity="0"/>
+              <stop offset="0.72" stop-color="#047857" stop-opacity="0.22"/>
+              <stop offset="1" stop-color="#047857" stop-opacity="0.08"/>
+            </radialGradient>
+            <radialGradient id="stoneGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#1e293b"/>
+              <stop offset="40%" stop-color="#0f172a"/>
+              <stop offset="100%" stop-color="#334155"/>
+            </radialGradient>
+            <filter id="stoneShadow" x="-40%" y="-40%" width="180%" height="180%">
+              <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.35"/>
+            </filter>
+            <filter id="cardShadow" x="-20%" y="-10%" width="140%" height="130%">
+              <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.12"/>
+            </filter>
+            <filter id="ringSoft" x="-5%" y="-5%" width="110%" height="110%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="0.4"/>
             </filter>
           </defs>
 
-          <!-- Many rings: full circle, get thinner and lighter toward the outside -->
-          <g transform="translate(400, 280)">
-            <!-- Stone (centre) -->
-            <circle r="28" fill="url(#stoneGrad)" stroke="#0f172a" stroke-width="2" filter="url(#stoneShadow)"/>
-            <!-- Ripples: 16 rings, inner thicker/darker, outer thinner/lighter -->
-            <circle r="46" fill="none" stroke="#047857" stroke-width="2" stroke-opacity="0.42"/>
-            <circle r="62" fill="none" stroke="#047857" stroke-width="1.8" stroke-opacity="0.38"/>
-            <circle r="78" fill="none" stroke="#059669" stroke-width="1.6" stroke-opacity="0.34"/>
-            <circle r="93" fill="none" stroke="#059669" stroke-width="1.5" stroke-opacity="0.28"/>
-            <circle r="108" fill="none" stroke="#059669" stroke-width="1.4" stroke-opacity="0.24"/>
-            <circle r="122" fill="none" stroke="#0d9488" stroke-width="1.3" stroke-opacity="0.2"/>
-            <circle r="136" fill="none" stroke="#0d9488" stroke-width="1.2" stroke-opacity="0.17"/>
-            <circle r="149" fill="none" stroke="#0d9488" stroke-width="1.1" stroke-opacity="0.14"/>
-            <circle r="162" fill="none" stroke="#059669" stroke-width="1" stroke-opacity="0.12"/>
-            <circle r="174" fill="none" stroke="#059669" stroke-width="0.9" stroke-opacity="0.1"/>
-            <circle r="186" fill="none" stroke="#059669" stroke-width="0.9" stroke-opacity="0.08"/>
-            <circle r="198" fill="none" stroke="#059669" stroke-width="0.8" stroke-opacity="0.07"/>
-            <circle r="210" fill="none" stroke="#059669" stroke-width="0.8" stroke-opacity="0.06"/>
-            <circle r="222" fill="none" stroke="#059669" stroke-width="0.7" stroke-opacity="0.05"/>
-            <circle r="234" fill="none" stroke="#059669" stroke-width="0.7" stroke-opacity="0.04"/>
-            <circle r="246" fill="none" stroke="#059669" stroke-width="0.6" stroke-opacity="0.035"/>
+          <!-- Layer 1: Water base (still surface) -->
+          <g transform="translate(520, 400)">
+            <circle r="348" fill="url(#waterBase)"/>
+            <!-- Layer 2: Light reflection overlay -->
+            <circle r="348" fill="url(#waterShine)" opacity="0.9"/>
+            <!-- Layer 3: Fine ripple lines (photographic detail) -->
+            <g opacity="0.85">
+              <circle r="52" fill="none" stroke="#0d9488" stroke-width="0.6" stroke-opacity="0.2"/>
+              <circle r="68" fill="none" stroke="#0d9488" stroke-width="0.55" stroke-opacity="0.18"/>
+              <circle r="84" fill="none" stroke="#059669" stroke-width="0.5" stroke-opacity="0.16"/>
+              <circle r="100" fill="none" stroke="#059669" stroke-width="0.5" stroke-opacity="0.14"/>
+              <circle r="116" fill="none" stroke="#059669" stroke-width="0.45" stroke-opacity="0.12"/>
+              <circle r="132" fill="none" stroke="#0d9488" stroke-width="0.45" stroke-opacity="0.11"/>
+              <circle r="148" fill="none" stroke="#0d9488" stroke-width="0.4" stroke-opacity="0.1"/>
+              <circle r="164" fill="none" stroke="#059669" stroke-width="0.4" stroke-opacity="0.09"/>
+              <circle r="180" fill="none" stroke="#059669" stroke-width="0.35" stroke-opacity="0.08"/>
+              <circle r="196" fill="none" stroke="#0d9488" stroke-width="0.35" stroke-opacity="0.07"/>
+              <circle r="212" fill="none" stroke="#059669" stroke-width="0.35" stroke-opacity="0.06"/>
+              <circle r="228" fill="none" stroke="#059669" stroke-width="0.3" stroke-opacity="0.055"/>
+              <circle r="244" fill="none" stroke="#0d9488" stroke-width="0.3" stroke-opacity="0.05"/>
+              <circle r="260" fill="none" stroke="#059669" stroke-width="0.3" stroke-opacity="0.045"/>
+              <circle r="276" fill="none" stroke="#059669" stroke-width="0.25" stroke-opacity="0.04"/>
+              <circle r="292" fill="none" stroke="#0d9488" stroke-width="0.25" stroke-opacity="0.035"/>
+              <circle r="308" fill="none" stroke="#059669" stroke-width="0.25" stroke-opacity="0.03"/>
+              <circle r="324" fill="none" stroke="#059669" stroke-width="0.2" stroke-opacity="0.025"/>
+              <circle r="340" fill="none" stroke="#0d9488" stroke-width="0.2" stroke-opacity="0.02"/>
+            </g>
+            <!-- Layer 4: Semantic bands (main cost rings) -->
+            <circle r="340" fill="url(#ring3Grad)" stroke="#059669" stroke-width="1.8" stroke-opacity="0.4"/>
+            <circle r="245" fill="url(#ring2Grad)" stroke="#0d9488" stroke-width="1.8" stroke-opacity="0.45"/>
+            <circle r="158" fill="url(#ring1Grad)" stroke="#059669" stroke-width="1.8" stroke-opacity="0.5"/>
+            <circle r="88" fill="url(#ring0Grad)" stroke="#047857" stroke-width="2.2" stroke-opacity="0.55"/>
+            <!-- Layer 5: Stone (drop) with shadow + highlight -->
+            <circle r="42" fill="url(#stoneGrad)" stroke="#0f172a" stroke-width="2.5" filter="url(#stoneShadow)"/>
+            <ellipse cx="-8" cy="-10" rx="14" ry="10" fill="#fff" fill-opacity="0.22"/>
           </g>
 
-          <!-- Centre label only -->
-          <text x="400" y="272" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="Inter, sans-serif">1 PERSON</text>
-          <text x="400" y="285" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.9)" font-family="Inter, sans-serif">ADHD + Addiction</text>
-          <text x="400" y="298" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)" font-family="Inter, sans-serif">In crisis</text>
+          <text x="520" y="392" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" font-family="Inter, sans-serif">1 PERSON</text>
+          <text x="520" y="410" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.92)" font-family="Inter, sans-serif">ADHD + Addiction</text>
+          <text x="520" y="428" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.85)" font-family="Inter, sans-serif">In crisis</text>
 
-          <!-- 877 callout -->
-          <g transform="translate(598, 56)">
-            <rect x="0" y="0" width="178" height="70" rx="10" fill="#f0fdf4" stroke="rgba(5,150,105,0.35)" stroke-width="1.5"/>
-            <text x="89" y="28" text-anchor="middle" font-size="28" font-weight="700" fill="#047857" font-family="Inter, sans-serif">877</text>
-            <text x="89" y="48" text-anchor="middle" font-size="11" font-weight="500" fill="#334155" font-family="Inter, sans-serif">people in CPFT region</text>
-            <text x="89" y="62" text-anchor="middle" font-size="10" fill="#64748b" font-family="Inter, sans-serif">ADHD + addiction (estimated)</text>
+          <text x="520" y="268" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a" font-family="Inter, sans-serif">Ring 3 — The Economy</text>
+          <text x="520" y="288" text-anchor="middle" font-size="12" fill="#64748b" font-family="Inter, sans-serif">~£17bn untreated ADHD · Lost tax · ESA/PIP · Employer costs</text>
+
+          <text x="520" y="498" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a" font-family="Inter, sans-serif">Ring 0 — The Individual</text>
+          <text x="520" y="518" text-anchor="middle" font-size="13" font-weight="600" fill="#059669" font-family="Inter, sans-serif">£30,000–£120,000 per year (high-risk)</text>
+          <text x="520" y="538" text-anchor="middle" font-size="12" fill="#64748b" font-family="Inter, sans-serif">A&amp;E · Ambulance · Police · Crisis MH · Detox · Missed appointments</text>
+
+          <text x="520" y="598" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a" font-family="Inter, sans-serif">Ring 1 — Household &amp; Close Network</text>
+          <text x="520" y="618" text-anchor="middle" font-size="12" fill="#64748b" font-family="Inter, sans-serif">4–10 people destabilised · Sick leave · Safeguarding · Carer stress · GP/MH referrals</text>
+
+          <text x="520" y="678" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a" font-family="Inter, sans-serif">Ring 2 — Community &amp; Local System</text>
+          <text x="520" y="698" text-anchor="middle" font-size="12" fill="#64748b" font-family="Inter, sans-serif">Housing · Justice · NHS overload · Evictions £8k–£30k · Custody £4k–£15k</text>
+
+          <g transform="translate(758, 88)" filter="url(#cardShadow)">
+            <rect x="0" y="0" width="220" height="88" rx="14" fill="#f0fdf4" stroke="rgba(5,150,105,0.5)" stroke-width="2"/>
+            <text x="110" y="36" text-anchor="middle" font-size="36" font-weight="700" fill="#047857" font-family="Inter, sans-serif">877</text>
+            <text x="110" y="60" text-anchor="middle" font-size="14" font-weight="500" fill="#334155" font-family="Inter, sans-serif">people in CPFT region</text>
+            <text x="110" y="78" text-anchor="middle" font-size="12" fill="#64748b" font-family="Inter, sans-serif">ADHD + addiction (estimated)</text>
+          </g>
+
+          <g transform="translate(52, 320)" filter="url(#cardShadow)">
+            <rect x="0" y="0" width="200" height="72" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+            <text x="100" y="24" text-anchor="middle" font-size="13" font-weight="600" fill="#0f172a" font-family="Inter, sans-serif">CPFT indicative cost</text>
+            <text x="100" y="48" text-anchor="middle" font-size="18" font-weight="700" fill="#059669" font-family="Inter, sans-serif">£3m–£6m per year</text>
+            <text x="100" y="66" text-anchor="middle" font-size="11" fill="#64748b" font-family="Inter, sans-serif">(direct costs only)</text>
+          </g>
+
+          <g transform="translate(52, 520)" filter="url(#cardShadow)">
+            <rect x="0" y="0" width="200" height="68" rx="12" fill="#ecfdf5" stroke="rgba(5,150,105,0.5)" stroke-width="2"/>
+            <text x="100" y="22" text-anchor="middle" font-size="11" font-weight="600" fill="#64748b" font-family="Inter, sans-serif">Integrated dual diagnosis</text>
+            <text x="100" y="42" text-anchor="middle" font-size="16" font-weight="700" fill="#059669" font-family="Inter, sans-serif">£4.07 saved per £1 spent</text>
+            <text x="100" y="60" text-anchor="middle" font-size="11" fill="#64748b" font-family="Inter, sans-serif">Turning Point / LSE</text>
           </g>
         </svg>
-      </div>
-
-      <!-- Legend: four cost layers, no cramming -->
-      <div class="ripple-legend">
-        <span class="ripple-legend__inner">Individual</span>
-        <span class="ripple-legend__sep" aria-hidden="true">→</span>
-        <span>Household</span>
-        <span class="ripple-legend__sep" aria-hidden="true">→</span>
-        <span>Community &amp; local system</span>
-        <span class="ripple-legend__sep" aria-hidden="true">→</span>
-        <span class="ripple-legend__outer">Economy</span>
       </div>
 
       <div class="ripple-cards">
@@ -110,13 +177,12 @@
       </blockquote>
     </section>
 
-    <!-- Wave + Breakwater (Tsunami model) -->
     <section class="wave-section" aria-labelledby="wave-title">
       <h2 class="wave-section__title" id="wave-title">The surge — and where OTOS sits</h2>
       <p class="wave-section__bridge">That surge is what drives each ripple. Stop it at the breakwater, and the rings never reach the outer cost layers.</p>
       <p class="wave-section__subtitle">Unmanaged ADHD and addiction build like a wave. OTOS acts as a breakwater at the point of escalation, before the full cost hits every ring.</p>
       <div class="wave-diagram-wrap">
-        <svg class="ripple-svg" viewBox="0 0 880 240" xmlns="http://www.w3.org/2000/svg" aria-label="Wave model: restriction to surge, OTOS breakwater">
+        <svg class="ripple-svg" viewBox="0 0 960 280" xmlns="http://www.w3.org/2000/svg" aria-label="Wave model: restriction to surge, OTOS breakwater">
           <defs>
             <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stop-color="#fed7aa"/>
@@ -128,50 +194,45 @@
               <stop offset="100%" stop-color="#1e40af"/>
             </linearGradient>
           </defs>
-          <!-- Wave: builds left to right (crest rises), then breakwater -->
-          <path d="M 0 240 L 0 168 Q 220 128 420 98 T 600 78 L 600 240 Z" fill="url(#waveGrad)" opacity="0.94"/>
-          <path d="M 600 78 L 600 240 L 880 240 L 880 78 Q 740 60 600 78 Z" fill="url(#breakwaterGrad)"/>
-          <!-- Stage labels -->
-          <text x="120" y="218" text-anchor="middle" font-size="11" font-weight="600" fill="#78350f" font-family="Inter, sans-serif">RESTRICTION</text>
-          <text x="120" y="232" text-anchor="middle" font-size="9" fill="#64748b" font-family="Inter, sans-serif">Over-23 ADHD limits</text>
-          <text x="340" y="218" text-anchor="middle" font-size="11" font-weight="600" fill="#78350f" font-family="Inter, sans-serif">PRESSURE BUILDING</text>
-          <text x="340" y="232" text-anchor="middle" font-size="9" fill="#64748b" font-family="Inter, sans-serif">Unmanaged symptoms → maladaptive coping</text>
-          <text x="520" y="218" text-anchor="middle" font-size="11" font-weight="600" fill="#78350f" font-family="Inter, sans-serif">SURGE</text>
-          <text x="520" y="232" text-anchor="middle" font-size="9" fill="#64748b" font-family="Inter, sans-serif">Addiction → Crisis → A&amp;E → Relapse → Offending</text>
-          <text x="740" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="Inter, sans-serif">OTOS BREAKWATER</text>
-          <text x="740" y="136" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.95)" font-family="Inter, sans-serif">Daily continuity</text>
-          <text x="740" y="152" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.95)" font-family="Inter, sans-serif">ND pathways · Relapse interruption</text>
-          <text x="740" y="168" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.95)" font-family="Inter, sans-serif">Early warning · Community connection</text>
+          <path d="M 0 280 L 0 195 Q 240 148 460 112 T 660 88 L 660 280 Z" fill="url(#waveGrad)" opacity="0.94"/>
+          <path d="M 660 88 L 660 280 L 960 280 L 960 88 Q 810 68 660 88 Z" fill="url(#breakwaterGrad)"/>
+          <text x="130" y="252" text-anchor="middle" font-size="14" font-weight="600" fill="#78350f" font-family="Inter, sans-serif">RESTRICTION</text>
+          <text x="130" y="268" text-anchor="middle" font-size="11" fill="#64748b" font-family="Inter, sans-serif">Over-23 ADHD limits</text>
+          <text x="370" y="252" text-anchor="middle" font-size="14" font-weight="600" fill="#78350f" font-family="Inter, sans-serif">PRESSURE BUILDING</text>
+          <text x="370" y="268" text-anchor="middle" font-size="11" fill="#64748b" font-family="Inter, sans-serif">Unmanaged symptoms → maladaptive coping</text>
+          <text x="570" y="252" text-anchor="middle" font-size="14" font-weight="600" fill="#78350f" font-family="Inter, sans-serif">SURGE</text>
+          <text x="570" y="268" text-anchor="middle" font-size="11" fill="#64748b" font-family="Inter, sans-serif">Addiction → Crisis → A&amp;E → Relapse → Offending</text>
+          <text x="810" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#fff" font-family="Inter, sans-serif">OTOS BREAKWATER</text>
+          <text x="810" y="156" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.95)" font-family="Inter, sans-serif">Daily continuity</text>
+          <text x="810" y="176" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.95)" font-family="Inter, sans-serif">ND pathways · Relapse interruption</text>
+          <text x="810" y="196" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.95)" font-family="Inter, sans-serif">Early warning · Community connection</text>
         </svg>
       </div>
     </section>
 
-    <!-- Before / After OTOS -->
     <section class="before-after-section" aria-labelledby="before-after-title">
       <h2 class="before-after-section__title" id="before-after-title">Impact: containing the ripple</h2>
       <p class="before-after-section__desc">OTOS enters at Ring 0 — before the first ripple reaches the outer rings. The cost of the pilot is a rounding error on the cost of doing nothing.</p>
       <div class="diagram-wrap diagram-wrap--split">
-        <svg class="ripple-svg" viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" aria-label="Before and after OTOS: full ripple vs dampened">
+        <svg class="ripple-svg" viewBox="0 0 800 380" xmlns="http://www.w3.org/2000/svg" aria-label="Before and after OTOS: full ripple vs dampened">
           <defs>
             <radialGradient id="r3B" cx="50%" cy="50%" r="50%"><stop offset="0.7" stop-color="#059669" stop-opacity="0.12"/><stop offset="1" stop-color="#059669" stop-opacity="0.03"/></radialGradient>
             <radialGradient id="r0B" cx="50%" cy="50%" r="50%"><stop offset="0.75" stop-color="#047857" stop-opacity="0.2"/><stop offset="1" stop-color="#047857" stop-opacity="0.06"/></radialGradient>
             <radialGradient id="stoneB" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#0f172a"/><stop offset="1" stop-color="#334155"/></radialGradient>
           </defs>
-          <!-- Left: full ripple -->
-          <g transform="translate(180, 170)">
-            <circle r="125" fill="url(#r3B)" stroke="#059669" stroke-width="1" stroke-opacity="0.4"/>
-            <circle r="70" fill="url(#r0B)" stroke="#047857" stroke-width="1" stroke-opacity="0.5"/>
-            <circle r="26" fill="url(#stoneB)" stroke="#0f172a" stroke-width="2"/>
+          <g transform="translate(200, 190)">
+            <circle r="140" fill="url(#r3B)" stroke="#059669" stroke-width="1.5" stroke-opacity="0.4"/>
+            <circle r="78" fill="url(#r0B)" stroke="#047857" stroke-width="1.5" stroke-opacity="0.5"/>
+            <circle r="30" fill="url(#stoneB)" stroke="#0f172a" stroke-width="2"/>
           </g>
-          <text x="180" y="318" text-anchor="middle" font-size="12" font-weight="600" fill="#0f172a" font-family="Inter, sans-serif">Without OTOS</text>
-          <text x="180" y="332" text-anchor="middle" font-size="10" fill="#64748b" font-family="Inter, sans-serif">Ripple expands to all rings · full cost</text>
-          <!-- Right: dampened -->
-          <g transform="translate(540, 170)">
-            <circle r="26" fill="url(#stoneB)" stroke="#0f172a" stroke-width="2"/>
-            <circle r="70" fill="#059669" fill-opacity="0.06" stroke="#059669" stroke-width="1.5" stroke-opacity="0.5" stroke-dasharray="6 4"/>
+          <text x="200" y="358" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a" font-family="Inter, sans-serif">Without OTOS</text>
+          <text x="200" y="376" text-anchor="middle" font-size="12" fill="#64748b" font-family="Inter, sans-serif">Ripple expands to all rings · full cost</text>
+          <g transform="translate(600, 190)">
+            <circle r="30" fill="url(#stoneB)" stroke="#0f172a" stroke-width="2"/>
+            <circle r="78" fill="#059669" fill-opacity="0.06" stroke="#059669" stroke-width="2" stroke-opacity="0.5" stroke-dasharray="8 5"/>
           </g>
-          <text x="540" y="318" text-anchor="middle" font-size="12" font-weight="600" fill="#0f172a" font-family="Inter, sans-serif">With OTOS at Ring 0</text>
-          <text x="540" y="332" text-anchor="middle" font-size="10" fill="#64748b" font-family="Inter, sans-serif">Ripple contained · cost avoided</text>
+          <text x="600" y="358" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a" font-family="Inter, sans-serif">With OTOS at Ring 0</text>
+          <text x="600" y="376" text-anchor="middle" font-size="12" fill="#64748b" font-family="Inter, sans-serif">Ripple contained · cost avoided</text>
         </svg>
       </div>
     </section>
