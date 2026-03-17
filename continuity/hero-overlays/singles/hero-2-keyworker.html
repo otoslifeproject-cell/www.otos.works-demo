@@ -5,10 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hero 2 — Keyworker & Client · OTOS</title>
   <link rel="stylesheet" href="../hero-overlays.css">
+  <style>
+.hero-block, .hero-wrapper, [class*="hero"] {
+  width: 100%;
+  height: 100vh;
+  min-height: 480px;
+  max-height: 900px;
+  background-size: cover;
+  background-position: center;
+  transition: background-position 0.3s ease;
+}
+@media (max-width: 768px) {
+  h1, .hero-headline {
+    font-size: clamp(1.4rem, 5vw, 2.2rem);
+    line-height: 1.2;
+  }
+  .stats-card, [class*="stat"] {
+    bottom: 1rem;
+    right: 1rem;
+    font-size: 0.8rem;
+    padding: 0.75rem 1rem;
+  }
+}
+  </style>
 </head>
 <body>
   <div class="hero-block hero-block--portrait hero-block--fullscreen">
-    <img class="hero-block__img" src="../../../assets/hero/hero-2.png" alt="Keyworker & Client">
+    <img class="hero-block__img" src="../../images/Meaningful conversation in a cosy café.png" alt="Keyworker & Client">
     <div class="hero-block__overlay">
       <div class="hero-logo-strip">
         <img class="hero-logo-strip__brain" src="../../../assets/brain.png" alt="">
@@ -16,8 +39,8 @@
       </div>
       <div class="hero-copy">
         <h2 class="hero-headline">Built for keyworkers. Engineered around real journeys.</h2>
-        <p class="hero-sub">Co-produced with SUN Network and people with lived experience — because the people who use it helped build it.</p>
-        <a href="#" class="hero-cta">Keyworker View</a>
+        <p class="hero-sub">No new system. No extra forms. Just clarity about what happened next.</p>
+        <a href="../../guided-demos.html" class="hero-cta">Keyworker View</a>
       </div>
     </div>
     <div class="stats-overlay stats-overlay--h2">

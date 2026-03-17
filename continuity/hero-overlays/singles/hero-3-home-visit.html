@@ -5,19 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hero 3 — Home Visit · OTOS</title>
   <link rel="stylesheet" href="../hero-overlays.css">
+  <style>
+.hero-block, .hero-wrapper, [class*="hero"] {
+  width: 100%;
+  height: 100vh;
+  min-height: 480px;
+  max-height: 900px;
+  background-size: cover;
+  background-position: center;
+  transition: background-position 0.3s ease;
+}
+@media (max-width: 768px) {
+  h1, .hero-headline {
+    font-size: clamp(1.4rem, 5vw, 2.2rem);
+    line-height: 1.2;
+  }
+  .stats-card, [class*="stat"] {
+    bottom: 1rem;
+    right: 1rem;
+    font-size: 0.8rem;
+    padding: 0.75rem 1rem;
+  }
+}
+  </style>
 </head>
 <body>
   <div class="hero-block hero-block--landscape hero-block--fullscreen">
-    <img class="hero-block__img" src="../../../assets/hero/hero-3.jpg" alt="Home Visit / No one falls through the gaps">
+    <img class="hero-block__img" src="../../images/A warm farewell at the doorway.png" alt="Home Visit / No one falls through the gaps">
     <div class="hero-block__overlay">
       <div class="hero-logo-strip">
         <img class="hero-logo-strip__brain" src="../../../assets/brain.png" alt="">
         <span class="hero-logo-strip__wordmark">OTOS</span>
       </div>
       <div class="hero-copy">
-        <h2 class="hero-headline">No one falls through the gaps. Ever.</h2>
-        <p class="hero-sub">OTOS quietly joins every service around the person — so no journey is ever lost or repeated.</p>
-        <a href="#" class="hero-cta">See How OTOS Works</a>
+        <h2 class="hero-headline">Most people don't fail services — the spaces between services fail them.</h2>
+        <p class="hero-sub">OTOS fills that space. Anonymously. Securely. Without disrupting anything that already works.</p>
+        <a href="../../how-it-works.html" class="hero-cta">See How It Works</a>
       </div>
     </div>
     <div class="stats-overlay stats-overlay--h3">
