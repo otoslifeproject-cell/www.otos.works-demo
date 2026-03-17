@@ -26,10 +26,6 @@
       font-family: Inter, sans-serif;
       background: var(--bg);
       color: var(--text);
-      padding: var(--space-8);
-      max-width: 920px;
-      margin-left: auto;
-      margin-right: auto;
     }
     h1 { font-size: 1.5rem; margin: 0 0 var(--space-2); }
     .intro {
@@ -78,8 +74,274 @@
     }
   </style>
   <link rel="stylesheet" href="otos-shared.css">
+  <link rel="stylesheet" href="hero-overlays/hero-overlays.css">
+  <style>
+    /* Hero carousel shell (for menu to sit below) */
+    .work-index-carousel-shell {
+      position: relative;
+      width: 100%;
+      height: min(78vh, 760px);
+      min-height: 520px;
+      overflow: hidden;
+      background: #000;
+    }
+    .work-index-carousel-shell .otos-carousel { width: 100%; height: 100%; position: relative; }
+    .work-index-carousel-shell .otos-carousel__track { height: 100%; display: flex; transition: transform 520ms ease; will-change: transform; }
+    .work-index-carousel-shell .otos-carousel__slide { min-width: 100%; height: 100%; }
+    .work-index-carousel-shell .otos-carousel__slide .hero-block { height: 100%; }
+    .work-index-carousel-shell .otos-carousel__btn {
+      position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
+      width: 44px; height: 44px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.35); color: #fff; font-size: 26px; line-height: 1; cursor: pointer;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
+    .work-index-carousel-shell .otos-carousel__btn--prev { left: 18px; }
+    .work-index-carousel-shell .otos-carousel__btn--next { right: 18px; }
+    .work-index-carousel-shell .otos-carousel__btn:hover { background: rgba(0,0,0,0.5); }
+    .work-index-carousel-shell .otos-carousel__dots {
+      position: absolute; left: 50%; transform: translateX(-50%); bottom: 14px; z-index: 10;
+      display: flex; gap: 8px; padding: 6px 10px; border-radius: 999px;
+      background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
+    .work-index-carousel-shell .otos-carousel__dot {
+      width: 7px; height: 7px; border-radius: 999px; border: 0;
+      background: rgba(255,255,255,0.35); cursor: pointer; padding: 0;
+    }
+    .work-index-carousel-shell .otos-carousel__dot[aria-selected="true"] { background: rgba(255,255,255,0.9); }
+    @media (prefers-reduced-motion: reduce) { .work-index-carousel-shell .otos-carousel__track { transition: none; } }
+
+    /* ADDITION 1 — Section menu bar */
+    .work-index-section-menu {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 52px;
+      background: #0f172a;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(12px, 2.5vw, 28px);
+      padding: 0 1rem;
+      flex-wrap: wrap;
+    }
+    .work-index-section-menu a {
+      font-family: Inter, sans-serif;
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+    }
+    .work-index-section-menu a:hover,
+    .work-index-section-menu a:focus { color: #ff8a00; }
+
+    /* ADDITION 3 — Page section cards */
+    .work-index-cards {
+      background: #f8f8f6;
+      padding: 4rem 2rem;
+    }
+    .work-index-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    @media (max-width: 900px) { .work-index-cards-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .work-index-cards-grid { grid-template-columns: 1fr; } }
+    .work-index-card {
+      background: #fff;
+      border: 1px solid rgba(15,23,42,0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 16px rgba(15,23,42,0.06);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+    .work-index-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(15,23,42,0.1);
+    }
+    .work-index-card .card-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #0f172a;
+      margin: 0 0 0.5rem;
+    }
+    .work-index-card .card-body {
+      font-family: Inter, sans-serif;
+      font-weight: 400;
+      font-size: 0.875rem;
+      color: rgba(15,23,42,0.6);
+      margin: 0;
+      line-height: 1.4;
+    }
+    .work-index-card .card-arrow {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      color: #ff8a00;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    /* ADDITION 2 — Admin CMS panel */
+    .work-index-admin-toggle {
+      font-family: Inter, sans-serif;
+      font-weight: 500;
+      font-size: 0.8rem;
+      color: rgba(15,23,42,0.4);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem 0;
+      margin: 1rem 0;
+    }
+    .work-index-admin-toggle:hover { color: rgba(15,23,42,0.6); }
+    .work-index-admin-panel {
+      display: none;
+      background: #0f172a;
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 1rem 0 2rem;
+      max-width: 920px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .work-index-admin-panel.is-open { display: block; }
+    .work-index-admin-panel label {
+      display: block;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 0.25rem;
+    }
+    .work-index-admin-panel input,
+    .work-index-admin-panel textarea {
+      width: 100%;
+      max-width: 320px;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .work-index-admin-panel textarea { min-height: 60px; resize: vertical; }
+    .work-index-admin-save {
+      background: #ff8a00;
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 0.6rem 1.25rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .work-index-admin-save:hover { background: #e67d00; }
+    .work-index-stats-card {
+      position: absolute;
+      top: 32px;
+      right: 48px;
+      background: rgba(15,23,42,0.72);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      padding: 20px 24px;
+      color: white;
+      min-width: 200px;
+      font-family: Inter, sans-serif;
+      z-index: 3;
+    }
+    .work-index-stats-card .stat-row { font-size: 0.7rem; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+    .work-index-stats-card .stat-value { font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Hero carousel (do not remove) -->
+  <section class="work-index-carousel-shell" aria-label="Hero carousel">
+    <div id="work-index-stats-card" class="work-index-stats-card">
+      <div class="stat-row">Pilot status</div>
+      <div id="work-index-stat-status" class="stat-value">On track</div>
+      <div class="stat-row" style="margin-top: 12px;">Pilot participants</div>
+      <div id="work-index-stat-participants" class="stat-value">47 / 50</div>
+      <div class="stat-row" style="margin-top: 12px;">Services in pilot</div>
+      <div id="work-index-stat-services" class="stat-value">7</div>
+    </div>
+    <div data-otos-hero-carousel></div>
+  </section>
+
+  <!-- ADDITION 1 — Section menu bar (below carousel) -->
+  <nav class="work-index-section-menu" aria-label="Section menu">
+    <a href="index.html">Overview</a>
+    <a href="how-it-works.html">How It Works</a>
+    <a href="guided-demos.html">Demos</a>
+    <a href="controls.html">Controls</a>
+    <a href="reporting.html">Reporting</a>
+    <a href="references.html">References</a>
+    <a href="founder-story-v2.html">Founder Journey</a>
+  </nav>
+
+  <!-- ADDITION 3 — Page section cards (below menu bar) -->
+  <section class="work-index-cards" aria-label="Page sections">
+    <div class="work-index-cards-grid">
+      <a href="index.html" class="work-index-card">
+        <h3 class="card-title">Welcome</h3>
+        <p class="card-body">Entry point and pilot overview</p>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="how-it-works.html" class="work-index-card">
+        <h3 class="card-title">How It Works</h3>
+        <p class="card-body">The four-step continuity model</p>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="guided-demos.html" class="work-index-card">
+        <h3 class="card-title">Guided Demos</h3>
+        <p class="card-body">Route walkthroughs for frontline teams</p>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="controls.html" class="work-index-card">
+        <h3 class="card-title">Controls</h3>
+        <p class="card-body">Governance, safety boundaries and escalation</p>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="reporting.html" class="work-index-card">
+        <h3 class="card-title">Reporting</h3>
+        <p class="card-body">Anonymous continuity insight and pilot metrics</p>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="references.html" class="work-index-card">
+        <h3 class="card-title">References</h3>
+        <p class="card-body">Evidence, sources and partner wording</p>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="founder-story-v2.html" class="work-index-card">
+        <h3 class="card-title">Founder Journey</h3>
+        <p class="card-body">Dean's 96-node interactive pathway</p>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="infrastructure-partners.html" class="work-index-card">
+        <h3 class="card-title">Infrastructure Partners</h3>
+        <p class="card-body">SUN Network, QbTest and Joy</p>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="hero-overlays/singles/index.html" class="work-index-card">
+        <h3 class="card-title">Hero Gallery</h3>
+        <p class="card-body">Cinematic hero images and overlays</p>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Existing content (unchanged below) -->
+  <div style="max-width: 920px; margin-left: auto; margin-right: auto; padding: 32px 16px;">
   <h1>OTOS Continuity™ — All deliverables</h1>
   <p class="intro">
     Central index of everything produced for the Cambridge Pilot. <strong>Update this page with new links each time we build something.</strong>
@@ -161,7 +423,87 @@
   <p class="meta">
     This page is the single source of truth for all deliverables. Add new items here each time we build something new.
   </p>
+  </div>
+
+  <!-- ADDITION 2 — Admin CMS panel (collapsible, above footer) -->
+  <div style="max-width: 920px; margin-left: auto; margin-right: auto; padding: 0 16px 1rem;">
+    <button type="button" class="work-index-admin-toggle" id="work-index-admin-toggle" aria-expanded="false">Admin ▾</button>
+    <div class="work-index-admin-panel" id="work-index-admin-panel">
+      <label for="work-index-cms-status">Pilot status</label>
+      <input type="text" id="work-index-cms-status" value="On track" />
+      <label for="work-index-cms-active">Participants active</label>
+      <input type="number" id="work-index-cms-active" value="47" />
+      <label for="work-index-cms-target">Target participants</label>
+      <input type="number" id="work-index-cms-target" value="50" />
+      <label for="work-index-cms-services">Services in pilot</label>
+      <input type="number" id="work-index-cms-services" value="7" />
+      <label for="work-index-cms-updated">Last updated</label>
+      <input type="date" id="work-index-cms-updated" />
+      <label for="work-index-cms-notice">Site notice (max 200 chars)</label>
+      <textarea id="work-index-cms-notice" maxlength="200" placeholder="Optional banner message"></textarea>
+      <br>
+      <button type="button" class="work-index-admin-save" id="work-index-admin-save">Save changes</button>
+    </div>
+  </div>
+
   <footer class="site-footer">© OTOS Digital Ltd. Company registered in England &amp; Wales with Company No. 17084455. Phone <a href="tel:+447466334143">+447466334143</a>. Email <a href="mailto:info@otos.life">info@otos.life</a>.</footer>
+  <script defer src="hero-carousel.js"></script>
   <script defer src="otos-shared.js"></script>
+  <script>
+    (function() {
+      var STORAGE_KEY = 'otosContinuity.workIndex.cms.v1';
+      var panel = document.getElementById('work-index-admin-panel');
+      var toggle = document.getElementById('work-index-admin-toggle');
+      var saveBtn = document.getElementById('work-index-admin-save');
+
+      function load() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          var o = JSON.parse(raw);
+          if (o.status != null) document.getElementById('work-index-cms-status').value = o.status;
+          if (o.active != null) document.getElementById('work-index-cms-active').value = o.active;
+          if (o.target != null) document.getElementById('work-index-cms-target').value = o.target;
+          if (o.services != null) document.getElementById('work-index-cms-services').value = o.services;
+          if (o.updated != null) document.getElementById('work-index-cms-updated').value = o.updated;
+          if (o.notice != null) document.getElementById('work-index-cms-notice').value = o.notice;
+          applyToStats();
+        } catch (e) {}
+      }
+
+      function applyToStats() {
+        var statusEl = document.getElementById('work-index-stat-status');
+        var participantsEl = document.getElementById('work-index-stat-participants');
+        var servicesEl = document.getElementById('work-index-stat-services');
+        if (!statusEl || !participantsEl || !servicesEl) return;
+        var active = document.getElementById('work-index-cms-active').value;
+        var target = document.getElementById('work-index-cms-target').value;
+        statusEl.textContent = document.getElementById('work-index-cms-status').value;
+        participantsEl.textContent = active + ' / ' + target;
+        servicesEl.textContent = document.getElementById('work-index-cms-services').value;
+      }
+
+      if (toggle) toggle.addEventListener('click', function() {
+        var open = panel.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.textContent = open ? 'Admin ▴' : 'Admin ▾';
+      });
+
+      if (saveBtn) saveBtn.addEventListener('click', function() {
+        var o = {
+          status: document.getElementById('work-index-cms-status').value,
+          active: document.getElementById('work-index-cms-active').value,
+          target: document.getElementById('work-index-cms-target').value,
+          services: document.getElementById('work-index-cms-services').value,
+          updated: document.getElementById('work-index-cms-updated').value,
+          notice: document.getElementById('work-index-cms-notice').value
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(o));
+        applyToStats();
+      });
+
+      load();
+    })();
+  </script>
 </body>
 </html>
