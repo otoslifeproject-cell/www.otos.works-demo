@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overlay Wording — Pick & Edit</title>
+  <link rel="stylesheet" href="hero-overlays/hero-overlays.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      font-family: Inter, sans-serif;
+      color: #e2e8f0;
+    }
+    .page-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 12px 20px;
+      background: rgba(15, 23, 42, 0.95);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .page-header h1 { margin: 0; font-size: 1.25rem; font-weight: 600; }
+    .page-header a { color: #38bdf8; text-decoration: none; }
+    .page-header a:hover { text-decoration: underline; }
+    .overlay-stack {
+      padding: 16px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .overlay-card {
+      margin-bottom: 32px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .overlay-card .card-filename {
+      padding: 8px 16px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .overlay-preview {
+      height: 280px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    .overlay-preview .hero-block__overlay {
+      padding-bottom: 12px;
+    }
+    .overlay-editor {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+    .overlay-editor label {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      margin-bottom: 2px;
+    }
+    .overlay-editor input,
+    .overlay-editor textarea {
+      width: 100%;
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      color: #fff;
+      font-family: Inter, sans-serif;
+      font-size: 0.9rem;
+    }
+    .overlay-editor textarea {
+      min-height: 56px;
+      resize: vertical;
+    }
+    .overlay-editor input::placeholder,
+    .overlay-editor textarea::placeholder {
+      color: #64748b;
+    }
+    .overlay-editor input:focus,
+    .overlay-editor textarea:focus {
+      outline: none;
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>Overlay Wording — Pick & Edit</h1>
+    <nav>
+      <a href="image-picker.html">Image Library</a>
+      <a href="hero-overlays/playground.html">Hero Playground</a>
+    </nav>
+  </header>
+
+  <div class="overlay-stack" id="stack">
+    <!-- Cards generated below: image + overlay preview + editable headline, sub, CTA -->
+    <div class="overlay-card" data-image="images/A breakthrough moment in therapy.png">
+      <div class="card-filename">A breakthrough moment in therapy.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/A breakthrough moment in therapy.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">When the right support arrives — everything changes.</h2>
+            <p class="hero-sub">The moment diagnosis lands right. OTOS holds the pathway so that moment is never missed.</p>
+            <a href="#" class="hero-cta">Read Dean's Story</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="When the right support arrives — everything changes.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">The moment diagnosis lands right. OTOS holds the pathway so that moment is never missed.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="Read Dean's Story">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/A corridor of colourful doors.png">
+      <div class="card-filename">A corridor of colourful doors.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/A corridor of colourful doors.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">World-class services. No shared journey. Until now.</h2>
+            <p class="hero-sub">Every door open. Nobody knowing which one you came through last.</p>
+            <a href="#" class="hero-cta">View System Overview</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="World-class services. No shared journey. Until now.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">Every door open. Nobody knowing which one you came through last.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="View System Overview">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/A moment of quiet distress.png">
+      <div class="card-filename">A moment of quiet distress.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/A moment of quiet distress.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">This is where people are lost.</h2>
+            <p class="hero-sub">Not in crisis. Not demanding help. Just quietly falling between services. OTOS sees it.</p>
+            <a href="#" class="hero-cta">See How OTOS Works</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="This is where people are lost.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">Not in crisis. Not demanding help. Just quietly falling between services. OTOS sees it.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="See How OTOS Works">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/A warm farewell at the doorway.png">
+      <div class="card-filename">A warm farewell at the doorway.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/A warm farewell at the doorway.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">Every good ending is someone's new beginning.</h2>
+            <p class="hero-sub">OTOS makes sure what happens next is never left to chance.</p>
+            <a href="#" class="hero-cta">Keyworker View</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="Every good ending is someone's new beginning.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">OTOS makes sure what happens next is never left to chance.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="Keyworker View">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/A warm handshake at sunset.png">
+      <div class="card-filename">A warm handshake at sunset.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/A warm handshake at sunset.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">One human. Many services. One joined-up pathway.</h2>
+            <p class="hero-sub">The moment of connection shouldn't be the last thing the system sees.</p>
+            <a href="#" class="hero-cta">View System Overview</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="One human. Many services. One joined-up pathway.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">The moment of connection shouldn't be the last thing the system sees.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="View System Overview">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Cambridge at dusk from above.png">
+      <div class="card-filename">Cambridge at dusk from above.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Cambridge at dusk from above.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">The tsunami is coming. Nobody can see it building.</h2>
+            <p class="hero-sub">Thousands of adults with undiagnosed ADHD cycling through A&E, housing, probation. OTOS is the early warning.</p>
+            <a href="#" class="hero-cta">View System Overview</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="The tsunami is coming. Nobody can see it building.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">Thousands of adults with undiagnosed ADHD cycling through A&E, housing, probation. OTOS is the early warning.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="View System Overview">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Community conversation in a circle.png">
+      <div class="card-filename">Community conversation in a circle.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Community conversation in a circle.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">Community is the continuity.</h2>
+            <p class="hero-sub">Co-produced with SUN Network and people with lived experience — because the people who use it helped build it.</p>
+            <a href="#" class="hero-cta">Keyworker View</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="Community is the continuity.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">Co-produced with SUN Network and people with lived experience — because the people who use it helped build it.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="Keyworker View">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Contemplating the morning brew.png">
+      <div class="card-filename">Contemplating the morning brew.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Contemplating the morning brew.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">Care happens in moments.</h2>
+            <p class="hero-sub">Continuity happens in the days between. OTOS quietly fills that space.</p>
+            <a href="#" class="hero-cta">Start Guided Tour</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="Care happens in moments.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">Continuity happens in the days between. OTOS quietly fills that space.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="Start Guided Tour">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Contemplative moment in the park.png">
+      <div class="card-filename">Contemplative moment in the park.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Contemplative moment in the park.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">Six years in the system. Three days to change everything.</h2>
+            <p class="hero-sub">The correct diagnosis and medication was the key. OTOS makes sure no one waits that long again.</p>
+            <a href="#" class="hero-cta">Read Dean's Story</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="Six years in the system. Three days to change everything.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">The correct diagnosis and medication was the key. OTOS makes sure no one waits that long again.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="Read Dean's Story">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Golden hour in Cambridge.png">
+      <div class="card-filename">Golden hour in Cambridge.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Golden hour in Cambridge.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">The silent layer that connects every service.</h2>
+            <p class="hero-sub">OTOS syncs CPFT, CGL, CRS, SUN, Primary Care and A&E into one encrypted continuity journey.</p>
+            <a href="#" class="hero-cta">View System Overview</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="The silent layer that connects every service.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">OTOS syncs CPFT, CGL, CRS, SUN, Primary Care and A&E into one encrypted continuity journey.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="View System Overview">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Hesitant arrival at the community centre.png">
+      <div class="card-filename">Hesitant arrival at the community centre.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Hesitant arrival at the community centre.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">The hardest step is the door. OTOS holds what comes after.</h2>
+            <p class="hero-sub">Re-engagement after silence. OTOS turns a missed contact into a safe route back.</p>
+            <a href="#" class="hero-cta">See How OTOS Works</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="The hardest step is the door. OTOS holds what comes after.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">Re-engagement after silence. OTOS turns a missed contact into a safe route back.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="See How OTOS Works">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Man checking phone outside community centre.png">
+      <div class="card-filename">Man checking phone outside community centre.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Man checking phone outside community centre.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">One tap. The whole system knows.</h2>
+            <p class="hero-sub">Frontline staff log a touchpoint in seconds. The system does the rest.</p>
+            <a href="#" class="hero-cta">Start with A&E</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="One tap. The whole system knows.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">Frontline staff log a touchpoint in seconds. The system does the rest.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="Start with A&E">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Man enjoying sunlight in the park.png">
+      <div class="card-filename">Man enjoying sunlight in the park.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Man enjoying sunlight in the park.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">This is what stability looks like.</h2>
+            <p class="hero-sub">Calm. Present. Connected. OTOS holds the pathway so this moment can last.</p>
+            <a href="#" class="hero-cta">Read Dean's Story</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="This is what stability looks like.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">Calm. Present. Connected. OTOS holds the pathway so this moment can last.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="Read Dean's Story">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Meaningful conversation in a cosy café.png">
+      <div class="card-filename">Meaningful conversation in a cosy café.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Meaningful conversation in a cosy café.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">Built for keyworkers. Engineered around real journeys.</h2>
+            <p class="hero-sub">No new system. No extra forms. Just clarity about what happened next.</p>
+            <a href="#" class="hero-cta">Keyworker View</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="Built for keyworkers. Engineered around real journeys.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">No new system. No extra forms. Just clarity about what happened next.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="Keyworker View">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Morning coffee and a smile.png">
+      <div class="card-filename">Morning coffee and a smile.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Morning coffee and a smile.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">This is what staying connected feels like.</h2>
+            <p class="hero-sub">A daily check-in. A small signal. The system quietly noting: still here, still stable.</p>
+            <a href="#" class="hero-cta">Start Guided Tour</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="This is what staying connected feels like.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">A daily check-in. A small signal. The system quietly noting: still here, still stable.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="Start Guided Tour">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Morning light and morning routine.png">
+      <div class="card-filename">Morning light and morning routine.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Morning light and morning routine.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">Every morning is a data point.</h2>
+            <p class="hero-sub">Anonymous. Encrypted. A quiet signal that someone is still on their journey.</p>
+            <a href="#" class="hero-cta">Start Guided Tour</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="Every morning is a data point.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">Anonymous. Encrypted. A quiet signal that someone is still on their journey.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="Start Guided Tour">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Morning reflections in a cozy room.png">
+      <div class="card-filename">Morning reflections in a cozy room.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Morning reflections in a cozy room.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">The space between services is where people are lost.</h2>
+            <p class="hero-sub">OTOS fills that space. Quietly. Without changing anything you already do.</p>
+            <a href="#" class="hero-cta">See How OTOS Works</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="The space between services is where people are lost.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">OTOS fills that space. Quietly. Without changing anything you already do.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="See How OTOS Works">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/NHS A&E waiting room buzz.png">
+      <div class="card-filename">NHS A&E waiting room buzz.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/NHS A&E waiting room buzz.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">463 people waiting. How many will fall through the gap after this?</h2>
+            <p class="hero-sub">OTOS gives A&E, CGL and CPFT a shared thread — so discharge is never the end of the story.</p>
+            <a href="#" class="hero-cta">Start with A&E</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="463 people waiting. How many will fall through the gap after this?">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">OTOS gives A&E, CGL and CPFT a shared thread — so discharge is never the end of the story.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="Start with A&E">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/NHS team meeting in progress.png">
+      <div class="card-filename">NHS team meeting in progress.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/NHS team meeting in progress.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">World-class services. No shared journey. Until now.</h2>
+            <p class="hero-sub">Cambridge has everything it needs. OTOS is the connective tissue that joins it.</p>
+            <a href="#" class="hero-cta">View System Overview</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="World-class services. No shared journey. Until now.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">Cambridge has everything it needs. OTOS is the connective tissue that joins it.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="View System Overview">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Waiting for consultation in the corridor.png">
+      <div class="card-filename">Waiting for consultation in the corridor.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Waiting for consultation in the corridor.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">This is where people are lost.</h2>
+            <p class="hero-sub">Between appointments. Between services. In the silence after discharge. OTOS sees it.</p>
+            <a href="#" class="hero-cta">See How OTOS Works</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="This is where people are lost.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">Between appointments. Between services. In the silence after discharge. OTOS sees it.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="See How OTOS Works">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/Woman reviewing NHS data dashboard.png">
+      <div class="card-filename">Woman reviewing NHS data dashboard.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/Woman reviewing NHS data dashboard.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">The tsunami is coming. OTOS is the radar.</h2>
+            <p class="hero-sub">Early signals. Pattern detection. A city-wide view with zero clinical risk.</p>
+            <a href="#" class="hero-cta">View System Overview</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="The tsunami is coming. OTOS is the radar.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">Early signals. Pattern detection. A city-wide view with zero clinical risk.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="View System Overview">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/hero-7-dean.png">
+      <div class="card-filename">hero-7-dean.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/hero-7-dean.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">I am the problem. I built the solution.</h2>
+            <p class="hero-sub">Two ICU admissions. Seizures. Probation. Rehab. Cost, carnage and chaos. Undiagnosed ADHD driving it all.</p>
+            <a href="#" class="hero-cta">Read Dean's Story</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="I am the problem. I built the solution.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">Two ICU admissions. Seizures. Probation. Rehab. Cost, carnage and chaos. Undiagnosed ADHD driving it all.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="Read Dean's Story">
+      </div>
+    </div>
+
+    <div class="overlay-card" data-image="images/roadmap final.png">
+      <div class="card-filename">roadmap final.png</div>
+      <div class="overlay-preview hero-block hero-block--landscape" style="background-image: url('images/roadmap final.png');">
+        <div class="hero-block__overlay">
+          <div class="hero-logo-strip">
+            <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
+            <span class="hero-logo-strip__wordmark">OTOS</span>
+          </div>
+          <div class="hero-copy">
+            <h2 class="hero-headline">The journey. Mapped.</h2>
+            <p class="hero-sub">One pathway. Every touchpoint. OTOS makes the system visible.</p>
+            <a href="#" class="hero-cta">View System Overview</a>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-editor">
+        <label>Headline</label>
+        <input type="text" name="headline" value="The journey. Mapped.">
+        <label>Sub copy</label>
+        <textarea name="sub" rows="2">One pathway. Every touchpoint. OTOS makes the system visible.</textarea>
+        <label>CTA</label>
+        <input type="text" name="cta" value="View System Overview">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var stack = document.getElementById('stack');
+      if (!stack) return;
+      stack.addEventListener('input', function (e) {
+        var input = e.target;
+        if (input.name !== 'headline' && input.name !== 'sub' && input.name !== 'cta') return;
+        var card = input.closest('.overlay-card');
+        if (!card) return;
+        var preview = card.querySelector('.overlay-preview');
+        if (!preview) return;
+        var el = preview.querySelector('.hero-' + (input.name === 'cta' ? 'cta' : input.name));
+        if (el) el.textContent = input.value;
+      });
+    })();
+  </script>
+</body>
+</html>

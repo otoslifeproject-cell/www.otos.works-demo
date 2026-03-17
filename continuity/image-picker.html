@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTOS Image Library — Pick & Place</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 2rem 1.5rem;
+      background: #0f172a;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+    }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin: 0 0 2rem;
+      text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    @media (min-width: 640px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 1024px) {
+      .grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    .cell {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .cell img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: auto;
+      object-fit: contain;
+      background: rgba(0,0,0,0.2);
+    }
+    .cell .filename {
+      padding: 0.75rem;
+      font-size: 0.875rem;
+      color: #fff;
+      word-break: break-all;
+    }
+    .section-title {
+      grid-column: 1 / -1;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin: 1rem 0 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .section-title:first-child {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>OTOS Image Library — Pick & Place</h1>
+  <p style="text-align:center; margin: -1rem 0 1.5rem; font-size: 0.9rem;"><a href="overlay-wording.html" style="color: #38bdf8;">Edit overlay wording for each image →</a></p>
+
+  <div class="grid">
+    <div class="section-title">continuity/images</div>
+
+    <div class="cell">
+      <img src="images/A breakthrough moment in therapy.png" alt="">
+      <div class="filename">A breakthrough moment in therapy.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/A corridor of colourful doors.png" alt="">
+      <div class="filename">A corridor of colourful doors.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/A moment of quiet distress.png" alt="">
+      <div class="filename">A moment of quiet distress.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/A warm farewell at the doorway.png" alt="">
+      <div class="filename">A warm farewell at the doorway.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/A warm handshake at sunset.png" alt="">
+      <div class="filename">A warm handshake at sunset.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Cambridge at dusk from above.png" alt="">
+      <div class="filename">Cambridge at dusk from above.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Community conversation in a circle.png" alt="">
+      <div class="filename">Community conversation in a circle.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Contemplating the morning brew.png" alt="">
+      <div class="filename">Contemplating the morning brew.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Contemplative moment in the park.png" alt="">
+      <div class="filename">Contemplative moment in the park.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Golden hour in Cambridge.png" alt="">
+      <div class="filename">Golden hour in Cambridge.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Hesitant arrival at the community centre.png" alt="">
+      <div class="filename">Hesitant arrival at the community centre.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Man checking phone outside community centre.png" alt="">
+      <div class="filename">Man checking phone outside community centre.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Man enjoying sunlight in the park.png" alt="">
+      <div class="filename">Man enjoying sunlight in the park.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Meaningful conversation in a cosy café.png" alt="">
+      <div class="filename">Meaningful conversation in a cosy café.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Morning coffee and a smile.png" alt="">
+      <div class="filename">Morning coffee and a smile.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Morning light and morning routine.png" alt="">
+      <div class="filename">Morning light and morning routine.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Morning reflections in a cozy room.png" alt="">
+      <div class="filename">Morning reflections in a cozy room.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/NHS A&E waiting room buzz.png" alt="">
+      <div class="filename">NHS A&E waiting room buzz.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/NHS team meeting in progress.png" alt="">
+      <div class="filename">NHS team meeting in progress.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Waiting for consultation in the corridor.png" alt="">
+      <div class="filename">Waiting for consultation in the corridor.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/Woman reviewing NHS data dashboard.png" alt="">
+      <div class="filename">Woman reviewing NHS data dashboard.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/hero-7-dean.png" alt="">
+      <div class="filename">hero-7-dean.png</div>
+    </div>
+    <div class="cell">
+      <img src="images/roadmap final.png" alt="">
+      <div class="filename">roadmap final.png</div>
+    </div>
+  </div>
+</body>
+</html>
