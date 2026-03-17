@@ -509,6 +509,8 @@
 
   var pathD = 'M 120 120 C 220 60 320 80 420 140 C 520 210 620 170 710 120 C 820 60 940 90 1020 170 C 1120 270 1060 350 980 400 C 890 455 810 440 730 400 C 610 340 520 360 440 430 C 330 520 220 520 160 460 C 90 390 110 300 190 250 C 260 205 300 210 360 240';
   var pathLen = 0;
+  var stepTargetLen = [];
+  var nodeLen = {};
   var state = 1;
   var currentStep = 0;
   var runningTotal = 0;
@@ -521,6 +523,77 @@
 
   function initPathLength() {
     pathLen = roadPath.getTotalLength();
+    buildStopLengths();
+  }
+
+  function buildStopLengths() {
+    // Project each logo/node position onto the path (nearest point) and use that as a "stop" length.
+    function nearestLenOnPath(x, y) {
+      var best = { d2: Infinity, len: 0 };
+      var samples = 900;
+      for (var i = 0; i <= samples; i++) {
+        var len = (i / samples) * pathLen;
+        var p = roadPath.getPointAtLength(len);
+        var dx = p.x - x;
+        var dy = p.y - y;
+        var d2 = dx * dx + dy * dy;
+        if (d2 < best.d2) best = { d2: d2, len: len };
+      }
+      // Refine around best.len
+      var refine = 30;
+      var span = pathLen / samples;
+      for (var j = -refine; j <= refine; j++) {
+        var l2 = best.len + (j / refine) * span;
+        if (l2 < 0) l2 = 0;
+        if (l2 > pathLen) l2 = pathLen;
+        var p2 = roadPath.getPointAtLength(l2);
+        var dx2 = p2.x - x;
+        var dy2 = p2.y - y;
+        var d22 = dx2 * dx2 + dy2 * dy2;
+        if (d22 < best.d2) best = { d2: d22, len: l2 };
+      }
+      return best.len;
+    }
+
+    for (var i = 0; i < NODES.length; i++) {
+      nodeLen[NODES[i].id] = nearestLenOnPath(NODES[i].x, NODES[i].y);
+    }
+
+    // Map each story step to a stop (logo) based on its service/title text.
+    function mapStepToNode(step) {
+      var s = ((step.service || '') + ' ' + (step.title || '')).toLowerCase();
+      if (s.indexOf('psymplicity') !== -1) return 'psymplicity';
+      if (s.indexOf('addenbrookes') !== -1) return 'addenbrookes';
+      if (s.indexOf('castle craig') !== -1) return 'castlecraig';
+      if (s.indexOf('nightingale') !== -1) return 'nightingale';
+      if (s.indexOf('helpme') !== -1 || s.indexOf('help me stop') !== -1) return 'helpmestop';
+      if (s.indexOf('cgl') !== -1) return 'cgl';
+      if (s.indexOf('cambridge recovery service') !== -1 || s.indexOf('crs') !== -1) return 'crs';
+      if (s.indexOf('adhd team') !== -1) return 'adhdteam';
+      if (s.indexOf('workwell') !== -1) return 'workwell';
+      if (s.indexOf('mind') !== -1) return 'mind';
+      if (s.indexOf('jo fenton') !== -1) return 'jofenton';
+      if (s.indexOf('northampton') !== -1) return 'northampton';
+      if (s.indexOf('police') !== -1) return 'police';
+      if (s.indexOf('courts') !== -1) return 'courts';
+      if (s.indexOf('probation') !== -1) return 'probation';
+      if (s.indexOf('sun network') !== -1 || s.indexOf('sun') !== -1) return 'sunnetwork';
+      if (s.indexOf('cpft') !== -1) return 'cpft';
+      // Self / AA / NA / SMART etc: keep continuity by staying near CPFT rather than drifting forward.
+      if (s.indexOf('aa') !== -1 || s.indexOf('na') !== -1 || s.indexOf('smart') !== -1) return 'crs';
+      return 'cpft';
+    }
+
+    stepTargetLen = new Array(73);
+    stepTargetLen[0] = 0;
+    for (var k = 1; k <= 72; k++) {
+      var step = STEPS[k];
+      var nodeId = mapStepToNode(step);
+      var len = nodeLen[nodeId];
+      // Ensure the journey never goes backwards unless explicitly desired.
+      var prev = stepTargetLen[k - 1];
+      stepTargetLen[k] = (len != null && len >= prev) ? len : prev;
+    }
   }
 
   function drawNodes() {
@@ -609,6 +682,17 @@
     }
   }
 
+  function setRoadFillToLen(drawnLen) {
+    if (drawnLen < 0) drawnLen = 0;
+    if (drawnLen > pathLen) drawnLen = pathLen;
+    roadFill.setAttribute('stroke-dasharray', String(pathLen));
+    roadFill.setAttribute('stroke-dashoffset', String(pathLen - drawnLen));
+    if (roadOrange) {
+      roadOrange.setAttribute('stroke-dasharray', String(pathLen));
+      roadOrange.setAttribute('stroke-dashoffset', String(pathLen - drawnLen));
+    }
+  }
+
   function updateRoadFillStyle(stepIndex) {
     roadFill.classList.remove('cracked', 'otos-phase');
     roadFillLayer.classList.remove('has-cracks');
@@ -671,8 +755,8 @@
       if (callback) callback();
       return;
     }
-    var fromT = currentStep / 72;
-    var toT = next / 72;
+    var fromLen = stepTargetLen[currentStep] != null ? stepTargetLen[currentStep] : (currentStep / 72) * pathLen;
+    var toLen = stepTargetLen[next] != null ? stepTargetLen[next] : (next / 72) * pathLen;
     currentStep = next;
     var step = STEPS[next];
 
@@ -696,12 +780,12 @@
       var dur = 0.6;
       var t = Math.min(1, elapsed / dur);
       t = 1 - Math.pow(1 - t, 2);
-      var currentT = fromT + (toT - fromT) * t;
-      setRoadFillProgress(currentT);
+      var curLen = fromLen + (toLen - fromLen) * t;
+      setRoadFillToLen(curLen);
       if (t < 1) {
         requestAnimationFrame(tick);
       } else {
-        setRoadFillProgress(toT);
+        setRoadFillToLen(toLen);
         if (next === 72) highlightPivotNode();
         if (callback) callback();
       }
@@ -842,7 +926,8 @@
     if (leavingStep && leavingStep.cost > 0) runningTotal -= leavingStep.cost;
     currentStep--;
     var step = STEPS[currentStep];
-    setRoadFillProgress(currentStep / 72);
+    var backLen = stepTargetLen[currentStep] != null ? stepTargetLen[currentStep] : (currentStep / 72) * pathLen;
+    setRoadFillToLen(backLen);
     updateRoadFillStyle(currentStep);
     updatePanel(step);
     stepReadout.textContent = 'Step ' + currentStep + ' / 72';
