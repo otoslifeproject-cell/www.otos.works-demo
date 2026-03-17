@@ -108,6 +108,10 @@ h1, h2, h3, h4 {
   border-top: 1px solid rgba(15,23,42,0.08);
 }
 
+.welcome-section, .portal-intro, .page-intro {
+  font-family: inherit !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation: none !important;
