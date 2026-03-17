@@ -830,6 +830,7 @@
       var costDesc = document.getElementById("costDesc");
       var costPanel = document.getElementById("costPanel");
 
+      var nodeMapEl = document.getElementById("nodeMap");
       var nodeEls = Array.prototype.slice.call(document.querySelectorAll(".node-map .node"));
       var journeyOverlay = document.getElementById("journeyOverlay");
       var journeyLayer = document.getElementById("journeyLayer");
@@ -848,12 +849,15 @@
       }
 
       function nodeCenterFromStyle(nodeEl) {
-        var left = parseFloat(String(nodeEl.style.left || "0").replace("%", ""));
-        var top = parseFloat(String(nodeEl.style.top || "0").replace("%", ""));
-        if (!Number.isFinite(left)) left = 0;
-        if (!Number.isFinite(top)) top = 0;
-        var x = (left / 100) * 1000 + 40;
-        var y = (top / 100) * 1000 + 40;
+        // Convert DOM pixel position to the 1000x1000 SVG coordinate space.
+        // This stays correct even when nodes are laid out in px (locked grid).
+        if (!nodeMapEl) return { x: 0, y: 0 };
+        var mapRect = nodeMapEl.getBoundingClientRect();
+        var r = nodeEl.getBoundingClientRect();
+        var cx = (r.left - mapRect.left) + (r.width / 2);
+        var cy = (r.top - mapRect.top) + (r.height / 2);
+        var x = (cx / (mapRect.width || 1)) * 1000;
+        var y = (cy / (mapRect.height || 1)) * 1000;
         return { x: x, y: y };
       }
 
