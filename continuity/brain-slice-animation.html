@@ -12,10 +12,19 @@
       --bg-offwhite: #F9F9F7;
       --slice-start: #FF8C00;
       --slice-end: #FFB347;
+      --brain-orange: #ff8a00;
       --nhs-blue: #003087;
       --line-teal: #7FFFD4;
       --text-main: #1a1a1a;
       --text-muted: rgba(0,0,0,0.6);
+      /* Timing (all in ms for keyframes + class toggles) */
+      --dur-split: 600ms;
+      --dur-forward: 700ms;
+      --dur-flip: 400ms;
+      --dur-retract: 600ms;
+      --dur-close: 500ms;
+      --dur-logo: 400ms;
+      --dur-start-hold: 800ms;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,7 +63,6 @@
       color: var(--text-main);
     }
 
-    /* CANVAS */
     .canvas {
       position: absolute;
       inset: 0;
@@ -64,6 +72,7 @@
       overflow: hidden;
     }
 
+    /* Parent for 3D brain motion: perspective 800px */
     .scene-root {
       position: relative;
       width: 80%;
@@ -72,10 +81,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      perspective: 1600px;
+      perspective: 800px;
     }
 
-    /* Brain — appears in gap, flips to become the slice */
+    /* Brain container: 3D transform, slice thickness via ::after */
     .brain-wrapper {
       position: absolute;
       left: 50%;
@@ -84,13 +93,28 @@
       height: 220px;
       margin-left: -110px;
       margin-top: -110px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       transform-style: preserve-3d;
-      will-change: transform, opacity;
-      opacity: 0;
-      transform: translate3d(0, 0, 0) scale(0.4);
+      will-change: transform;
+      transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+    }
+
+    /* Slice thickness: 8px plane on right edge, visible when rotateY(90deg) */
+    .brain-wrapper::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 8px;
+      background: var(--brain-orange);
+      background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.06) 2px,
+        rgba(0,0,0,0.06) 3px
+      );
+      border-radius: 0 2px 2px 0;
     }
 
     .brain-slice {
@@ -98,7 +122,6 @@
       height: 100%;
       transform-origin: center;
       transform-style: preserve-3d;
-      /* NO GLOW AROUND LOGO per brief */
     }
 
     .brain-slice img {
@@ -108,77 +131,30 @@
       object-fit: contain;
     }
 
-    /* Thick brain slice (side-on) — docks in gap, lockup sits on it at end */
-    .brain-slab {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 560px;
-      height: 28px;
-      transform: translate(-50%, -50%);
-      border-radius: 999px;
-      background: linear-gradient(90deg, #e67a00 0%, #ff8c00 25%, #ffb347 75%, #ffc266 100%);
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
-      opacity: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .brain-slab::before {
-      content: "";
-      position: absolute;
-      inset: -1px;
-      border-radius: inherit;
-      border: 1px solid rgba(255,255,255,0.2);
-      pointer-events: none;
-    }
-
-    .lockup-final {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      opacity: 0;
-      z-index: 1;
-    }
-
-    .lockup-final img {
-      display: block;
-      height: 42px;
-      width: auto;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
-    }
-
-    /* NHS + SP logo bands — on screen at all times */
+    /* NHS + SP logo bands */
     .band {
       position: absolute;
       left: 50%;
       width: 620px;
-      transform: translateX(-50%);
+      transform: translate(-50%, 0);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 24px;
       opacity: 1;
+      will-change: transform;
+      transition: transform var(--dur-split) ease-in-out;
     }
 
     .band--nhs {
-      top: 40%;
-      transform: translate(-50%, -50%);
+      top: 26%;
     }
 
     .band--sps {
       top: 52%;
-      transform: translate(-50%, -50%);
       flex-wrap: wrap;
     }
 
-    /* Ensure SUN logo sits visually central */
     .band--sps .logo-chip.sun {
       order: 6;
     }
@@ -214,118 +190,115 @@
       width: auto;
     }
 
-    .band.band-visible {
-      opacity: 1;
+    /* OTOS wordmark: slots on next to brain in step 7 */
+    .otos-wordmark {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin-left: 100px;
+      margin-top: -18px;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-main);
+      opacity: 0;
+      transform: translateX(-8px);
+      will-change: opacity, transform;
     }
 
-    /* Scene 1 — Start: NHS + partners on screen, close together; brain hidden */
-    .scene-root.scene-1-start .band--nhs {
+    /* —— SEQUENCE: class-driven keyframes —— */
+
+    /* 1. START: brain visible, front-facing, centred; NHS above, partners below */
+    .scene-root.step-1-start .brain-wrapper {
+      transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+    }
+    .scene-root.step-1-start .band--nhs {
       transform: translate(-50%, 0);
     }
-    .scene-root.scene-1-start .band--sps {
+    .scene-root.step-1-start .band--sps {
       transform: translate(-50%, 0);
     }
-    .scene-root.scene-1-start .brain-wrapper {
+    .scene-root.step-1-start .otos-wordmark {
       opacity: 0;
-      transform: translate3d(0, 0, 0) scale(0.35);
+      transform: translateX(-8px);
     }
 
-    /* Scene 2 — Split: logos split open to create gap */
-    .scene-root.scene-2-split .band--nhs {
-      transform: translate(-50%, calc(-50% - 38px));
-      transition: transform 1.6s cubic-bezier(0.33, 1, 0.68, 1);
+    /* 2. SPLIT: top up -120px, bottom down +120px, 600ms ease-in-out */
+    .scene-root.step-2-split .band--nhs {
+      transform: translate(-50%, -120px);
+      transition: transform 600ms ease-in-out;
     }
-    .scene-root.scene-2-split .band--sps {
-      transform: translate(-50%, calc(-50% + 38px));
-      transition: transform 1.6s cubic-bezier(0.33, 1, 0.68, 1);
-    }
-    .scene-root.scene-2-split .brain-wrapper {
-      opacity: 0;
+    .scene-root.step-2-split .band--sps {
+      transform: translate(-50%, 120px);
+      transition: transform 600ms ease-in-out;
     }
 
-    /* Scene 3 — Brain grows: appears in gap, presents itself (no slide from left) */
-    .scene-root.scene-3-grow .brain-wrapper {
-      animation: brainGrowIn 1.4s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+    /* 3. BRAIN COMES FORWARD: translateZ(320px) scale(1.6), 700ms ease-in-out */
+    .scene-root.step-3-forward .brain-wrapper {
+      animation: brainForward var(--dur-forward) ease-in-out forwards;
     }
 
-    /* Scene 4 — Flip: brain rotates to side-on, becomes the slice (slab appears as it flips) */
-    .scene-root.scene-4-flip .brain-wrapper {
-      animation: brainFlipToSlice 2s cubic-bezier(0.33, 1, 0.68, 1) forwards;
-    }
-    .scene-root.scene-4-flip .brain-slab {
-      animation: slabRevealAsFlip 2s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+    /* 4. FLIP TO SIDE VIEW: rotateY(90deg), 400ms */
+    .scene-root.step-4-flip .brain-wrapper {
+      animation: brainFlip var(--dur-flip) ease-in-out forwards;
     }
 
-    /* Scene 5 — Land: slice in place, OTOS Continuity™ logo appears across it, prominent */
-    .scene-root.scene-5-land .brain-wrapper {
-      opacity: 0;
-    }
-    .scene-root.scene-5-land .brain-slab {
-      opacity: 1;
-      height: 48px;
-      width: 580px;
-      background: linear-gradient(90deg, #d97000 0%, #ff8c00 30%, #ffb347 70%, #ffc266 100%);
-    }
-    .scene-root.scene-5-land .lockup-final {
-      opacity: 0;
-      animation: lockupLand 0.6s cubic-bezier(0.33, 1, 0.68, 1) 0.2s forwards;
+    /* 5. RETRACT: translateZ 0, scale 1, rotateY 0, 600ms ease-in-out */
+    .scene-root.step-5-retract .brain-wrapper {
+      animation: brainRetract var(--dur-retract) ease-in-out forwards;
     }
 
-    @keyframes pixelFadeIn {
-      to { opacity: 1; }
+    /* 6. LOGOS CLOSE: translateY back to 0, 500ms ease-in-out */
+    .scene-root.step-6-close .band--nhs {
+      transform: translate(-50%, 0);
+      transition: transform 500ms ease-in-out;
+    }
+    .scene-root.step-6-close .band--sps {
+      transform: translate(-50%, 0);
+      transition: transform 500ms ease-in-out;
     }
 
-    @keyframes brainGrowIn {
+    /* 7. LOGO SLOTS ON: wordmark opacity 0→1, translateX(-8px)→0, 400ms */
+    .scene-root.step-7-logo .otos-wordmark {
+      animation: wordmarkSlot var(--dur-logo) ease-in-out forwards;
+    }
+
+    @keyframes brainForward {
+      0% {
+        transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+      }
+      100% {
+        transform: translate3d(0, 0, 320px) scale(1.6) rotateY(0deg);
+      }
+    }
+
+    @keyframes brainFlip {
+      0% {
+        transform: translate3d(0, 0, 320px) scale(1.6) rotateY(0deg);
+      }
+      100% {
+        transform: translate3d(0, 0, 320px) scale(1.6) rotateY(90deg);
+      }
+    }
+
+    @keyframes brainRetract {
+      0% {
+        transform: translate3d(0, 0, 320px) scale(1.6) rotateY(90deg);
+      }
+      100% {
+        transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+      }
+    }
+
+    @keyframes wordmarkSlot {
       0% {
         opacity: 0;
-        transform: translate3d(0, 0, 0) scale(0.35);
+        transform: translateX(-8px);
       }
       100% {
         opacity: 1;
-        transform: translate3d(0, 0, 0) scale(1);
-      }
-    }
-
-    /* Brain flips 90° to become the slice (same position, no slide from left) */
-    @keyframes brainFlipToSlice {
-      0% {
-        opacity: 1;
-        transform: translate3d(0, 0, 0) scale(1) rotateX(0deg);
-      }
-      70% {
-        opacity: 1;
-        transform: translate3d(0, 0, 0) scale(1) rotateX(88deg);
-      }
-      100% {
-        opacity: 0;
-        transform: translate3d(0, 0, 0) scale(1) rotateX(90deg);
-      }
-    }
-
-    /* Slab reveals as brain flips to edge-on (the slice is what the brain becomes) */
-    @keyframes slabRevealAsFlip {
-      0% {
-        opacity: 0;
-        transform: translate(-50%, -50%);
-      }
-      65% {
-        opacity: 0;
-        transform: translate(-50%, -50%);
-      }
-      100% {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-      }
-    }
-
-    @keyframes lockupLand {
-      0% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.92);
-      }
-      100% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
+        transform: translateX(0);
       }
     }
 
@@ -338,26 +311,55 @@
       to { opacity: 1; }
     }
 
+    /* Replay button — shown after sequence completes */
+    .replay-btn {
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-family: inherit;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-main);
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease-out;
+    }
+
+    .replay-btn.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .replay-btn:hover {
+      background: #fff;
+      border-color: rgba(0,0,0,0.15);
+    }
+
     @media (max-width: 960px) {
       .scene-root {
         width: 94%;
         height: 74%;
       }
-
       .brain-wrapper {
         width: 180px;
         height: 180px;
+        margin-left: -90px;
+        margin-top: -90px;
       }
-
-      .brain-slab {
-        width: 360px;
-        height: 24px;
-      }
-
       .band {
         width: 90%;
       }
-
+      .otos-wordmark {
+        margin-left: 80px;
+        font-size: 15px;
+      }
     }
   </style>
 </head>
@@ -365,16 +367,10 @@
   <div class="page">
     <div class="frame">
       <div class="canvas">
-        <div class="scene-root scene-1-start" id="sceneRoot" aria-hidden="true">
+        <div class="scene-root step-1-start" id="sceneRoot" aria-hidden="true">
           <div class="brain-wrapper" id="brainWrapper">
             <div class="brain-slice">
               <img src="../assets/brain.png" alt="OTOS brain slice">
-            </div>
-          </div>
-
-          <div class="brain-slab" id="brainSlab">
-            <div class="lockup-final" id="lockupFinal">
-              <img src="../assets/logos/otos-continuity-lockup.png" alt="OTOS Continuity™">
             </div>
           </div>
 
@@ -423,8 +419,11 @@
             </div>
           </div>
 
+          <div class="otos-wordmark" id="otosWordmark">OTOS Continuity™</div>
         </div>
       </div>
+
+      <button type="button" class="replay-btn" id="replayBtn" aria-label="Replay animation">Replay</button>
     </div>
   </div>
 
@@ -434,32 +433,39 @@
 
       var sceneRoot = document.getElementById("sceneRoot");
       var brainWrapper = document.getElementById("brainWrapper");
-      var brainSlab = document.getElementById("brainSlab");
+      var replayBtn = document.getElementById("replayBtn");
 
-      var SCENES = [
-        { id: "scene-1-start", dur: 1600 },
-        { id: "scene-2-split", dur: 1800 },
-        { id: "scene-3-grow", dur: 1600 },
-        { id: "scene-4-flip", dur: 2200 },
-        { id: "scene-5-land", dur: 2200 }
+      var STEPS = [
+        { id: "step-1-start",   dur: 800 },
+        { id: "step-2-split",   dur: 600 },
+        { id: "step-3-forward", dur: 700 },
+        { id: "step-4-flip",    dur: 400 },
+        { id: "step-5-retract", dur: 600 },
+        { id: "step-6-close",  dur: 500 },
+        { id: "step-7-logo",   dur: 600 }
       ];
 
-      var totalDuration = SCENES.reduce(function(sum, s) { return sum + s.dur; }, 0);
-      var currentSceneIndex = 0;
+      var currentStepIndex = 0;
       var playing = true;
-      var sceneStartTime = performance.now();
+      var stepStartTime = performance.now();
 
-      function setScene(index) {
-        currentSceneIndex = index;
-        sceneRoot.className = "scene-root " + SCENES[index].id;
+      function setStep(index) {
+        currentStepIndex = index;
+        sceneRoot.className = "scene-root " + STEPS[index].id;
+
+        if (index === STEPS.length - 1) {
+          replayBtn.classList.add("visible");
+        } else {
+          replayBtn.classList.remove("visible");
+        }
       }
 
-      function advanceScene() {
-        var nextIndex = currentSceneIndex + 1;
-        if (nextIndex >= SCENES.length) {
-          nextIndex = 0;
+      function advanceStep() {
+        var next = currentStepIndex + 1;
+        if (next >= STEPS.length) {
+          next = 0;
         }
-        setScene(nextIndex);
+        setStep(next);
       }
 
       function loop(now) {
@@ -468,47 +474,47 @@
           return;
         }
 
-        var elapsed = now - sceneStartTime;
-        var currentDur = SCENES[currentSceneIndex].dur;
+        var elapsed = now - stepStartTime;
+        var currentDur = STEPS[currentStepIndex].dur;
 
         if (elapsed >= currentDur) {
-          sceneStartTime = now;
-          if (currentSceneIndex < SCENES.length - 1) {
-            advanceScene();
+          stepStartTime = now;
+          if (currentStepIndex < STEPS.length - 1) {
+            advanceStep();
           }
-          /* End at scene 5: slice + logo, hold (no loop) */
         }
 
         requestAnimationFrame(loop);
       }
 
-      function togglePlay() {
-        if (currentSceneIndex >= SCENES.length - 1 && !playing) {
-          currentSceneIndex = 0;
-          setScene(0);
-          playing = true;
-          sceneStartTime = performance.now();
-          requestAnimationFrame(loop);
-          return;
-        }
-        playing = !playing;
-        if (playing) {
-          sceneStartTime = performance.now();
-          requestAnimationFrame(loop);
-        }
+      function replay() {
+        currentStepIndex = 0;
+        setStep(0);
+        playing = true;
+        stepStartTime = performance.now();
+        requestAnimationFrame(loop);
       }
+
+      replayBtn.addEventListener("click", replay);
 
       document.addEventListener("keydown", function(e) {
         if (e.code === "Space") {
           e.preventDefault();
-          togglePlay();
+          if (currentStepIndex === STEPS.length - 1 && !playing) {
+            replay();
+          } else {
+            playing = !playing;
+            if (playing) {
+              stepStartTime = performance.now();
+              requestAnimationFrame(loop);
+            }
+          }
         }
       });
 
-      setScene(0);
+      setStep(0);
       requestAnimationFrame(loop);
     })();
   </script>
 </body>
 </html>
-
