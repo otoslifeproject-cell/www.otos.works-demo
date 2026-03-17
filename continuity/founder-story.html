@@ -60,24 +60,26 @@
 
     .road-bg {
       fill: none;
-      stroke: rgba(15,23,42,0.12);
-      stroke-width: 8;
+      stroke: #d1d5db;
+      stroke-width: 5;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
+    /* Keep the glow path from affecting the new base styling */
     .road-glow {
       fill: none;
-      stroke: rgba(15,23,42,0.06);
-      stroke-width: 18;
+      stroke: rgba(209,213,219,0.0);
+      stroke-width: 0;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
     .road-fill {
       fill: none;
+      stroke: #374151;
       stroke-linecap: round;
       stroke-linejoin: round;
-      stroke-width: 8;
+      stroke-width: 7;
       transition: stroke-dashoffset 0.6s ease-out, stroke 0.4s ease;
     }
     .road-fill.cracked {
@@ -94,6 +96,46 @@
     }
     #road-fill-layer.has-cracks .crack-pattern { opacity: 0.3; }
     #road-fill-layer.otos-phase .crack-pattern { opacity: 0; }
+
+    .orange-path {
+      fill: none;
+      stroke: #ff8a00;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0;
+      filter: drop-shadow(0 0 6px rgba(255,138,0,0.7));
+      transition: opacity 0.25s ease;
+    }
+    .path-lit .orange-path { opacity: 1; }
+
+    /* Bottom-left journey word styling (only visual) */
+    .journey-word {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 600;
+      color: #0f172a;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      opacity: 0.12;
+    }
+    .cracked .journey-word { color: #ff8a00; opacity: 0.2; }
+
+    /* Phase labels (if present in DOM/SVG) — styling only */
+    .phase-label,
+    .phase-label-svg {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(15,23,42,0.1);
+      border-radius: 999px;
+      padding: 4px 12px;
+      color: rgba(15,23,42,0.55);
+    }
+    .phase-3-label { color: #ff8a00; border-color: rgba(255,138,0,0.3); }
 
     .node-circle {
       fill: #fff;
@@ -293,6 +335,7 @@
 
           <g id="road-fill-layer">
             <path id="road-fill" class="road-fill" stroke="var(--road-pre)" d="M 120 120 C 220 60 320 80 420 140 C 520 210 620 170 710 120 C 820 60 940 90 1020 170 C 1120 270 1060 350 980 400 C 890 455 810 440 730 400 C 610 340 520 360 440 430 C 330 520 220 520 160 460 C 90 390 110 300 190 250 C 260 205 300 210 360 240"/>
+            <path id="road-orange" class="orange-path" d="M 120 120 C 220 60 320 80 420 140 C 520 210 620 170 710 120 C 820 60 940 90 1020 170 C 1120 270 1060 350 980 400 C 890 455 810 440 730 400 C 610 340 520 360 440 430 C 330 520 220 520 160 460 C 90 390 110 300 190 250 C 260 205 300 210 360 240"/>
             <rect id="crack-rect" class="crack-pattern" x="0" y="0" width="1200" height="720" fill="url(#crack-pattern)"/>
           </g>
 
@@ -445,6 +488,7 @@
 
   var roadPath = document.getElementById('road-path');
   var roadFill = document.getElementById('road-fill');
+  var roadOrange = document.getElementById('road-orange');
   var nodesLayer = document.getElementById('nodes-layer');
   var walkersLayer = document.getElementById('walkers-layer');
   var synapsesLayer = document.getElementById('synapses-layer');
@@ -559,6 +603,10 @@
     var drawn = t * pathLen;
     roadFill.setAttribute('stroke-dasharray', String(pathLen));
     roadFill.setAttribute('stroke-dashoffset', String(pathLen - drawn));
+    if (roadOrange) {
+      roadOrange.setAttribute('stroke-dasharray', String(pathLen));
+      roadOrange.setAttribute('stroke-dashoffset', String(pathLen - drawn));
+    }
   }
 
   function updateRoadFillStyle(stepIndex) {
@@ -590,6 +638,11 @@
       runningTotalEl.classList.add('flash-red');
       setTimeout(function () { runningTotalEl.classList.remove('flash-red'); }, 600);
     }
+
+    // Styling toggles only
+    document.body.classList.toggle('cracked', currentStep >= 36);
+    var svg = document.getElementById('main-svg');
+    if (svg) svg.classList.toggle('path-lit', currentStep >= 36);
   }
 
   function highlightPivotNode() {
