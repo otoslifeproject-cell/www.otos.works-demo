@@ -80,7 +80,7 @@
       stroke-linecap: round;
       stroke-linejoin: round;
       stroke-width: 7;
-      transition: stroke-dashoffset 0.6s ease-out, stroke 0.4s ease;
+      transition: stroke 0.2s ease;
     }
     .road-fill.cracked {
       stroke: var(--road-crisis);
@@ -108,6 +108,15 @@
       transition: opacity 0.25s ease;
     }
     .path-lit .orange-path { opacity: 1; }
+
+    .pass-seg {
+      fill: none;
+      stroke: #374151;
+      stroke-width: 7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.95;
+    }
 
     /* Bottom-left journey word styling (only visual) */
     .journey-word {
@@ -338,6 +347,7 @@
             <path id="road-orange" class="orange-path" d="M 120 120 C 220 60 320 80 420 140 C 520 210 620 170 710 120 C 820 60 940 90 1020 170 C 1120 270 1060 350 980 400 C 890 455 810 440 730 400 C 610 340 520 360 440 430 C 330 520 220 520 160 460 C 90 390 110 300 190 250 C 260 205 300 210 360 240"/>
             <rect id="crack-rect" class="crack-pattern" x="0" y="0" width="1200" height="720" fill="url(#crack-pattern)"/>
           </g>
+          <g id="journey-segments"></g>
 
           <g id="breaks-layer">
             <g><circle class="break-dot" cx="420" cy="140" r="6"/><line class="break-marker" x1="414" y1="134" x2="426" y2="146"/><line class="break-marker" x1="426" y1="134" x2="414" y2="146"/></g>
@@ -489,6 +499,7 @@
   var roadPath = document.getElementById('road-path');
   var roadFill = document.getElementById('road-fill');
   var roadOrange = document.getElementById('road-orange');
+  var journeySegments = document.getElementById('journey-segments');
   var nodesLayer = document.getElementById('nodes-layer');
   var walkersLayer = document.getElementById('walkers-layer');
   var synapsesLayer = document.getElementById('synapses-layer');
@@ -510,6 +521,10 @@
   var pathD = 'M 120 120 C 220 60 320 80 420 140 C 520 210 620 170 710 120 C 820 60 940 90 1020 170 C 1120 270 1060 350 980 400 C 890 455 810 440 730 400 C 610 340 520 360 440 430 C 330 520 220 520 160 460 C 90 390 110 300 190 250 C 260 205 300 210 360 240';
   var pathLen = 0;
   var stepTargetLen = [];
+  var isAdvancing = false;
+
+  var segmentPassCount = Object.create(null);
+
   var nodeLen = {};
   var state = 1;
   var currentStep = 0;
@@ -527,7 +542,24 @@
   }
 
   function buildStopLengths() {
-    // Project each logo/node position onto the path (nearest point) and use that as a "stop" length.
+
+    // Find the FIRST time the path comes near a node (avoids picking the wrong loop pass).
+    function firstLenNearNode(x, y, radius) {
+      radius = radius || 70;
+      var r2 = radius * radius;
+      var samples = 1400;
+      for (var i = 0; i <= samples; i++) {
+        var len = (i / samples) * pathLen;
+        var p = roadPath.getPointAtLength(len);
+        var dx = p.x - x;
+        var dy = p.y - y;
+        var d2 = dx * dx + dy * dy;
+        if (d2 <= r2) return len;
+      }
+      return null;
+    }
+
+    // Fallback: nearest point on path (if no close pass found)
     function nearestLenOnPath(x, y) {
       var best = { d2: Infinity, len: 0 };
       var samples = 900;
@@ -556,8 +588,19 @@
     }
 
     for (var i = 0; i < NODES.length; i++) {
-      nodeLen[NODES[i].id] = nearestLenOnPath(NODES[i].x, NODES[i].y);
+      var first = firstLenNearNode(NODES[i].x, NODES[i].y, 70);
+      nodeLen[NODES[i].id] = (first != null) ? first : nearestLenOnPath(NODES[i].x, NODES[i].y);
     }
+
+    // Node landmark positions along the path (0..1), in path order
+    // eslint-disable-next-line no-unused-vars
+    const nodePositions = Array.from(new Set(NODES
+      .map(function(n){ return nodeLen[n.id]; })
+      .filter(function(v){ return typeof v === 'number' && isFinite(v); })
+      .map(function(len){ return Math.max(0, Math.min(1, len / pathLen)); })
+      .concat([0,1])
+      .map(function(p){ return Number(p.toFixed(4)); })
+    )).sort(function(a,b){ return a-b; });
 
     // Map each story step to a stop (logo) based on its service/title text.
     function mapStepToNode(step) {
@@ -590,9 +633,8 @@
       var step = STEPS[k];
       var nodeId = mapStepToNode(step);
       var len = nodeLen[nodeId];
-      // Ensure the journey never goes backwards unless explicitly desired.
-      var prev = stepTargetLen[k - 1];
-      stepTargetLen[k] = (len != null && len >= prev) ? len : prev;
+      // Allow moving backwards/forwards between stops.
+      stepTargetLen[k] = (len != null) ? len : stepTargetLen[k - 1];
     }
   }
 
@@ -682,6 +724,28 @@
     }
   }
 
+  var currentDrawnLen = 0;
+
+  function animateRoadFill(fromLen, toLen, done) {
+    var start = performance.now();
+    var dur = 400;
+    function easeInOut(t){
+      return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2;
+    }
+    function tick(now){
+      var t = Math.min(1, (now - start) / dur);
+      var p = easeInOut(t);
+      var cur = fromLen + (toLen - fromLen) * p;
+      setRoadFillToLen(cur);
+      if (t < 1) requestAnimationFrame(tick);
+      else {
+        currentDrawnLen = toLen;
+        if (done) done();
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
   function setRoadFillToLen(drawnLen) {
     if (drawnLen < 0) drawnLen = 0;
     if (drawnLen > pathLen) drawnLen = pathLen;
@@ -691,6 +755,39 @@
       roadOrange.setAttribute('stroke-dasharray', String(pathLen));
       roadOrange.setAttribute('stroke-dashoffset', String(pathLen - drawnLen));
     }
+    currentDrawnLen = drawnLen;
+  }
+
+  function addPassSegment(fromLen, toLen, fromNodeId, toNodeId) {
+    if (!journeySegments) return;
+    var a = Math.max(0, Math.min(pathLen, fromLen));
+    var b = Math.max(0, Math.min(pathLen, toLen));
+    if (Math.abs(a - b) < 0.5) return;
+    var start = Math.min(a, b);
+    var end = Math.max(a, b);
+    var segLen = end - start;
+
+    var key = null;
+    if (fromNodeId && toNodeId) {
+      key = [fromNodeId, toNodeId].sort().join('->');
+    } else {
+      // Fallback bucket by length region (rare)
+      key = Math.round(start) + ':' + Math.round(end);
+    }
+    segmentPassCount[key] = (segmentPassCount[key] || 0) + 1;
+    var pass = segmentPassCount[key];
+
+    // Thicker each time the same segment is re-walked
+    var base = 7;
+    var width = base + Math.min(10, (pass - 1) * 2);
+
+    var p = document.createElementNS(SVG_NS, 'path');
+    p.setAttribute('d', pathD);
+    p.setAttribute('class', 'pass-seg');
+    p.setAttribute('stroke-width', String(width));
+    p.setAttribute('stroke-dasharray', segLen + ' ' + (pathLen - segLen));
+    p.setAttribute('stroke-dashoffset', String(pathLen - end));
+    journeySegments.appendChild(p);
   }
 
   function updateRoadFillStyle(stepIndex) {
@@ -755,7 +852,8 @@
       if (callback) callback();
       return;
     }
-    var fromLen = stepTargetLen[currentStep] != null ? stepTargetLen[currentStep] : (currentStep / 72) * pathLen;
+    var prevStep = currentStep;
+    var fromLen = stepTargetLen[prevStep] != null ? stepTargetLen[prevStep] : (prevStep / 72) * pathLen;
     var toLen = stepTargetLen[next] != null ? stepTargetLen[next] : (next / 72) * pathLen;
     currentStep = next;
     var step = STEPS[next];
@@ -773,24 +871,11 @@
     backBtn.disabled = false;
     startBtn.textContent = next < 72 ? 'Next' : 'Next';
 
-    var startTime = null;
-    function tick(now) {
-      if (!startTime) startTime = now;
-      var elapsed = (now - startTime) / 1000;
-      var dur = 0.6;
-      var t = Math.min(1, elapsed / dur);
-      t = 1 - Math.pow(1 - t, 2);
-      var curLen = fromLen + (toLen - fromLen) * t;
-      setRoadFillToLen(curLen);
-      if (t < 1) {
-        requestAnimationFrame(tick);
-      } else {
-        setRoadFillToLen(toLen);
-        if (next === 72) highlightPivotNode();
-        if (callback) callback();
-      }
-    }
-    requestAnimationFrame(tick);
+    animateRoadFill(fromLen, toLen, function () {
+      addPassSegment(fromLen, toLen, mapStepToNode(STEPS[prevStep]), mapStepToNode(STEPS[next]));
+      if (next === 72) highlightPivotNode();
+      if (callback) callback();
+    });
   }
 
   function phase2Transition() {
@@ -896,6 +981,9 @@
   }
 
   function onStart() {
+    if (isAdvancing) return;
+    isAdvancing = true;
+    setTimeout(function(){ isAdvancing = false; }, 120);
     if (state === 1) {
       state = 2;
       startBtn.textContent = 'Next';
@@ -922,12 +1010,15 @@
 
   function onBack() {
     if (state !== 2 || currentStep <= 0) return;
+    var fromLen = stepTargetLen[currentStep] != null ? stepTargetLen[currentStep] : (currentStep / 72) * pathLen;
     var leavingStep = STEPS[currentStep];
     if (leavingStep && leavingStep.cost > 0) runningTotal -= leavingStep.cost;
     currentStep--;
     var step = STEPS[currentStep];
     var backLen = stepTargetLen[currentStep] != null ? stepTargetLen[currentStep] : (currentStep / 72) * pathLen;
-    setRoadFillToLen(backLen);
+    animateRoadFill(fromLen, backLen, function () {
+      addPassSegment(fromLen, backLen, mapStepToNode(leavingStep), mapStepToNode(step));
+    });
     updateRoadFillStyle(currentStep);
     updatePanel(step);
     stepReadout.textContent = 'Step ' + currentStep + ' / 72';
@@ -936,11 +1027,11 @@
   }
 
   document.addEventListener('keydown', function (e) {
-    if (e.code === 'Space') {
-      e.preventDefault();
-      if (state === 1) onStart();
-      else if (state === 2 && currentStep < 72) onStart();
-    }
+    if (e.code !== 'Space') return;
+    if (e.repeat) return;
+    e.preventDefault();
+    if (state === 1) onStart();
+    else if (state === 2 && currentStep < 72) onStart();
   });
 
   backBtn.addEventListener('click', onBack);
