@@ -16,7 +16,7 @@
 }
 
 *{ box-sizing:border-box; }
-html, body{ height:100%; }
+html, body{ min-height:100%; }
 
 body{
 	margin:0;
@@ -24,9 +24,8 @@ body{
 	background:var(--bg);
 	color:var(--text);
 
-	min-height:100svh;
-	overflow-x:hidden;
-	overflow-y:auto;
+	min-height:100vh;
+	overflow:visible;
 
 	display:flex;
 	flex-direction:column;
@@ -216,14 +215,14 @@ h1{
 }
 
 @media (max-height: 900px){
-	.page{ height:calc(100svh - 72px); margin-top:72px; }
+	.page{ min-height:calc(100svh - 72px); margin-top:72px; }
 	.navbar{ padding:12px clamp(16px, 4vw, 60px); }
 }
 
 @media(max-width:980px){
 	.navbar{ padding:14px 18px; }
 	.page{
-		height:calc(100svh - 70px);
+		min-height:calc(100svh - 70px);
 		margin-top:70px;
 		padding:18px 18px calc(18px + 84px);
 	}
@@ -239,6 +238,77 @@ h1{
 </head>
 
 <body>
+<section style="
+  position: relative;
+  height: 48vh;
+  min-height: 320px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: #0f172a;
+">
+  <div style="
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(10,18,35,0.45), rgba(10,18,35,0.82));
+    z-index: 1;
+  "></div>
+  <img
+    src="images/hero-7-dean.png"
+    alt=""
+    style="
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    "
+  />
+  <img
+    src="../assets/brain.png"
+    alt="OTOS"
+    style="
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      width: 32px;
+      height: 32px;
+      z-index: 10;
+    "
+  />
+  <div style="position: relative; z-index: 2; padding: 0 2rem;">
+    <p style="
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ff8a00;
+      margin: 0 0 1rem;
+    ">Governance &amp; controls</p>
+    <h1 style="
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      color: #ffffff;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin: 0 0 1rem;
+    ">You stay in control.<br>Always.</h1>
+    <p style="
+      font-family: 'Inter', sans-serif;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.75);
+      margin: 0;
+      max-width: 52ch;
+      margin-left: auto;
+      margin-right: auto;
+    ">OTOS follows your team's definitions — not the other way around.</p>
+  </div>
+</section>
 <div class="navbar">
 	<div class="nav-left">
 		<img src="../assets/brain.png" class="nav-logo" alt="">
@@ -256,13 +326,10 @@ h1{
 
 <div class="page">
 	<div class="hero">
-		<p class="kicker">Controls</p>
-		<h1>Governance and safety boundaries</h1>
-		<p class="strapline">OTOS surfaces signals. The partner team makes the decision.</p>
+		<p class="strapline">OTOS follows your team's definitions — not the other way around.</p>
 		<p class="strapline">Low integration. Low disruption. High clarity.</p>
 		<p class="sub">
-			This pilot is designed to be low‑integration and low‑disruption in Phase 1.
-			Continuity logs touchpoints and raises prompts. Escalation decisions remain human controlled.
+			You decide what counts as a touchpoint. You escalate — OTOS never does. If a signal looks serious, it goes to a named person on your team for a human decision. And you can stop at any time. There's no lock-in. No procurement commitment required to explore.
 		</p>
 	</div>
 
