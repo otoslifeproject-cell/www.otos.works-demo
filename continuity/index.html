@@ -299,9 +299,81 @@ body{
 </head>
 
 <body>
-<section class="page-hero" style="position:relative; width:100%; min-height:280px; height:45vh; overflow:hidden; flex-shrink:0;">
-  <img src="../assets/hero/hero-1.png" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center;">
-  <div style="position:absolute; inset:0; background:linear-gradient(to bottom, rgba(15,23,42,0.15), rgba(15,23,42,0.7)); pointer-events:none;"></div>
+<section style="
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 560px;
+  max-height: 900px;
+  background-image: url('images/hero-7-dean.png');
+  background-size: cover;
+  background-position: center top;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+">
+  <!-- Dark gradient overlay -->
+  <div style="
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(10,18,35,0.15) 0%,
+      rgba(10,18,35,0.55) 60%,
+      rgba(10,18,35,0.88) 100%
+    );
+  "></div>
+
+  <!-- Headline -->
+  <div style="
+    position: relative;
+    z-index: 2;
+    padding: 0 64px 40px;
+    max-width: 720px;
+  ">
+    <h1 style="
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 600;
+      color: white;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin: 0 0 12px;
+    ">One human. Many services.<br>One joined-up pathway.</h1>
+    <p style="
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.85);
+      margin: 0;
+    ">The OTOS Continuity proposed Cambridge Pilot.</p>
+  </div>
+
+  <!-- Partner logos bar at bottom of photo -->
+  <div style="
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 16px 64px;
+    background: rgba(10,18,35,0.55);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  ">
+    <img src="../assets/partners/NHS_CPFT_Logo.png" alt="CPFT" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
+    <img src="../assets/partners/The_Sun_Network_Logo.png" alt="SUN Network" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
+    <img src="../assets/partners/CGL_Logo.png" alt="CGL" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
+    <img src="../assets/partners/CRS_Logo.png" alt="CRS" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
+    <img src="../assets/partners/Addenbrookes_Logo.png" alt="Addenbrooke's" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
+    <img src="../assets/partners/WorkWell_Logo.png" alt="WorkWell" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
+    <img src="../assets/partners/MIND_Logo.png" alt="MIND" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
+    <img src="../assets/partners/Jo_Fenton_Logo.png" alt="Jo Fenton" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
+    <img src="../assets/partners/Gillvray_Health_Logo.png" alt="Gillvray Health" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
+    <img src="../assets/partners/Keep_Your_Head_Logo.png" alt="Keep Your Head" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
+    <img src="../assets/partners/ADHD_Team_Logo.png" alt="ADHD Team" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
+  </div>
 </section>
 <!-- NAV -->
 <div class="navbar">
@@ -334,23 +406,6 @@ body{
 		<button class="next-btn" type="button" onclick="window.location.href='/continuity/how-it-works.html'">Next</button>
 	</div>
 
-	<div class="partner-strip" id="partnerStrip">
-		<p class="label">Invited pilot partners</p>
-
-		<div class="partner-logos">
-			<img src="../assets/partners/NHS_CPFT_Logo.png" alt="CPFT">
-			<img src="../assets/partners/The_Sun_Network_Logo.png" alt="SUN Network">
-			<img src="../assets/partners/CGL_Logo.png" alt="CGL">
-			<img src="../assets/partners/CRS_Logo.png" alt="CRS">
-			<img class="logo-addenbrookes" src="../assets/partners/Addenbrookes_Logo.png" alt="Addenbrooke’s">
-			<img class="logo-workwell" src="../assets/partners/WorkWell_Logo.png" alt="WorkWell">
-			<img src="../assets/partners/MIND_Logo.png" alt="MIND">
-			<img src="../assets/partners/Jo_Fenton_Logo.png" alt="Jo Fenton">
-			<img src="../assets/partners/Gillvray_Health_Logo.png" alt="Gillvray Health">
-			<img src="../assets/partners/Keep_Your_Head_Logo.png" alt="Keep Your Head">
-			<img src="../assets/partners/ADHD_Team_Logo.png" alt="ADHD Team">
-		</div>
-	</div>
 </section>
 
 <!-- FOOTER -->
@@ -379,14 +434,10 @@ body{
 	const enterBtn = document.getElementById('enterBtn');
 
 	const welcome = document.getElementById('welcome');
-	const partnerStrip = document.getElementById('partnerStrip');
 
 	function revealPage(){
 		welcome.style.display = 'block';
-		partnerStrip.style.display = 'block';
-
 		welcome.classList.add('reveal');
-		partnerStrip.classList.add('reveal');
 	}
 
 	function closePop(){
