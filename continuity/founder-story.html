@@ -19,15 +19,15 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--navy); overflow: hidden; }
 
-    .app { display: flex; width: 100%; height: 100vh; overflow: hidden; }
+    .app { display: flex; width: 100%; height: 100vh; }
     .panel-map {
-      width: 55%;
+      width: calc(100% - 340px);
       height: 100%;
       position: relative;
       overflow: hidden;
     }
     .panel-info {
-      width: 45%;
+      width: 340px;
       flex-shrink: 0;
       height: 100%;
       background: #fff;
@@ -58,41 +58,42 @@
       display: block;
     }
 
-    /* Base path — light grey S-curve */
-    .path-base {
+    .road-bg {
       fill: none;
-      stroke: #d1d5db;
-      stroke-width: 6;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    /* Travelled path — dark grey, draws on */
-    .path-travelled {
-      fill: none;
-      stroke: #374151;
+      stroke: rgba(15,23,42,0.12);
       stroke-width: 8;
       stroke-linecap: round;
       stroke-linejoin: round;
-      transition: stroke-dashoffset 0.6s ease-out;
     }
-    .path-travelled.crack-at-36 {
-      animation: pathCrack 800ms ease-in-out;
-    }
-    @keyframes pathCrack {
-      0%, 100% { stroke: #374151; stroke-width: 8; filter: none; }
-      33% { stroke: #1a0a00; stroke-width: 14; filter: drop-shadow(0 0 6px rgba(255,138,0,0.4)); }
-      66% { stroke: #374151; stroke-width: 8; filter: drop-shadow(0 0 6px rgba(255,138,0,0.4)); }
-    }
-    /* Orange rise — from step 36 forward */
-    .path-orange {
+    .road-glow {
       fill: none;
-      stroke: #ff8a00;
-      stroke-width: 4;
+      stroke: rgba(15,23,42,0.06);
+      stroke-width: 18;
       stroke-linecap: round;
       stroke-linejoin: round;
-      transition: stroke-dashoffset 0.6s ease-out;
-      filter: drop-shadow(0 0 8px rgba(255,138,0,0.6));
     }
+
+    .road-fill {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 8;
+      transition: stroke-dashoffset 0.6s ease-out, stroke 0.4s ease;
+    }
+    .road-fill.cracked {
+      stroke: var(--road-crisis);
+    }
+    .road-fill.otos-phase {
+      stroke: var(--orange);
+    }
+
+    .crack-pattern {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+    #road-fill-layer.has-cracks .crack-pattern { opacity: 0.3; }
+    #road-fill-layer.otos-phase .crack-pattern { opacity: 0; }
 
     .node-circle {
       fill: #fff;
@@ -104,29 +105,6 @@
       stroke: rgba(34,197,94,0.5);
       filter: drop-shadow(0 0 12px rgba(34,197,94,0.5));
     }
-    .service-node .node-wrap {
-      opacity: 0.25;
-      transform: scale(1);
-      transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .service-node.reached .node-wrap {
-      opacity: 1;
-      animation: nodeBounce 300ms ease-out;
-    }
-    .service-node.orange-section .node-orange-ring {
-      visibility: visible;
-    }
-    .node-orange-ring {
-      fill: none;
-      stroke: rgba(255,138,0,0.4);
-      stroke-width: 3;
-      visibility: hidden;
-    }
-    @keyframes nodeBounce {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.15); }
-      100% { transform: scale(1); }
-    }
     .node-initials {
       font-family: Inter, sans-serif;
       font-size: 14px;
@@ -137,61 +115,16 @@
     }
     .node-pivot .node-initials { fill: #fff; }
 
+    .break-marker {
+      stroke: rgba(15,23,42,0.4);
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+    .break-dot { fill: rgba(15,23,42,0.2); }
+
     .foot-ellipse {
       fill: rgba(15,23,42,0.22);
       opacity: 0.7;
-    }
-
-    /* Story text — bottom left */
-    .story-text {
-      position: absolute;
-      bottom: 48px;
-      left: 48px;
-      max-width: 420px;
-      z-index: 10;
-      pointer-events: none;
-    }
-    .story-text .line {
-      font-family: 'Playfair Display', serif;
-      font-weight: 600;
-      font-size: clamp(1.4rem, 2.5vw, 2rem);
-      color: #0f172a;
-      line-height: 1.25;
-      opacity: 0;
-      transition: opacity 300ms ease;
-      position: absolute;
-      left: 0;
-      right: 0;
-    }
-    .story-text .line.visible { opacity: 1; }
-    .story-text .line .orange-phrase { color: #ff8a00; }
-
-    /* Phase labels on path — in SVG */
-    .phase-label-svg {
-      font-family: Inter, sans-serif;
-      font-weight: 600;
-      font-size: 11px;
-      fill: #0f172a;
-      text-anchor: middle;
-      dominant-baseline: central;
-      pointer-events: none;
-    }
-
-    /* Progress bar — very bottom */
-    .progress-bar-wrap {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 3px;
-      background: #e5e7eb;
-      z-index: 30;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(to right, #374151, #ff8a00);
-      transition: width 0.4s ease-out;
     }
 
     .phase-pill {
@@ -227,14 +160,14 @@
     .bottom-bar {
       position: absolute;
       left: 0;
-      right: 0;
-      bottom: 56px;
-      height: 48px;
+      right: 340px;
+      bottom: 0;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 20px;
-      background: linear-gradient(transparent, rgba(244,245,247,0.9));
+      background: linear-gradient(transparent, rgba(244,245,247,0.95));
       pointer-events: none;
     }
     .bottom-bar .controls { pointer-events: auto; display: flex; align-items: center; gap: 12px; }
@@ -342,30 +275,49 @@
     <div class="panel-map">
       <div class="map-wrap" id="map-wrap">
         <svg id="main-svg" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Care pathway map">
-          <defs></defs>
+          <defs>
+            <filter id="road-glow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="crack-pattern" patternUnits="userSpaceOnUse" width="20" height="20">
+              <path d="M0 10 L20 10 M10 0 L10 20" stroke="rgba(0,0,0,0.4)" stroke-width="0.5" fill="none"/>
+              <path d="M2 2 L8 8 M14 4 L18 10" stroke="rgba(0,0,0,0.3)" stroke-width="0.4" fill="none"/>
+            </pattern>
+          </defs>
+
           <g id="road-layer">
-            <path id="road-path" class="path-base" d=""/>
-            <path id="road-travelled" class="path-travelled" d=""/>
-            <path id="road-orange" class="path-orange" d=""/>
+            <path id="road-path" class="road-glow" filter="url(#road-glow)" d="M 120 120 C 220 60 320 80 420 140 C 520 210 620 170 710 120 C 820 60 940 90 1020 170 C 1120 270 1060 350 980 400 C 890 455 810 440 730 400 C 610 340 520 360 440 430 C 330 520 220 520 160 460 C 90 390 110 300 190 250 C 260 205 300 210 360 240"/>
+            <path id="road-stroke" class="road-bg" d="M 120 120 C 220 60 320 80 420 140 C 520 210 620 170 710 120 C 820 60 940 90 1020 170 C 1120 270 1060 350 980 400 C 890 455 810 440 730 400 C 610 340 520 360 440 430 C 330 520 220 520 160 460 C 90 390 110 300 190 250 C 260 205 300 210 360 240"/>
           </g>
-          <g id="phase-labels-svg"></g>
+
+          <g id="road-fill-layer">
+            <path id="road-fill" class="road-fill" stroke="var(--road-pre)" d="M 120 120 C 220 60 320 80 420 140 C 520 210 620 170 710 120 C 820 60 940 90 1020 170 C 1120 270 1060 350 980 400 C 890 455 810 440 730 400 C 610 340 520 360 440 430 C 330 520 220 520 160 460 C 90 390 110 300 190 250 C 260 205 300 210 360 240"/>
+            <rect id="crack-rect" class="crack-pattern" x="0" y="0" width="1200" height="720" fill="url(#crack-pattern)"/>
+          </g>
+
+          <g id="breaks-layer">
+            <g><circle class="break-dot" cx="420" cy="140" r="6"/><line class="break-marker" x1="414" y1="134" x2="426" y2="146"/><line class="break-marker" x1="426" y1="134" x2="414" y2="146"/></g>
+            <g><circle class="break-dot" cx="980" cy="400" r="6"/><line class="break-marker" x1="974" y1="394" x2="986" y2="406"/><line class="break-marker" x1="986" y1="394" x2="974" y2="406"/></g>
+            <g><circle class="break-dot" cx="440" cy="430" r="6"/><line class="break-marker" x1="434" y1="424" x2="446" y2="436"/><line class="break-marker" x1="446" y1="424" x2="434" y2="436"/></g>
+          </g>
+
           <g id="nodes-layer"></g>
           <g id="walkers-layer"></g>
           <g id="synapses-layer"></g>
         </svg>
       </div>
-      <div class="story-text" id="story-text">
-        <p class="line visible" id="story-line-0"></p>
-        <p class="line" id="story-line-1"></p>
-      </div>
+
       <div class="overlay-message" id="joined-message">
         <p class="text-line" id="joined-text">A joined-up pathway.</p>
       </div>
+
       <div class="overlay-final" id="overlay-final">
         <p class="final-text">No joined-up pathway.<br>Until now.</p>
         <a href="/continuity/guided-demos.html" class="cta-btn">See the OTOS demo →</a>
         <p class="small-credit">OTOS Continuity™ — Cambridge Pilot Proposal 2026</p>
       </div>
+
       <div class="bottom-bar">
         <div class="controls">
           <button type="button" class="btn" id="back-btn" disabled>Back</button>
@@ -387,9 +339,6 @@
       <p class="step-desc" id="step-desc">35 years of self-medicating with alcohol every day before crossing the invisible line. Addiction and dependency kicked in. The journey begins here.</p>
       <div class="step-cost" id="step-cost">£0</div>
     </div>
-  </div>
-  <div class="progress-bar-wrap">
-    <div class="progress-bar-fill" id="progress-bar-fill"></div>
   </div>
 
   <script>
@@ -495,8 +444,7 @@
   ];
 
   var roadPath = document.getElementById('road-path');
-  var roadTravelled = document.getElementById('road-travelled');
-  var roadOrange = document.getElementById('road-orange');
+  var roadFill = document.getElementById('road-fill');
   var nodesLayer = document.getElementById('nodes-layer');
   var walkersLayer = document.getElementById('walkers-layer');
   var synapsesLayer = document.getElementById('synapses-layer');
@@ -514,12 +462,8 @@
   var joinedMessage = document.getElementById('joined-message');
   var joinedText = document.getElementById('joined-text');
   var overlayFinal = document.getElementById('overlay-final');
-  var progressBarFill = document.getElementById('progress-bar-fill');
-  var storyLine0 = document.getElementById('story-line-0');
-  var storyLine1 = document.getElementById('story-line-1');
-  var phaseLabelsSvg = document.getElementById('phase-labels-svg');
 
-  var pathD = 'M 80 80 C 380 40 820 60 1120 120 C 1120 280 720 380 320 420 C 200 450 120 520 120 660 C 400 680 900 680 1080 660';
+  var pathD = 'M 120 120 C 220 60 320 80 420 140 C 520 210 620 170 710 120 C 820 60 940 90 1020 170 C 1120 270 1060 350 980 400 C 890 455 810 440 730 400 C 610 340 520 360 440 430 C 330 520 220 520 160 460 C 90 390 110 300 190 250 C 260 205 300 210 360 240';
   var pathLen = 0;
   var state = 1;
   var currentStep = 0;
@@ -527,81 +471,19 @@
   var walkers = [];
   var walkerAnimId = null;
   var isTransitioning = false;
-  var storyFlip = 0;
-  var PHASE_LABELS = [
-    { step: 0, text: 'Phase 1 — The Journey' },
-    { step: 20, text: 'Phase 2 — The System' },
-    { step: 36, text: 'Phase 3 — The Crack' },
-    { step: 50, text: 'Phase 4 — Out The Other Side' }
-  ];
-  var nodeStepIndex = [];
+  var roadFillLayer = document.getElementById('road-fill-layer');
 
   function fmtGBP(n) { return (n == null || n === 0) ? '£0' : '£' + Number(n).toLocaleString('en-GB'); }
 
   function initPathLength() {
-    roadPath.setAttribute('d', pathD);
-    roadTravelled.setAttribute('d', pathD);
-    roadOrange.setAttribute('d', pathD);
     pathLen = roadPath.getTotalLength();
-    roadTravelled.setAttribute('stroke-dasharray', String(pathLen));
-    roadTravelled.setAttribute('stroke-dashoffset', String(pathLen));
-    roadOrange.setAttribute('stroke-dasharray', String(pathLen));
-    roadOrange.setAttribute('stroke-dashoffset', String(pathLen));
-    roadOrange.style.visibility = 'hidden';
-    var psymIdx = -1;
-    for (var i = 0; i < NODES.length; i++) {
-      if (NODES[i].id === 'psymplicity') psymIdx = i;
-      nodeStepIndex.push(0);
-    }
-    var k = 0;
-    for (var j = 0; j < NODES.length; j++) {
-      if (j === psymIdx) nodeStepIndex[j] = 72;
-      else nodeStepIndex[j] = Math.min(71, Math.round((k++ / (NODES.length - 1)) * 71));
-    }
-    drawPhaseLabels();
-  }
-
-  function drawPhaseLabels() {
-    if (!phaseLabelsSvg) return;
-    PHASE_LABELS.forEach(function (pl) {
-      var t = pl.step / 72;
-      var len = t * pathLen;
-      var pt = roadPath.getPointAtLength(len);
-      var g = document.createElementNS(SVG_NS, 'g');
-      g.setAttribute('transform', 'translate(' + pt.x + ',' + pt.y + ')');
-      var rect = document.createElementNS(SVG_NS, 'rect');
-      rect.setAttribute('x', -110);
-      rect.setAttribute('y', -10);
-      rect.setAttribute('width', 220);
-      rect.setAttribute('height', 20);
-      rect.setAttribute('rx', 10);
-      rect.setAttribute('fill', 'rgba(255,255,255,0.85)');
-      rect.setAttribute('stroke', 'rgba(15,23,42,0.12)');
-      rect.setAttribute('stroke-width', 1);
-      var text = document.createElementNS(SVG_NS, 'text');
-      text.setAttribute('class', 'phase-label-svg');
-      text.textContent = pl.text;
-      g.appendChild(rect);
-      g.appendChild(text);
-      phaseLabelsSvg.appendChild(g);
-    });
   }
 
   function drawNodes() {
-    NODES.forEach(function (node, idx) {
+    NODES.forEach(function (node) {
       var g = document.createElementNS(SVG_NS, 'g');
       g.setAttribute('class', 'service-node' + (node.id === 'psymplicity' ? ' node-pivot-wrap' : ''));
       g.setAttribute('data-node-id', node.id);
-      g.setAttribute('data-node-idx', String(idx));
-
-      var wrap = document.createElementNS(SVG_NS, 'g');
-      wrap.setAttribute('class', 'node-wrap');
-
-      var ring = document.createElementNS(SVG_NS, 'circle');
-      ring.setAttribute('class', 'node-orange-ring');
-      ring.setAttribute('cx', node.x);
-      ring.setAttribute('cy', node.y);
-      ring.setAttribute('r', 55);
 
       var circle = document.createElementNS(SVG_NS, 'circle');
       circle.setAttribute('class', 'node-circle');
@@ -630,24 +512,10 @@
       initials.setAttribute('visibility', 'hidden');
       initials.textContent = node.initials;
 
-      wrap.appendChild(ring);
-      wrap.appendChild(circle);
-      wrap.appendChild(img);
-      wrap.appendChild(initials);
-      g.appendChild(wrap);
+      g.appendChild(circle);
+      g.appendChild(img);
+      g.appendChild(initials);
       nodesLayer.appendChild(g);
-    });
-  }
-
-  function updateNodeStates() {
-    NODES.forEach(function (node, idx) {
-      var g = nodesLayer.querySelector('[data-node-id="' + node.id + '"]');
-      if (!g) return;
-      var stepAt = nodeStepIndex[idx] != null ? nodeStepIndex[idx] : Math.round((idx / NODES.length) * 72);
-      if (currentStep >= stepAt) g.classList.add('reached');
-      else g.classList.remove('reached');
-      if (currentStep >= 36 && stepAt >= 36) g.classList.add('orange-section');
-      else g.classList.remove('orange-section');
     });
   }
 
@@ -687,43 +555,27 @@
     walkerAnimId = requestAnimationFrame(animateWalkers);
   }
 
-  function setRoadFillProgress(t, stepIndex) {
-    stepIndex = stepIndex != null ? stepIndex : Math.round(t * 72);
+  function setRoadFillProgress(t) {
     var drawn = t * pathLen;
-    roadTravelled.setAttribute('stroke-dasharray', String(pathLen));
-    roadTravelled.setAttribute('stroke-dashoffset', String(pathLen - drawn));
-    if (stepIndex >= 36) {
-      roadOrange.style.visibility = 'visible';
-      var lenTo36 = (36 / 72) * pathLen;
-      var orangeLen = ((stepIndex - 36) / 72) * pathLen;
-      if (orangeLen > 0) {
-        roadOrange.setAttribute('stroke-dasharray', orangeLen + ' ' + (pathLen - orangeLen));
-        roadOrange.setAttribute('stroke-dashoffset', lenTo36);
-      }
-    } else {
-      roadOrange.style.visibility = 'hidden';
-    }
-    if (stepIndex === 36) {
-      roadTravelled.classList.add('crack-at-36');
-      setTimeout(function () { roadTravelled.classList.remove('crack-at-36'); }, 800);
-    }
+    roadFill.setAttribute('stroke-dasharray', String(pathLen));
+    roadFill.setAttribute('stroke-dashoffset', String(pathLen - drawn));
   }
 
-  function updateStoryText(step) {
-    var line0 = storyFlip === 0 ? storyLine0 : storyLine1;
-    var line1 = storyFlip === 0 ? storyLine1 : storyLine0;
-    line0.classList.remove('visible');
-    var text = step.description || step.title;
-    if (currentStep >= 36 && step.title) {
-      line1.innerHTML = '<span class="orange-phrase">' + step.title + '</span> ';
-      var rest = step.description || '';
-      if (rest) line1.innerHTML += rest;
+  function updateRoadFillStyle(stepIndex) {
+    roadFill.classList.remove('cracked', 'otos-phase');
+    roadFillLayer.classList.remove('has-cracks');
+    if (stepIndex >= 58) {
+      roadFill.style.stroke = 'var(--road-crisis)';
+      roadFill.classList.add('cracked');
+      roadFillLayer.classList.add('has-cracks');
+    } else if (stepIndex >= 45) {
+      roadFill.style.stroke = 'var(--road-worn)';
+      roadFillLayer.classList.add('has-cracks');
+    } else if (stepIndex >= 30) {
+      roadFill.style.stroke = 'var(--road-worn)';
     } else {
-      line1.textContent = text;
-      line1.classList.remove('orange-phrase');
+      roadFill.style.stroke = 'var(--road-pre)';
     }
-    line1.classList.add('visible');
-    storyFlip = 1 - storyFlip;
   }
 
   function updatePanel(step) {
@@ -738,9 +590,6 @@
       runningTotalEl.classList.add('flash-red');
       setTimeout(function () { runningTotalEl.classList.remove('flash-red'); }, 600);
     }
-    updateStoryText(step);
-    updateNodeStates();
-    if (progressBarFill) progressBarFill.style.width = (currentStep / 72 * 100) + '%';
   }
 
   function highlightPivotNode() {
@@ -774,6 +623,7 @@
     currentStep = next;
     var step = STEPS[next];
 
+    updateRoadFillStyle(next);
     if (next === 58) {
       mapWrap.classList.add('shake');
       setTimeout(function () { mapWrap.classList.remove('shake'); }, 600);
@@ -794,12 +644,11 @@
       var t = Math.min(1, elapsed / dur);
       t = 1 - Math.pow(1 - t, 2);
       var currentT = fromT + (toT - fromT) * t;
-      var stepIndex = Math.round(currentT * 72);
-      setRoadFillProgress(currentT, stepIndex);
+      setRoadFillProgress(currentT);
       if (t < 1) {
         requestAnimationFrame(tick);
       } else {
-        setRoadFillProgress(toT, next);
+        setRoadFillProgress(toT);
         if (next === 72) highlightPivotNode();
         if (callback) callback();
       }
@@ -815,16 +664,46 @@
     runningTotalEl.style.fontSize = '18px';
 
     setTimeout(function () {
-      joinedText.classList.add('visible');
+      roadFillLayer.classList.add('has-cracks');
+      roadFill.style.stroke = 'var(--road-crisis)';
+      var glow = document.createElementNS(SVG_NS, 'path');
+      glow.setAttribute('d', pathD);
+      glow.setAttribute('fill', 'none');
+      glow.setAttribute('stroke', 'rgba(255,138,0,0.6)');
+      glow.setAttribute('stroke-width', '14');
+      glow.setAttribute('stroke-linecap', 'round');
+      glow.setAttribute('stroke-linejoin', 'round');
+      glow.setAttribute('class', 'road-fill');
+      glow.style.strokeDasharray = pathLen;
+      glow.style.strokeDashoffset = 0;
+      roadFill.parentNode.insertBefore(glow, roadFill);
+      glow.style.transition = 'opacity 1s';
+      glow.style.opacity = '0.6';
+      setTimeout(function () {
+        glow.style.opacity = '0';
+        setTimeout(function () { glow.remove(); }, 1000);
+      }, 1000);
     }, 1500);
 
     setTimeout(function () {
+      roadFillLayer.classList.remove('has-cracks');
+      roadFillLayer.classList.add('otos-phase');
+      roadFill.classList.remove('has-cracks');
+      roadFill.classList.add('otos-phase');
+      roadFill.style.stroke = 'var(--road-otos)';
+    }, 1500 + 1000 + 1500);
+
+    setTimeout(function () {
+      joinedText.classList.add('visible');
+    }, 1500 + 1000 + 1500 + 800);
+
+    setTimeout(function () {
       joinedText.classList.remove('visible');
-    }, 1500 + 500 + 2500);
+    }, 1500 + 1000 + 1500 + 800 + 500 + 2500);
 
     setTimeout(function () {
       drawSynapses();
-    }, 1500 + 500 + 2500 + 500);
+    }, 1500 + 1000 + 1500 + 800 + 500 + 2500 + 500);
   }
 
   function drawSynapses() {
@@ -910,7 +789,8 @@
     if (leavingStep && leavingStep.cost > 0) runningTotal -= leavingStep.cost;
     currentStep--;
     var step = STEPS[currentStep];
-    setRoadFillProgress(currentStep / 72, currentStep);
+    setRoadFillProgress(currentStep / 72);
+    updateRoadFillStyle(currentStep);
     updatePanel(step);
     stepReadout.textContent = 'Step ' + currentStep + ' / 72';
     if (currentStep === 0) backBtn.disabled = true;
@@ -923,29 +803,14 @@
       if (state === 1) onStart();
       else if (state === 2 && currentStep < 72) onStart();
     }
-    if (e.code === 'ArrowRight') {
-      e.preventDefault();
-      if (state === 1) onStart();
-      else if (state === 2 && currentStep < 72) onStart();
-    }
-    if (e.code === 'ArrowLeft') {
-      e.preventDefault();
-      if (state === 2 && currentStep > 0) onBack();
-    }
   });
 
   backBtn.addEventListener('click', onBack);
   startBtn.addEventListener('click', onStart);
 
   initPathLength();
-  setRoadFillProgress(0, 0);
+  setRoadFillProgress(0);
   drawNodes();
-  updateNodeStates();
-  if (storyLine0) {
-    storyLine0.textContent = STEPS[0].description || STEPS[0].title;
-    storyLine0.classList.add('visible');
-  }
-  if (progressBarFill) progressBarFill.style.width = '0%';
   for (var w = 0; w < 50; w++) createWalker();
   animateWalkers();
 })();
