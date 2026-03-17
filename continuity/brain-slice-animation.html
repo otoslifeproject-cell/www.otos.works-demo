@@ -23,7 +23,6 @@
       --dur-flip: 1000ms;
       --dur-retract: 700ms;
       --dur-logo: 400ms;
-      --dur-start-hold: 800ms;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -83,7 +82,7 @@
       perspective: 800px;
     }
 
-    /* Brain container: 3D transform, slice thickness via ::after */
+    /* Brain container: 3D transform; single turn to reveal thickness, no spin */
     .brain-wrapper {
       position: absolute;
       left: 50%;
@@ -109,6 +108,47 @@
       height: 100%;
       display: block;
       object-fit: contain;
+    }
+
+    /* Thick slice bar: face shows when wrapper is at 90° (counter-rotate so we see thickness, not thin edge) */
+    .slice-thickness {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 280px;
+      height: 56px;
+      margin-left: -140px;
+      margin-top: -28px;
+      background: linear-gradient(135deg, var(--slice-start), var(--slice-end));
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(255,140,0,0.25);
+      opacity: 0;
+      pointer-events: none;
+      will-change: opacity;
+      transform: rotateY(-90deg);
+      transform-style: preserve-3d;
+    }
+
+    .scene-root.step-1-start .slice-thickness,
+    .scene-root.step-2-split .slice-thickness,
+    .scene-root.step-3-forward .slice-thickness {
+      opacity: 0;
+    }
+
+    .scene-root.step-4-flip .slice-thickness {
+      animation: thicknessReveal var(--dur-flip) ease-in-out forwards;
+    }
+
+    .scene-root.step-5-retract .slice-thickness,
+    .scene-root.step-6-logo .slice-thickness {
+      opacity: 1;
+    }
+
+    @keyframes thicknessReveal {
+      0% { opacity: 0; }
+      40% { opacity: 0; }
+      60% { opacity: 1; }
+      100% { opacity: 1; }
     }
 
     /* NHS + SP logo bands */
@@ -189,9 +229,9 @@
 
     /* —— SEQUENCE: class-driven keyframes —— */
 
-    /* 1. START: brain visible, front-facing, centred; NHS above, partners below */
+    /* 1. START: brain visible, front-facing, centred; NHS above, partners below; no spin */
     .scene-root.step-1-start .brain-wrapper {
-      transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+      transform: translate3d(0, 0, 0) scale(1) rotateY(0deg) rotateX(0deg);
     }
     .scene-root.step-1-start .band--nhs {
       transform: translate(-50%, 0);
@@ -219,12 +259,12 @@
       animation: brainForward var(--dur-forward) ease-in-out forwards;
     }
 
-    /* 4. FLIP TO SIDE VIEW: rotateY(90deg), slow and smooth (no vertical spin) */
+    /* 4. TURN 90° TO REVEAL THICKNESS: single turn, no spin (rotateY only, no rotateX) */
     .scene-root.step-4-flip .brain-wrapper {
-      animation: brainFlip var(--dur-flip) ease-in-out forwards;
+      animation: brainTurnReveal var(--dur-flip) ease-in-out forwards;
     }
 
-    /* 5. RETRACT: slice moves straight back in between NHS and partners; logos stay apart */
+    /* 5. RETRACT: slice (thick) moves straight back and docks in the gap; no rotation */
     .scene-root.step-5-retract .brain-wrapper {
       animation: brainRetract var(--dur-retract) ease-in-out forwards;
     }
@@ -236,28 +276,30 @@
 
     @keyframes brainForward {
       0% {
-        transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+        transform: translate3d(0, 0, 0) scale(1) rotateY(0deg) rotateX(0deg);
       }
       100% {
-        transform: translate3d(0, 0, 320px) scale(1.6) rotateY(0deg);
+        transform: translate3d(0, 0, 320px) scale(1.6) rotateY(0deg) rotateX(0deg);
       }
     }
 
-    @keyframes brainFlip {
+    /* Single 90° turn to reveal thickness; no vertical spin (no rotateX) */
+    @keyframes brainTurnReveal {
       0% {
-        transform: translate3d(0, 0, 320px) scale(1.6) rotateY(0deg);
+        transform: translate3d(0, 0, 320px) scale(1.6) rotateY(0deg) rotateX(0deg);
       }
       100% {
-        transform: translate3d(0, 0, 320px) scale(1.6) rotateY(90deg);
+        transform: translate3d(0, 0, 320px) scale(1.6) rotateY(90deg) rotateX(0deg);
       }
     }
 
+    /* Retract straight back into gap; slice stays thick (rotateY 90°) when docked */
     @keyframes brainRetract {
       0% {
-        transform: translate3d(0, 0, 320px) scale(1.6) rotateY(90deg);
+        transform: translate3d(0, 0, 320px) scale(1.6) rotateY(90deg) rotateX(0deg);
       }
       100% {
-        transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+        transform: translate3d(0, 0, 0) scale(1) rotateY(90deg) rotateX(0deg);
       }
     }
 
@@ -342,6 +384,7 @@
             <div class="brain-slice">
               <img src="../assets/brain.png" alt="OTOS brain slice">
             </div>
+            <div class="slice-thickness" aria-hidden="true"></div>
           </div>
 
           <div class="band band--nhs" id="bandNHS">
@@ -409,10 +452,9 @@
         { id: "step-1-start",   dur: 800 },
         { id: "step-2-split",   dur: 600 },
         { id: "step-3-forward", dur: 700 },
-        { id: "step-4-flip",    dur: 400 },
-        { id: "step-5-retract", dur: 600 },
-        { id: "step-6-close",  dur: 500 },
-        { id: "step-7-logo",   dur: 600 }
+        { id: "step-4-flip",    dur: 1000 },
+        { id: "step-5-retract", dur: 700 },
+        { id: "step-6-logo",    dur: 600 }
       ];
 
       var currentStepIndex = 0;
