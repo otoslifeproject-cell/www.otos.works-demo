@@ -1,6 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Founder story v2 — OTOS Continuity</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet" />
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: #0f172a;
+      overflow: hidden;
+      background: #f8f8f6;
+    }
+
+    /* ZONE A — Main canvas (left 58%, full height) */
+    .zone-canvas {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      width: min(58vw, calc(100vw - 280px));
+      background: #f8f8f6;
+      overflow: hidden;
+    }
+
+    /* ZONE B — Story panel (bottom left) */
+    .zone-story {
+      position: fixed;
+      left: 32px;
+      bottom: 32px;
+      width: 340px;
+      height: 220px;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(15, 23, 42, 0.10);
+      padding: 28px;
+      overflow: hidden;
+    }
+
+    /* ZONE C — Cost panel (right side) */
+    .zone-cost {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 280px;
+      height: 100vh;
+      background: #ffffff;
+      border-left: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 32px 28px;
+      overflow: hidden;
+    }
+
+    /* Navigation bar */
+    .nav {
+      position: fixed;
+      right: 32px;
+      bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .nav .btn,
+    .nav .counter {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      font-weight: 500;
+      font-size: 0.85rem;
+      line-height: 1;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      padding: 8px 20px;
+      color: #0f172a;
+      user-select: none;
+    }
+
+    .nav .btn {
+      cursor: pointer;
+    }
+
+    .nav .btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+  </style>
+</head>
+<body>
+  <main class="zone-canvas" aria-label="Node map canvas"></main>
+
+  <aside class="zone-story" aria-label="Story panel"></aside>
+
+  <aside class="zone-cost" aria-label="Cost panel"></aside>
+
+  <nav class="nav" aria-label="Step navigation">
+    <button class="btn" type="button" id="btnBack" disabled>Back</button>
+    <div class="counter" id="stepCounter">Step 1 / 72</div>
+    <button class="btn" type="button" id="btnNext">Next</button>
+  </nav>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OTOS Continuity™ — Founder Story v2</title>
