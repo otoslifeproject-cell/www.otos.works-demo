@@ -69,6 +69,70 @@
       display: block;
     }
 
+    .node-unvisited {
+      opacity: 0.8;
+      transform: scale(0.92);
+    }
+
+    .node-active {
+      border: 3px solid #ff8a00;
+      box-shadow: 0 0 0 6px rgba(255, 138, 0, 0.15);
+      transform: scale(1.15);
+    }
+
+    .node-active img {
+      opacity: 1;
+    }
+
+    .node-visited {
+      border: 2px solid #374151;
+    }
+
+    .node-visited img {
+      opacity: 0.85;
+    }
+
+    .node-revisited {
+      border: 3px solid #374151;
+      box-shadow: 0 0 0 4px rgba(55, 65, 81, 0.12);
+      transform: scale(1.08);
+    }
+
+    .node-cracked {
+      border: 3px solid #ff8a00;
+      background: linear-gradient(135deg, rgba(255, 138, 0, 0.08), white);
+      box-shadow:
+        0 0 0 6px rgba(255, 138, 0, 0.15),
+        0 0 20px rgba(255, 138, 0, 0.2);
+      animation: pulse-crack 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-crack {
+      0%   { box-shadow: 0 0 0 6px rgba(255,138,0,0.15), 0 0 20px rgba(255,138,0,0.2); }
+      50%  { box-shadow: 0 0 0 10px rgba(255,138,0,0.25), 0 0 32px rgba(255,138,0,0.35); }
+      100% { box-shadow: 0 0 0 6px rgba(255,138,0,0.15), 0 0 20px rgba(255,138,0,0.2); }
+    }
+
+    .node-resolved {
+      border: 3px solid #ff8a00;
+      background: linear-gradient(135deg, rgba(255, 138, 0, 0.12), white);
+    }
+
+    .node-resolved img {
+      opacity: 1;
+    }
+
+    .line-travelled {
+      stroke: #374151;
+      stroke-width: 3;
+    }
+
+    .line-orange {
+      stroke: #ff8a00;
+      stroke-width: 3;
+      filter: drop-shadow(0 0 4px rgba(255, 138, 0, 0.5));
+    }
+
     /* ZONE B — Story panel (bottom left) */
     .zone-story {
       position: fixed;
