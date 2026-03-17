@@ -283,11 +283,84 @@
       cursor: not-allowed;
       opacity: 0.55;
     }
+
+    /* Stage 6 — phase labels, progress bar, OTOS mark */
+    .phase-pill-canvas {
+      position: absolute;
+      font-family: Inter, sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      color: rgba(15, 23, 42, 0.5);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .phase-pill-canvas.phase-3 {
+      color: #ff8a00;
+      border-color: rgba(255, 138, 0, 0.3);
+    }
+
+    .progress {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: #e5e7eb;
+      z-index: 20;
+    }
+
+    .progress .fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, #374151, #ff8a00);
+      transition: width 300ms ease;
+    }
+
+    .otos-mark {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #0f172a;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .otos-mark .brain {
+      font-size: 36px;
+      line-height: 1;
+    }
+
+    .otos-mark .word {
+      font-family: Inter, sans-serif;
+      font-weight: 600;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+    }
   </style>
 </head>
 <body>
   <main class="zone-canvas" aria-label="Node map canvas">
     <div class="node-map" id="nodeMap">
+      <div class="otos-mark" aria-hidden="true">
+        <div class="brain">🧠</div>
+        <div class="word">OTOS</div>
+      </div>
+
+      <div class="phase-pill-canvas" style="left: 18%; top: 6%;">Phase 1 — The Journey</div>
+      <div class="phase-pill-canvas" style="left: 16%; top: 42%;">Phase 2 — The System</div>
+      <div class="phase-pill-canvas phase-3" style="left: 56%; top: 44%;">Phase 3 — The Crack</div>
+      <div class="phase-pill-canvas" style="left: 34%; top: 74%;">Phase 4 — Out The Other Side</div>
+
       <svg class="node-lines" id="nodeLines" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
         <g id="lineLayer" stroke="#e5e7eb" stroke-width="2" fill="none"></g>
       </svg>
@@ -375,6 +448,10 @@
     <div class="counter" id="stepCounter">Step 1 / 72</div>
     <button class="btn" type="button" id="btnNext">Next</button>
   </nav>
+
+  <div class="progress" aria-hidden="true">
+    <div class="fill" id="progressFill"></div>
+  </div>
 
   <script>
     (function () {
@@ -582,6 +659,7 @@
       var btnNext = document.getElementById("btnNext");
       var btnBack = document.getElementById("btnBack");
       var stepCounter = document.getElementById("stepCounter");
+      var progressFill = document.getElementById("progressFill");
 
       var storyOrg = document.getElementById("storyOrg");
       var storyTitle = document.getElementById("storyTitle");
@@ -716,6 +794,11 @@
           btnBack.disabled = n === 0;
           btnNext.disabled = n === 71;
         });
+
+        if (progressFill) {
+          var pct = (n / 71) * 100;
+          progressFill.style.width = pct + "%";
+        }
       }
 
       btnNext.addEventListener("click", function () {
