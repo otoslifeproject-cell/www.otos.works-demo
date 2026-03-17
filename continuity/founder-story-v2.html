@@ -65,6 +65,64 @@
       pointer-events: none;
     }
 
+    .road-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .road-frame {
+      fill: rgba(255, 255, 255, 0.55);
+      stroke: rgba(15, 23, 42, 0.10);
+      stroke-width: 2;
+      rx: 22;
+      ry: 22;
+    }
+
+    .road-glow {
+      stroke: rgba(255, 138, 0, 0.16);
+      stroke-width: 72;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .road-base {
+      stroke: rgba(15, 23, 42, 0.85);
+      stroke-width: 48;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .road-centre {
+      stroke: rgba(255, 138, 0, 0.95);
+      stroke-width: 5;
+      stroke-dasharray: 12 12;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.55;
+    }
+
+    .road-progress {
+      stroke: rgba(255, 138, 0, 0.95);
+      stroke-width: 12;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 10px rgba(255, 138, 0, 0.35));
+      opacity: 0.9;
+    }
+
+    .footprint {
+      fill: rgba(15, 23, 42, 0.9);
+      opacity: 0.75;
+    }
+
     .node {
       width: 80px;
       height: 80px;
@@ -467,8 +525,11 @@
         <g id="journeyLayer"></g>
       </svg>
 
-      <svg class="node-lines" id="nodeLines" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
-        <g id="lineLayer" stroke="#e5e7eb" stroke-width="2" fill="none"></g>
+      <svg class="road-svg" id="roadSvg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
+        <g id="roadLayer">
+          <rect class="road-frame" x="28" y="28" width="944" height="944" rx="22" ry="22"></rect>
+        </g>
+        <g id="footLayer"></g>
       </svg>
 
       <div class="node" data-org="CPFT" data-node-index="0" style="left:8%; top:12%;">
@@ -563,48 +624,34 @@
     (function () {
       "use strict";
 
-      var svg = document.getElementById("nodeLines");
-      var layer = document.getElementById("lineLayer");
-      var nodes = Array.prototype.slice.call(document.querySelectorAll(".node-map .node"));
-      if (!svg || !layer || nodes.length < 2) return;
+      // Lock node positions to a fixed coordinate layout (no clustering)
+      var nodeMap = document.getElementById("nodeMap");
+      var nodeEls = Array.prototype.slice.call(document.querySelectorAll(".node-map .node"));
+      if (!nodeMap || nodeEls.length !== 20) return;
 
-      function pctToViewBox(pct) {
-        return (pct / 100) * 1000;
-      }
+      // 1000x1000 coordinate system (centres). Spaced rectangular grid (serpentine journey).
+      var P = [
+        { x: 120, y: 140 }, { x: 300, y: 140 }, { x: 480, y: 140 }, { x: 660, y: 140 }, { x: 840, y: 140 },
+        { x: 840, y: 320 }, { x: 660, y: 320 }, { x: 480, y: 320 }, { x: 300, y: 320 }, { x: 120, y: 320 },
+        { x: 120, y: 500 }, { x: 300, y: 500 }, { x: 480, y: 500 }, { x: 660, y: 500 }, { x: 840, y: 500 },
+        { x: 840, y: 680 }, { x: 660, y: 680 }, { x: 480, y: 680 }, { x: 300, y: 680 }, { x: 120, y: 680 }
+      ];
 
-      function parsePct(value) {
-        if (!value) return 0;
-        var n = parseFloat(String(value).replace("%", ""));
-        return Number.isFinite(n) ? n : 0;
-      }
-
-      function draw() {
-        layer.innerHTML = "";
-        for (var i = 0; i < nodes.length - 1; i++) {
-          var a = nodes[i];
-          var b = nodes[i + 1];
-          var leftA = parsePct(a.style.left);
-          var topA = parsePct(a.style.top);
-          var leftB = parsePct(b.style.left);
-          var topB = parsePct(b.style.top);
-
-          var x1 = pctToViewBox(leftA) + 40;
-          var y1 = pctToViewBox(topA) + 40;
-          var x2 = pctToViewBox(leftB) + 40;
-          var y2 = pctToViewBox(topB) + 40;
-
-          var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-          line.setAttribute("data-line-index", String(i));
-          line.setAttribute("x1", String(x1));
-          line.setAttribute("y1", String(y1));
-          line.setAttribute("x2", String(x2));
-          line.setAttribute("y2", String(y2));
-          layer.appendChild(line);
+      function layoutNodes() {
+        var rect = nodeMap.getBoundingClientRect();
+        var sx = rect.width / 1000;
+        var sy = rect.height / 1000;
+        for (var i = 0; i < nodeEls.length; i++) {
+          var p = P[i];
+          var left = p.x * sx - 40;
+          var top = p.y * sy - 40;
+          nodeEls[i].style.left = left + "px";
+          nodeEls[i].style.top = top + "px";
         }
       }
 
-      draw();
-      window.addEventListener("resize", draw);
+      layoutNodes();
+      window.addEventListener("resize", layoutNodes);
     })();
   </script>
 
@@ -784,9 +831,17 @@
       var costPanel = document.getElementById("costPanel");
 
       var nodeEls = Array.prototype.slice.call(document.querySelectorAll(".node-map .node"));
-      var lineEls = Array.prototype.slice.call(document.querySelectorAll("#lineLayer line"));
       var journeyOverlay = document.getElementById("journeyOverlay");
       var journeyLayer = document.getElementById("journeyLayer");
+      var roadSvg = document.getElementById("roadSvg");
+      var roadLayer = document.getElementById("roadLayer");
+      var footLayer = document.getElementById("footLayer");
+      var roadPathEl = null;
+      var roadProgressEl = null;
+      var roadCentreEl = null;
+      var roadLen = 0;
+      var walker = null;
+      var walkerPos = 0;
 
       function fmtGBP(n) {
         return n === 0 ? "£0" : "£" + Number(n).toLocaleString("en-GB");
@@ -838,6 +893,11 @@
         }
       }
 
+      window.addEventListener("resize", function () {
+        updateRoadGeometry();
+        drawJourneyOverlay(state.currentStep);
+      });
+
       function clamp01(x) {
         return Math.max(0, Math.min(1, x));
       }
@@ -869,15 +929,120 @@
         nodeEl.classList.add(className);
       }
 
-      function updateLineStates(n) {
-        var isPost = n >= 36;
-        for (var i = 0; i < lineEls.length; i++) {
-          var line = lineEls[i];
-          line.classList.remove("line-travelled", "line-orange");
-          if (i <= state.currentStepNodeIndex - 1) {
-            line.classList.add(isPost ? "line-orange" : "line-travelled");
-          }
+      function buildSmoothPath(points) {
+        if (!points || points.length < 2) return "";
+        var d = "M " + points[0].x + " " + points[0].y;
+        for (var i = 1; i < points.length - 1; i++) {
+          var p = points[i];
+          var next = points[i + 1];
+          var mx = (p.x + next.x) / 2;
+          var my = (p.y + next.y) / 2;
+          d += " Q " + p.x + " " + p.y + " " + mx + " " + my;
         }
+        var last = points[points.length - 1];
+        d += " T " + last.x + " " + last.y;
+        return d;
+      }
+
+      function nodeCentersInViewBox() {
+        var pts = [];
+        for (var i = 0; i < nodeEls.length; i++) {
+          pts.push(nodeCenterFromStyle(nodeEls[i]));
+        }
+        return pts;
+      }
+
+      function ensureRoad() {
+        if (!roadLayer || !footLayer || !roadSvg) return;
+        if (roadPathEl && roadProgressEl && roadCentreEl) return;
+
+        var NS = "http://www.w3.org/2000/svg";
+        roadPathEl = document.createElementNS(NS, "path");
+        roadPathEl.setAttribute("id", "roadPath");
+        roadPathEl.setAttribute("class", "road-base");
+
+        var roadGlow = document.createElementNS(NS, "path");
+        roadGlow.setAttribute("class", "road-glow");
+
+        roadCentreEl = document.createElementNS(NS, "path");
+        roadCentreEl.setAttribute("class", "road-centre");
+
+        roadProgressEl = document.createElementNS(NS, "path");
+        roadProgressEl.setAttribute("class", "road-progress");
+
+        roadLayer.appendChild(roadGlow);
+        roadLayer.appendChild(roadPathEl);
+        roadLayer.appendChild(roadCentreEl);
+        roadLayer.appendChild(roadProgressEl);
+
+        roadPathEl._glow = roadGlow;
+      }
+
+      function updateRoadGeometry() {
+        ensureRoad();
+        if (!roadPathEl) return;
+        var pts = nodeCentersInViewBox();
+        var d = buildSmoothPath(pts);
+        roadPathEl.setAttribute("d", d);
+        roadCentreEl.setAttribute("d", d);
+        roadProgressEl.setAttribute("d", d);
+        if (roadPathEl._glow) roadPathEl._glow.setAttribute("d", d);
+
+        roadLen = roadPathEl.getTotalLength();
+        roadProgressEl.setAttribute("stroke-dasharray", String(roadLen));
+        roadProgressEl.setAttribute("stroke-dashoffset", String(roadLen));
+        walkerPos = 0;
+      }
+
+      function ensureWalker() {
+        if (!footLayer) return;
+        if (walker) return;
+        var NS = "http://www.w3.org/2000/svg";
+        var g = document.createElementNS(NS, "g");
+        var left = document.createElementNS(NS, "ellipse");
+        left.setAttribute("rx", "4");
+        left.setAttribute("ry", "8");
+        left.setAttribute("class", "footprint");
+        var right = document.createElementNS(NS, "ellipse");
+        right.setAttribute("cx", "10");
+        right.setAttribute("rx", "4");
+        right.setAttribute("ry", "8");
+        right.setAttribute("class", "footprint");
+        g.appendChild(left);
+        g.appendChild(right);
+        footLayer.appendChild(g);
+        walker = g;
+      }
+
+      function setRoadProgressToStep(n) {
+        if (!roadProgressEl || !roadPathEl || !roadLen) return;
+        var t = n / 72;
+        var drawn = t * roadLen;
+        roadProgressEl.setAttribute("stroke-dashoffset", String(roadLen - drawn));
+
+        var isPost = n >= 36;
+        roadCentreEl.style.opacity = isPost ? "0.25" : "0.55";
+        roadProgressEl.style.opacity = isPost ? "0.95" : "0.85";
+      }
+
+      function animateWalkerToStep(n) {
+        ensureWalker();
+        if (!walker || !roadPathEl || !roadLen) return;
+        var target = (n / 72) * roadLen;
+        var start = walkerPos;
+        var end = target;
+        var t0 = performance.now();
+        var dur = 520;
+        function easeInOut(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+        function tick(now) {
+          var t = Math.min(1, (now - t0) / dur);
+          var p = start + (end - start) * easeInOut(t);
+          var pt = roadPathEl.getPointAtLength(p);
+          walker.setAttribute("transform", "translate(" + pt.x + "," + pt.y + ")");
+          if (t < 1) requestAnimationFrame(tick);
+          else walkerPos = end;
+        }
+        requestAnimationFrame(tick);
       }
 
       function phaseLabel(phase) {
@@ -929,6 +1094,11 @@
         var isPostDiagnosis = n >= 36;
         document.body.classList.toggle("post-diagnosis", isPostDiagnosis);
 
+        // Road engine replaces simple connector lines
+        updateRoadGeometry();
+        setRoadProgressToStep(n);
+        animateWalkerToStep(n);
+
         // Update node states
         for (var i = 0; i < nodeEls.length; i++) {
           var idx = Number(nodeEls[i].getAttribute("data-node-index"));
@@ -960,8 +1130,7 @@
           currentNodeEl.classList.add("node-active");
         }
 
-        // Update lines
-        updateLineStates(n);
+        // (Connector lines removed)
 
         // Draw the deliberately chaotic journey overlay across the map
         drawJourneyOverlay(n);
