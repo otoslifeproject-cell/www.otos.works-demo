@@ -508,78 +508,79 @@
 
       // Stage 4 — Step data + JS engine
       var RAW_STEPS = [
-        { title: "35 years of successfully self-medicating", org: "Self / Undiagnosed ADHD", cost: 0, description: "35 years of self-medicating with alcohol every day before crossing the invisible line. Addiction and dependency kicked in. The journey begins here." },
-        { title: "Psymplicity — ADHD Diagnosis", org: "Psymplicity Healthcare", cost: 900, description: "Parental intervention seeking ADHD psychiatric assessment. First formal diagnosis. Self-funded. Prescribed small dose of methylphenidate." },
-        { title: "GP Sutton — initial contact", org: "GP (Sutton)", cost: 0, description: "GP registration and initial contact following diagnosis. No shared care arrangement in place yet." },
-        { title: "Diagnosed with Depression & Anxiety", org: "GP (Comberton)", cost: 0, description: "Diagnosed with Depression and Anxiety. Anti-depressants started. Root cause — ADHD — not identified." },
-        { title: "Moved to Spain — 3 years", org: "Self", cost: 0, description: "Moved to Spain for 3 years. Constant heavy drinking. Self-medicating now for alcoholism, not just ADHD." },
-        { title: "Ambulance — Spain", org: "Ambulance Service (Spain)", cost: 0, description: "Emergency call in Spain. Escalating crisis. No continuity of care." },
-        { title: "La Linea Hospital — Pancreatic Attack", org: "La Linea Hospital, Spain", cost: 0, description: "Hospital admission in Spain. Pancreatic attack. Spanish doctor says: 'You can never drink again.' First time this was said clearly. Dean felt relief — not fear." },
-        { title: "Spain Doctor — 'You can never drink again'", org: "La Linea Hospital", cost: 0, description: "Doctor delivers clear verdict. First honest clinical conversation. Dean felt relief, not fear. The threat of death felt like permission to stop." },
-        { title: "Move back to UK", org: "Self", cost: 0, description: "Returns to the UK after Spain. Re-entering the system. No continuity of care transferred. Starting again from zero." },
-        { title: "UK GP — 'You're healthy enough to drink'", org: "GP (UK)", cost: 0, description: "UK GP tells Dean he is healthy enough and gives permission to continue drinking. Direct contradiction of the Spanish doctor's clear advice." },
-        { title: "Police called — missing / suicide risk", org: "Police", cost: 0, description: "Police called after Dean goes missing. Suicide risk flagged. No health referral pathway triggered." },
-        { title: "Assaulted by Neighbour — Addenbrookes ICU", org: "Addenbrookes ICU", cost: 0, description: "Assault by neighbour. ICU admission. No connection made to ADHD or addiction history." },
-        { title: "Arrested — Retaliation incident", org: "Police", cost: 0, description: "Arrested following retaliation incident. Cautioned. First entry into the criminal justice system." },
-        { title: "Psymplicity — GP Comberton shared care", org: "GP Comberton / Psymplicity", cost: 0, description: "Comberton GP opens old files to find original shared care arrangement. No other GP will accept. Psymplicity not on Right To Choose register." },
-        { title: "Self-medicating continues", org: "Self", cost: 0, description: "No pathway in place. Self-medicating resumes. Cycle continues." },
-        { title: "GP Comberton — shared care confirmed", org: "GP Comberton", cost: 0, description: "Shared care arrangement confirmed with GP Comberton. Brief window of stability." },
-        { title: "Self-medicating continues — drinking escalates", org: "Self", cost: 0, description: "Shared care breaks down. Drinking escalates. ADHD medication not stabilised." },
-        { title: "Move to Northampton", org: "Self", cost: 0, description: "Moves to Northampton. Medical continuity broken again. No records follow." },
-        { title: "Fall into withdrawal — collapse and seizures", org: "Self / 999", cost: 0, description: "Falls into alcohol withdrawal. Collapse. Fitting with seizures." },
-        { title: "999 Ambulance — Northampton", org: "Ambulance Service", cost: 0, description: "Emergency ambulance called. Seizure episode in Northampton. Out of area — no Cambridge records available." },
-        { title: "Northampton A&E", org: "Northampton A&E", cost: 0, description: "A&E attendance following seizures. Out of area. No Cambridge records available. System blind spot." },
-        { title: "Northampton Ward — detox admission", org: "Northampton Hospital", cost: 0, description: "Inpatient ward admission for detox in Northampton. No connection to Cambridge services." },
-        { title: "Head Injury — fight", org: "A&E", cost: 0, description: "Head injury following fight. A&E attendance. Another isolated crisis, no pathway response." },
-        { title: "999 Ambulance — second episode", org: "Ambulance Service", cost: 0, description: "Second emergency ambulance call. The system responds to the acute. It cannot see what is causing it." },
-        { title: "Delirium Tremens — 2nd floor balcony jump", org: "Addenbrookes ICU", cost: 0, description: "Severe delirium tremens withdrawal. 2nd floor balcony jump. ICU admission. Life-threatening crisis." },
-        { title: "Addenbrookes ICU admission", org: "Addenbrookes ICU", cost: 0, description: "ICU admission following balcony fall. The system saves Dean's life — then discharges him with no pathway." },
-        { title: "999 Ambulance — Addenbrookes", org: "Ambulance / Addenbrookes", cost: 0, description: "Emergency ambulance to Addenbrookes. Another crisis response. No prevention in place." },
-        { title: "Addenbrookes Ward — detox admission", org: "Addenbrookes", cost: 0, description: "Ward admission for detox at Addenbrookes. Same ward. Different crisis. No link between admissions in the record." },
-        { title: "Meet CPFT Helen — bedside, 1st time", org: "CPFT / Addenbrookes", cost: 0, description: "CPFT alcohol liaison nurse Helen visits bedside. First contact. She begins to understand the full picture — the first professional to try to join it up." },
-        { title: "Nightingale Hospital — 2-week detox", org: "Nightingale Hospital", cost: 26000, description: "2-week inpatient detox at Nightingale Hospital. First formal treatment setting. ADHD still not addressed." },
-        { title: "Help Me Stop — 6-week DayHab", org: "HelpMeStop", cost: 3600, description: "6-week day rehabilitation programme. Structured support. ADHD still not addressed in the programme." },
-        { title: "AA — regular attendance", org: "AA", cost: 0, description: "Joins AA and attends regularly for approximately one year. Some benefit, but ADHD makes the repetition increasingly difficult." },
-        { title: "AA starts to feel wrong", org: "AA / Self", cost: 0, description: "AA starts to drag. The repetition isn't helpful. ADHD still unmedicated. It's not a character defect — it's the ADHD." },
-        { title: "Relapse experiment begins", org: "Self", cost: 0, description: "Begins controlled drinking experiment. Medically unsupported. 9 months." },
-        { title: "6 months sober — starts business", org: "Self", cost: 0, description: "6 months sober. Sets up Vintage and Retro Antique Business. Medication working, dopamine restored. Business eventually fails. Depression follows. Addiction returns hard." },
-        { title: "Experiment turns into crisis", org: "Self / 999", cost: 0, description: "11 months into experiment. Things got slowly, then quickly, worse. Paranoia. Real fear of survival. Now in very real crisis again." },
-        { title: "GP Cambridge — collapse, refused admission", org: "GP Cambridge", cost: 0, description: "Collapse. GP refuses admission. Told to come back when in full withdrawal. System turns Dean away at the door." },
-        { title: "111 — CPFT Sanctuary Service", org: "CPFT Sanctuary / 111", cost: 0, description: "111 call. Directed to CPFT Sanctuary Service." },
-        { title: "999 Ambulance — Refused", org: "999 / Ambulance", cost: 0, description: "999 Ambulance refuses to take Dean. Ropes in parents. Begins to cause himself physical injury to ensure admission and get the detox required to reach the medication." },
-        { title: "Addenbrookes A&E — refused, then admitted", org: "Addenbrookes A&E", cost: 300, description: "A&E refuses again. Dean articulates his case exactly to the Psychological Director. She believes him. She backs him. Dean is admitted." },
-        { title: "Addenbrookes Ward — one final detox", org: "Addenbrookes", cost: 1500, description: "Third Addenbrookes detox ward admission. The system intervenes again. The system still cannot see the cause." },
-        { title: "CPFT Helen — 'I have nowhere to send you'", org: "CPFT @ Addenbrookes", cost: 0, description: "Helen confirms she remembers Dean. 'I have nowhere to send you — he has been through everything I can signpost.' Dean promises to come back as a Partner, not a Patient. Helen writes the discharge letter." },
-        { title: "I know what I need to do", org: "Self", cost: 0, description: "Dean maps his own rescue route: get detoxed, get to CGL, get the right letters, get to the medication. He has worked out the system himself." },
-        { title: "CGL — assessment, detox nurse appointment", org: "CGL", cost: 0, description: "CGL assessment completed. Detox nurse appointment scheduled but too far away. Needs detox urgently." },
-        { title: "Annie — CGL worker", org: "CGL (Annie)", cost: 0, description: "Introduced to Annie at CGL. Key relationship. First person who holds the thread." },
-        { title: "Annie writes the letter", org: "CGL (Annie)", cost: 0, description: "Annie writes the letter Psymplicity needs — confirming CGL attendance and confirming no risk." },
-        { title: "Rak backs Dean up with psychiatrist", org: "CGL (Rak)", cost: 0, description: "Rak speaks with psychiatrist and backs Dean up as committed to recovery — blowing zeros, attending groups." },
-        { title: "Psymplicity — agrees to prescribe Elvanse", org: "Psymplicity", cost: 600, description: "Psymplicity agrees to change to Elvanse but needs medical detox completion and CGL registration confirmed." },
-        { title: "Register with CGL", org: "CGL", cost: 0, description: "Formally registered with CGL. Criminal justice route." },
-        { title: "CGL — Sally, Criminal Justice", org: "CGL (Sally)", cost: 0, description: "Working with Sally at CGL via criminal justice route. First real system advocate." },
-        { title: "Police Arrest — Drink Driving", org: "Police", cost: 0, description: "Arrested for drink driving. Criminal justice re-entry. 2-year ban." },
-        { title: "Court appearance — convicted, 2-year ban", org: "HM Courts", cost: 0, description: "Court attendance. Convicted. 2-year driving ban issued." },
-        { title: "50 hours community service", org: "Probation", cost: 0, description: "50 hours community service ordered. Probation begins." },
-        { title: "Probation", org: "Probation", cost: 0, description: "Ongoing probation supervision. No health pathway connected." },
-        { title: "Honest with parents — they fund Psymplicity", org: "Family / Psymplicity", cost: 900, description: "Dean is honest with his parents about everything. They understand for the first time. They agree to help fund the psychiatric assessment." },
-        { title: "GP refuses new shared care — fit note issued", org: "GP Cambridge", cost: 0, description: "GP refuses new shared care arrangement. Issues 3-month fit note. Signed off sick with Depression, Alcohol Dependency and Suicidal Thoughts. Told to get another surgery." },
-        { title: "GP Cambridge — tries other surgeries", org: "GP (Cambridge)", cost: 0, description: "Tries to register with other Cambridge surgeries. None will take him because Psymplicity is not on the Right To Choose register." },
-        { title: "GP Newnham — refused", org: "GP (Newnham)", cost: 0, description: "Attempts shared care with Newnham GP. Refused." },
-        { title: "Castle Craig — Residential Rehab (Dual-Diagnosis)", org: "Castle Craig", cost: 90000, description: "Residential dual-diagnosis rehabilitation hospital. Funded by CGL (£90,000). ADHD medication removed on arrival because it was a stimulant. £45,000 wasted. System-created relapse." },
-        { title: "CPFT — Psychological Wellbeing Service", org: "CPFT", cost: 0, description: "6-week CPFT Psychological Wellbeing programme post-rehab." },
-        { title: "Counselling course — leaves rehab", org: "Community / DWP", cost: 0, description: "Counselling course booked many months before, started as he left rehab. Re-entering the world. Feeling strange but good." },
-        { title: "SMART Recovery — meet Inertia", org: "SMART Recovery", cost: 0, description: "Attends SMART Recovery groups again. Reconnects with Inertia who is keen to know more about how OTOS can help Cambridge Recovery Service. She is added to the list of potential Pilot Partners." },
-        { title: "Meet Franceska — RCE Hub Wellbeing Course", org: "CPFT Hub (Franceska)", cost: 0, description: "Meets Franceska on an RCE Hub Wellbeing Course. She really gets the ADHD and Addiction connection. Added to the list of potential Pilot Partners." },
-        { title: "Meet Andrea — transferred to Cambridge Recovery Service", org: "CRS (Andrea)", cost: 0, description: "Meets Andrea. Transferred from CGL to Cambridge Recovery Service (CRS). Andrea totally gets Dean and promises to help. Introduces to KC at The SUN Network. Added to the list of potential Pilot Partners." },
-        { title: "Introduced to KC @ SUN Network", org: "SUN Network (KC)", cost: 0, description: "Introduced to KC at the SUN Network. KC happy to talk more and get in front of Scott at NHS ICB. First meeting." },
-        { title: "Join NA", org: "Narcotics Anonymous", cost: 0, description: "Joins NA. Attends regularly. Better vibe and more real than AA." },
-        { title: "Regular Gym Attendance", org: "Self / Community", cost: 0, description: "Begins regular gym attendance as part of recovery." },
-        { title: "Regular attendance at Buddhist Centre", org: "Buddhist Centre", cost: 0, description: "Regular attendance at Buddhist Centre. Spiritual practice as part of recovery." },
-        { title: "Decorates flat — massive focus and drive", org: "Self", cost: 0, description: "Decorates flat at the same time as building OTOS. Everything is suddenly achievable. Focus is sharp. Motivation at a perfect level. Executive function felt for the first time." },
-        { title: "Amazing reconnection with parents", org: "Family", cost: 0, description: "Amazing reconnection with parents. Their understanding has lifted the world off his shoulders. He's performing higher than ever. All he needs is 1 tablet he can't get." },
-        { title: "Meet Paula — CPFT ADHD Team", org: "CPFT ADHD Team (Paula)", cost: 0, description: "Meets Paula at the CPFT ADHD Team. A very interesting conversation. Specialist input begins. Paula is added to the list of potential Pilot Partners." },
-        { title: "Jo Fenton — Therapist (WorkWell / MIND)", org: "Jo Fenton (Therapist)", cost: 360, description: "6 weeks with Jo Fenton, Integrated Therapist via MIND-funded WorkWell scheme. Great therapeutic work begins. Jo is keen to hear more — she sees the ADHD and addiction connection every day." }
+        { id: 0, title: "35 years of successfully self-medicating", org: "Self / Undiagnosed ADHD", cost: 0, description: "35 years of self-medicating with alcohol every day before crossing the invisible line. Addiction and dependency kicked in. The journey begins here." },
+        { id: 1, title: "Psymplicity — ADHD Diagnosis", org: "Psymplicity Healthcare", cost: 900, description: "Parental intervention seeking ADHD psychiatric assessment. First formal diagnosis. Self-funded. Prescribed small dose of methylphenidate." },
+        { id: 2, title: "GP Sutton — initial contact", org: "GP (Sutton)", cost: 0, description: "GP registration and initial contact following diagnosis. No shared care arrangement in place yet." },
+        { id: 3, title: "Diagnosed with Depression & Anxiety", org: "GP (Comberton)", cost: 0, description: "Diagnosed with Depression and Anxiety. Anti-depressants started. Root cause — ADHD — not identified." },
+        { id: 4, title: "Moved to Spain — 3 years", org: "Self", cost: 0, description: "Moved to Spain for 3 years. Constant heavy drinking. Self-medicating now for alcoholism, not just ADHD." },
+        { id: 5, title: "Ambulance — Spain", org: "Ambulance Service (Spain)", cost: 0, description: "Emergency call in Spain. Escalating crisis. No continuity of care." },
+        { id: 6, title: "La Linea Hospital — Pancreatic Attack", org: "La Linea Hospital, Spain", cost: 0, description: "Hospital admission in Spain. Pancreatic attack. Spanish doctor says: 'You can never drink again.' First time this was said clearly. Dean felt relief — not fear." },
+        { id: 7, title: "Spain Doctor — 'You can never drink again'", org: "La Linea Hospital", cost: 0, description: "Doctor delivers clear verdict. First honest clinical conversation. Dean felt relief, not fear. The threat of death felt like permission to stop." },
+        { id: 8, title: "Move back to UK", org: "Self", cost: 0, description: "Returns to the UK after Spain. Re-entering the system. No continuity of care transferred. Starting again from zero." },
+        { id: 9, title: "UK GP — 'You're healthy enough to drink'", org: "GP (UK)", cost: 0, description: "UK GP tells Dean he is healthy enough and gives permission to continue drinking. Direct contradiction of the Spanish doctor's clear advice." },
+        { id: 10, title: "Police called — missing / suicide risk", org: "Police", cost: 0, description: "Police called after Dean goes missing. Suicide risk flagged. No health referral pathway triggered." },
+        { id: 11, title: "Assaulted by Neighbour — Addenbrookes ICU", org: "Addenbrookes ICU", cost: 0, description: "Assault by neighbour. ICU admission. No connection made to ADHD or addiction history." },
+        { id: 12, title: "Arrested — Retaliation incident", org: "Police", cost: 0, description: "Arrested following retaliation incident. Cautioned. First entry into the criminal justice system." },
+        { id: 13, title: "Psymplicity — GP Comberton shared care", org: "GP Comberton / Psymplicity", cost: 0, description: "Comberton GP opens old files to find original shared care arrangement. No other GP will accept. Psymplicity not on Right To Choose register." },
+        { id: 14, title: "Self-medicating continues", org: "Self", cost: 0, description: "No pathway in place. Self-medicating resumes. Cycle continues." },
+        { id: 15, title: "GP Comberton — shared care confirmed", org: "GP Comberton", cost: 0, description: "Shared care arrangement confirmed with GP Comberton. Brief window of stability." },
+        { id: 16, title: "Self-medicating continues — drinking escalates", org: "Self", cost: 0, description: "Shared care breaks down. Drinking escalates. ADHD medication not stabilised." },
+        { id: 17, title: "Move to Northampton", org: "Self", cost: 0, description: "Moves to Northampton. Medical continuity broken again. No records follow." },
+        { id: 18, title: "Fall into withdrawal — collapse and seizures", org: "Self / 999", cost: 0, description: "Falls into alcohol withdrawal. Collapse. Fitting with seizures." },
+        { id: 19, title: "999 Ambulance — Northampton", org: "Ambulance Service", cost: 0, description: "Emergency ambulance called. Seizure episode in Northampton. Out of area — no Cambridge records available." },
+        { id: 20, title: "Northampton A&E", org: "Northampton A&E", cost: 0, description: "A&E attendance following seizures. Out of area. No Cambridge records available. System blind spot." },
+        { id: 21, title: "Northampton Ward — detox admission", org: "Northampton Hospital", cost: 0, description: "Inpatient ward admission for detox in Northampton. No connection to Cambridge services." },
+        { id: 22, title: "Head Injury — fight", org: "A&E", cost: 0, description: "Head injury following fight. A&E attendance. Another isolated crisis, no pathway response." },
+        { id: 23, title: "999 Ambulance — second episode", org: "Ambulance Service", cost: 0, description: "Second emergency ambulance call. The system responds to the acute. It cannot see what is causing it." },
+        { id: 24, title: "Delirium Tremens — 2nd floor balcony jump", org: "Addenbrookes ICU", cost: 0, description: "Severe delirium tremens withdrawal. 2nd floor balcony jump. ICU admission. Life-threatening crisis." },
+        { id: 25, title: "Addenbrookes ICU admission", org: "Addenbrookes ICU", cost: 0, description: "ICU admission following balcony fall. The system saves Dean's life — then discharges him with no pathway." },
+        { id: 26, title: "999 Ambulance — Addenbrookes", org: "Ambulance / Addenbrookes", cost: 0, description: "Emergency ambulance to Addenbrookes. Another crisis response. No prevention in place." },
+        { id: 27, title: "Addenbrookes Ward — detox admission", org: "Addenbrookes", cost: 0, description: "Ward admission for detox at Addenbrookes. Same ward. Different crisis. No link between admissions in the record." },
+        { id: 28, title: "Meet CPFT Helen — bedside, 1st time", org: "CPFT / Addenbrookes", cost: 0, description: "CPFT alcohol liaison nurse Helen visits bedside. First contact. She begins to understand the full picture — the first professional to try to join it up." },
+        { id: 29, title: "Nightingale Hospital — 2-week detox", org: "Nightingale Hospital", cost: 26000, description: "2-week inpatient detox at Nightingale Hospital. First formal treatment setting. ADHD still not addressed." },
+        { id: 30, title: "Help Me Stop — 6-week DayHab", org: "HelpMeStop", cost: 3600, description: "6-week day rehabilitation programme. Structured support. ADHD still not addressed in the programme." },
+        { id: 31, title: "AA — regular attendance", org: "AA", cost: 0, description: "Joins AA and attends regularly for approximately one year. Some benefit, but ADHD makes the repetition increasingly difficult." },
+        { id: 32, title: "AA starts to feel wrong", org: "AA / Self", cost: 0, description: "AA starts to drag. The repetition isn't helpful. ADHD still unmedicated. It's not a character defect — it's the ADHD." },
+        { id: 33, title: "Relapse experiment begins", org: "Self", cost: 0, description: "Begins controlled drinking experiment. Medically unsupported. 9 months." },
+        { id: 34, title: "6 months sober — starts business", org: "Self", cost: 0, description: "6 months sober. Sets up Vintage and Retro Antique Business. Medication working, dopamine restored. Business eventually fails. Depression follows. Addiction returns hard." },
+        { id: 35, title: "Experiment turns into crisis", org: "Self / 999", cost: 0, description: "11 months into experiment. Things got slowly, then quickly, worse. Paranoia. Real fear of survival. Now in very real crisis again." },
+        { id: 36, title: "GP Cambridge — collapse, refused admission", org: "GP Cambridge", cost: 0, description: "Collapse. GP refuses admission. Told to come back when in full withdrawal. System turns Dean away at the door." },
+        { id: 37, title: "111 — CPFT Sanctuary Service", org: "CPFT Sanctuary / 111", cost: 0, description: "111 call. Directed to CPFT Sanctuary Service." },
+        { id: 38, title: "999 Ambulance — Refused", org: "999 / Ambulance", cost: 0, description: "999 Ambulance refuses to take Dean. Ropes in parents. Begins to cause himself physical injury to ensure admission and get the detox required to reach the medication." },
+        { id: 39, title: "Addenbrookes A&E — refused, then admitted", org: "Addenbrookes A&E", cost: 300, description: "A&E refuses again. Dean articulates his case exactly to the Psychological Director. She believes him. She backs him. Dean is admitted." },
+        { id: 40, title: "Addenbrookes Ward — one final detox", org: "Addenbrookes", cost: 1500, description: "Third Addenbrookes detox ward admission. The system intervenes again. The system still cannot see the cause." },
+        { id: 41, title: "CPFT Helen — 'I have nowhere to send you'", org: "CPFT @ Addenbrookes", cost: 0, description: "Helen confirms she remembers Dean. 'I have nowhere to send you — he has been through everything I can signpost.' Dean promises to come back as a Partner, not a Patient. Helen writes the discharge letter." },
+        { id: 42, title: "I know what I need to do", org: "Self", cost: 0, description: "Dean maps his own rescue route: get detoxed, get to CGL, get the right letters, get to the medication. He has worked out the system himself." },
+        { id: 43, title: "CGL — assessment, detox nurse appointment", org: "CGL", cost: 0, description: "CGL assessment completed. Detox nurse appointment scheduled but too far away. Needs detox urgently." },
+        { id: 44, title: "Annie — CGL worker", org: "CGL (Annie)", cost: 0, description: "Introduced to Annie at CGL. Key relationship. First person who holds the thread." },
+        { id: 45, title: "Annie writes the letter", org: "CGL (Annie)", cost: 0, description: "Annie writes the letter Psymplicity needs — confirming CGL attendance and confirming no risk." },
+        { id: 46, title: "Rak backs Dean up with psychiatrist", org: "CGL (Rak)", cost: 0, description: "Rak speaks with psychiatrist and backs Dean up as committed to recovery — blowing zeros, attending groups." },
+        { id: 47, title: "Psymplicity — agrees to prescribe Elvanse", org: "Psymplicity", cost: 600, description: "Psymplicity agrees to change to Elvanse but needs medical detox completion and CGL registration confirmed." },
+        { id: 48, title: "Register with CGL", org: "CGL", cost: 0, description: "Formally registered with CGL. Criminal justice route." },
+        { id: 49, title: "CGL — Sally, Criminal Justice", org: "CGL (Sally)", cost: 0, description: "Working with Sally at CGL via criminal justice route. First real system advocate." },
+        { id: 50, title: "Police Arrest — Drink Driving", org: "Police", cost: 0, description: "Arrested for drink driving. Criminal justice re-entry. 2-year ban." },
+        { id: 51, title: "Court appearance — convicted, 2-year ban", org: "HM Courts", cost: 0, description: "Court attendance. Convicted. 2-year driving ban issued." },
+        { id: 52, title: "50 hours community service", org: "Probation", cost: 0, description: "50 hours community service ordered. Probation begins." },
+        { id: 53, title: "Probation", org: "Probation", cost: 0, description: "Ongoing probation supervision. No health pathway connected." },
+        { id: 54, title: "Honest with parents — they fund Psymplicity", org: "Family / Psymplicity", cost: 900, description: "Dean is honest with his parents about everything. They understand for the first time. They agree to help fund the psychiatric assessment." },
+        { id: 55, title: "GP refuses new shared care — fit note issued", org: "GP Cambridge", cost: 0, description: "GP refuses new shared care arrangement. Issues 3-month fit note. Signed off sick with Depression, Alcohol Dependency and Suicidal Thoughts. Told to get another surgery." },
+        { id: 56, title: "GP Cambridge — tries other surgeries", org: "GP (Cambridge)", cost: 0, description: "Tries to register with other Cambridge surgeries. None will take him because Psymplicity is not on the Right To Choose register." },
+        { id: 57, title: "GP Newnham — refused", org: "GP (Newnham)", cost: 0, description: "Attempts shared care with Newnham GP. Refused." },
+        { id: 58, title: "Castle Craig — Residential Rehab (Dual-Diagnosis)", org: "Castle Craig", cost: 90000, description: "Residential dual-diagnosis rehabilitation hospital. Funded by CGL (£90,000). ADHD medication removed on arrival because it was a stimulant. £45,000 wasted. System-created relapse." },
+        { id: 59, title: "CPFT — Psychological Wellbeing Service", org: "CPFT", cost: 0, description: "6-week CPFT Psychological Wellbeing programme post-rehab." },
+        { id: 60, title: "Counselling course — leaves rehab", org: "Community / DWP", cost: 0, description: "Counselling course booked many months before, started as he left rehab. Re-entering the world. Feeling strange but good." },
+        { id: 61, title: "SMART Recovery — meet Inertia", org: "SMART Recovery", cost: 0, description: "Attends SMART Recovery groups again. Reconnects with Inertia who is keen to know more about how OTOS can help Cambridge Recovery Service. She is added to the list of potential Pilot Partners." },
+        { id: 62, title: "Meet Franceska — RCE Hub Wellbeing Course", org: "CPFT Hub (Franceska)", cost: 0, description: "Meets Franceska on an RCE Hub Wellbeing Course. She really gets the ADHD and Addiction connection. Added to the list of potential Pilot Partners." },
+        { id: 63, title: "Meet Andrea — transferred to Cambridge Recovery Service", org: "CRS (Andrea)", cost: 0, description: "Meets Andrea. Transferred from CGL to Cambridge Recovery Service (CRS). Andrea totally gets Dean and promises to help. Introduces to KC at The SUN Network. Added to the list of potential Pilot Partners." },
+        { id: 64, title: "Introduced to KC @ SUN Network", org: "SUN Network (KC)", cost: 0, description: "Introduced to KC at the SUN Network. KC happy to talk more and get in front of Scott at NHS ICB. First meeting." },
+        { id: 65, title: "Join NA", org: "Narcotics Anonymous", cost: 0, description: "Joins NA. Attends regularly. Better vibe and more real than AA." },
+        { id: 66, title: "Regular Gym Attendance", org: "Self / Community", cost: 0, description: "Begins regular gym attendance as part of recovery." },
+        { id: 67, title: "Regular attendance at Buddhist Centre", org: "Buddhist Centre", cost: 0, description: "Regular attendance at Buddhist Centre. Spiritual practice as part of recovery." },
+        { id: 68, title: "Decorates flat — massive focus and drive", org: "Self", cost: 0, description: "Decorates flat at the same time as building OTOS. Everything is suddenly achievable. Focus is sharp. Motivation at a perfect level. Executive function felt for the first time." },
+        { id: 69, title: "Amazing reconnection with parents", org: "Family", cost: 0, description: "Amazing reconnection with parents. Their understanding has lifted the world off his shoulders. He's performing higher than ever. All he needs is 1 tablet he can't get." },
+        { id: 70, title: "Meet Paula — CPFT ADHD Team", org: "CPFT ADHD Team (Paula)", cost: 0, description: "Meets Paula at the CPFT ADHD Team. A very interesting conversation. Specialist input begins. Paula is added to the list of potential Pilot Partners." },
+        { id: 71, title: "Jo Fenton — Therapist (WorkWell / MIND)", org: "Jo Fenton (Therapist)", cost: 360, description: "6 weeks with Jo Fenton, Integrated Therapist via MIND-funded WorkWell scheme. Great therapeutic work begins. Jo is keen to hear more — she sees the ADHD and addiction connection every day." },
+        { id: 72, title: "Psymplicity prescribe Elvanse — my whole life changed in 3 days", org: "Psymplicity Healthcare", cost: 200, description: "Psychiatrist is more than happy with the explanation, proof of CGL engagement and medical detox. Prescribes Elvanse. Dean's whole life changed in 3 days. This is the moment." }
       ];
 
       function phaseForStepIndex(i) {
@@ -640,6 +641,7 @@
       var STEPS = RAW_STEPS.map(function (s, i) {
         return {
           index: i,
+          stepId: s.id,
           title: s.title,
           org: s.org,
           description: s.description,
@@ -653,7 +655,8 @@
         currentStep: 0,
         nodeVisitCounts: new Array(20).fill(0),
         runningCost: 0,
-        prevNodeIndex: null
+        prevNodeIndex: null,
+        currentStepNodeIndex: 0
       };
 
       var btnNext = document.getElementById("btnNext");
@@ -729,14 +732,22 @@
       }
 
       function goToStep(n) {
-        if (n < 0 || n > 71) return;
+        if (n < 0 || n > 72) return;
 
+        // Recompute state deterministically for correct back/forward behavior
+        var running = 0;
+        var counts = new Array(20).fill(0);
+        var i;
+        for (i = 0; i <= n; i++) {
+          running += STEPS[i].cost;
+          counts[STEPS[i].nodeIndex] += 1;
+        }
         state.currentStep = n;
-        state.runningCost += STEPS[n].cost;
+        state.runningCost = running;
+        state.nodeVisitCounts = counts;
 
         var nodeIndex = STEPS[n].nodeIndex;
         state.currentStepNodeIndex = nodeIndex;
-        state.nodeVisitCounts[nodeIndex] += 1;
 
         var isPostDiagnosis = n >= 36;
         document.body.classList.toggle("post-diagnosis", isPostDiagnosis);
@@ -790,13 +801,13 @@
           costDesc.textContent = step.description;
 
           // Step counter and buttons
-          stepCounter.textContent = "Step " + (n + 1) + " / 72";
+          stepCounter.textContent = "Step " + step.stepId + " / 72";
           btnBack.disabled = n === 0;
-          btnNext.disabled = n === 71;
+          btnNext.disabled = n === 72;
         });
 
         if (progressFill) {
-          var pct = (n / 71) * 100;
+          var pct = (n / 72) * 100;
           progressFill.style.width = pct + "%";
         }
       }
