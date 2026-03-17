@@ -1,0 +1,1114 @@
+{
+  "schema": "otos.founderStory.feed.v1",
+  "exportedAt": "2026-03-17T19:22:14.608Z",
+  "globals": {
+    "storyHeader": "Story",
+    "moneyHeader": "Money",
+    "phaseLabelHeader": "Phase",
+    "runningTotalLabel": "Running total"
+  },
+  "items": [
+    {
+      "id": "s1",
+      "order": 0,
+      "drawioId": null,
+      "type": "private_provider",
+      "story": {
+        "header": "Story",
+        "org": "Psymplicity Healthcare, London",
+        "title": "Private ADHD diagnosis",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "1",
+        "title": "Private ADHD diagnosis",
+        "org": "Psymplicity Healthcare, London",
+        "body": "",
+        "cost": 900,
+        "personalCost": 0,
+        "nodeIndex": 4
+      },
+      "tags": [
+        "normal",
+        "Diagnosis",
+        "partner"
+      ]
+    },
+    {
+      "id": "s2",
+      "order": 1,
+      "drawioId": null,
+      "type": "a_and_e",
+      "story": {
+        "header": "Story",
+        "org": "Addenbrooke's A&E",
+        "title": "Suicide attempt",
+        "body": "Ambulance → Addenbrooke's A&E\n\nAttendance only (not detox/stay)"
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "1",
+        "title": "Suicide attempt",
+        "org": "Addenbrooke's A&E",
+        "body": "Ambulance → Addenbrooke's A&E\n\nAttendance only (not detox/stay)",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 8
+      },
+      "tags": [
+        "normal",
+        "hospital",
+        "hospital"
+      ]
+    },
+    {
+      "id": "s3",
+      "order": 2,
+      "drawioId": null,
+      "type": "gp",
+      "story": {
+        "header": "Story",
+        "org": "GP Comberton & Eversden",
+        "title": "Shared care arrangement",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "1",
+        "title": "Shared care arrangement",
+        "org": "GP Comberton & Eversden",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 1
+      },
+      "tags": [
+        "normal",
+        "GP",
+        "organisation"
+      ]
+    },
+    {
+      "id": "s4",
+      "order": 3,
+      "drawioId": null,
+      "type": "crisis",
+      "story": {
+        "header": "Story",
+        "org": "Addenbrooke's A&E",
+        "title": "Neighbour assault",
+        "body": "Addenbrooke's ICU admission (assault)\n\nCrisis event"
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "1",
+        "title": "Neighbour assault",
+        "org": "Addenbrooke's A&E",
+        "body": "Addenbrooke's ICU admission (assault)\n\nCrisis event",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 8
+      },
+      "tags": [
+        "crisis",
+        "hospital",
+        "hospital"
+      ]
+    },
+    {
+      "id": "s5",
+      "order": 4,
+      "drawioId": null,
+      "type": "police",
+      "story": {
+        "header": "Story",
+        "org": "999 – Police",
+        "title": "Police arrest",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "1",
+        "title": "Police arrest",
+        "org": "999 – Police",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 24
+      },
+      "tags": [
+        "normal",
+        "consequence",
+        "consequence"
+      ]
+    },
+    {
+      "id": "s6",
+      "order": 5,
+      "drawioId": null,
+      "type": "gp",
+      "story": {
+        "header": "Story",
+        "org": "GP Huntingdon Road, Cambridge",
+        "title": "Social housing move; GP change",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "1",
+        "title": "Social housing move; GP change",
+        "org": "GP Huntingdon Road, Cambridge",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 3
+      },
+      "tags": [
+        "normal",
+        "GP",
+        "organisation"
+      ]
+    },
+    {
+      "id": "s7",
+      "order": 6,
+      "drawioId": null,
+      "type": "relapse",
+      "story": {
+        "header": "Story",
+        "org": "GP Huntingdon Road, Cambridge",
+        "title": "Dead end: shared care collapse",
+        "body": "GP Huntingdon Road\n\nPath reverses back to network"
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "1",
+        "title": "Dead end: shared care collapse",
+        "org": "GP Huntingdon Road, Cambridge",
+        "body": "GP Huntingdon Road\n\nPath reverses back to network",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 3
+      },
+      "tags": [
+        "dead_end",
+        "GP",
+        "organisation"
+      ]
+    },
+    {
+      "id": "s8",
+      "order": 7,
+      "drawioId": null,
+      "type": "a_and_e",
+      "story": {
+        "header": "Story",
+        "org": "Northampton General A&E",
+        "title": "Withdrawal seizures",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "1",
+        "title": "Withdrawal seizures",
+        "org": "Northampton General A&E",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 9
+      },
+      "tags": [
+        "normal",
+        "hospital",
+        "hospital"
+      ]
+    },
+    {
+      "id": "s9",
+      "order": 8,
+      "drawioId": null,
+      "type": "a_and_e",
+      "story": {
+        "header": "Story",
+        "org": "Addenbrooke's A&E",
+        "title": "Crisis presentation — detox admission",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "1",
+        "title": "Crisis presentation — detox admission",
+        "org": "Addenbrooke's A&E",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 8
+      },
+      "tags": [
+        "normal",
+        "hospital",
+        "hospital"
+      ]
+    },
+    {
+      "id": "s10",
+      "order": 9,
+      "drawioId": null,
+      "type": "rehab_detox",
+      "story": {
+        "header": "Story",
+        "org": "Nightingale Hospital",
+        "title": "Detox programme",
+        "body": "Nightingale Hospital (16 days)\n\nPrivate"
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "1",
+        "title": "Detox programme",
+        "org": "Nightingale Hospital",
+        "body": "Nightingale Hospital (16 days)\n\nPrivate",
+        "cost": 22000,
+        "personalCost": 0,
+        "nodeIndex": 10
+      },
+      "tags": [
+        "normal",
+        "hospital",
+        "hospital"
+      ]
+    },
+    {
+      "id": "s11",
+      "order": 10,
+      "drawioId": null,
+      "type": "recovery",
+      "story": {
+        "header": "Story",
+        "org": "Help Me Stop DayHab",
+        "title": "Dayhab programme",
+        "body": "Help Me Stop (6 weeks)\n\nPrivate"
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "Dayhab programme",
+        "org": "Help Me Stop DayHab",
+        "body": "Help Me Stop (6 weeks)\n\nPrivate",
+        "cost": 4500,
+        "personalCost": 0,
+        "nodeIndex": 11
+      },
+      "tags": [
+        "normal",
+        "recovery",
+        "support"
+      ]
+    },
+    {
+      "id": "s12",
+      "order": 11,
+      "drawioId": null,
+      "type": "police",
+      "story": {
+        "header": "Story",
+        "org": "999 – Police",
+        "title": "Drink driving arrest",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "Drink driving arrest",
+        "org": "999 – Police",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 24
+      },
+      "tags": [
+        "normal",
+        "consequence",
+        "consequence"
+      ]
+    },
+    {
+      "id": "s13",
+      "order": 12,
+      "drawioId": null,
+      "type": "court_probation",
+      "story": {
+        "header": "Story",
+        "org": "Courts",
+        "title": "Court appearance",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "Court appearance",
+        "org": "Courts",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 23
+      },
+      "tags": [
+        "normal",
+        "consequence",
+        "consequence"
+      ]
+    },
+    {
+      "id": "s14",
+      "order": 13,
+      "drawioId": null,
+      "type": "court_probation",
+      "story": {
+        "header": "Story",
+        "org": "Probation",
+        "title": "Community service; probation",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "Community service; probation",
+        "org": "Probation",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 22
+      },
+      "tags": [
+        "normal",
+        "consequence",
+        "consequence"
+      ]
+    },
+    {
+      "id": "s15",
+      "order": 14,
+      "drawioId": null,
+      "type": "nhs_service",
+      "story": {
+        "header": "Story",
+        "org": "CGL Drug & Alcohol Service",
+        "title": "CGL engagement (1)",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "CGL engagement (1)",
+        "org": "CGL Drug & Alcohol Service",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 13
+      },
+      "tags": [
+        "normal",
+        "recovery",
+        "support"
+      ]
+    },
+    {
+      "id": "s16",
+      "order": 15,
+      "drawioId": null,
+      "type": "rehab_detox",
+      "story": {
+        "header": "Story",
+        "org": "Castle Craig Dual-Diagnosis Hospital",
+        "title": "Residential rehab",
+        "body": "Castle Craig (dual diagnosis)\n\nCGL funded; ADHD meds removed on entry"
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "Residential rehab",
+        "org": "Castle Craig Dual-Diagnosis Hospital",
+        "body": "Castle Craig (dual diagnosis)\n\nCGL funded; ADHD meds removed on entry",
+        "cost": 90000,
+        "personalCost": 0,
+        "nodeIndex": 17
+      },
+      "tags": [
+        "normal",
+        "hospital",
+        "hospital"
+      ]
+    },
+    {
+      "id": "s17",
+      "order": 16,
+      "drawioId": null,
+      "type": "nhs_service",
+      "story": {
+        "header": "Story",
+        "org": "CPFT Psychological Wellbeing Service",
+        "title": "Psychological wellbeing (6 weeks)",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "Psychological wellbeing (6 weeks)",
+        "org": "CPFT Psychological Wellbeing Service",
+        "body": "",
+        "cost": 360,
+        "personalCost": 0,
+        "nodeIndex": 6
+      },
+      "tags": [
+        "normal",
+        "recovery",
+        "support"
+      ]
+    },
+    {
+      "id": "s18",
+      "order": 17,
+      "drawioId": null,
+      "type": "gp",
+      "story": {
+        "header": "Story",
+        "org": "GP Huntingdon Road, Cambridge",
+        "title": "Counselling skills L1/L2",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "Counselling skills L1/L2",
+        "org": "GP Huntingdon Road, Cambridge",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 3
+      },
+      "tags": [
+        "normal",
+        "GP",
+        "organisation"
+      ]
+    },
+    {
+      "id": "s19",
+      "order": 18,
+      "drawioId": null,
+      "type": "recovery",
+      "story": {
+        "header": "Story",
+        "org": "CPFT Psychological Wellbeing Service",
+        "title": "Recovery advocacy; AA / peer support",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "Recovery advocacy; AA / peer support",
+        "org": "CPFT Psychological Wellbeing Service",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 6
+      },
+      "tags": [
+        "recovery",
+        "recovery",
+        "support"
+      ]
+    },
+    {
+      "id": "s20",
+      "order": 19,
+      "drawioId": null,
+      "type": "nhs_service",
+      "story": {
+        "header": "Story",
+        "org": "CPFT Psychological Wellbeing Service",
+        "title": "Relapse experiment (9 months)",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "Relapse experiment (9 months)",
+        "org": "CPFT Psychological Wellbeing Service",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 6
+      },
+      "tags": [
+        "normal",
+        "recovery",
+        "support"
+      ]
+    },
+    {
+      "id": "s21",
+      "order": 20,
+      "drawioId": null,
+      "type": "crisis",
+      "story": {
+        "header": "Story",
+        "org": "Addenbrooke's A&E",
+        "title": "ICU admission — balcony fall",
+        "body": "Addenbrooke's A&E\n\nCrisis event"
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "ICU admission — balcony fall",
+        "org": "Addenbrooke's A&E",
+        "body": "Addenbrooke's A&E\n\nCrisis event",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 8
+      },
+      "tags": [
+        "crisis",
+        "hospital",
+        "hospital"
+      ]
+    },
+    {
+      "id": "s22",
+      "order": 21,
+      "drawioId": null,
+      "type": "a_and_e",
+      "story": {
+        "header": "Story",
+        "org": "Addenbrooke's A&E",
+        "title": "A&E detox — successful discharge",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "A&E detox — successful discharge",
+        "org": "Addenbrooke's A&E",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 8
+      },
+      "tags": [
+        "normal",
+        "hospital",
+        "hospital"
+      ]
+    },
+    {
+      "id": "s23",
+      "order": 22,
+      "drawioId": null,
+      "type": "nhs_service",
+      "story": {
+        "header": "Story",
+        "org": "CPFT Psychological Wellbeing Service",
+        "title": "Alcohol use returns",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "Alcohol use returns",
+        "org": "CPFT Psychological Wellbeing Service",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 6
+      },
+      "tags": [
+        "normal",
+        "recovery",
+        "support"
+      ]
+    },
+    {
+      "id": "s24",
+      "order": 23,
+      "drawioId": null,
+      "type": "gp",
+      "story": {
+        "header": "Story",
+        "org": "GP Huntingdon Road, Cambridge",
+        "title": "Family intervention",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "2",
+        "title": "Family intervention",
+        "org": "GP Huntingdon Road, Cambridge",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 3
+      },
+      "tags": [
+        "normal",
+        "GP",
+        "organisation"
+      ]
+    },
+    {
+      "id": "s25",
+      "order": 24,
+      "drawioId": null,
+      "type": "private_provider",
+      "story": {
+        "header": "Story",
+        "org": "Psymplicity Healthcare, London",
+        "title": "ADHD psychiatric review",
+        "body": "Psymplicity\n\n+ £200/month ongoing"
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "3",
+        "title": "ADHD psychiatric review",
+        "org": "Psymplicity Healthcare, London",
+        "body": "Psymplicity\n\n+ £200/month ongoing",
+        "cost": 600,
+        "personalCost": 0,
+        "nodeIndex": 4
+      },
+      "tags": [
+        "normal",
+        "Diagnosis",
+        "partner"
+      ]
+    },
+    {
+      "id": "s26",
+      "order": 25,
+      "drawioId": null,
+      "type": "a_and_e",
+      "story": {
+        "header": "Story",
+        "org": "Addenbrooke's A&E",
+        "title": "A&E return — turned away (refusal)",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "3",
+        "title": "A&E return — turned away (refusal)",
+        "org": "Addenbrooke's A&E",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 8
+      },
+      "tags": [
+        "refusal",
+        "hospital",
+        "hospital"
+      ]
+    },
+    {
+      "id": "s27",
+      "order": 26,
+      "drawioId": null,
+      "type": "relapse",
+      "story": {
+        "header": "Story",
+        "org": "Addenbrooke's A&E",
+        "title": "Dead end: turned away",
+        "body": "Addenbrooke's A&E refusal\n\nPath reverses; later admitted"
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "3",
+        "title": "Dead end: turned away",
+        "org": "Addenbrooke's A&E",
+        "body": "Addenbrooke's A&E refusal\n\nPath reverses; later admitted",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 8
+      },
+      "tags": [
+        "dead_end",
+        "hospital",
+        "hospital"
+      ]
+    },
+    {
+      "id": "s28",
+      "order": 27,
+      "drawioId": null,
+      "type": "a_and_e",
+      "story": {
+        "header": "Story",
+        "org": "Addenbrooke's A&E",
+        "title": "Addenbrooke's — detox confirmation",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "3",
+        "title": "Addenbrooke's — detox confirmation",
+        "org": "Addenbrooke's A&E",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 8
+      },
+      "tags": [
+        "normal",
+        "hospital",
+        "hospital"
+      ]
+    },
+    {
+      "id": "s29",
+      "order": 28,
+      "drawioId": null,
+      "type": "waiting_list_admin",
+      "story": {
+        "header": "Story",
+        "org": "CGL Drug & Alcohol Service",
+        "title": "CGL re-engagement (2)",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "3",
+        "title": "CGL re-engagement (2)",
+        "org": "CGL Drug & Alcohol Service",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 13
+      },
+      "tags": [
+        "handoff",
+        "recovery",
+        "support"
+      ]
+    },
+    {
+      "id": "s30",
+      "order": 29,
+      "drawioId": null,
+      "type": "private_provider",
+      "story": {
+        "header": "Story",
+        "org": "Psymplicity Healthcare, London",
+        "title": "Medication decision; Elvanse titration",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "3",
+        "title": "Medication decision; Elvanse titration",
+        "org": "Psymplicity Healthcare, London",
+        "body": "",
+        "cost": 400,
+        "personalCost": 0,
+        "nodeIndex": 4
+      },
+      "tags": [
+        "normal",
+        "Diagnosis",
+        "partner"
+      ]
+    },
+    {
+      "id": "s31",
+      "order": 30,
+      "drawioId": null,
+      "type": "waiting_list_admin",
+      "story": {
+        "header": "Story",
+        "org": "Cambridge Recovery Service (CRS)",
+        "title": "Referral onward CGL → CRS",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "3",
+        "title": "Referral onward CGL → CRS",
+        "org": "Cambridge Recovery Service (CRS)",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 14
+      },
+      "tags": [
+        "handoff",
+        "recovery",
+        "support"
+      ]
+    },
+    {
+      "id": "s32",
+      "order": 31,
+      "drawioId": null,
+      "type": "nhs_service",
+      "story": {
+        "header": "Story",
+        "org": "CPFT Psychological Wellbeing Service",
+        "title": "Hub wellbeing services",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "3",
+        "title": "Hub wellbeing services",
+        "org": "CPFT Psychological Wellbeing Service",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 6
+      },
+      "tags": [
+        "normal",
+        "recovery",
+        "support"
+      ]
+    },
+    {
+      "id": "s33",
+      "order": 32,
+      "drawioId": null,
+      "type": "relapse",
+      "story": {
+        "header": "Story",
+        "org": "GP Newnham, Cambridge",
+        "title": "Dead end: registration refused",
+        "body": "GP Newnham\n\nPath reverses back to network"
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "4",
+        "title": "Dead end: registration refused",
+        "org": "GP Newnham, Cambridge",
+        "body": "GP Newnham\n\nPath reverses back to network",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 2
+      },
+      "tags": [
+        "dead_end",
+        "GP",
+        "organisation"
+      ]
+    },
+    {
+      "id": "s34",
+      "order": 33,
+      "drawioId": null,
+      "type": "nhs_service",
+      "story": {
+        "header": "Story",
+        "org": "CPFT ADHD Team",
+        "title": "ADHD team contact",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "4",
+        "title": "ADHD team contact",
+        "org": "CPFT ADHD Team",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 5
+      },
+      "tags": [
+        "normal",
+        "Diagnosis",
+        "organisation"
+      ]
+    },
+    {
+      "id": "s35",
+      "order": 34,
+      "drawioId": null,
+      "type": "gp",
+      "story": {
+        "header": "Story",
+        "org": "GP Huntingdon Road, Cambridge",
+        "title": "Records retrieval",
+        "body": ""
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "4",
+        "title": "Records retrieval",
+        "org": "GP Huntingdon Road, Cambridge",
+        "body": "",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 3
+      },
+      "tags": [
+        "normal",
+        "GP",
+        "organisation"
+      ]
+    },
+    {
+      "id": "s36",
+      "order": 35,
+      "drawioId": null,
+      "type": "waiting_list_admin",
+      "story": {
+        "header": "Story",
+        "org": "WorkWell",
+        "title": "GP → WorkWell + MIND handoff",
+        "body": "Signposting; therapy arranged\n\nSMS 'message waiting'"
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "4",
+        "title": "GP → WorkWell + MIND handoff",
+        "org": "WorkWell",
+        "body": "Signposting; therapy arranged\n\nSMS 'message waiting'",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 20
+      },
+      "tags": [
+        "handoff",
+        "partner",
+        "partner"
+      ]
+    },
+    {
+      "id": "s37",
+      "order": 36,
+      "drawioId": null,
+      "type": "charity",
+      "story": {
+        "header": "Story",
+        "org": "MIND",
+        "title": "Research follow-up",
+        "body": "Research team contacts\n\nNot care continuity; silence periods remain"
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "4",
+        "title": "Research follow-up",
+        "org": "MIND",
+        "body": "Research team contacts\n\nNot care continuity; silence periods remain",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 19
+      },
+      "tags": [
+        "normal",
+        "partner",
+        "partner"
+      ]
+    },
+    {
+      "id": "s38",
+      "order": 37,
+      "drawioId": null,
+      "type": "recovery",
+      "story": {
+        "header": "Story",
+        "org": "Integrated Therapist",
+        "title": "Therapy period",
+        "body": "Integrated Therapist (6 weeks)\n\nContinuity discussed"
+      },
+      "money": {
+        "header": "Money",
+        "phaseLabelHeader": "Phase",
+        "runningTotalLabel": "Running total",
+        "phase": "4",
+        "title": "Therapy period",
+        "org": "Integrated Therapist",
+        "body": "Integrated Therapist (6 weeks)\n\nContinuity discussed",
+        "cost": 0,
+        "personalCost": 0,
+        "nodeIndex": 18
+      },
+      "tags": [
+        "recovery",
+        "recovery",
+        "support"
+      ]
+    }
+  ]
+}

@@ -25,7 +25,8 @@ body{
 	color:var(--text);
 
 	min-height:100svh;
-	overflow:hidden;
+	overflow-x:hidden;
+	overflow-y:auto;
 
 	display:flex;
 	flex-direction:column;
@@ -62,7 +63,8 @@ body{
 .nav-links a.active{ color:#000; font-weight:600; }
 
 .page{
-	height:calc(100svh - 76px);
+	min-height:calc(100svh - 76px);
+	height:auto;
 	margin:0 auto;
 	width:min(1320px, 100%);
 
@@ -100,6 +102,56 @@ h1{
 	line-height:1.6;
 	color:var(--muted);
 }
+
+/* Hero still banners (3-up) */
+.hero-banners{
+	margin-top: clamp(12px, 2vh, 18px);
+	display:grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: clamp(10px, 1.6vw, 16px);
+}
+@media (max-width: 980px){
+	.hero-banners{ grid-template-columns: 1fr; }
+}
+.hero-banner{
+	position: relative;
+	height: clamp(140px, 18vh, 200px);
+	border-radius: 18px;
+	overflow: hidden;
+	background-size: cover;
+	background-position: center;
+	border:1px solid rgba(0,0,0,0.06);
+	box-shadow:0 18px 50px rgba(0,0,0,0.10);
+	text-decoration:none;
+	color:#fff;
+}
+.hero-banner::before{
+	content:\"\"; position:absolute; inset:0;
+	background: linear-gradient(to top, rgba(10,18,35,0.78) 0%, rgba(10,18,35,0.25) 55%, rgba(10,18,35,0.05) 100%);
+}
+.hero-banner .t{
+	position:absolute; left:16px; right:16px; bottom:14px;
+	display:flex; flex-direction:column; gap:6px;
+}
+.hero-banner .k{
+	font-size:10px;
+	letter-spacing:0.14em;
+	text-transform:uppercase;
+	opacity:0.85;
+}
+.hero-banner .h{
+	font-size: clamp(16px, 1.6vw, 20px);
+	font-weight:800;
+	line-height:1.15;
+	margin:0;
+}
+.hero-banner .s{
+	font-size:13px;
+	line-height:1.35;
+	opacity:0.86;
+	margin:0;
+}
+.hero-banner:hover{ transform: translateY(-1px); }
 
 .panel{
 	flex:1 1 auto;
@@ -273,6 +325,30 @@ h1{
 			Choose a route to see how touchpoints, follow‑through, drift signals and human review work together.
 			This remains a guided explanation. It is not a live system.
 		</p>
+
+		<div class="hero-banners" aria-label="Demo routes preview">
+			<a class="hero-banner" href="/continuity/how-it-works.html#demo-bedside" style="background-image:url('images/NHS A&E waiting room buzz.png');">
+				<div class="t">
+					<div class="k">Route A · Bedside handoff</div>
+					<p class="h">Helen logs the bedside touchpoint in seconds.</p>
+					<p class="s">Click to follow the bedside handoff flow → wireframes.</p>
+				</div>
+			</a>
+			<a class="hero-banner" href="/continuity/how-it-works.html#demo-primary-care" style="background-image:url('images/Man checking phone outside community centre.png');">
+				<div class="t">
+					<div class="k">Route B · Primary care signpost</div>
+					<p class="h">One tap — the shared journey updates.</p>
+					<p class="s">Click to follow the signpost → engagement → follow‑through.</p>
+				</div>
+			</a>
+			<a class="hero-banner" href="/continuity/reporting.html#demo-reporting" style="background-image:url('images/Woman reviewing NHS data dashboard.png');">
+				<div class="t">
+					<div class="k">Oversight · Reporting</div>
+					<p class="h">Signals, not records — with human control.</p>
+					<p class="s">Click to see reporting and drift insight.</p>
+				</div>
+			</a>
+		</div>
 	</div>
 
 	<div class="panel">

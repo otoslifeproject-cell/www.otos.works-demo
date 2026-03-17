@@ -1,0 +1,833 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Founder Journey — OTOS Continuity™</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f8f8f6;
+        --dark: #0f172a;
+        --orange: #ff8a00;
+        --mid: rgba(15, 23, 42, 0.55);
+        --border: rgba(15, 23, 42, 0.1);
+        --white: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--dark);
+        font-family: Inter, sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+      }
+
+      nav {
+        background: rgba(248, 248, 246, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        height: 64px;
+        display: flex;
+        align-items: center;
+        padding: 0 48px;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      nav .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: var(--dark);
+      }
+
+      nav img {
+        height: 32px;
+        width: auto;
+        display: block;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .nav-links a {
+        font-family: Inter, sans-serif;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--dark);
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: 8px;
+      }
+
+      .nav-links a.active {
+        font-weight: 600;
+        color: var(--orange);
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 32px 48px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: Inter, sans-serif;
+        font-size: 0.8rem;
+        color: var(--mid);
+        gap: 16px;
+      }
+
+      footer .right {
+        display: inline-flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1240px;
+        margin: 0 auto;
+      }
+
+      .col-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 32px;
+        align-items: start;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+      }
+
+      .eyebrow {
+        font-family: Inter, sans-serif;
+        font-weight: 600;
+        font-size: 0.72rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--orange);
+        margin: 0 0 12px;
+      }
+
+      .placeholder-label {
+        font-family: Inter, sans-serif;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--orange);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin: 0 0 14px;
+      }
+
+      .h2 {
+        font-family: "Playfair Display", serif;
+        font-weight: 600;
+        font-size: clamp(1.8rem, 3vw, 2.6rem);
+        letter-spacing: -0.02em;
+        margin: 0 0 16px;
+      }
+
+      .body {
+        font-family: Inter, sans-serif;
+        font-weight: 400;
+        font-size: 1.05rem;
+        line-height: 1.75;
+        color: rgba(15, 23, 42, 0.72);
+        margin: 0;
+      }
+
+      .body-dark {
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      .card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 28px;
+      }
+
+      .pull-quote {
+        border-left: 3px solid #ff8a00;
+        padding-left: 24px;
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 1.2rem;
+        color: rgba(15, 23, 42, 0.85);
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          padding: 0 20px;
+        }
+        nav .nav-links {
+          display: none;
+        }
+
+        .hero-content {
+          padding: 32px 24px 40px;
+        }
+
+        h1 {
+          font-size: clamp(1.8rem, 8vw, 2.4rem) !important;
+        }
+        h2 {
+          font-size: clamp(1.4rem, 6vw, 2rem) !important;
+        }
+
+        .grid-3 {
+          grid-template-columns: 1fr !important;
+        }
+        .grid-2 {
+          grid-template-columns: 1fr !important;
+        }
+        .col-2 {
+          grid-template-columns: 1fr !important;
+        }
+
+        section {
+          padding: 48px 24px !important;
+        }
+        footer {
+          padding: 24px;
+          flex-direction: column;
+          gap: 8px;
+          text-align: center;
+        }
+        footer .right {
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav aria-label="Primary">
+      <a class="brand" href="work-index.html">
+        <img src="../assets/logo.png" alt="OTOS" />
+      </a>
+
+      <div class="nav-links">
+        <a href="work-index.html">Home</a>
+        <a href="work-solution.html">How it works</a>
+        <a href="work-demos.html">Guided demos</a>
+        <a href="work-controls.html">Controls</a>
+        <a href="work-reporting.html">Reporting</a>
+        <a href="work-references.html">References</a>
+        <a href="work-contact.html">Contact</a>
+      </div>
+    </nav>
+
+    <main>
+      <!-- SECTION 1 — High-stakes opening -->
+      <section
+        style="
+          min-height: calc(100vh - 64px);
+          background: #0f172a;
+          position: relative;
+          overflow: hidden;
+          padding: 0;
+        "
+      >
+        <div
+          class="hero-img-placeholder"
+          style="
+            position: absolute;
+            inset: 0;
+            background: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.9rem;
+          "
+        >
+          HERO IMAGE — DEAN TO SUPPLY
+        </div>
+
+        <div
+          class="hero-content"
+          style="
+            position: relative;
+            z-index: 2;
+            min-height: calc(100vh - 64px);
+            padding: 64px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            max-width: 860px;
+          "
+        >
+          <div class="placeholder-label">SECTION 1 — High-stakes opening</div>
+          <h1
+            style="
+              font-family: 'Playfair Display', serif;
+              font-size: clamp(2.4rem, 5vw, 4rem);
+              font-weight: 600;
+              color: white;
+              line-height: 1.05;
+              letter-spacing: -0.03em;
+              margin: 0 0 16px;
+              max-width: 720px;
+            "
+          >
+            [CONTENT — DEAN TO SUPPLY]
+          </h1>
+          <p
+            style="
+              font-family: Inter, sans-serif;
+              font-size: 1.05rem;
+              color: rgba(255, 255, 255, 0.78);
+              margin: 0;
+              line-height: 1.6;
+              max-width: 640px;
+            "
+          >
+            [CONTENT — DEAN TO SUPPLY]
+          </p>
+        </div>
+      </section>
+
+      <!-- SECTION 2 — The question the system keeps not asking -->
+      <section style="background: white; padding: 80px 48px">
+        <div style="max-width: 760px; margin: 0 auto">
+          <div class="placeholder-label">SECTION 2 — The question the system keeps not asking</div>
+          <div class="eyebrow" style="color: #0f172a">THE QUESTION</div>
+          <h2 class="h2">[CONTENT — DEAN TO SUPPLY]</h2>
+          <div style="display: grid; gap: 18px; margin-bottom: 28px">
+            <p class="body">[CONTENT — DEAN TO SUPPLY]</p>
+            <p class="body">[CONTENT — DEAN TO SUPPLY]</p>
+          </div>
+          <div class="pull-quote">[PULL QUOTE — DEAN TO SUPPLY]</div>
+        </div>
+      </section>
+
+      <!-- SECTION 3 — Where this comes from -->
+      <section style="background: var(--bg); padding: 80px 48px">
+        <div class="container">
+          <div class="placeholder-label">SECTION 3 — Where this comes from</div>
+          <div class="col-2">
+            <div>
+              <div class="eyebrow" style="color: #0f172a">WHERE THIS COMES FROM</div>
+              <h2 class="h2">[CONTENT — DEAN TO SUPPLY]</h2>
+              <div style="display: grid; gap: 18px">
+                <p class="body">[CONTENT — DEAN TO SUPPLY]</p>
+                <p class="body">[CONTENT — DEAN TO SUPPLY]</p>
+                <p class="body">[CONTENT — DEAN TO SUPPLY]</p>
+              </div>
+            </div>
+            <div>
+              <div
+                style="
+                  height: 400px;
+                  background: #e2e8f0;
+                  border-radius: 16px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: rgba(15, 23, 42, 0.35);
+                  font-family: Inter, sans-serif;
+                  font-weight: 500;
+                "
+              >
+                [IMAGE — DEAN TO SUPPLY]
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4 — What happened in the system -->
+      <section style="background: white; padding: 80px 48px">
+        <div class="container" style="max-width: 960px">
+          <div class="placeholder-label">SECTION 4 — What happened in the system</div>
+          <div class="eyebrow" style="color: #0f172a">THE PATHWAY</div>
+          <h2 class="h2" style="text-align: center">[CONTENT — DEAN TO SUPPLY]</h2>
+
+          <div style="margin-top: 44px; display: grid; gap: 22px">
+            <div style="display: grid; grid-template-columns: 22px 1fr; gap: 18px; align-items: start">
+              <div style="position: relative; height: 100%">
+                <div style="width: 12px; height: 12px; border-radius: 999px; background: #ff8a00; margin-top: 6px"></div>
+                <div style="position: absolute; left: 5px; top: 22px; bottom: -22px; width: 2px; background: rgba(255, 138, 0, 0.25)"></div>
+              </div>
+              <div class="card">
+                <div class="placeholder-label">[SERVICE — DEAN TO SUPPLY]</div>
+                <div style="display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap">
+                  <div style="color: rgba(15, 23, 42, 0.6); font-size: 0.9rem">[DATE — DEAN TO SUPPLY]</div>
+                  <div style="color: rgba(15, 23, 42, 0.6); font-size: 0.9rem">[COST — DEAN TO SUPPLY]</div>
+                </div>
+                <div style="height: 10px"></div>
+                <div class="body" style="font-size: 0.95rem">[DESCRIPTION — DEAN TO SUPPLY]</div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 22px 1fr; gap: 18px; align-items: start">
+              <div style="position: relative; height: 100%">
+                <div style="width: 12px; height: 12px; border-radius: 999px; background: #ff8a00; margin-top: 6px"></div>
+                <div style="position: absolute; left: 5px; top: 22px; bottom: -22px; width: 2px; background: rgba(255, 138, 0, 0.25)"></div>
+              </div>
+              <div class="card">
+                <div class="placeholder-label">[SERVICE — DEAN TO SUPPLY]</div>
+                <div style="display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap">
+                  <div style="color: rgba(15, 23, 42, 0.6); font-size: 0.9rem">[DATE — DEAN TO SUPPLY]</div>
+                  <div style="color: rgba(15, 23, 42, 0.6); font-size: 0.9rem">[COST — DEAN TO SUPPLY]</div>
+                </div>
+                <div style="height: 10px"></div>
+                <div class="body" style="font-size: 0.95rem">[DESCRIPTION — DEAN TO SUPPLY]</div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 22px 1fr; gap: 18px; align-items: start">
+              <div style="position: relative; height: 100%">
+                <div style="width: 12px; height: 12px; border-radius: 999px; background: #ff8a00; margin-top: 6px"></div>
+                <div style="position: absolute; left: 5px; top: 22px; bottom: -22px; width: 2px; background: rgba(255, 138, 0, 0.25)"></div>
+              </div>
+              <div class="card">
+                <div class="placeholder-label">[SERVICE — DEAN TO SUPPLY]</div>
+                <div style="display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap">
+                  <div style="color: rgba(15, 23, 42, 0.6); font-size: 0.9rem">[DATE — DEAN TO SUPPLY]</div>
+                  <div style="color: rgba(15, 23, 42, 0.6); font-size: 0.9rem">[COST — DEAN TO SUPPLY]</div>
+                </div>
+                <div style="height: 10px"></div>
+                <div class="body" style="font-size: 0.95rem">[DESCRIPTION — DEAN TO SUPPLY]</div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 22px 1fr; gap: 18px; align-items: start">
+              <div style="position: relative; height: 100%">
+                <div style="width: 12px; height: 12px; border-radius: 999px; background: #ff8a00; margin-top: 6px"></div>
+                <div style="position: absolute; left: 5px; top: 22px; bottom: -22px; width: 2px; background: rgba(255, 138, 0, 0.25)"></div>
+              </div>
+              <div class="card">
+                <div class="placeholder-label">[SERVICE — DEAN TO SUPPLY]</div>
+                <div style="display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap">
+                  <div style="color: rgba(15, 23, 42, 0.6); font-size: 0.9rem">[DATE — DEAN TO SUPPLY]</div>
+                  <div style="color: rgba(15, 23, 42, 0.6); font-size: 0.9rem">[COST — DEAN TO SUPPLY]</div>
+                </div>
+                <div style="height: 10px"></div>
+                <div class="body" style="font-size: 0.95rem">[DESCRIPTION — DEAN TO SUPPLY]</div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 22px 1fr; gap: 18px; align-items: start">
+              <div style="position: relative; height: 100%">
+                <div style="width: 12px; height: 12px; border-radius: 999px; background: #ff8a00; margin-top: 6px"></div>
+                <div style="position: absolute; left: 5px; top: 22px; bottom: -22px; width: 2px; background: rgba(255, 138, 0, 0.25)"></div>
+              </div>
+              <div class="card">
+                <div class="placeholder-label">[SERVICE — DEAN TO SUPPLY]</div>
+                <div style="display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap">
+                  <div style="color: rgba(15, 23, 42, 0.6); font-size: 0.9rem">[DATE — DEAN TO SUPPLY]</div>
+                  <div style="color: rgba(15, 23, 42, 0.6); font-size: 0.9rem">[COST — DEAN TO SUPPLY]</div>
+                </div>
+                <div style="height: 10px"></div>
+                <div class="body" style="font-size: 0.95rem">[DESCRIPTION — DEAN TO SUPPLY]</div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 22px 1fr; gap: 18px; align-items: start">
+              <div style="position: relative; height: 100%">
+                <div style="width: 12px; height: 12px; border-radius: 999px; background: #ff8a00; margin-top: 6px"></div>
+              </div>
+              <div class="card">
+                <div class="placeholder-label">[SERVICE — DEAN TO SUPPLY]</div>
+                <div style="display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap">
+                  <div style="color: rgba(15, 23, 42, 0.6); font-size: 0.9rem">[DATE — DEAN TO SUPPLY]</div>
+                  <div style="color: rgba(15, 23, 42, 0.6); font-size: 0.9rem">[COST — DEAN TO SUPPLY]</div>
+                </div>
+                <div style="height: 10px"></div>
+                <div class="body" style="font-size: 0.95rem">[DESCRIPTION — DEAN TO SUPPLY]</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5 — The turning point -->
+      <section style="background: #0f172a; padding: 80px 48px">
+        <div style="max-width: 720px; margin: 0 auto; text-align: center">
+          <div class="placeholder-label">SECTION 5 — The turning point</div>
+          <div class="eyebrow">THE TURNING POINT</div>
+          <h2
+            style="
+              font-family: 'Playfair Display', serif;
+              font-weight: 600;
+              font-size: clamp(1.9rem, 3.2vw, 2.7rem);
+              color: white;
+              letter-spacing: -0.02em;
+              margin: 0 0 16px;
+            "
+          >
+            [CONTENT — DEAN TO SUPPLY]
+          </h2>
+          <p class="body body-dark" style="margin: 0 0 34px">[CONTENT — DEAN TO SUPPLY]</p>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(3, minmax(0, 1fr));
+              gap: 18px;
+              margin-top: 22px;
+            "
+          >
+            <div style="border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 16px; padding: 22px">
+              <div style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 2.2rem; color: #ff8a00">
+                [STAT]
+              </div>
+              <div style="font-family: Inter, sans-serif; font-weight: 500; font-size: 0.85rem; color: rgba(255, 255, 255, 0.65)">
+                [CONTENT — DEAN TO SUPPLY]
+              </div>
+            </div>
+            <div style="border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 16px; padding: 22px">
+              <div style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 2.2rem; color: #ff8a00">
+                [STAT]
+              </div>
+              <div style="font-family: Inter, sans-serif; font-weight: 500; font-size: 0.85rem; color: rgba(255, 255, 255, 0.65)">
+                [CONTENT — DEAN TO SUPPLY]
+              </div>
+            </div>
+            <div style="border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 16px; padding: 22px">
+              <div style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 2.2rem; color: #ff8a00">
+                [STAT]
+              </div>
+              <div style="font-family: Inter, sans-serif; font-weight: 500; font-size: 0.85rem; color: rgba(255, 255, 255, 0.65)">
+                [CONTENT — DEAN TO SUPPLY]
+              </div>
+            </div>
+          </div>
+          <div style="height: 10px"></div>
+          <div style="color: rgba(255, 255, 255, 0.45); font-size: 0.85rem">[CONTENT — DEAN TO SUPPLY]</div>
+        </div>
+      </section>
+
+      <!-- SECTION 6 — Why this is bigger than one person -->
+      <section style="background: white; padding: 80px 48px">
+        <div class="container">
+          <div class="placeholder-label">SECTION 6 — Why this is bigger than one person</div>
+          <div class="col-2">
+            <div>
+              <div class="eyebrow" style="color: #0f172a">THE WIDER PROBLEM</div>
+              <h2 class="h2">[CONTENT — DEAN TO SUPPLY]</h2>
+              <div style="display: grid; gap: 18px">
+                <p class="body">[CONTENT — DEAN TO SUPPLY]</p>
+                <p class="body">[CONTENT — DEAN TO SUPPLY]</p>
+              </div>
+            </div>
+            <div>
+              <div
+                style="
+                  background: var(--bg);
+                  border-radius: 20px;
+                  border: 1px solid var(--border);
+                  padding: 32px;
+                  min-height: 220px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: rgba(15, 23, 42, 0.45);
+                  font-family: Inter, sans-serif;
+                  font-weight: 600;
+                "
+              >
+                [DATA/STAT CARD — DEAN TO SUPPLY]
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 7 — Why the ADHD brain drifts at handoff -->
+      <section style="background: var(--bg); padding: 80px 48px">
+        <div class="container">
+          <div class="placeholder-label">SECTION 7 — Why the ADHD brain drifts at handoff</div>
+          <div style="max-width: 960px; margin: 0 auto; text-align: center">
+            <div class="eyebrow" style="color: #0f172a">THE MECHANISM</div>
+            <h2 class="h2">[CONTENT — DEAN TO SUPPLY]</h2>
+          </div>
+          <div class="grid-3" style="max-width: 1100px; margin: 34px auto 0">
+            <div class="card" style="padding: 32px">
+              <div class="placeholder-label">[MECHANISM 1 — DEAN TO SUPPLY]</div>
+              <div class="body" style="font-size: 0.95rem">[CONTENT — DEAN TO SUPPLY]</div>
+            </div>
+            <div class="card" style="padding: 32px">
+              <div class="placeholder-label">[MECHANISM 2 — DEAN TO SUPPLY]</div>
+              <div class="body" style="font-size: 0.95rem">[CONTENT — DEAN TO SUPPLY]</div>
+            </div>
+            <div class="card" style="padding: 32px">
+              <div class="placeholder-label">[MECHANISM 3 — DEAN TO SUPPLY]</div>
+              <div class="body" style="font-size: 0.95rem">[CONTENT — DEAN TO SUPPLY]</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 8 — What OTOS Continuity does -->
+      <section style="background: white; padding: 80px 48px">
+        <div class="container" style="max-width: 1100px">
+          <div class="placeholder-label">SECTION 8 — What OTOS Continuity does</div>
+          <div class="eyebrow" style="color: #0f172a">THE SOLUTION</div>
+          <h2 class="h2">[CONTENT — DEAN TO SUPPLY]</h2>
+          <p class="body" style="max-width: 760px">[CONTENT — DEAN TO SUPPLY]</p>
+
+          <div class="grid-2" style="margin-top: 34px">
+            <div class="card" style="display: grid; gap: 10px">
+              <div style="display: inline-flex; align-items: center; gap: 12px">
+                <div style="width: 44px; height: 44px; border-radius: 999px; background: #fff7ed; border: 1px solid rgba(255, 138, 0, 0.25)"></div>
+                <div class="placeholder-label">[CONTENT — DEAN TO SUPPLY]</div>
+              </div>
+              <div class="body" style="font-size: 0.95rem">[CONTENT — DEAN TO SUPPLY]</div>
+            </div>
+            <div class="card" style="display: grid; gap: 10px">
+              <div style="display: inline-flex; align-items: center; gap: 12px">
+                <div style="width: 44px; height: 44px; border-radius: 999px; background: #fff7ed; border: 1px solid rgba(255, 138, 0, 0.25)"></div>
+                <div class="placeholder-label">[CONTENT — DEAN TO SUPPLY]</div>
+              </div>
+              <div class="body" style="font-size: 0.95rem">[CONTENT — DEAN TO SUPPLY]</div>
+            </div>
+            <div class="card" style="display: grid; gap: 10px">
+              <div style="display: inline-flex; align-items: center; gap: 12px">
+                <div style="width: 44px; height: 44px; border-radius: 999px; background: #fff7ed; border: 1px solid rgba(255, 138, 0, 0.25)"></div>
+                <div class="placeholder-label">[CONTENT — DEAN TO SUPPLY]</div>
+              </div>
+              <div class="body" style="font-size: 0.95rem">[CONTENT — DEAN TO SUPPLY]</div>
+            </div>
+            <div class="card" style="display: grid; gap: 10px">
+              <div style="display: inline-flex; align-items: center; gap: 12px">
+                <div style="width: 44px; height: 44px; border-radius: 999px; background: #fff7ed; border: 1px solid rgba(255, 138, 0, 0.25)"></div>
+                <div class="placeholder-label">[CONTENT — DEAN TO SUPPLY]</div>
+              </div>
+              <div class="body" style="font-size: 0.95rem">[CONTENT — DEAN TO SUPPLY]</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 9 — Supporting demos -->
+      <section style="background: var(--bg); padding: 80px 48px">
+        <div class="container" style="max-width: 1100px">
+          <div class="placeholder-label">SECTION 9 — Supporting demos</div>
+          <div class="eyebrow" style="color: #0f172a">DEMO EVIDENCE</div>
+          <h2 class="h2">See it in a real pathway context.</h2>
+
+          <div class="grid-2" style="margin-top: 28px">
+            <article class="card" style="border-radius: 16px; padding: 28px">
+              <div style="font-family: Inter, sans-serif; font-weight: 600; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #ff8a00">
+                ROUTE A
+              </div>
+              <div style="height: 14px"></div>
+              <div
+                style="
+                  height: 180px;
+                  background: #f1f5f9;
+                  border-radius: 12px;
+                  margin-bottom: 16px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: rgba(15, 23, 42, 0.35);
+                  font-family: Inter, sans-serif;
+                  font-weight: 500;
+                "
+              >
+                [IMAGE — DEAN TO SUPPLY]
+              </div>
+              <h3 style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.2rem; margin: 0 0 10px">
+                [DEMO TITLE — DEAN TO SUPPLY]
+              </h3>
+              <p style="font-family: Inter, sans-serif; font-weight: 400; font-size: 0.9rem; color: rgba(15, 23, 42, 0.65); line-height: 1.7; margin: 0 0 14px">
+                [DEMO DESCRIPTION — DEAN TO SUPPLY]
+              </p>
+              <a href="work-demos.html#route-a" style="color: #ff8a00; font-family: Inter, sans-serif; font-weight: 500; font-size: 0.85rem; text-decoration: none"
+                >View this route →</a
+              >
+            </article>
+
+            <article class="card" style="border-radius: 16px; padding: 28px">
+              <div style="font-family: Inter, sans-serif; font-weight: 600; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #ff8a00">
+                ROUTE B
+              </div>
+              <div style="height: 14px"></div>
+              <div style="height: 180px; background: #f1f5f9; border-radius: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: rgba(15, 23, 42, 0.35); font-family: Inter, sans-serif; font-weight: 500">
+                [IMAGE — DEAN TO SUPPLY]
+              </div>
+              <h3 style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.2rem; margin: 0 0 10px">
+                [DEMO TITLE — DEAN TO SUPPLY]
+              </h3>
+              <p style="font-family: Inter, sans-serif; font-weight: 400; font-size: 0.9rem; color: rgba(15, 23, 42, 0.65); line-height: 1.7; margin: 0 0 14px">
+                [DEMO DESCRIPTION — DEAN TO SUPPLY]
+              </p>
+              <a href="work-demos.html#route-b" style="color: #ff8a00; font-family: Inter, sans-serif; font-weight: 500; font-size: 0.85rem; text-decoration: none"
+                >View this route →</a
+              >
+            </article>
+
+            <article class="card" style="border-radius: 16px; padding: 28px">
+              <div style="font-family: Inter, sans-serif; font-weight: 600; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #ff8a00">
+                ROUTE C
+              </div>
+              <div style="height: 14px"></div>
+              <div style="height: 180px; background: #f1f5f9; border-radius: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: rgba(15, 23, 42, 0.35); font-family: Inter, sans-serif; font-weight: 500">
+                [IMAGE — DEAN TO SUPPLY]
+              </div>
+              <h3 style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.2rem; margin: 0 0 10px">
+                [DEMO TITLE — DEAN TO SUPPLY]
+              </h3>
+              <p style="font-family: Inter, sans-serif; font-weight: 400; font-size: 0.9rem; color: rgba(15, 23, 42, 0.65); line-height: 1.7; margin: 0 0 14px">
+                [DEMO DESCRIPTION — DEAN TO SUPPLY]
+              </p>
+              <a href="work-demos.html#route-c" style="color: #ff8a00; font-family: Inter, sans-serif; font-weight: 500; font-size: 0.85rem; text-decoration: none"
+                >View this route →</a
+              >
+            </article>
+
+            <article class="card" style="border-radius: 16px; padding: 28px">
+              <div style="font-family: Inter, sans-serif; font-weight: 600; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #ff8a00">
+                ROUTE D
+              </div>
+              <div style="height: 14px"></div>
+              <div style="height: 180px; background: #f1f5f9; border-radius: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: rgba(15, 23, 42, 0.35); font-family: Inter, sans-serif; font-weight: 500">
+                [IMAGE — DEAN TO SUPPLY]
+              </div>
+              <h3 style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.2rem; margin: 0 0 10px">
+                [DEMO TITLE — DEAN TO SUPPLY]
+              </h3>
+              <p style="font-family: Inter, sans-serif; font-weight: 400; font-size: 0.9rem; color: rgba(15, 23, 42, 0.65); line-height: 1.7; margin: 0 0 14px">
+                [DEMO DESCRIPTION — DEAN TO SUPPLY]
+              </p>
+              <a href="work-demos.html#route-d" style="color: #ff8a00; font-family: Inter, sans-serif; font-weight: 500; font-size: 0.85rem; text-decoration: none"
+                >View this route →</a
+              >
+            </article>
+
+            <article class="card" style="border-radius: 16px; padding: 28px">
+              <div style="font-family: Inter, sans-serif; font-weight: 600; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #ff8a00">
+                ROUTE E
+              </div>
+              <div style="height: 14px"></div>
+              <div style="height: 180px; background: #f1f5f9; border-radius: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: rgba(15, 23, 42, 0.35); font-family: Inter, sans-serif; font-weight: 500">
+                [IMAGE — DEAN TO SUPPLY]
+              </div>
+              <h3 style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.2rem; margin: 0 0 10px">
+                [DEMO TITLE — DEAN TO SUPPLY]
+              </h3>
+              <p style="font-family: Inter, sans-serif; font-weight: 400; font-size: 0.9rem; color: rgba(15, 23, 42, 0.65); line-height: 1.7; margin: 0 0 14px">
+                [DEMO DESCRIPTION — DEAN TO SUPPLY]
+              </p>
+              <a href="work-demos.html#route-e" style="color: #ff8a00; font-family: Inter, sans-serif; font-weight: 500; font-size: 0.85rem; text-decoration: none"
+                >View this route →</a
+              >
+            </article>
+
+            <article class="card" style="border-radius: 16px; padding: 28px">
+              <div style="font-family: Inter, sans-serif; font-weight: 600; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #ff8a00">
+                ROUTE F
+              </div>
+              <div style="height: 14px"></div>
+              <div style="height: 180px; background: #f1f5f9; border-radius: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: rgba(15, 23, 42, 0.35); font-family: Inter, sans-serif; font-weight: 500">
+                [IMAGE — DEAN TO SUPPLY]
+              </div>
+              <h3 style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.2rem; margin: 0 0 10px">
+                [DEMO TITLE — DEAN TO SUPPLY]
+              </h3>
+              <p style="font-family: Inter, sans-serif; font-weight: 400; font-size: 0.9rem; color: rgba(15, 23, 42, 0.65); line-height: 1.7; margin: 0 0 14px">
+                [DEMO DESCRIPTION — DEAN TO SUPPLY]
+              </p>
+              <a href="work-demos.html#route-f" style="color: #ff8a00; font-family: Inter, sans-serif; font-weight: 500; font-size: 0.85rem; text-decoration: none"
+                >View this route →</a
+              >
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 10 — Why now / next step -->
+      <section style="background: #0f172a; padding: 100px 48px; text-align: center">
+        <div style="max-width: 860px; margin: 0 auto">
+          <div class="placeholder-label">SECTION 10 — Why now / next step</div>
+          <div class="eyebrow">WHY NOW</div>
+          <h2
+            style="
+              font-family: 'Playfair Display', serif;
+              font-weight: 600;
+              font-size: clamp(2rem, 3.6vw, 3rem);
+              color: white;
+              letter-spacing: -0.02em;
+              margin: 0 0 16px;
+            "
+          >
+            [CONTENT — DEAN TO SUPPLY]
+          </h2>
+          <p class="body body-dark" style="margin: 0 auto 36px; max-width: 720px">[CONTENT — DEAN TO SUPPLY]</p>
+
+          <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 12px">
+            <a
+              href="work-contact.html"
+              style="
+                background: #ff8a00;
+                color: white;
+                border-radius: 999px;
+                padding: 14px 28px;
+                font-family: Inter, sans-serif;
+                font-weight: 600;
+                font-size: 0.9rem;
+                text-decoration: none;
+                display: inline-block;
+              "
+              >Request a conversation</a
+            >
+            <a
+              href="work-demos.html"
+              style="
+                background: transparent;
+                border: 1px solid rgba(255, 255, 255, 0.35);
+                color: white;
+                border-radius: 999px;
+                padding: 13px 28px;
+                font-family: Inter, sans-serif;
+                font-weight: 600;
+                font-size: 0.9rem;
+                text-decoration: none;
+                display: inline-block;
+              "
+              >Explore the demos</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>© OTOS Digital Ltd. Registered in England &amp; Wales. Company No. 17084455.</div>
+      <div class="right">
+        <div>Phone: +447466334143</div>
+        <div>Email: info@otos.life</div>
+      </div>
+    </footer>
+  </body>
+</html>

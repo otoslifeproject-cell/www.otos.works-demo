@@ -31,7 +31,8 @@
 		background:var(--bg);
 		color:var(--text);
 		min-height:100svh;
-		overflow:hidden;
+		overflow-x:hidden;
+		overflow-y:auto;
 		display:flex;
 		flex-direction:column;
 	}
@@ -118,7 +119,8 @@
 	}
 
 	.page{
-		height:calc(100svh - 76px);
+		min-height:calc(100svh - 76px);
+		height:auto;
 		margin:0 auto;
 		width:min(1320px, 100%);
 

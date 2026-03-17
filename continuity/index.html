@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
 
 <style>
-/* BASE (template: no scroll, fit in view) */
+/* BASE (allow scroll — prevent cut-off/overlap) */
 :root{
 	--bg:#f4f4f4;
 	--text:#111;
@@ -24,7 +24,8 @@ body{
 	color:var(--text);
 
 	min-height:100svh;
-	overflow:hidden;
+	overflow-x:hidden;
+	overflow-y:auto;
 
 	display:flex;
 	flex-direction:column;
@@ -79,8 +80,16 @@ body{
 
 	display:flex;
 	flex-direction:column;
-	justify-content:center;
+	justify-content:flex-start;
 	gap:clamp(10px, 1.8vh, 18px);
+}
+
+/* Avoid footer/button collisions on shorter viewports */
+.stage{ padding-bottom: clamp(22px, 4vh, 56px); }
+
+.footer{
+	position: relative;
+	z-index: 1;
 }
 
 .welcome{
@@ -296,106 +305,93 @@ body{
 }
 </style>
 <link rel="stylesheet" href="otos-shared.css">
+<link rel="stylesheet" href="hero-overlays/hero-overlays.css">
 </head>
 
 <body>
-<section style="
-  position: relative;
-  width: 100%;
-  height: 92vh;
-  min-height: 560px;
-  max-height: 820px;
-  background-image: url('images/hero-7-dean.png');
-  background-size: cover;
-  background-position: center center;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-">
-  <!-- Stats card (top right) -->
-  <div style="
-  position: absolute;
-  top: 32px;
-  right: 48px;
-  background: rgba(15,23,42,0.72);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 16px;
-  padding: 20px 24px;
-  color: white;
-  min-width: 200px;
-  font-family: Inter, sans-serif;
-  z-index: 3;
-">
-  <div style="font-size:0.7rem;opacity:0.65;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Services in pilot</div>
-  <div style="font-size:2rem;font-weight:700;letter-spacing:-0.03em">7</div>
-  <div style="font-size:0.7rem;opacity:0.65;text-transform:uppercase;letter-spacing:0.08em;margin:12px 0 4px">Pilot participants</div>
-  <div style="font-size:2rem;font-weight:700;letter-spacing:-0.03em">47 / 50</div>
-  <div style="font-size:0.7rem;opacity:0.65;text-transform:uppercase;letter-spacing:0.08em;margin:12px 0 4px">Pilot status</div>
-  <div style="font-size:1rem;font-weight:600;color:#5eead4">● On track</div>
-</div>
-  <!-- Dark gradient overlay -->
-  <div style="
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to bottom,
-      rgba(10,18,35,0.15) 0%,
-      rgba(10,18,35,0.55) 60%,
-      rgba(10,18,35,0.88) 100%
-    );
-  "></div>
+<section class="otos-hero-carousel-shell" aria-label="Hero carousel">
+  <style>
+    .otos-hero-carousel-shell{
+      position: relative;
+      width: 100%;
+      height: min(78vh, 760px);
+      min-height: 520px;
+      overflow: hidden;
+      background: #000;
+    }
+    .otos-carousel{
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    .otos-carousel__track{
+      height: 100%;
+      display: flex;
+      transition: transform 520ms ease;
+      will-change: transform;
+    }
+    .otos-carousel__slide{
+      min-width: 100%;
+      height: 100%;
+    }
+    .otos-carousel__slide .hero-block{
+      height: 100%;
+    }
+    .otos-carousel__btn{
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.35);
+      color: #fff;
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .otos-carousel__btn--prev{ left: 18px; }
+    .otos-carousel__btn--next{ right: 18px; }
+    .otos-carousel__btn:hover{ background: rgba(0,0,0,0.5); }
+    .otos-carousel__dots{
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 14px;
+      z-index: 10;
+      display: flex;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .otos-carousel__dot{
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      border: 0;
+      background: rgba(255,255,255,0.35);
+      cursor: pointer;
+      padding: 0;
+    }
+    .otos-carousel__dot[aria-selected="true"]{ background: rgba(255,255,255,0.9); }
+    @media (prefers-reduced-motion: reduce){
+      .otos-carousel__track{ transition: none; }
+    }
 
-  <!-- Headline -->
-  <div style="
-    position: relative;
-    z-index: 2;
-    padding: 0 64px 40px;
-    max-width: 720px;
-  ">
-    <h1 style="
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      font-weight: 600;
-      color: white;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      margin: 0 0 12px;
-    ">One human. Many services.<br>One joined-up pathway.</h1>
-    <p style="
-      font-family: 'Inter', sans-serif;
-      font-size: 1.1rem;
-      color: rgba(255,255,255,0.85);
-      margin: 0;
-    ">The OTOS Continuity™ proposed Cambridge Pilot.</p>
-  </div>
-
-  <!-- Partner logos bar at bottom of photo -->
-  <div style="
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    padding: 16px 64px;
-    background: rgba(10,18,35,0.55);
-    backdrop-filter: blur(12px);
-    border-top: 1px solid rgba(255,255,255,0.12);
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    flex-wrap: wrap;
-  ">
-    <img src="../assets/partners/NHS_CPFT_Logo.png" alt="CPFT" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
-    <img src="../assets/partners/The_Sun_Network_Logo.png" alt="SUN Network" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
-    <img src="../assets/partners/CGL_Logo.png" alt="CGL" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
-    <img src="../assets/partners/CRS_Logo.png" alt="CRS" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
-    <img src="../assets/partners/Addenbrookes_Logo.png" alt="Addenbrooke's" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
-    <img src="../assets/partners/WorkWell_Logo.png" alt="WorkWell" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
-    <img src="../assets/partners/MIND_Logo.png" alt="MIND" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
-    <img src="../assets/partners/Jo_Fenton_Logo.png" alt="Jo Fenton" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
-    <img src="../assets/partners/Gillvray_Health_Logo.png" alt="Gillvray Health" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
-    <img src="../assets/partners/Keep_Your_Head_Logo.png" alt="Keep Your Head" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
-    <img src="../assets/partners/ADHD_Team_Logo.png" alt="ADHD Team" style="max-height: 28px; opacity: 0.75; filter: brightness(0) invert(1);">
-  </div>
+    /* Keep dots clear of page footer on shorter heights */
+    @media (max-height: 760px){
+      .otos-carousel__dots{ bottom: 10px; }
+    }
+  </style>
+  <div data-otos-hero-carousel></div>
 </section>
 <!-- NAV -->
 <div class="navbar">
@@ -474,5 +470,6 @@ body{
 })();
 </script>
 <script defer src="otos-shared.js"></script>
+<script defer src="hero-carousel.js"></script>
 </body>
 </html>

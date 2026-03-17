@@ -1,0 +1,1127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Founder Story Feed Editor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0b1220;
+        --panel: rgba(255, 255, 255, 0.06);
+        --panel2: rgba(255, 255, 255, 0.08);
+        --stroke: rgba(255, 255, 255, 0.12);
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.62);
+        --muted2: rgba(255, 255, 255, 0.45);
+        --orange: #ff8a00;
+        --shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        color: var(--text);
+        background: radial-gradient(1000px 700px at 20% 10%, rgba(255, 138, 0, 0.12), transparent 55%),
+          radial-gradient(900px 700px at 90% 30%, rgba(99, 102, 241, 0.10), transparent 60%),
+          radial-gradient(900px 700px at 40% 90%, rgba(16, 185, 129, 0.08), transparent 60%), var(--bg);
+        overflow: hidden;
+      }
+
+      .app {
+        display: grid;
+        grid-template-columns: 440px 1fr 480px;
+        height: 100%;
+        gap: 14px;
+        padding: 14px;
+      }
+      .panel {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+        border: 1px solid var(--stroke);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+      }
+      .panel .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .panel .head .title {
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      .panel .head .meta {
+        font-size: 0.78rem;
+        color: var(--muted2);
+      }
+      .panel .body {
+        padding: 12px 14px;
+        height: calc(100% - 49px);
+        overflow: auto;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .btn {
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text);
+        padding: 8px 10px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.82rem;
+        cursor: pointer;
+        transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+      }
+      .btn:hover {
+        background: rgba(255, 255, 255, 0.10);
+        border-color: rgba(255, 255, 255, 0.22);
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn.primary {
+        border-color: rgba(255, 138, 0, 0.35);
+        background: rgba(255, 138, 0, 0.14);
+      }
+      .btn.danger {
+        border-color: rgba(239, 68, 68, 0.35);
+        background: rgba(239, 68, 68, 0.12);
+      }
+
+      .search {
+        flex: 1;
+        min-width: 160px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 12px;
+        background: rgba(0, 0, 0, 0.18);
+        padding: 8px 10px;
+      }
+      .search input {
+        width: 100%;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: var(--text);
+        font-size: 0.9rem;
+      }
+      .search .hint {
+        color: var(--muted2);
+        font-size: 0.78rem;
+        white-space: nowrap;
+      }
+
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .list .row {
+        padding: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        border-radius: 14px;
+        background: rgba(0, 0, 0, 0.18);
+        cursor: pointer;
+        transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+      }
+      .list .row[draggable="true"] {
+        cursor: grab;
+      }
+      .list .row.dragging {
+        opacity: 0.65;
+        transform: scale(0.995);
+        cursor: grabbing;
+      }
+      .list .row.dropTarget {
+        border-color: rgba(255, 138, 0, 0.55);
+        box-shadow: 0 0 0 4px rgba(255, 138, 0, 0.10);
+      }
+      .list .row:hover {
+        background: rgba(0, 0, 0, 0.26);
+        border-color: rgba(255, 255, 255, 0.18);
+      }
+      .list .row.active {
+        border-color: rgba(255, 138, 0, 0.55);
+        box-shadow: 0 0 0 4px rgba(255, 138, 0, 0.12);
+      }
+      .row .kicker {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .pill {
+        font-size: 0.70rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .pill.orange {
+        border-color: rgba(255, 138, 0, 0.35);
+        color: rgba(255, 138, 0, 0.95);
+        background: rgba(255, 138, 0, 0.12);
+      }
+      .row .label {
+        font-weight: 600;
+        line-height: 1.25;
+      }
+      .row .sub {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 0.86rem;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .grid {
+        display: grid;
+        gap: 10px;
+      }
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+      .field label {
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted2);
+      }
+      input[type="text"],
+      input[type="number"],
+      textarea,
+      select {
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(0, 0, 0, 0.18);
+        color: var(--text);
+        border-radius: 12px;
+        padding: 10px 12px;
+        outline: none;
+        font-size: 0.95rem;
+      }
+      textarea {
+        min-height: 110px;
+        resize: vertical;
+        line-height: 1.5;
+      }
+      .two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .three {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+      }
+
+      .previewCard {
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(0, 0, 0, 0.22);
+        border-radius: 16px;
+        padding: 14px;
+      }
+      .previewCard + .previewCard {
+        margin-top: 12px;
+      }
+      .previewStoryOrg {
+        font-family: "Playfair Display", serif;
+        font-weight: 600;
+        font-size: 1.35rem;
+        letter-spacing: -0.02em;
+        margin: 0 0 6px;
+      }
+      .previewStoryTitle {
+        font-weight: 600;
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted2);
+        margin: 0 0 10px;
+      }
+      .previewBody {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+        white-space: pre-wrap;
+      }
+      .moneyBig {
+        font-family: "Playfair Display", serif;
+        font-weight: 600;
+        font-size: 2.4rem;
+        letter-spacing: -0.04em;
+        margin: 6px 0 0;
+      }
+      .moneyRow {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .moneyRow b {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .footerNote {
+        margin-top: 10px;
+        color: var(--muted2);
+        font-size: 0.82rem;
+        line-height: 1.45;
+      }
+      .warn {
+        color: rgba(255, 138, 0, 0.9);
+      }
+      .readonly-field input.readonly,
+      .readonly-field select.readonly {
+        opacity: 0.85;
+        cursor: default;
+        background: rgba(0, 0, 0, 0.25);
+      }
+      .edit-only-hint {
+        font-size: 0.8rem;
+        color: var(--orange);
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        background: rgba(255, 138, 0, 0.08);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 138, 0, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <!-- LEFT: list -->
+      <section class="panel" id="panelList">
+        <div class="head">
+          <div>
+            <div class="title" id="panelListTitle">Journey steps</div>
+            <div class="meta" id="metaCounts">Loading…</div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="toolbar" style="margin-bottom: 12px">
+            <button class="btn primary" id="btnLoadPrefilled" title="Load journey data (order, cost, type) — then edit only text and position">Load prefilled feed</button>
+            <div class="search">
+              <input id="q" type="text" placeholder="Search text, org, tags…" />
+              <div class="hint">⌘/Ctrl K</div>
+            </div>
+            <button class="btn" id="btnResetLocal" title="Clear saved local edits">Reset local</button>
+          </div>
+          <div class="list" id="list"></div>
+        </div>
+      </section>
+
+      <!-- MIDDLE: editor -->
+      <section class="panel" id="panelEdit">
+        <div class="head">
+          <div class="title">Editor</div>
+          <div class="meta" id="metaSel">No selection</div>
+        </div>
+        <div class="body">
+          <div class="previewCard">
+            <div class="field">
+              <label>Global panel headers (these populate the story + money boxes)</label>
+              <div class="two">
+                <input id="gStoryHeader" type="text" placeholder="Story panel header (e.g. Organisation)" />
+                <input id="gMoneyHeader" type="text" placeholder="Money panel header (e.g. Cost panel title)" />
+              </div>
+              <div class="two" style="margin-top: 10px">
+                <input id="gPhaseLabel" type="text" placeholder="Phase label header (e.g. Phase)" />
+                <input id="gRunningLabel" type="text" placeholder="Running total label (e.g. Running cost)" />
+              </div>
+              <div class="footerNote">
+                These are saved locally in your browser. Export uses them too.
+              </div>
+            </div>
+          </div>
+
+          <div id="editOnlyHint" class="edit-only-hint" style="display: none">
+            Edit only the text on the page and the position in the queue (drag to reorder). Cost, type and phase are from the journey data.
+          </div>
+          <div id="editForm" class="grid" style="opacity: 0.55; pointer-events: none">
+            <div class="previewCard">
+              <div class="field">
+                <label>Step / source (read-only)</label>
+                <textarea id="srcText" readonly></textarea>
+              </div>
+              <div class="three" style="margin-top: 10px">
+                <div class="field">
+                  <label>Kind</label>
+                  <input id="srcKind" type="text" readonly />
+                </div>
+                <div class="field">
+                  <label>Draw.io ID</label>
+                  <input id="srcId" type="text" readonly />
+                </div>
+                <div class="field">
+                  <label>Auto step id</label>
+                  <input id="stepId" type="text" readonly />
+                </div>
+              </div>
+            </div>
+
+            <div class="previewCard">
+              <div class="field">
+                <label>Story box fields</label>
+                <div class="two">
+                  <input id="storyOrg" type="text" placeholder="Story: organisation (big header)" />
+                  <input id="storyTitle" type="text" placeholder="Story: title (small header)" />
+                </div>
+                <textarea id="storyBody" placeholder="Story: body text…"></textarea>
+              </div>
+            </div>
+
+            <div class="previewCard">
+              <div class="field">
+                <label>Money box fields (from the same record)</label>
+                <div class="two">
+                  <input id="moneyTitle" type="text" placeholder="Money: step title" />
+                  <input id="moneyOrg" type="text" placeholder="Money: organisation" />
+                </div>
+                <textarea id="moneyBody" placeholder="Money: description/body…"></textarea>
+                <div class="three" style="margin-top: 10px">
+                  <div class="field readonly-field">
+                    <label>Cost (from data)</label>
+                    <input id="cost" type="number" min="0" step="1" placeholder="0" class="readonly" readonly />
+                  </div>
+                  <div class="field readonly-field">
+                    <label>Personal cost (from data)</label>
+                    <input id="personalCost" type="number" min="0" step="1" placeholder="0" class="readonly" readonly />
+                  </div>
+                  <div class="field readonly-field">
+                    <label>Phase (from data)</label>
+                    <select id="phase" class="readonly" disabled>
+                      <option value="">(unset)</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="two" style="margin-top: 10px">
+                  <div class="field readonly-field">
+                    <label>Type (from data)</label>
+                    <select id="nodeType" class="readonly" disabled>
+                    <option value="">Type (unset)</option>
+                    <option value="self">Self</option>
+                    <option value="family">Family</option>
+                    <option value="gp">GP</option>
+                    <option value="nhs_service">NHS service</option>
+                    <option value="a_and_e">A&amp;E</option>
+                    <option value="ambulance">Ambulance / 999</option>
+                    <option value="police">Police</option>
+                    <option value="court_probation">Court / Probation</option>
+                    <option value="charity">Charity / Community</option>
+                    <option value="rehab_detox">Rehab / Detox</option>
+                    <option value="private_provider">Private provider</option>
+                    <option value="therapy_coaching">Therapy / Coaching</option>
+                    <option value="waiting_list_admin">Waiting list / Admin</option>
+                    <option value="relapse">Relapse</option>
+                    <option value="crisis">Crisis</option>
+                    <option value="recovery">Recovery</option>
+                    <option value="work_finance">Work / Finance</option>
+                    <option value="move_location">Move / Location change</option>
+                    <option value="milestone">Milestone</option>
+                    <option value="other">Other</option>
+                  </select>
+                  </div>
+                  <div class="field readonly-field">
+                    <label>Node index (from data)</label>
+                    <input id="nodeIndex" type="number" min="0" step="1" placeholder="—" class="readonly" readonly />
+                  </div>
+                </div>
+                <div class="field" style="margin-top: 10px">
+                  <label>Tags</label>
+                  <input id="tags" type="text" placeholder="Comma separated: gp, a&e, rehab…" />
+                </div>
+              </div>
+            </div>
+
+            <div class="previewCard">
+              <div class="field">
+                <label>Live preview (story + money)</label>
+                <div class="two">
+                  <div class="previewCard" style="margin: 0">
+                    <div class="pill orange" id="previewStoryHeader">Story</div>
+                    <h3 class="previewStoryOrg" id="pStoryOrg">—</h3>
+                    <div class="previewStoryTitle" id="pStoryTitle">—</div>
+                    <p class="previewBody" id="pStoryBody">—</p>
+                  </div>
+                  <div class="previewCard" style="margin: 0">
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap">
+                      <div class="pill orange" id="previewMoneyHeader">Money</div>
+                      <div class="pill" id="pPhasePill">Phase —</div>
+                    </div>
+                    <div class="previewStoryTitle" style="margin-top: 12px" id="pRunningLabel">
+                      Running
+                    </div>
+                    <div class="moneyBig" id="pCost">£0</div>
+                    <div class="moneyRow">
+                      <div><b>Personal</b> <span id="pPersonal">£0</span></div>
+                      <div><b>Org</b> <span id="pMoneyOrg">—</span></div>
+                    </div>
+                    <div class="previewStoryTitle" style="margin-top: 14px" id="pMoneyTitle">—</div>
+                    <p class="previewBody" id="pMoneyBody">—</p>
+                  </div>
+                </div>
+                <div class="footerNote">
+                  Export produces a clean JSON feed you can wire into the animation. Markers (number dots) are ignored automatically.
+                </div>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <button class="btn primary" id="btnExport">Export JSON</button>
+              <button class="btn" id="btnCopy">Copy JSON</button>
+              <button class="btn danger" id="btnClearItem" style="display: none">Clear this item</button>
+              <div class="meta" id="saveState" style="margin-left: auto">—</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: exported JSON + help -->
+      <section class="panel" id="panelOut">
+        <div class="head">
+          <div class="title">Export</div>
+          <div class="meta">Save as feed JSON</div>
+        </div>
+        <div class="body">
+          <div class="field">
+            <label>Output JSON</label>
+            <textarea id="out" placeholder="Click Export JSON…" style="min-height: 420px"></textarea>
+          </div>
+          <div class="footerNote">
+            Load prefilled feed → edit only the text and position (drag to reorder) → Export JSON. Once you confirm, this feed gives the animation the right order, text, cost and node type for every step.
+          </div>
+          <div class="footerNote warn" id="warnLoad"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const EXTRACT_URL = "./founder-drawio-extract.json";
+      const PREFILLED_FEED_URL = "./founder-story-feed.prefilled.json";
+      const STORAGE_KEY = "otos_founder_story_feed_editor_v1";
+
+      const $ = (id) => document.getElementById(id);
+      const fmtGBP = (n) => {
+        const v = Number.isFinite(n) ? n : 0;
+        return "£" + Math.round(v).toLocaleString("en-GB");
+      };
+
+      function slugify(s) {
+        return String(s || "")
+          .trim()
+          .toLowerCase()
+          .replace(/&/g, "and")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 80);
+      }
+
+      function nowIso() {
+        return new Date().toISOString();
+      }
+
+      function defaultGlobals() {
+        return {
+          storyHeader: "Story",
+          moneyHeader: "Money",
+          phaseLabelHeader: "Phase",
+          runningTotalLabel: "Running total"
+        };
+      }
+
+      function recordFromExtract(item, idx) {
+        const src = String(item.label || "").replace(/&amp;/g, "&");
+        const isWeirdXmlDump = src.includes("%3CmxGraphModel%3E") || src.startsWith("37%3CmxGraphModel%3E");
+        return {
+          id: `box-${String(idx).padStart(3, "0")}-${slugify(src.slice(0, 36)) || "untitled"}`,
+          drawioId: item.drawioId || null,
+          source: {
+            kind: item.kind || "node",
+            label: src,
+            x: item.x ?? null,
+            y: item.y ?? null,
+            w: item.w ?? null,
+            h: item.h ?? null,
+            isWeirdXmlDump
+          },
+          type: "",
+          story: {
+            org: "",
+            title: "",
+            body: ""
+          },
+          money: {
+            title: "",
+            org: "",
+            body: "",
+            cost: 0,
+            personalCost: 0,
+            phase: "",
+            nodeIndex: ""
+          },
+          tags: []
+        };
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch {
+          return null;
+        }
+      }
+
+      function saveState(state) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function cleanExport(state) {
+        const globals = state.globals || defaultGlobals();
+        const items = (state.items || [])
+          .filter((it) => it && it.source && it.source.kind !== "marker")
+          .filter((it) => it.source && !it.source.isWeirdXmlDump)
+          .map((it, order) => ({
+            id: it.id,
+            order,
+            drawioId: it.drawioId || null,
+            type: it.type || "",
+            story: {
+              header: globals.storyHeader,
+              org: it.story.org || "",
+              title: it.story.title || "",
+              body: it.story.body || ""
+            },
+            money: {
+              header: globals.moneyHeader,
+              phaseLabelHeader: globals.phaseLabelHeader,
+              runningTotalLabel: globals.runningTotalLabel,
+              phase: it.money.phase || "",
+              title: it.money.title || "",
+              org: it.money.org || "",
+              body: it.money.body || "",
+              cost: Number(it.money.cost || 0),
+              personalCost: Number(it.money.personalCost || 0),
+              nodeIndex: it.money.nodeIndex === "" ? "" : Number(it.money.nodeIndex)
+            },
+            tags: Array.isArray(it.tags) ? it.tags : []
+          }));
+
+        return {
+          schema: "otos.founderStory.feed.v1",
+          exportedAt: nowIso(),
+          globals,
+          items
+        };
+      }
+
+      let appState = {
+        globals: defaultGlobals(),
+        items: [],
+        selectedId: null,
+        lastSavedAt: null,
+        fromPrefilled: false
+      };
+
+      const dndState = {
+        draggingId: null
+      };
+
+      function setSaveBadge(text) {
+        $("saveState").textContent = text;
+      }
+
+      function mergeLocalEdits(baseState, localState) {
+        if (!localState || !localState.items) return baseState;
+        baseState.fromPrefilled = !!localState.fromPrefilled;
+        const map = new Map((localState.items || []).map((x) => [x.id, x]));
+        baseState.items = baseState.items.map((it) => {
+          const edited = map.get(it.id);
+          if (!edited) return it;
+          return {
+            ...it,
+            type: edited.type ?? it.type,
+            story: edited.story || it.story,
+            money: edited.money || it.money,
+            tags: edited.tags || it.tags
+          };
+        });
+        baseState.globals = localState.globals || baseState.globals;
+        return baseState;
+      }
+
+      function prefilledItemToEditor(p) {
+        const label = [p.story.org, p.story.title, p.story.body].filter(Boolean).join(" — ") || p.id;
+        return {
+          id: p.id,
+          drawioId: p.drawioId || null,
+          type: p.type || "",
+          source: { kind: "node", label, isWeirdXmlDump: false },
+          story: { org: p.story.org || "", title: p.story.title || "", body: p.story.body || "" },
+          money: {
+            title: p.money.title || "",
+            org: p.money.org || "",
+            body: p.money.body || "",
+            cost: Number(p.money.cost || 0),
+            personalCost: Number(p.money.personalCost || 0),
+            phase: String(p.money.phase || ""),
+            nodeIndex: p.money.nodeIndex === "" || p.money.nodeIndex == null ? "" : Number(p.money.nodeIndex)
+          },
+          tags: Array.isArray(p.tags) ? p.tags : []
+        };
+      }
+
+      async function loadPrefilledFeed() {
+        try {
+          const resp = await fetch(PREFILLED_FEED_URL, { cache: "no-store" });
+          if (!resp.ok) throw new Error(resp.status + " " + resp.statusText);
+          const payload = await resp.json();
+          const raw = Array.isArray(payload.items) ? payload.items : [];
+          const sorted = raw.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+          appState.items = sorted.map(prefilledItemToEditor);
+          appState.globals = payload.globals || defaultGlobals();
+          appState.fromPrefilled = true;
+          appState.selectedId = appState.items[0] ? appState.items[0].id : null;
+          persist();
+          $("editOnlyHint").style.display = "block";
+          $("panelListTitle").textContent = "Journey steps";
+          $("btnClearItem").style.display = "none";
+          renderList();
+          if (appState.items.length) select(appState.items[0].id);
+          setSaveBadge("Loaded prefilled feed — edit text and order only");
+        } catch (err) {
+          setSaveBadge("Load failed: " + (err && err.message ? err.message : String(err)));
+        }
+      }
+
+      function renderList() {
+        const q = ($("q").value || "").trim().toLowerCase();
+        const reorderEnabled = q.length === 0;
+        const list = $("list");
+        list.innerHTML = "";
+
+        const nodes = appState.items.filter((it) => it.source && it.source.kind !== "marker");
+        const weird = nodes.filter((it) => it.source && it.source.isWeirdXmlDump).length;
+        if (appState.fromPrefilled) {
+          $("metaCounts").textContent = `${nodes.length} steps • Edit text and drag to reorder`;
+        } else {
+          $("metaCounts").textContent = `${nodes.length} text boxes • ${weird} ignored (broken XML dump)`;
+        }
+
+        const filtered = nodes.filter((it) => {
+          if (!q) return true;
+          const hay = [
+            it.source.label,
+            it.type,
+            it.story.org,
+            it.story.title,
+            it.story.body,
+            it.money.title,
+            it.money.org,
+            it.money.body,
+            (it.tags || []).join(",")
+          ]
+            .join("\n")
+            .toLowerCase();
+          return hay.includes(q);
+        });
+
+        for (const it of filtered) {
+          const row = document.createElement("div");
+          row.className = "row" + (it.id === appState.selectedId ? " active" : "");
+          row.dataset.id = it.id;
+
+          const label = it.story.title || it.money.title || it.story.org || it.money.org || it.source.label || "(untitled)";
+          const sub = it.story.body || it.money.body || it.source.label || "";
+          const phase = it.money.phase ? `P${it.money.phase}` : "Phase?";
+          const cost = Number(it.money.cost || 0);
+          const tagText = (it.tags || []).slice(0, 3).join(", ");
+          const typeText = (it.type || "").trim();
+
+          const canDrag = reorderEnabled && !it.source.isWeirdXmlDump;
+          row.draggable = canDrag;
+          if (!reorderEnabled) row.title = "Clear search to reorder by drag-and-drop";
+
+          row.innerHTML = `
+            <div class="kicker">
+              <span class="pill orange">${phase}</span>
+              <span class="pill">${fmtGBP(cost)}</span>
+              ${typeText ? `<span class="pill">${escapeHtml(typeText)}</span>` : ""}
+              ${tagText ? `<span class="pill">${tagText}</span>` : ""}
+            </div>
+            <div class="label">${escapeHtml(label).slice(0, 120)}</div>
+            <div class="sub">${escapeHtml(sub).slice(0, 260)}</div>
+          `;
+          row.addEventListener("click", () => select(it.id));
+
+          if (canDrag) {
+            row.addEventListener("dragstart", (e) => {
+              dndState.draggingId = it.id;
+              row.classList.add("dragging");
+              try {
+                e.dataTransfer.effectAllowed = "move";
+                e.dataTransfer.setData("text/plain", it.id);
+              } catch {
+                // ignore
+              }
+            });
+
+            row.addEventListener("dragend", () => {
+              dndState.draggingId = null;
+              row.classList.remove("dragging");
+              for (const el of document.querySelectorAll(".list .row.dropTarget")) el.classList.remove("dropTarget");
+            });
+
+            row.addEventListener("dragover", (e) => {
+              const dragId = dndState.draggingId;
+              if (!dragId || dragId === it.id) return;
+              e.preventDefault();
+              row.classList.add("dropTarget");
+              try {
+                e.dataTransfer.dropEffect = "move";
+              } catch {
+                // ignore
+              }
+            });
+
+            row.addEventListener("dragleave", () => {
+              row.classList.remove("dropTarget");
+            });
+
+            row.addEventListener("drop", (e) => {
+              e.preventDefault();
+              row.classList.remove("dropTarget");
+              const dragId = dndState.draggingId;
+              if (!dragId || dragId === it.id) return;
+              reorderItemsById(dragId, it.id);
+            });
+          }
+
+          list.appendChild(row);
+        }
+      }
+
+      function reorderItemsById(dragId, targetId) {
+        const from = appState.items.findIndex((x) => x.id === dragId);
+        const to = appState.items.findIndex((x) => x.id === targetId);
+        if (from < 0 || to < 0 || from === to) return;
+
+        const next = appState.items.slice();
+        const [moved] = next.splice(from, 1);
+        next.splice(to, 0, moved);
+        appState.items = next;
+        persist();
+        renderList();
+      }
+
+      function escapeHtml(s) {
+        return String(s || "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function getSelected() {
+        return appState.items.find((x) => x.id === appState.selectedId) || null;
+      }
+
+      function enableForm(enabled) {
+        const form = $("editForm");
+        form.style.opacity = enabled ? "1" : "0.55";
+        form.style.pointerEvents = enabled ? "auto" : "none";
+      }
+
+      function bindGlobals() {
+        $("gStoryHeader").value = appState.globals.storyHeader || "";
+        $("gMoneyHeader").value = appState.globals.moneyHeader || "";
+        $("gPhaseLabel").value = appState.globals.phaseLabelHeader || "";
+        $("gRunningLabel").value = appState.globals.runningTotalLabel || "";
+
+        const onChange = () => {
+          appState.globals.storyHeader = $("gStoryHeader").value;
+          appState.globals.moneyHeader = $("gMoneyHeader").value;
+          appState.globals.phaseLabelHeader = $("gPhaseLabel").value;
+          appState.globals.runningTotalLabel = $("gRunningLabel").value;
+          persist();
+          renderPreview();
+        };
+
+        for (const id of ["gStoryHeader", "gMoneyHeader", "gPhaseLabel", "gRunningLabel"]) {
+          $(id).addEventListener("input", onChange);
+        }
+      }
+
+      function fillForm(it) {
+        $("srcText").value = it.source.label || "";
+        $("srcKind").value = it.source.kind || "";
+        $("srcId").value = it.drawioId || "";
+        $("stepId").value = it.id;
+
+        $("nodeType").value = it.type || "";
+        $("storyOrg").value = it.story.org || "";
+        $("storyTitle").value = it.story.title || "";
+        $("storyBody").value = it.story.body || "";
+
+        $("moneyTitle").value = it.money.title || "";
+        $("moneyOrg").value = it.money.org || "";
+        $("moneyBody").value = it.money.body || "";
+        $("cost").value = String(Number(it.money.cost || 0));
+        $("personalCost").value = String(Number(it.money.personalCost || 0));
+        $("phase").value = it.money.phase || "";
+        $("nodeIndex").value = it.money.nodeIndex === "" ? "" : String(it.money.nodeIndex);
+        $("tags").value = (it.tags || []).join(", ");
+
+        $("metaSel").textContent = it.source.isWeirdXmlDump
+          ? `Selected: ${it.id} (ignored — looks like embedded XML dump)`
+          : `Selected: ${it.id}`;
+
+        enableForm(!it.source.isWeirdXmlDump);
+        renderPreview();
+      }
+
+      function writeBackSelected() {
+        const it = getSelected();
+        if (!it) return;
+        if (it.source && it.source.isWeirdXmlDump) return;
+
+        it.story.org = $("storyOrg").value;
+        it.story.title = $("storyTitle").value;
+        it.story.body = $("storyBody").value;
+        it.money.title = $("moneyTitle").value;
+        it.money.org = $("moneyOrg").value;
+        it.money.body = $("moneyBody").value;
+        it.tags = ($("tags").value || "")
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        if (!appState.fromPrefilled) {
+          it.type = $("nodeType").value;
+          it.money.cost = Number($("cost").value || 0);
+          it.money.personalCost = Number($("personalCost").value || 0);
+          it.money.phase = $("phase").value;
+          it.money.nodeIndex = $("nodeIndex").value === "" ? "" : Number($("nodeIndex").value);
+        }
+
+        persist();
+        renderList();
+        renderPreview();
+      }
+
+      function renderPreview() {
+        const it = getSelected();
+        const g = appState.globals || defaultGlobals();
+
+        $("previewStoryHeader").textContent = g.storyHeader || "Story";
+        $("previewMoneyHeader").textContent = g.moneyHeader || "Money";
+        $("pRunningLabel").textContent = (g.runningTotalLabel || "Running total").toUpperCase();
+
+        if (!it || it.source.isWeirdXmlDump) {
+          $("pStoryOrg").textContent = "—";
+          $("pStoryTitle").textContent = "—";
+          $("pStoryBody").textContent = "—";
+          $("pPhasePill").textContent = `${g.phaseLabelHeader || "Phase"} —`;
+          $("pCost").textContent = "£0";
+          $("pPersonal").textContent = "£0";
+          $("pMoneyOrg").textContent = "—";
+          $("pMoneyTitle").textContent = "—";
+          $("pMoneyBody").textContent = "—";
+          return;
+        }
+
+        $("pStoryOrg").textContent = it.story.org || "—";
+        $("pStoryTitle").textContent = it.story.title || "—";
+        $("pStoryBody").textContent = it.story.body || "—";
+
+        $("pPhasePill").textContent = `${g.phaseLabelHeader || "Phase"} ${it.money.phase || "—"}`;
+        $("pCost").textContent = fmtGBP(Number(it.money.cost || 0));
+        $("pPersonal").textContent = fmtGBP(Number(it.money.personalCost || 0));
+        $("pMoneyOrg").textContent = it.money.org || "—";
+        $("pMoneyTitle").textContent = it.money.title || "—";
+        $("pMoneyBody").textContent = it.money.body || "—";
+      }
+
+      function select(id) {
+        appState.selectedId = id;
+        renderList();
+        const it = getSelected();
+        if (!it) {
+          enableForm(false);
+          $("metaSel").textContent = "No selection";
+          return;
+        }
+        fillForm(it);
+      }
+
+      function persist() {
+        appState.lastSavedAt = nowIso();
+        saveState({
+          globals: appState.globals,
+          items: appState.items,
+          fromPrefilled: appState.fromPrefilled
+        });
+        setSaveBadge(`Saved locally • ${new Date().toLocaleTimeString()}`);
+      }
+
+      function bindFormInputs() {
+        const ids = [
+          "nodeType",
+          "storyOrg",
+          "storyTitle",
+          "storyBody",
+          "moneyTitle",
+          "moneyOrg",
+          "moneyBody",
+          "cost",
+          "personalCost",
+          "phase",
+          "nodeIndex",
+          "tags"
+        ];
+        for (const id of ids) {
+          $(id).addEventListener("input", writeBackSelected);
+          $(id).addEventListener("change", writeBackSelected);
+        }
+      }
+
+      function bindShortcuts() {
+        window.addEventListener("keydown", (e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+            e.preventDefault();
+            $("q").focus();
+          }
+        });
+      }
+
+      function bindButtons() {
+        $("btnExport").addEventListener("click", () => {
+          const payload = cleanExport(appState);
+          $("out").value = JSON.stringify(payload, null, 2);
+        });
+
+        $("btnCopy").addEventListener("click", async () => {
+          const val = $("out").value || "";
+          if (!val.trim()) return;
+          try {
+            await navigator.clipboard.writeText(val);
+            setSaveBadge("Copied JSON to clipboard");
+            setTimeout(() => setSaveBadge("—"), 1200);
+          } catch {
+            setSaveBadge("Copy failed (browser permissions)");
+            setTimeout(() => setSaveBadge("—"), 1600);
+          }
+        });
+
+        $("btnLoadPrefilled").addEventListener("click", () => loadPrefilledFeed());
+
+        $("btnResetLocal").addEventListener("click", () => {
+          localStorage.removeItem(STORAGE_KEY);
+          location.reload();
+        });
+
+        $("btnClearItem").addEventListener("click", () => {
+          const it = getSelected();
+          if (!it) return;
+          if (it.source.isWeirdXmlDump) return;
+          it.story = { org: "", title: "", body: "" };
+          it.money = { title: "", org: "", body: "", cost: 0, personalCost: 0, phase: "", nodeIndex: "" };
+          it.tags = [];
+          fillForm(it);
+          persist();
+          renderList();
+        });
+      }
+
+      async function init() {
+        try {
+          const resp = await fetch(EXTRACT_URL, { cache: "no-store" });
+          if (!resp.ok) throw new Error(`Failed to load ${EXTRACT_URL}: ${resp.status}`);
+          const extract = await resp.json();
+
+          const nodesAndMarkers = Array.isArray(extract) ? extract : [];
+          const nodesOnly = nodesAndMarkers.filter((x) => x && x.kind === "node");
+
+          appState.items = nodesOnly.map((it, idx) => recordFromExtract(it, idx));
+
+          const local = loadState();
+          if (local) {
+            appState.fromPrefilled = !!local.fromPrefilled;
+            appState = mergeLocalEdits(appState, local);
+          }
+
+          bindGlobals();
+          bindFormInputs();
+          bindButtons();
+          bindShortcuts();
+
+          $("q").addEventListener("input", renderList);
+          renderList();
+
+          if (appState.fromPrefilled && appState.items.length) {
+            $("editOnlyHint").style.display = "block";
+            $("panelListTitle").textContent = "Journey steps";
+            $("btnClearItem").style.display = "none";
+            select(appState.items[0].id);
+          } else {
+            $("btnClearItem").style.display = "";
+            const firstOk = appState.items.find((x) => x.source && !x.source.isWeirdXmlDump);
+            if (firstOk) select(firstOk.id);
+            else enableForm(false);
+          }
+
+          setSaveBadge(local ? "Loaded local edits" : "No local edits yet");
+        } catch (err) {
+          $("warnLoad").textContent = `Could not load extract JSON. If you opened this file directly (file://), use a local server or open via your site build. Error: ${String(
+            err && err.message ? err.message : err
+          )}`;
+          setSaveBadge("Load failed");
+        }
+      }
+
+      init();
+    </script>
+  </body>
+</html>
+
