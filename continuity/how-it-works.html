@@ -316,6 +316,78 @@ h1{
 </head>
 
 <body>
+<section style="
+  position: relative;
+  height: 48vh;
+  min-height: 320px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: #0f172a;
+">
+  <div style="
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(10,18,35,0.45), rgba(10,18,35,0.82));
+    z-index: 1;
+  "></div>
+  <img
+    src="images/hero-7-dean.png"
+    alt=""
+    style="
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    "
+  />
+  <img
+    src="../assets/brain.png"
+    alt="OTOS"
+    style="
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      width: 32px;
+      height: 32px;
+      z-index: 10;
+    "
+  />
+  <div style="position: relative; z-index: 2; padding: 0 2rem;">
+    <p style="
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ff8a00;
+      margin: 0 0 1rem;
+    ">How it works</p>
+    <h1 style="
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      color: #ffffff;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin: 0 0 1rem;
+    ">One tap. One thread.<br>You'll always know they made the next step.</h1>
+    <p style="
+      font-family: 'Inter', sans-serif;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.75);
+      margin: 0;
+      max-width: 52ch;
+      margin-left: auto;
+      margin-right: auto;
+    ">OTOS Continuity doesn't replace how you work. It just tells you whether the handoff landed.</p>
+  </div>
+</section>
+
 <div class="navbar">
 	<div class="nav-left">
 		<img src="../assets/brain.png" class="nav-logo" alt="">
@@ -333,13 +405,9 @@ h1{
 
 <div class="page">
 	<div class="hero">
-		<p class="kicker">How it works</p>
-		<h1>A single encrypted thread joins every journey</h1>
 		<p class="strapline">Low integration. Low disruption. High clarity.</p>
 		<p class="sub">
-			OTOS Continuity™ provides a safe, anonymous way for the Cambridge ecosystem to understand how people move between touchpoints.
-			This supports an ecosystem-wide view with minimal clinical risk.
-			It does this without changing clinical ownership and without replacing existing systems.
+			You're already doing the hard part. You refer. You signpost. You discharge. The gap isn't in your service — it's in the space after the door closes. OTOS sits in that space. Quietly. Without touching your systems or your records.
 			From this point on, this portal refers to it as <strong>Continuity</strong>.
 		</p>
 
@@ -353,11 +421,11 @@ h1{
 			<div class="step">
 				<div class="step-num">1</div>
 				<div>
-					<h3>Anonymous token at first contact</h3>
+					<h3>Anonymous at first contact</h3>
 					<div class="copy">
-						At a touchpoint, staff tap <strong>Register touchpoint</strong> or scan a QR code. Continuity creates an anonymous journey ID.
+						When someone comes to your service, a staff member taps <strong>Register touchpoint</strong> or scans a QR code. That's it. OTOS creates a secure, anonymous journey ID.
 						<br><br>
-						<strong>No name.</strong> No date of birth. No diagnosis. Just a secure journey thread.
+						No name. No date of birth. No diagnosis. No extra form to fill in.
 					</div>
 				</div>
 			</div>
@@ -377,13 +445,9 @@ h1{
 			<div class="step">
 				<div class="step-num">3</div>
 				<div>
-					<h3>Silent orchestration</h3>
+					<h3>Early warning, no extra work</h3>
 					<div class="copy">
-						Continuity highlights early patterns such as repeated missed contacts and ping‑pong referrals.
-						<br><br>
-						It is designed to avoid creating additional admin burden.
-						<br><br>
-						It is designed to give teams clearer, earlier continuity.
+						OTOS notices when the pattern changes — repeated missed contacts, ping-pong referrals, long silences. Your team gets an alert. You decide what to do. OTOS never makes clinical decisions. It just makes sure the question "where did they go?" has an answer.
 					</div>
 				</div>
 			</div>
@@ -391,21 +455,15 @@ h1{
 			<div class="step">
 				<div class="step-num">4</div>
 				<div>
-					<h3>Pilot reporting</h3>
+					<h3>Reporting your manager will actually read</h3>
 					<div class="copy">
-						Leads can see where journeys stall.
-						<br><br>
-						They can see where drop‑off is happening.
-						<br><br>
-						They can see where continuity is working.
-						<br><br>
-						Reporting uses anonymous journey signals.
+						Team leads and service managers can see where journeys stall, where drop-off is happening, and where continuity is working. Aggregate, anonymous signals — no individual patient data. No GDPR headache.
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<p class="strapline">Nothing changes in how you work.</p>
+		<p class="strapline">Nothing changes in how you work. Your clinical decisions stay yours — always.</p>
 		<p class="sub">OTOS surfaces signals. The partner team makes the decision.</p>
 		<div class="pills" aria-label="Key points">
 			<div class="pill">Touchpoints, not records.</div>
