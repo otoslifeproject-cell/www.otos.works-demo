@@ -355,7 +355,7 @@
 
     const kick = () => {
       if (timer) clearInterval(timer);
-      timer = setInterval(() => apply(idx + 1), 8000);
+      timer = setInterval(() => apply(idx + 1), 4000);
     };
 
     prevBtn?.addEventListener('click', () => { apply(idx - 1); kick(); });

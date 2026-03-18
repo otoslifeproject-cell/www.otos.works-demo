@@ -201,6 +201,7 @@ function buildRippleSvgString({
   height,
   view, // 'conservative' | 'upper'
   mode, // 'static' | 'animated'
+  waterTextureSrc, // data URL or URL for photo texture
 }) {
   const w = width;
   const h = height;
@@ -294,9 +295,16 @@ function buildRippleSvgString({
   // Water layer stack: subtle texture + photographic highlight + vignette.
   const waterR = Math.min(w, h) * 0.44;
   svg.push(`<g id="water" mask="url(#outerFadeMask)">`);
+  if (waterTextureSrc) {
+    // Photo texture behind the glass rings. Uses SVG <image> so we can keep everything self-contained in exports.
+    svg.push(
+      `<image href="${escapeXml(waterTextureSrc)}" x="${-w * 0.08}" y="${-h * 0.18}" width="${w * 1.16}" height="${h * 1.36}" preserveAspectRatio="xMidYMid slice" opacity="0.58"/>`
+    );
+    svg.push(`<rect x="0" y="0" width="${w}" height="${h}" fill="rgba(10,79,92,0.16)" opacity="0.85"/>`);
+  }
   svg.push(`<circle cx="${cx}" cy="${cy}" r="${waterR}" fill="rgba(10,79,92,0.10)" filter="url(#waterSurface)"/>`);
-  svg.push(`<circle cx="${cx}" cy="${cy}" r="${waterR}" fill="url(#specularShine)" opacity="0.9"/>`);
-  svg.push(`<circle cx="${cx}" cy="${cy}" r="${waterR}" fill="url(#waterVignette)" opacity="0.95"/>`);
+  svg.push(`<circle cx="${cx}" cy="${cy}" r="${waterR}" fill="url(#specularShine)" opacity="0.95"/>`);
+  svg.push(`<circle cx="${cx}" cy="${cy}" r="${waterR}" fill="url(#waterVignette)" opacity="0.98"/>`);
   svg.push(`</g>`);
 
   // Centre stone
@@ -526,12 +534,12 @@ function escapeXml(s) {
     .replaceAll("'", '&apos;');
 }
 
-function exportRippleSvg({ view = 'conservative', mode = 'static' } = {}) {
-  return buildRippleSvgString({ width: 1200, height: 1200, view, mode });
+function exportRippleSvg({ view = 'conservative', mode = 'static', waterTextureSrc } = {}) {
+  return buildRippleSvgString({ width: 1200, height: 1200, view, mode, waterTextureSrc });
 }
 
-function exportRippleSvg16x9({ view = 'conservative', mode = 'static' } = {}) {
-  return buildRippleSvgString({ width: 1200, height: 675, view, mode });
+function exportRippleSvg16x9({ view = 'conservative', mode = 'static', waterTextureSrc } = {}) {
+  return buildRippleSvgString({ width: 1200, height: 675, view, mode, waterTextureSrc });
 }
 
 module.exports = {

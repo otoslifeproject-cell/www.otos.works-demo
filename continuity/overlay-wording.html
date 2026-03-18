@@ -45,8 +45,10 @@
       font-size:13px;
       font-weight:600;
       cursor:pointer;
+      transition: transform 120ms ease, background 200ms ease, border-color 200ms ease;
     }
     .btn:hover{ background: rgba(255,255,255,0.1); }
+    .btn:active{ transform: translateY(1px) scale(0.99); }
     .btn.primary{
       background: rgba(56, 189, 248, 0.18);
       border-color: rgba(56, 189, 248, 0.35);
@@ -849,6 +851,7 @@
       var saveBtn = document.getElementById('saveBtn');
       var loadBtn = document.getElementById('loadBtn');
       var resetBtn = document.getElementById('resetBtn');
+      var autoSaveTimer = null;
 
       function qsa(sel, scope){ return Array.prototype.slice.call((scope || document).querySelectorAll(sel)); }
 
@@ -864,15 +867,18 @@
       }
 
       function ensureCardForImage(imagePath){
-        var existing = stack.querySelector('.overlay-card[data-image=\"' + CSS.escape(imagePath) + '\"]');
-        if (existing) return existing;
+        // Avoid CSS.escape / selector issues; match by attribute value
+        var existingCards = qsa('.overlay-card', stack);
+        for (var i = 0; i < existingCards.length; i++){
+          if ((existingCards[i].getAttribute('data-image') || '') === imagePath) return existingCards[i];
+        }
 
         var card = document.createElement('div');
         card.className = 'overlay-card';
         card.setAttribute('data-image', imagePath);
         card.innerHTML = '' +
           '<div class=\"card-filename\">' + imagePath.replace(/^images\\//,'') + '</div>' +
-          '<div class=\"overlay-preview hero-block hero-block--landscape\" style=\"background-image: url(\\'' + imagePath.replaceAll(\"'\",\"\\\\'\") + '\\');\">' +
+          '<div class=\"overlay-preview hero-block hero-block--landscape\" style=\"background-image: url(\\'' + String(imagePath).split(\"'\").join(\"\\\\'\") + '\\');\">' +
             '<div class=\"hero-block__overlay\">' +
               '<div class=\"hero-logo-strip\">' +
                 '<img class=\"hero-logo-strip__brain\" src=\"../assets/brain.png\" alt=\"\">' +
@@ -929,7 +935,36 @@
         return getCards().map(function(c){ return { image:c.image }; });
       }
 
-      var state = getState() || defaultState();
+      function loadPayloadIfPresent(){
+        var payloadRaw = localStorage.getItem(STORAGE_KEY + '.payload');
+        if (!payloadRaw) return false;
+        try {
+          var payload = JSON.parse(payloadRaw);
+          if (!payload || !Array.isArray(payload.slides) || !payload.slides.length) return false;
+          state = payload.slides.map(function(s){ return { image: s.image }; });
+          payload.slides.forEach(function(s){
+            var card = ensureCardForImage(s.image);
+            (card.querySelector('input[name=\"headline\"]') || {}).value = s.headline || '';
+            (card.querySelector('textarea[name=\"sub\"]') || {}).value = s.subcopy || '';
+            (card.querySelector('input[name=\"cta\"]') || {}).value = s.cta || '';
+            var preview = card.querySelector('.overlay-preview');
+            if (preview){
+              var h = preview.querySelector('.hero-headline'); if (h) h.textContent = s.headline || '';
+              var p = preview.querySelector('.hero-sub'); if (p) p.textContent = s.subcopy || '';
+              var c = preview.querySelector('.hero-cta'); if (c) c.textContent = s.cta || '';
+            }
+          });
+          return true;
+        } catch(e){
+          return false;
+        }
+      }
+
+      // On load: prefer payload (full copy). Fallback: order list. Fallback: defaults.
+      var state = [];
+      if (!loadPayloadIfPresent()){
+        state = getState() || defaultState();
+      }
       renderCarouselList(state);
 
       if (addBtn) addBtn.addEventListener('click', function(){
@@ -968,12 +1003,42 @@
         return { slides: slides, savedAt: new Date().toISOString() };
       }
 
-      if (saveBtn) saveBtn.addEventListener('click', function(){
-        setState(state);
-        localStorage.setItem(STORAGE_KEY + '.payload', JSON.stringify(buildSavePayload()));
-        saveBtn.textContent = 'Saved';
-        setTimeout(function(){ saveBtn.textContent = 'Save carousel'; }, 900);
-      });
+      function persistNow(showToast){
+        // Save BOTH: order list + full slide payload (copy) so refresh is always safe
+        // localStorage can throw (blocked/private mode). Always update UI so you know it worked.
+        var payload = buildSavePayload();
+        var failed = false;
+        try {
+          setState(state);
+          localStorage.setItem(STORAGE_KEY + '.payload', JSON.stringify(payload));
+        } catch (e){
+          failed = true;
+        }
+        if (showToast && saveBtn){
+          saveBtn.textContent = failed ? 'Saved (no localStorage)' : 'Saved';
+          setTimeout(function(){ saveBtn.textContent = 'Save carousel'; }, 900);
+        }
+      }
+
+      function scheduleAutoSave(){
+        if (autoSaveTimer) clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(function(){
+          persistNow(true);
+        }, 350);
+      }
+
+      if (saveBtn) {
+        var lastSaveAt = 0;
+        var doSave = function(){
+          var now = Date.now();
+          if (now - lastSaveAt < 600) return;
+          lastSaveAt = now;
+          persistNow(true);
+        };
+        // Use mousedown so there's visible feedback even if click is blocked
+        saveBtn.addEventListener('mousedown', doSave);
+        saveBtn.addEventListener('click', doSave);
+      }
 
       if (loadBtn) loadBtn.addEventListener('click', function(){
         var payloadRaw = localStorage.getItem(STORAGE_KEY + '.payload');
@@ -1003,7 +1068,34 @@
         localStorage.removeItem(STORAGE_KEY + '.payload');
         state = defaultState();
         renderCarouselList(state);
+        if (saveBtn) { saveBtn.textContent = 'Save carousel'; }
       });
+
+      // Auto-save on any overlay copy change
+      if (stack){
+        stack.addEventListener('input', function(e){
+          var t = e.target;
+          if (!t) return;
+          if (t.name === 'headline' || t.name === 'sub' || t.name === 'cta') scheduleAutoSave();
+        });
+      }
+
+      // Auto-save on order changes
+      if (list){
+        list.addEventListener('click', function(e){
+          var btn = e.target && e.target.closest ? e.target.closest('button') : null;
+          if (!btn) return;
+          var act = btn.getAttribute('data-act');
+          if (act === 'remove' || act === 'up' || act === 'down') scheduleAutoSave();
+        });
+      }
+
+      // Auto-save on add
+      if (addBtn){
+        addBtn.addEventListener('click', function(){
+          scheduleAutoSave();
+        });
+      }
     })();
   </script>
 </body>

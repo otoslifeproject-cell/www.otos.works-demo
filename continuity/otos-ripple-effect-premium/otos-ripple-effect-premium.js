@@ -250,7 +250,13 @@
   function renderSvg() {
     const mode = currentMode === 'animated' ? 'animated' : 'static';
     const view = currentView === 'upper' ? 'upper' : 'conservative';
-    const svgString = buildRippleSvgString({ width: 1200, height: 1200, view, mode });
+    const svgString = buildRippleSvgString({
+      width: 1200,
+      height: 1200,
+      view,
+      mode,
+      waterTextureSrc: '../images/Ripple-1024x546.jpg',
+    });
     svgTarget.innerHTML = svgString;
 
     // Bind hover + click on ring circles.
