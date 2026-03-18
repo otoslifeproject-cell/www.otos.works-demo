@@ -249,3 +249,25 @@ h1, h2, h3, h4 {
     transition: none !important;
   }
 }
+
+/* FORCE OVERRIDE — allow scroll and prevent hero/footer trapping */
+html, body {
+  overflow: auto !important;
+  height: auto !important;
+  min-height: 100% !important;
+  position: static !important;
+}
+
+.hero, .hero-section, [class*="hero"] {
+  position: relative !important;
+  height: auto !important;
+  min-height: 80vh !important;
+  overflow: visible !important;
+}
+
+footer, .site-footer {
+  position: relative !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 100% !important;
+}

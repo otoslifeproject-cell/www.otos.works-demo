@@ -715,6 +715,169 @@ body > section:first-of-type > div[style*="z-index: 2"]{
 }
 </style>
 <link rel="stylesheet" href="otos-shared.css">
+<style>
+/* FORCE OVERRIDE — how-it-works page only */
+
+/* Background */
+body { 
+  background: 
+    radial-gradient(circle at 12% 8%, rgba(255,138,0,0.05), 
+    transparent 32%),
+    linear-gradient(180deg, #fbfbfc 0%, #f4f5f7 60%, #eef1f4 100%)
+    !important;
+}
+
+/* Strapline */
+.hw-strapline, p.strapline {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(2rem, 4vw, 3rem) !important;
+  letter-spacing: -0.02em !important;
+  color: #0f172a !important;
+  text-align: center !important;
+  border: none !important;
+  border-left: none !important;
+  padding-left: 0 !important;
+  background: none !important;
+  margin: 0 auto 1.5rem !important;
+  max-width: 760px !important;
+  display: block !important;
+}
+
+/* Overline */
+.hw-strapline::before {
+  content: "WHY IT WORKS" !important;
+  display: block !important;
+  font-family: Inter, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  color: #ff8a00 !important;
+  margin-bottom: 0.75rem !important;
+}
+
+/* Step cards grid */
+.steps {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 2rem !important;
+  max-width: 860px !important;
+  margin: 3rem auto !important;
+  padding: 0 1.5rem !important;
+}
+
+/* Each card */
+.step {
+  position: relative !important;
+  background: rgba(255,255,255,0.75) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255,255,255,0.55) !important;
+  box-shadow: 0 4px 24px rgba(15,23,42,0.08) !important;
+  border-radius: 16px !important;
+  padding: 2.5rem 1.75rem 1.75rem !important;
+  overflow: visible !important;
+}
+
+.step:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 40px rgba(15,23,42,0.12) !important;
+  transition: all 200ms ease !important;
+}
+
+/* Step number badge — hanging off top left corner */
+.step-num {
+  position: absolute !important;
+  top: -1rem !important;
+  left: -1rem !important;
+  width: 2.2rem !important;
+  height: 2.2rem !important;
+  background: #ff8a00 !important;
+  color: #ffffff !important;
+  font-family: Inter, sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: none !important;
+  z-index: 2 !important;
+}
+
+/* Card heading */
+.step h3, .step-title {
+  font-family: Inter, sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  color: #0f172a !important;
+  margin-bottom: 0.75rem !important;
+}
+
+/* Card body */
+.step p, .step-body {
+  font-family: Inter, sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.75 !important;
+  color: #4b5563 !important;
+}
+
+/* Pills */
+.pill {
+  background: #0f172a !important;
+  color: #f4f5f7 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  font-family: Inter, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 0.75rem !important;
+  padding: 0.45rem 1.1rem !important;
+  border-radius: 999px !important;
+}
+
+.pills {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  gap: 0.75rem !important;
+  margin: 2.5rem auto !important;
+  max-width: 760px !important;
+}
+
+/* Blockquote card */
+.hw-quote, .quote-strip {
+  background: #0f172a !important;
+  border-radius: 14px !important;
+  padding: 2rem 2.5rem !important;
+  max-width: 680px !important;
+  margin: 2.5rem auto !important;
+  border: none !important;
+  border-left: none !important;
+}
+
+.quote-strip .quote-line, .hw-quote .quote-line {
+  font-family: 'Playfair Display', serif !important;
+  font-style: italic !important;
+  font-size: 1.2rem !important;
+  color: #f4f5f7 !important;
+  line-height: 1.6 !important;
+}
+
+.quote-source {
+  font-family: Inter, sans-serif !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #5eead4 !important;
+  display: block !important;
+  margin-top: 1rem !important;
+}
+
+@media (max-width: 640px) {
+  .steps { grid-template-columns: 1fr !important; }
+}
+</style>
 </head>
 
 <body>
