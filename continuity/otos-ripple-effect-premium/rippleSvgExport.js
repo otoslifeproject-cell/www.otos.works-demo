@@ -358,7 +358,7 @@ function buildRippleSvgString({
   svg.push(`</g>`);
 
   svg.push(
-    `<g id="rings" stroke-linecap="round" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;"${usePhotoRipples ? '' : ' mask="url(#outerFadeMask)"'}">`
+    `<g id="rings" stroke-linecap="round" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;"${usePhotoRipples ? '' : ' mask="url(#outerFadeMask)"'}>`
   );
 
   if (usePhotoRipples) {
@@ -533,7 +533,11 @@ function buildRippleSvgString({
     const cardH = isWide ? 66 : 72;
     const gap = 10;
 
-    svg.push(`<g id="evidenceLedger" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;"${mode === 'animated' ? ' opacity="0" style="opacity:0; animation: ledgerIn 0.9s ease forwards; animation-delay: 0.35s"' : ''}>`);
+    const ledgerStyle =
+      mode === 'animated'
+        ? 'font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; opacity: 0; animation: ledgerIn 0.9s ease forwards; animation-delay: 0.35s'
+        : 'font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial';
+    svg.push(`<g id="evidenceLedger" style="${ledgerStyle}">`);
     svg.push(`<style>@keyframes ledgerIn{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}</style>`);
 
     svg.push(
