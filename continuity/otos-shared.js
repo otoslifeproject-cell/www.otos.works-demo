@@ -8,6 +8,14 @@
     // Only for Continuity pages (not otos.works marketing site)
     if (!location.pathname.startsWith('/continuity/')) return;
 
+    // Skip if this page already has its own hero
+    if (
+      document.querySelector('.hero, [class*="hero-img"], [class*="hero-section"], .page-hero')
+    ) return;
+
+    // Skip on how-it-works.html specifically (it already has a hero)
+    if (location.pathname.includes('how-it-works')) return;
+
     // Don't duplicate if already mounted
     if (qs('[data-otos-hero-carousel]')) return;
 

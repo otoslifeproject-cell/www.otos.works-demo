@@ -9,6 +9,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
 
 <style>
+/*
+ * LOCKED REFERENCE TEMPLATE — 2026-03-18
+ * This page's visual treatment is the approved standard
+ * for all /continuity/ pages. Apply same:
+ * - Orange badge step numbers (hanging corner)
+ * - Glass cards with arrow-list outcomes
+ * - Dark navy blockquote card
+ * - Playfair italic large statement line
+ * - Dark navy pills + orange accent pill
+ * - "WHY IT WORKS" kicker overline treatment
+ */
 /* BASE */
 :root{
 	--bg:#f4f4f4;
@@ -211,6 +222,31 @@ h1{
 	font-size:clamp(12.5px, 1.2vw, 14.5px);
 	line-height:1.5;
 	color:#555;
+}
+
+/* FIX 2 — structured outcome list (arrow markers + separators) */
+.step-outcomes{
+	list-style:none;
+	padding:0;
+	margin:0.75rem 0 0;
+}
+.step-outcomes li{
+	font-family: Inter, sans-serif;
+	font-size: 0.82rem;
+	color: #4b5563;
+	line-height: 1.6;
+	padding: 0.3rem 0;
+	border-top: 1px solid rgba(15,23,42,0.06);
+	display: flex;
+	align-items: flex-start;
+	gap: 0.5rem;
+}
+.step-outcomes li::before{
+	content: "→";
+	color: #ff8a00;
+	font-weight: 600;
+	flex-shrink: 0;
+	margin-top: 0.05rem;
 }
 
 /* PILLS */
@@ -612,23 +648,24 @@ body > section:first-of-type > div[style*="z-index: 2"]{
 }
 
 /* FIX 3 — “Nothing changes…” line */
-.hw-final-pill{
-	background: transparent !important;
-	border: none !important;
-	border-left: none !important;
-	padding-left: 0 !important;
-	font-family: "Playfair Display", serif !important;
+.hw-final-pill, p.hw-final-pill{
+	font-family: 'Playfair Display', serif !important;
 	font-style: italic !important;
 	font-size: clamp(1rem, 2vw, 1.2rem) !important;
+	line-height: 1.4 !important;
 	color: #0f172a !important;
 	text-align: center !important;
 	white-space: nowrap !important;
 	max-width: 760px !important;
 	margin: 2.5rem auto 1rem !important;
-	display: block !important;
+	padding: 0 1.5rem !important;
+	overflow-wrap: normal !important;
+	word-break: normal !important;
+	border: none !important;
+	background: none !important;
 }
 @media (max-width: 640px){
-	.hw-final-pill{
+	.hw-final-pill, p.hw-final-pill{
 		white-space: normal !important;
 		display: -webkit-box !important;
 		-webkit-line-clamp: 2 !important;
@@ -657,6 +694,15 @@ body > section:first-of-type > div[style*="z-index: 2"]{
 	font-size: 0.8rem !important;
 	letter-spacing: 0.04em !important;
 	padding: 0.5rem 1.4rem !important;
+}
+
+/* FIX 4 — reduce space between quote card and pills row */
+.hw-quote, .quote-strip{
+	margin-bottom: 1.5rem !important;
+}
+.pills{
+	margin-top: 0 !important;
+	padding-top: 0 !important;
 }
 
 .nav-btn{
@@ -994,9 +1040,13 @@ body {
 					<span class="step-cat">Anonymous by design</span>
 					<div class="copy">
 						When someone comes to your service, a staff member taps <strong>Register touchpoint</strong> or scans a QR code. That's it. OTOS creates a secure, anonymous journey ID.
-						<br><br>
-						No name. No date of birth. No diagnosis. No extra form to fill in.
 					</div>
+					<ul class="step-outcomes">
+						<li>No name.</li>
+						<li>No date of birth.</li>
+						<li>No diagnosis.</li>
+						<li>No extra form to fill in.</li>
+					</ul>
 				</div>
 			</div>
 
@@ -1008,9 +1058,14 @@ body {
 					<span class="step-cat">Touchpoints, not records</span>
 					<div class="copy">
 						As someone moves through services and community support, each provider can note that a touchpoint happened against the same journey ID:
-						<br><br>
-						Attended. Missed. Contacted. Referred. Stabilising.
 					</div>
+					<ul class="step-outcomes">
+						<li>Attended.</li>
+						<li>Missed.</li>
+						<li>Contacted.</li>
+						<li>Referred.</li>
+						<li>Stabilising.</li>
+					</ul>
 				</div>
 			</div>
 
@@ -1021,8 +1076,14 @@ body {
 					<!-- FIX 2: category tag (founder journey style) -->
 					<span class="step-cat">Early warning</span>
 					<div class="copy">
-						OTOS notices when the pattern changes — repeated missed contacts, ping-pong referrals, long silences. Your team gets an alert. You decide what to do. OTOS never makes clinical decisions. It just makes sure the question "where did they go?" has an answer.
+						OTOS notices when the pattern changes — repeated missed contacts, ping-pong referrals, long silences.
 					</div>
+					<ul class="step-outcomes">
+						<li>Your team gets an alert.</li>
+						<li>You decide what to do.</li>
+						<li>OTOS never makes clinical decisions.</li>
+						<li>It just makes sure the question "where did they go?" has an answer.</li>
+					</ul>
 				</div>
 			</div>
 
@@ -1033,8 +1094,12 @@ body {
 					<!-- FIX 2: category tag (founder journey style) -->
 					<span class="step-cat">Aggregate signals only</span>
 					<div class="copy">
-						Team leads and service managers can see where journeys stall, where drop-off is happening, and where continuity is working. Aggregate, anonymous signals — no individual patient data. No GDPR headache.
+						Team leads and service managers can see where journeys stall, where drop-off is happening, and where continuity is working.
 					</div>
+					<ul class="step-outcomes">
+						<li>Aggregate, anonymous signals — no individual patient data.</li>
+						<li>No GDPR headache.</li>
+					</ul>
 				</div>
 			</div>
 		</div>
