@@ -138,8 +138,10 @@ body{
 /* Homepage breathing room below carousel */
 .welcome-section, .intro-section,
 section:not([class*="hero"]):first-of-type {
-	padding: 3rem 2rem 2.5rem !important;
+	padding: 3rem 2rem 2rem !important;
 	margin-top: 0 !important;
+	padding-bottom: 2rem !important;
+	margin-bottom: 0 !important;
 }
 
 .welcome-section h2, .intro-section h2,
@@ -158,6 +160,12 @@ section:not([class*="hero"]):first-of-type p {
 	color: rgba(15,23,42,0.78) !important;
 	max-width: 620px !important;
 	margin: 0 auto 2rem !important;
+}
+
+/* Ensure no extra bottom padding/margin on wrappers */
+body, main, .page-wrapper {
+	padding-bottom: 0 !important;
+	margin-bottom: 0 !important;
 }
 
 .next-btn{
