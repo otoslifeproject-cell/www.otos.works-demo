@@ -376,3 +376,30 @@
   bottom: auto;
   transform: translateY(-50%);
 }
+
+/* Carousel sizing + transitions (applies on logged-in carousel sections) */
+.hero-carousel,
+[class*="carousel-section"],
+[class*="hero-carousel"],
+.otos-hero-carousel-shell {
+  height: 480px !important;
+  max-height: 480px !important;
+  min-height: 320px !important;
+  overflow: hidden !important;
+}
+
+.hero-carousel img,
+.carousel-slide img,
+[class*="carousel"] img,
+.otos-carousel__slide img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+.carousel-slide,
+[class*="carousel-slide"],
+.otos-carousel__slide {
+  transition: opacity 0.8s ease !important;
+}

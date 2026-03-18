@@ -190,7 +190,7 @@
 
     const kick = () => {
       if (timer) clearInterval(timer);
-      timer = setInterval(() => apply(idx + 1), 4000);
+      timer = setInterval(() => apply(idx + 1), 6000);
     };
 
     prevBtn?.addEventListener('click', () => { apply(idx - 1); kick(); });
