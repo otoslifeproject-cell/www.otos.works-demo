@@ -297,7 +297,7 @@ body { margin: 0; font-family: Inter, system-ui, sans-serif; background: var(--b
 .contPath { fill: none; stroke: var(--journey-path); stroke-width: 10; }
 
 /* —— Reduced motion —— */
-@media (prefers-reduced-motion: reduce) {
+or the size of the story and moeny boxes should reduce same?. the pathway shoudl be the pathway but we need the pthway to break and crack @media (prefers-reduced-motion: reduce) {
   .storyPanel { transition: none; }
   .footprint { animation: none; opacity: 0.8; }
   .footprintMoving { opacity: 0.85; }

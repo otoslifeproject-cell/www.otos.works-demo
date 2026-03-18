@@ -196,6 +196,22 @@ function shortSourceText(url) {
   }
 }
 
+/** Oval ripples (photo perspective: wider than tall). Ring 0 = innermost. */
+function getOvalRipple(ringIndex, w, h) {
+  const ex = w / 2;
+  const ey = h / 2 + h * (h >= w ? 0.038 : 0.032);
+  const baseRx = Math.min(w, h) * 0.076;
+  const step = Math.min(w, h) * 0.035;
+  const rx = baseRx + ringIndex * step;
+  const ry = rx * 0.705;
+  return { ex, ey, rx, ry };
+}
+
+/** Top crest only — specular highlight on water (not a full ring). */
+function pathTopArc(ex, ey, rx, ry) {
+  return `M ${ex - rx} ${ey} A ${rx} ${ry} 0 1 1 ${ex + rx} ${ey}`;
+}
+
 function buildRippleSvgString({
   width,
   height,
@@ -209,9 +225,10 @@ function buildRippleSvgString({
   const cy = h / 2;
 
   const isWide = w !== 1200 || h !== 1200;
-  // Keep rings within a safe margin.
-  const ringRadiusStep = isWide ? 39 : 45;
-  const ringRadii = [isWide ? 92 : 120, ...[1, 2, 3, 4, 5, 6, 7].map((i) => (isWide ? 92 : 120) + i * ringRadiusStep)];
+  const usePhotoRipples = Boolean(waterTextureSrc);
+  const ringRadii = usePhotoRipples
+    ? null
+    : [isWide ? 92 : 120, ...[1, 2, 3, 4, 5, 6, 7].map((i) => (isWide ? 92 : 120) + i * (isWide ? 39 : 45))];
 
   const svg = [];
   svg.push(
@@ -292,113 +309,201 @@ function buildRippleSvgString({
   svg.push(`</defs>`);
   svg.push(`<rect x="0" y="0" width="${w}" height="${h}" fill="url(#bgGrad)"/>`);
 
-  // Water layer stack: subtle texture + photographic highlight + vignette.
-  const waterR = Math.min(w, h) * 0.44;
-  svg.push(`<g id="water" mask="url(#outerFadeMask)">`);
+  // Photo water: full-bleed merge (no circular crop). Procedural fallback when no texture.
   if (waterTextureSrc) {
-    // Photo texture behind the glass rings. Uses SVG <image> so we can keep everything self-contained in exports.
     svg.push(
-      `<image href="${escapeXml(waterTextureSrc)}" x="${-w * 0.08}" y="${-h * 0.18}" width="${w * 1.16}" height="${h * 1.36}" preserveAspectRatio="xMidYMid slice" opacity="0.58"/>`
+      `<image href="${escapeXml(waterTextureSrc)}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice"/>`
     );
-    svg.push(`<rect x="0" y="0" width="${w}" height="${h}" fill="rgba(10,79,92,0.16)" opacity="0.85"/>`);
+    svg.push(`<rect x="0" y="0" width="${w}" height="${h}" fill="rgba(6,28,42,0.14)"/>`);
+    svg.push(
+      `<rect x="0" y="0" width="${w}" height="${h}" fill="url(#waterVignette)" opacity="0.55"/>`
+    );
+  } else {
+    const waterR = Math.min(w, h) * 0.44;
+    svg.push(`<g id="water" mask="url(#outerFadeMask)">`);
+    svg.push(`<circle cx="${cx}" cy="${cy}" r="${waterR}" fill="rgba(10,79,92,0.10)" filter="url(#waterSurface)"/>`);
+    svg.push(`<circle cx="${cx}" cy="${cy}" r="${waterR}" fill="url(#specularShine)" opacity="0.95"/>`);
+    svg.push(`<circle cx="${cx}" cy="${cy}" r="${waterR}" fill="url(#waterVignette)" opacity="0.98"/>`);
+    svg.push(`</g>`);
   }
-  svg.push(`<circle cx="${cx}" cy="${cy}" r="${waterR}" fill="rgba(10,79,92,0.10)" filter="url(#waterSurface)"/>`);
-  svg.push(`<circle cx="${cx}" cy="${cy}" r="${waterR}" fill="url(#specularShine)" opacity="0.95"/>`);
-  svg.push(`<circle cx="${cx}" cy="${cy}" r="${waterR}" fill="url(#waterVignette)" opacity="0.98"/>`);
-  svg.push(`</g>`);
 
-  // Centre stone
-  const stoneR = isWide ? 46 : 52;
+  const focal = usePhotoRipples ? getOvalRipple(0, w, h) : { ex: cx, ey: cy, rx: isWide ? 46 : 52, ry: isWide ? 46 : 52 };
+  const stoneRx = usePhotoRipples ? Math.min(w, h) * 0.052 : isWide ? 46 : 52;
+  const stoneRy = stoneRx * 0.72;
   svg.push(`<g id="centre" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;">`);
-  svg.push(`<circle cx="${cx}" cy="${cy}" r="${stoneR + 14}" fill="url(#ringHalo)" opacity="0.65"/>`);
-  svg.push(`<circle cx="${cx}" cy="${cy}" r="${stoneR}" fill="url(#centreStone)" stroke="rgba(244,185,66,0.25)" stroke-width="${isWide ? 1.2 : 1.5}"/>`);
-  svg.push(`<ellipse cx="${cx - (isWide ? 12 : 14)}" cy="${cy - (isWide ? 14 : 16)}" rx="${isWide ? 12 : 14}" ry="${isWide ? 9 : 10}" fill="#FFFFFF" fill-opacity="0.14"/>`);
-  svg.push(`<text x="${cx}" y="${cy - 6}" text-anchor="middle" font-size="${isWide ? 14 : 16}" font-weight="800" fill="#E8FAFF" letter-spacing="-0.01em">NIA Individual</text>`);
-  svg.push(`<text x="${cx}" y="${cy + 14}" text-anchor="middle" font-size="${isWide ? 11 : 12}" font-weight="600" fill="rgba(232,250,255,0.92)">Undiagnosed ADHD + Crack/Heroin</text>`);
+  if (usePhotoRipples) {
+    svg.push(
+      `<ellipse cx="${focal.ex}" cy="${focal.ey}" rx="${stoneRx * 1.35}" ry="${stoneRy * 1.35}" fill="url(#ringHalo)" opacity="0.45"/>`
+    );
+    svg.push(
+      `<ellipse cx="${focal.ex}" cy="${focal.ey}" rx="${stoneRx}" ry="${stoneRy}" fill="rgba(8,22,38,0.55)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>`
+    );
+    const c = pathTopArc(focal.ex, focal.ey, stoneRx, stoneRy);
+    svg.push(
+      `<path d="${c}" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.4" stroke-linecap="round"/>`
+    );
+    svg.push(
+      `<path d="${c}" fill="none" stroke="rgba(200,240,255,0.35)" stroke-width="0.7" stroke-linecap="round"/>`
+    );
+  } else {
+    const stoneR = isWide ? 46 : 52;
+    svg.push(`<circle cx="${cx}" cy="${cy}" r="${stoneR + 14}" fill="url(#ringHalo)" opacity="0.65"/>`);
+    svg.push(`<circle cx="${cx}" cy="${cy}" r="${stoneR}" fill="url(#centreStone)" stroke="rgba(244,185,66,0.25)" stroke-width="${isWide ? 1.2 : 1.5}"/>`);
+    svg.push(`<ellipse cx="${cx - (isWide ? 12 : 14)}" cy="${cy - (isWide ? 14 : 16)}" rx="${isWide ? 12 : 14}" ry="${isWide ? 9 : 10}" fill="#FFFFFF" fill-opacity="0.14"/>`);
+  }
+  const tx = usePhotoRipples ? focal.ex : cx;
+  const ty = usePhotoRipples ? focal.ey : cy;
+  svg.push(`<text x="${tx}" y="${ty - 6}" text-anchor="middle" font-size="${isWide ? 14 : 16}" font-weight="800" fill="#E8FAFF" letter-spacing="-0.01em" style="text-shadow:0 1px 8px rgba(0,0,0,0.75)">NIA Individual</text>`);
+  svg.push(`<text x="${tx}" y="${ty + 14}" text-anchor="middle" font-size="${isWide ? 11 : 12}" font-weight="600" fill="rgba(232,250,255,0.95)" style="text-shadow:0 1px 6px rgba(0,0,0,0.8)">ADHD + Addiction (crisis)</text>`);
   svg.push(`</g>`);
 
-  // Ring groups
-  svg.push(`<g id="rings" stroke-linecap="round" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;" mask="url(#outerFadeMask)">`);
+  svg.push(
+    `<g id="rings" stroke-linecap="round" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;"${usePhotoRipples ? '' : ' mask="url(#outerFadeMask)"'}">`
+  );
 
-  for (let ringIndex = 0; ringIndex <= 7; ringIndex++) {
-    const r = ringRadii[ringIndex];
-    const stroke = getRingStrokeWidth(view, ringIndex);
-    const opacity = getRingOpacity(view, ringIndex);
-    const color = RING_COLORS[ringIndex];
-    const isAnimHidden = mode === 'animated' ? 'ring--hidden' : '';
-    const className = `ripple-ring ripple-ring--${ringIndex} ${isAnimHidden}`.trim();
-
-    const dash = ringIndex === 6 ? '6 10' : '';
-    const extra = ringIndex === 6 ? ' filter="url(#softGlow)"' : '';
-    const dashAttr = ringIndex === 6 ? ` stroke-dasharray="${dash}"` : '';
-
-    // Depth: a faint “understroke” to simulate water refraction.
-    svg.push(
-      `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#000000" stroke-width="${Math.max(4, stroke + 5)}" stroke-opacity="${ringIndex === 7 ? 0.08 : 0.10}" filter="url(#waterSurface)" vector-effect="non-scaling-stroke"/>`
-    );
-
-    // Subtle translucent ring fill (glass) to add photographic volume.
-    svg.push(
-      `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="url(#ringGlass)" stroke-width="${Math.max(6, stroke - 1)}" stroke-opacity="${ringIndex === 7 ? 0.55 : 0.75}" vector-effect="non-scaling-stroke"/>`
-    );
-
-    // Click/hover target: the ring stroke itself.
-    svg.push(
-      `<circle class="${className}" data-ring="${ringIndex}" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-opacity="${opacity}" vector-effect="non-scaling-stroke" style="cursor:pointer" filter="url(#edgeGlow)" ${dashAttr}${extra}/>`
-    );
-
-    // Label + numbers + key item + source
-    const label = ringLabel(ringIndex);
-    const key = getRingKeyItem(view, ringIndex);
-    const ringTotal = getRingTotal(view, ringIndex);
-    const ringTotalForDisplay = mode === 'animated' ? 0 : ringTotal;
-    const totalText = ringIndex === 0
-      ? fmtGBP(ringTotalForDisplay)
-      : ringIndex === 6
-        ? ''
-        : fmtGBP(ringTotalForDisplay);
-    const totalFontSize = ringIndex === 0 ? (isWide ? 14 : 16) : (isWide ? 12 : 13);
-    const labelFontSize = isWide ? 10 : 11;
-    const itemFontSize = isWide ? 9 : 10;
-    const sourceFontSize = isWide ? 7 : 8;
-
-    const yBase = cy - r + (isWide ? 6 : 10);
-    // Position at/near top of each ring band.
-    const yLabel = yBase - 12;
-    const yTotal = yBase + (ringIndex === 0 ? 14 : 12);
-    const yItem = yBase + 30;
-    const ySource = yBase + 44;
-
-    // Ring label
-    const labelFill = ringIndex === 7 ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.92)';
-    svg.push(`<text x="${cx}" y="${yLabel}" text-anchor="middle" font-size="${labelFontSize}" font-weight="700" fill="${labelFill}">${escapeXml(label)}</text>`);
-
-    // Ring total (gold)
-    if (ringIndex !== 6) {
-      const totalOpacity = ringIndex === 7 ? 0.85 : 1;
+  if (usePhotoRipples) {
+    // Draw outer ripples first; highlights = water crest only (no coloured ring stroke).
+    for (let ringIndex = 7; ringIndex >= 0; ringIndex--) {
+      const { ex, ey, rx, ry } = getOvalRipple(ringIndex, w, h);
+      const d = pathTopArc(ex, ey, rx, ry);
+      const isAnimHidden = mode === 'animated' ? 'ring--hidden' : '';
+      const wGlow = 3.2 + ringIndex * 0.35;
+      const wCrest = ringIndex >= 6 ? 1.05 : ringIndex === 7 ? 0.95 : 1.25;
+      const tailOp = ringIndex === 7 ? 0.55 : ringIndex === 6 ? 0.85 : 1;
+      svg.push(`<g class="ripple-ring--${ringIndex} ${isAnimHidden} ripple-oval-group">`);
       svg.push(
-        `<text id="ring-total-${ringIndex}" class="ring-total" x="${cx}" y="${yTotal}" text-anchor="middle" font-size="${totalFontSize}" font-weight="900" fill="${ACCENT_GOLD}" opacity="${totalOpacity}">${escapeXml(totalText)}</text>`
+        `<path d="${d}" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="${wGlow}" stroke-linecap="round" filter="url(#softGlow)" opacity="${tailOp * 0.9}"/>`
       );
-    } else {
-      // Future breeder ring: not a present cost number.
-      svg.push(`<text x="${cx}" y="${yTotal}" text-anchor="middle" font-size="${totalFontSize}" font-weight="800" fill="${ACCENT_GOLD}">Future cost breeds</text>`);
-      svg.push(`<text x="${cx}" y="${yTotal + 16}" text-anchor="middle" font-size="${itemFontSize}" font-weight="600" fill="rgba(232,250,255,0.9)">Waveform doubles if ignored</text>`);
-    }
-
-    // Key £ line
-    if (key && key.text) {
-      const itemText = key.text.length > 40 ? key.text.slice(0, 39) + '…' : key.text;
-      svg.push(`<text x="${cx}" y="${yItem}" text-anchor="middle" font-size="${itemFontSize}" font-weight="600" fill="rgba(232,250,255,0.9)">${escapeXml(itemText)}</text>`);
-    }
-
-    // Source link small
-    const short = shortSourceText(key && key.href);
-    if (key && key.href) {
       svg.push(
-        `<a href="${key.href}" target="_blank" rel="noopener noreferrer">` +
-          `<text x="${cx}" y="${ySource}" text-anchor="middle" font-size="${sourceFontSize}" font-style="italic" fill="rgba(255,255,255,0.65)">${escapeXml(short)}</text>` +
-        `</a>`
+        `<path d="${d}" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="${wCrest}" stroke-linecap="round" opacity="${tailOp}"/>`
       );
+      svg.push(
+        `<path d="${d}" fill="none" stroke="rgba(185,235,255,0.42)" stroke-width="${Math.max(0.65, wCrest * 0.55)}" stroke-linecap="round" opacity="${tailOp * 0.85}"/>`
+      );
+      if (ringIndex === 6 && mode === 'animated') {
+        svg.push(
+          `<path d="${d}" fill="none" stroke="rgba(230,220,255,0.55)" stroke-width="1" stroke-dasharray="3 14" stroke-linecap="round" style="animation: dashShimmer 2.2s linear infinite"/>`
+        );
+      }
+      svg.push(`</g>`);
+    }
+    for (let ringIndex = 0; ringIndex <= 7; ringIndex++) {
+      const { ex, ey, rx, ry } = getOvalRipple(ringIndex, w, h);
+      const isAnimHidden = mode === 'animated' ? 'ring--hidden' : '';
+      svg.push(
+        `<ellipse class="ripple-ring ripple-ring--${ringIndex} ${isAnimHidden}" data-ring="${ringIndex}" cx="${ex}" cy="${ey}" rx="${rx}" ry="${ry}" fill="none" stroke="rgba(255,255,255,0)" stroke-width="56" style="cursor:pointer"/>`
+      );
+    }
+    for (let ringIndex = 0; ringIndex <= 7; ringIndex++) {
+      const { ex, ey, rx, ry } = getOvalRipple(ringIndex, w, h);
+      const label = ringLabel(ringIndex);
+      const key = getRingKeyItem(view, ringIndex);
+      const ringTotal = getRingTotal(view, ringIndex);
+      const ringTotalForDisplay = mode === 'animated' ? 0 : ringTotal;
+      const totalText =
+        ringIndex === 0 ? fmtGBP(ringTotalForDisplay) : ringIndex === 6 ? '' : fmtGBP(ringTotalForDisplay);
+      const totalFontSize = ringIndex === 0 ? (isWide ? 14 : 16) : isWide ? 12 : 13;
+      const labelFontSize = isWide ? 10 : 11;
+      const itemFontSize = isWide ? 9 : 10;
+      const sourceFontSize = isWide ? 7 : 8;
+      const stagger = (ringIndex - 3.5) * (isWide ? 10 : 12);
+      const yLabel = ey - ry - 10;
+      const xLabel = ex + stagger;
+      const yTotal = yLabel + (ringIndex === 0 ? 15 : 13);
+      const yItem = yTotal + 16;
+      const ySource = yItem + 13;
+      const labelFill = ringIndex === 7 ? 'rgba(255,255,255,0.78)' : 'rgba(255,255,255,0.95)';
+      svg.push(
+        `<text x="${xLabel}" y="${yLabel}" text-anchor="middle" font-size="${labelFontSize}" font-weight="700" fill="${labelFill}" style="text-shadow:0 1px 6px rgba(0,0,0,0.85)">${escapeXml(label)}</text>`
+      );
+      if (ringIndex !== 6) {
+        const totalOpacity = ringIndex === 7 ? 0.88 : 1;
+        svg.push(
+          `<text id="ring-total-${ringIndex}" class="ring-total" x="${xLabel}" y="${yTotal}" text-anchor="middle" font-size="${totalFontSize}" font-weight="900" fill="${ACCENT_GOLD}" opacity="${totalOpacity}" style="text-shadow:0 1px 8px rgba(0,0,0,0.9)">${escapeXml(totalText)}</text>`
+        );
+      } else {
+        svg.push(
+          `<text x="${xLabel}" y="${yTotal}" text-anchor="middle" font-size="${totalFontSize}" font-weight="800" fill="${ACCENT_GOLD}" style="text-shadow:0 1px 8px rgba(0,0,0,0.9)">Future cost breeds</text>`
+        );
+        svg.push(
+          `<text x="${xLabel}" y="${yTotal + 16}" text-anchor="middle" font-size="${itemFontSize}" font-weight="600" fill="rgba(232,250,255,0.92)" style="text-shadow:0 1px 6px rgba(0,0,0,0.85)">Waveform doubles if ignored</text>`
+        );
+      }
+      if (key && key.text) {
+        const itemText = key.text.length > 36 ? key.text.slice(0, 35) + '…' : key.text;
+        svg.push(
+          `<text x="${xLabel}" y="${yItem}" text-anchor="middle" font-size="${itemFontSize}" font-weight="600" fill="rgba(232,250,255,0.94)" style="text-shadow:0 1px 6px rgba(0,0,0,0.88)">${escapeXml(itemText)}</text>`
+        );
+      }
+      const short = shortSourceText(key && key.href);
+      if (key && key.href) {
+        svg.push(
+          `<a href="${key.href}" target="_blank" rel="noopener noreferrer">` +
+            `<text x="${xLabel}" y="${ySource}" text-anchor="middle" font-size="${sourceFontSize}" font-style="italic" fill="rgba(255,255,255,0.72)" style="text-shadow:0 1px 4px rgba(0,0,0,0.8)">${escapeXml(short)}</text>` +
+            `</a>`
+        );
+      }
+    }
+  } else {
+    for (let ringIndex = 0; ringIndex <= 7; ringIndex++) {
+      const r = ringRadii[ringIndex];
+      const stroke = getRingStrokeWidth(view, ringIndex);
+      const opacity = getRingOpacity(view, ringIndex);
+      const color = RING_COLORS[ringIndex];
+      const isAnimHidden = mode === 'animated' ? 'ring--hidden' : '';
+      const className = `ripple-ring ripple-ring--${ringIndex} ${isAnimHidden}`.trim();
+      const dash = ringIndex === 6 ? '6 10' : '';
+      const extra = ringIndex === 6 ? ' filter="url(#softGlow)"' : '';
+      const dashAttr = ringIndex === 6 ? ` stroke-dasharray="${dash}"` : '';
+      svg.push(
+        `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#000000" stroke-width="${Math.max(4, stroke + 5)}" stroke-opacity="${ringIndex === 7 ? 0.08 : 0.1}" filter="url(#waterSurface)" vector-effect="non-scaling-stroke"/>`
+      );
+      svg.push(
+        `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="url(#ringGlass)" stroke-width="${Math.max(6, stroke - 1)}" stroke-opacity="${ringIndex === 7 ? 0.55 : 0.75}" vector-effect="non-scaling-stroke"/>`
+      );
+      svg.push(
+        `<circle class="${className}" data-ring="${ringIndex}" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-opacity="${opacity}" vector-effect="non-scaling-stroke" style="cursor:pointer" filter="url(#edgeGlow)" ${dashAttr}${extra}/>`
+      );
+      const label = ringLabel(ringIndex);
+      const key = getRingKeyItem(view, ringIndex);
+      const ringTotal = getRingTotal(view, ringIndex);
+      const ringTotalForDisplay = mode === 'animated' ? 0 : ringTotal;
+      const totalText =
+        ringIndex === 0 ? fmtGBP(ringTotalForDisplay) : ringIndex === 6 ? '' : fmtGBP(ringTotalForDisplay);
+      const totalFontSize = ringIndex === 0 ? (isWide ? 14 : 16) : isWide ? 12 : 13;
+      const labelFontSize = isWide ? 10 : 11;
+      const itemFontSize = isWide ? 9 : 10;
+      const sourceFontSize = isWide ? 7 : 8;
+      const yBase = cy - r + (isWide ? 6 : 10);
+      const yLabel = yBase - 12;
+      const yTotal = yBase + (ringIndex === 0 ? 14 : 12);
+      const yItem = yBase + 30;
+      const ySource = yBase + 44;
+      const labelFill = ringIndex === 7 ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.92)';
+      svg.push(`<text x="${cx}" y="${yLabel}" text-anchor="middle" font-size="${labelFontSize}" font-weight="700" fill="${labelFill}">${escapeXml(label)}</text>`);
+      if (ringIndex !== 6) {
+        const totalOpacity = ringIndex === 7 ? 0.85 : 1;
+        svg.push(
+          `<text id="ring-total-${ringIndex}" class="ring-total" x="${cx}" y="${yTotal}" text-anchor="middle" font-size="${totalFontSize}" font-weight="900" fill="${ACCENT_GOLD}" opacity="${totalOpacity}">${escapeXml(totalText)}</text>`
+        );
+      } else {
+        svg.push(`<text x="${cx}" y="${yTotal}" text-anchor="middle" font-size="${totalFontSize}" font-weight="800" fill="${ACCENT_GOLD}">Future cost breeds</text>`);
+        svg.push(
+          `<text x="${cx}" y="${yTotal + 16}" text-anchor="middle" font-size="${itemFontSize}" font-weight="600" fill="rgba(232,250,255,0.9)">Waveform doubles if ignored</text>`
+        );
+      }
+      if (key && key.text) {
+        const itemText = key.text.length > 40 ? key.text.slice(0, 39) + '…' : key.text;
+        svg.push(`<text x="${cx}" y="${yItem}" text-anchor="middle" font-size="${itemFontSize}" font-weight="600" fill="rgba(232,250,255,0.9)">${escapeXml(itemText)}</text>`);
+      }
+      const short = shortSourceText(key && key.href);
+      if (key && key.href) {
+        svg.push(
+          `<a href="${key.href}" target="_blank" rel="noopener noreferrer">` +
+            `<text x="${cx}" y="${ySource}" text-anchor="middle" font-size="${sourceFontSize}" font-style="italic" fill="rgba(255,255,255,0.65)">${escapeXml(short)}</text>` +
+            `</a>`
+        );
+      }
     }
   }
   svg.push(`</g>`);
@@ -491,32 +596,32 @@ function buildRippleSvgString({
     `</g>`
   );
 
-  // Decorative shimmer ring for Ring 6.
-  // The main circle for ring 6 is dashed; this overlay adds a shimmer dashed “orbit”.
-  const ring6R = ringRadii[6];
-  const shimmerOpacity = 0.65;
   const dashOffset = mode === 'animated' ? 18 : 0;
-  svg.push(
-    `<g id="ring6Shimmer" opacity="${shimmerOpacity}" style="${mode === 'animated' ? '' : 'display:none'}">` +
-      `<circle cx="${cx}" cy="${cy}" r="${ring6R}" fill="none" stroke="${RING_COLORS[6]}" stroke-width="${Math.max(4, getRingStrokeWidth(view, 6) - 1)}" stroke-dasharray="4 12" stroke-linecap="round" filter="url(#softGlow)" style="transform-origin:${cx}px ${cy}px; animation: dashShimmer 1.5s linear infinite; animation-delay: 0.1s" />` +
-      `<circle cx="${cx}" cy="${cy}" r="${ring6R}" fill="none" stroke="rgba(244,185,66,0.55)" stroke-width="${Math.max(2, getRingStrokeWidth(view, 6) - 5)}" stroke-dasharray="1 18" stroke-linecap="round" filter="url(#softGlow)" style="transform-origin:${cx}px ${cy}px; animation: dashShimmer 2.4s linear infinite; animation-delay: 0.15s" />` +
-    `</g>`
-  );
+  if (!usePhotoRipples) {
+    const ring6R = ringRadii[6];
+    const shimmerOpacity = 0.65;
+    svg.push(
+      `<g id="ring6Shimmer" opacity="${shimmerOpacity}" style="${mode === 'animated' ? '' : 'display:none'}">` +
+        `<circle cx="${cx}" cy="${cy}" r="${ring6R}" fill="none" stroke="${RING_COLORS[6]}" stroke-width="${Math.max(4, getRingStrokeWidth(view, 6) - 1)}" stroke-dasharray="4 12" stroke-linecap="round" filter="url(#softGlow)" style="transform-origin:${cx}px ${cy}px; animation: dashShimmer 1.5s linear infinite; animation-delay: 0.1s" />` +
+        `<circle cx="${cx}" cy="${cy}" r="${ring6R}" fill="none" stroke="rgba(244,185,66,0.55)" stroke-width="${Math.max(2, getRingStrokeWidth(view, 6) - 5)}" stroke-dasharray="1 18" stroke-linecap="round" filter="url(#softGlow)" style="transform-origin:${cx}px ${cy}px; animation: dashShimmer 2.4s linear infinite; animation-delay: 0.15s" />` +
+      `</g>`
+    );
+  }
 
-  // SVG-level animations (so exports keep shimmer even outside CSS files).
+  // SVG-level animations
   svg.push(
     `<style>
       @keyframes ringFadeUp { 0% { opacity:0; transform: translateY(6px); } 60% { opacity:1; transform: translateY(0px); } 100% { opacity:1; transform: translateY(0px);} }
       @keyframes dashShimmer { 0% { stroke-dashoffset: ${dashOffset}; } 100% { stroke-dashoffset: ${dashOffset + 120}; } }
       .ring--hidden { opacity: 0; }
-      .ripple-ring--0.ring--hidden { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.05s; }
-      .ripple-ring--1.ring--hidden { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.22s; }
-      .ripple-ring--2.ring--hidden { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.38s; }
-      .ripple-ring--3.ring--hidden { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.54s; }
-      .ripple-ring--4.ring--hidden { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.70s; }
-      .ripple-ring--5.ring--hidden { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.86s; }
-      .ripple-ring--6.ring--hidden { animation: ringFadeUp 1.0s ease forwards; animation-delay: 1.02s; }
-      .ripple-ring--7.ring--hidden { animation: ringFadeUp 1.1s ease forwards; animation-delay: 1.18s; }
+      .ripple-ring--0.ring--hidden, .ripple-oval-group.ring--hidden.ripple-ring--0 { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.05s; }
+      .ripple-ring--1.ring--hidden, .ripple-oval-group.ring--hidden.ripple-ring--1 { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.22s; }
+      .ripple-ring--2.ring--hidden, .ripple-oval-group.ring--hidden.ripple-ring--2 { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.38s; }
+      .ripple-ring--3.ring--hidden, .ripple-oval-group.ring--hidden.ripple-ring--3 { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.54s; }
+      .ripple-ring--4.ring--hidden, .ripple-oval-group.ring--hidden.ripple-ring--4 { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.70s; }
+      .ripple-ring--5.ring--hidden, .ripple-oval-group.ring--hidden.ripple-ring--5 { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.86s; }
+      .ripple-ring--6.ring--hidden, .ripple-oval-group.ring--hidden.ripple-ring--6 { animation: ringFadeUp 1.0s ease forwards; animation-delay: 1.02s; }
+      .ripple-ring--7.ring--hidden, .ripple-oval-group.ring--hidden.ripple-ring--7 { animation: ringFadeUp 1.1s ease forwards; animation-delay: 1.18s; }
     </style>`
   );
 
