@@ -303,6 +303,13 @@ p {
   line-height: 1.9;
 }
 
+/* CHANGE (INDEX FOOTER LINE): hard-disable any top divider/shadow site-wide */
+footer,
+.site-footer{
+  border-top: none !important;
+  box-shadow: none !important;
+}
+
 .site-footer a {
   color: rgba(255,255,255,0.6);
   text-decoration: none;

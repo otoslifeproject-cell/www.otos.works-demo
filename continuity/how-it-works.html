@@ -109,13 +109,7 @@ h1{
 	color:var(--muted);
 }
 
-/* ISSUE 1 — strapline text must be visible */
-.hero .strapline{
-	color:#0f172a !important;
-	font-weight:500;
-	font-family:Inter, sans-serif;
-	padding-left:1rem;
-}
+/* NOTE: strapline styling is overridden below per new hierarchy */
 
 /* QUOTE STRIP */
 .quote-strip{
@@ -239,6 +233,234 @@ h1{
 	font-weight:600;
 	color:#444;
 	white-space:nowrap;
+}
+
+/* =========================================================
+   Oura-style premium hierarchy (How it works only)
+   DO NOT change copy — layout/treatment only.
+   ========================================================= */
+
+/* SECTION 7 — page background gradient + subtle radial accent */
+.page{
+	background: linear-gradient(180deg, #f8f9fb 0%, #f4f5f7 40%, #f0f2f5 100%);
+	position:relative;
+	padding-left: clamp(1.5rem, 5vw, 4rem);
+	padding-right: clamp(1.5rem, 5vw, 4rem);
+}
+
+/* SECTION 7 — subtle orange radial behind the strapline area */
+.hero{
+	position:relative;
+}
+.hero::before{
+	content:"";
+	position:absolute;
+	inset:-40px -20px auto -20px;
+	height:240px;
+	background: radial-gradient(ellipse at 50% 0%, rgba(255,138,0,0.04) 0%, transparent 70%);
+	pointer-events:none;
+}
+
+/* SECTION 1 — Strapline block (display statement) */
+.hw-strapline{
+	font-family:"Playfair Display", serif;
+	font-weight:700;
+	/* FIX 1 — STRAPLINE */
+	font-size: clamp(2rem, 4vw, 3rem);
+	letter-spacing:-0.02em;
+	color:#0f172a;
+	text-align:center;
+	margin:4rem auto 1.5rem;
+	max-width:760px;
+	line-height:1.15;
+	border: none !important;
+	border-left: none !important;
+	padding-left: 0 !important;
+	padding:0 !important;
+}
+.hw-strapline::before{
+	/* Oura-style overline label — no HTML text changes */
+	content:"WHY IT WORKS";
+	font-family:Inter, sans-serif;
+	font-weight:500;
+	font-size:0.65rem;
+	letter-spacing:0.2em;
+	text-transform:uppercase;
+	color:#ff8a00;
+	display:block;
+	text-align:center;
+	margin-bottom:0.75rem;
+}
+
+/* SECTION 2 — Body paragraph under strapline */
+.hw-body{
+	font-family:Inter, sans-serif;
+	font-weight:400;
+	font-size:1.05rem;
+	line-height:1.8;
+	color:#374151;
+	text-align:center;
+	max-width:640px;
+	margin:0 auto 2.5rem;
+}
+
+/* SECTION 3 — Blockquote treatment (replace thin box border) */
+.hw-quote{
+	display:block;
+	/* FIX 5 — BLOCKQUOTE CARD */
+	background:#0f172a !important;
+	border-radius:12px;
+	padding:2rem 2.5rem;
+	max-width:680px;
+	margin:0 auto 3rem;
+	border: none !important;
+	box-shadow:none;
+	backdrop-filter:none;
+	-webkit-backdrop-filter:none;
+}
+.hw-quote .quote-line{
+	font-family:"Playfair Display", serif;
+	font-style:italic;
+	font-size:1.2rem;
+	color:#f4f5f7;
+	line-height:1.6;
+	white-space:normal;
+	overflow:visible;
+	text-overflow:clip;
+}
+.hw-quote .quote-source{
+	font-family:Inter, sans-serif;
+	font-weight:500;
+	font-size:0.75rem;
+	letter-spacing:0.12em;
+	text-transform:uppercase;
+	color:#5eead4;
+	margin-top:1rem;
+	display:block;
+}
+
+/* SECTION 4 — Four step cards (2×2 grid + premium glass) */
+.panel{
+	background: transparent;
+	box-shadow:none;
+	border-radius:0;
+	padding:0;
+	margin-top:0;
+}
+.steps{
+	display:grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap:1.5rem;
+	max-width:880px;
+	margin:0 auto 3rem;
+	padding:0 1.5rem;
+}
+.step{
+	display:block;
+	background: rgba(255,255,255,0.7);
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
+	border: 1px solid rgba(255,255,255,0.5);
+	box-shadow: 0 4px 24px rgba(15,23,42,0.08), 0 1px 3px rgba(15,23,42,0.06);
+	border-radius: 16px;
+	padding: 2rem;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.step:hover{
+	transform: translateY(-2px);
+	box-shadow: 0 8px 40px rgba(15,23,42,0.12);
+}
+.step-num{
+	font-family:"Playfair Display", serif;
+	font-weight:700;
+	/* FIX 2 — STEP NUMBERS */
+	font-size:3.5rem;
+	line-height:1;
+	color: rgba(15,23,42,0.12);
+	display:block;
+	margin:0 0 0.5rem 0;
+	letter-spacing:-0.03em;
+	width:auto;
+	height:auto;
+	background:transparent;
+	border:none;
+	border-radius:0;
+	box-shadow:none;
+	justify-content:flex-start;
+	align-items:flex-start;
+}
+.step h3{
+	font-family:Inter, sans-serif;
+	font-weight:600;
+	/* FIX 3 — STEP CARD HEADINGS */
+	font-size:0.95rem;
+	color:#0f172a;
+	margin:0 0 0.75rem 0;
+	letter-spacing:-0.01em;
+}
+.step .copy{
+	margin-top:0;
+	font-family:Inter, sans-serif;
+	font-weight:400;
+	font-size:0.9rem;
+	line-height:1.7;
+	color:#4b5563;
+}
+
+@media (max-width: 640px){
+	.steps{ grid-template-columns:1fr; padding:0; }
+}
+
+/* SECTION 6 — OTOS surfaces / partner decision line */
+.hw-decision-line{
+	font-family:"Playfair Display", serif;
+	font-style:italic;
+	font-size:1.1rem;
+	color:#0f172a;
+	text-align:center;
+	max-width:580px;
+	margin:0 auto 2rem;
+	padding:1.5rem 2rem;
+	border-top:1px solid rgba(15,23,42,0.08);
+	border-bottom:1px solid rgba(15,23,42,0.08);
+	background:transparent;
+}
+
+/* SECTION 5 — Bottom tag row (pills) */
+.pills{
+	display:flex;
+	flex-wrap:wrap;
+	justify-content:center;
+	gap:0.75rem;
+	margin:0 auto 3rem;
+	max-width:760px;
+}
+.pill{
+	background:#0f172a;
+	/* FIX 4 — PILLS (standard) */
+	color:#f4f5f7;
+	font-family:Inter, sans-serif;
+	font-weight:500;
+	font-size:0.75rem;
+	letter-spacing:0.05em;
+	padding:0.45rem 1.1rem;
+	border-radius:999px;
+	border:1px solid rgba(255,255,255,0.1);
+	box-shadow:none;
+}
+.hw-final-pill{
+	/* FIX 4 — PILLS (orange accent) */
+	background: transparent;
+	color:#ff8a00;
+	border: 1px solid rgba(255,138,0,0.4);
+	border-radius: 999px;
+	padding:0.45rem 1.1rem;
+	font-family:Inter, sans-serif;
+	font-weight:500;
+	font-size:0.75rem;
+	letter-spacing:0.05em;
+	display:inline-block;
+	margin:0 auto 2rem;
 }
 
 /* BOTTOM NAV (consistent across pages) */
@@ -409,13 +631,16 @@ h1{
 
 <div class="page">
 	<div class="hero">
-		<p class="strapline">Low integration. Low disruption. High clarity.</p>
-		<p class="sub">
-			You're already doing the hard part. You refer. You signpost. You discharge. The gap isn't in your service — it's in the space after the door closes. OTOS sits in that space. Quietly. Without touching your systems or your records.
+		<!-- CHANGE (SECTION 1): class hook for display strapline + CSS overline via ::before -->
+		<p class="strapline hw-strapline">Low integration. Low disruption. High clarity.</p>
+		<!-- CHANGE (SECTION 2): class hook for body paragraph styling -->
+		<p class="sub hw-body">
+			You're already doing the hard part. You refer. You signpost. You discharge. The gap isn't in your service — it's the pathway itself. It’s the space, the void experienced after one door closes. OTOS sits in that space. Quietly. Without touching your systems or your records.
 			From this point on, this portal refers to it as <strong>Continuity</strong>.
 		</p>
 
-		<div class="quote-strip">
+		<!-- CHANGE (SECTION 3): class hook for dark blockquote card -->
+		<div class="quote-strip hw-quote">
 			<p class="quote-line">— “There should be a single, accessible front door.” — <span class="quote-source">Independent…</span></p>
 		</div>
 	</div>
@@ -467,8 +692,10 @@ h1{
 			</div>
 		</div>
 
-		<p class="strapline">Nothing changes in how you work. Your clinical decisions stay yours — always.</p>
-		<p class="sub">OTOS surfaces signals. The partner team makes the decision.</p>
+		<!-- CHANGE (SECTION 5): treat this line as the final accent pill -->
+		<p class="strapline hw-final-pill">Nothing changes in how you work. Your clinical decisions stay yours — always.</p>
+		<!-- CHANGE (SECTION 6): class hook for standalone statement styling -->
+		<p class="sub hw-decision-line">OTOS surfaces signals. The partner team makes the decision.</p>
 		<div class="pills" aria-label="Key points">
 			<div class="pill">Touchpoints, not records.</div>
 			<div class="pill">No system integration.</div>

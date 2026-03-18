@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Content Manager — OTOS Continuity</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --orange:#ff8a00;
+      --teal:#5eead4;
+      --navy:#0f172a;
+      --bg:#f4f5f7;
+      --muted:rgba(15,23,42,0.65);
+      --glass:rgba(255,255,255,0.6);
+      --glass-border:rgba(255,255,255,0.4);
+      --shadow:0 4px 24px rgba(15,23,42,0.08);
+      --radius:12px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--navy);
+      font-family:Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height:1.75;
+      padding:2rem;
+    }
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+    }
+
+    /* Top header */
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:1rem;
+      margin-bottom:1.5rem;
+    }
+    h1{
+      font-family:"Playfair Display", serif;
+      font-weight:700;
+      font-size:clamp(2rem,4vw,3rem);
+      margin:0;
+      letter-spacing:-0.02em;
+    }
+    .sub{
+      margin:0.25rem 0 0;
+      color:var(--muted);
+      max-width:70ch;
+    }
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:0.5rem;
+      text-decoration:none;
+      color:var(--navy);
+      font-weight:500;
+      padding:0.55rem 0.9rem;
+      border-radius:999px;
+      border:1px solid rgba(15,23,42,0.12);
+      background:rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      white-space:nowrap;
+    }
+    .back:hover{ border-color:rgba(255,138,0,0.35); color:var(--orange); }
+
+    /* Locked typography strip */
+    .locked-strip{
+      background:rgba(15,23,42,0.05);
+      border-left:3px solid var(--orange);
+      border-radius:8px;
+      padding:1.25rem 1.5rem;
+      margin-bottom:1.75rem;
+    }
+    .locked-strip .overline{
+      font-family:Inter, sans-serif;
+      font-weight:500;
+      font-size:0.65rem;
+      letter-spacing:0.2em;
+      text-transform:uppercase;
+      color:var(--orange);
+      margin:0 0 0.75rem 0;
+    }
+    .locked-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:0.75rem 1.25rem;
+    }
+    .locked-item{
+      background:rgba(255,255,255,0.65);
+      border:1px solid rgba(255,255,255,0.55);
+      border-radius:10px;
+      padding:0.85rem 1rem;
+    }
+    .locked-item .k{
+      font-family:Inter, sans-serif;
+      font-weight:600;
+      font-size:0.8rem;
+      color:rgba(15,23,42,0.75);
+      margin:0 0 0.25rem 0;
+    }
+    .locked-item .v{
+      margin:0;
+      color:rgba(15,23,42,0.7);
+      font-size:0.95rem;
+    }
+    @media (max-width: 860px){
+      .locked-grid{ grid-template-columns:1fr; }
+    }
+
+    /* Dashboard layout */
+    .dash{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:1.25rem;
+    }
+    @media (max-width: 980px){
+      .dash{ grid-template-columns:1fr; }
+    }
+
+    .panel{
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      min-height: 200px;
+    }
+    .panel h2{
+      font-family:"Playfair Display", serif;
+      font-weight:600;
+      font-size:clamp(1.2rem,2.5vw,1.8rem);
+      margin:0 0 0.75rem 0;
+      letter-spacing:-0.02em;
+      color:var(--navy);
+    }
+    .panel .hint{
+      margin:0 0 1rem 0;
+      color:var(--muted);
+      font-size:0.95rem;
+    }
+
+    /* Buttons */
+    .btn{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:0.6rem 1.1rem;
+      font-family:Inter, sans-serif;
+      font-weight:600;
+      font-size:0.9rem;
+      background:var(--orange);
+      color:var(--navy);
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+    .btn:hover{ filter:brightness(0.96); transform: translateY(-1px); }
+    .btn.secondary{
+      background:rgba(15,23,42,0.06);
+      color:var(--navy);
+      border:1px solid rgba(15,23,42,0.12);
+    }
+    .btn.secondary:hover{ border-color:rgba(255,138,0,0.35); color:var(--orange); }
+    .btn-row{ display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:1rem; }
+
+    /* Panel 1 — image library */
+    .image-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:0.9rem;
+    }
+    @media (max-width: 1100px){ .image-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 560px){ .image-grid{ grid-template-columns:1fr; } }
+    .img-card{
+      background:rgba(255,255,255,0.7);
+      border:1px solid rgba(255,255,255,0.55);
+      border-radius:12px;
+      overflow:hidden;
+    }
+    .thumb{
+      width:100%;
+      height:140px;
+      object-fit:cover;
+      display:block;
+      background:linear-gradient(180deg, rgba(15,23,42,0.06), rgba(15,23,42,0.02));
+    }
+    .img-meta{
+      padding:0.85rem 0.9rem;
+      display:flex;
+      flex-direction:column;
+      gap:0.55rem;
+    }
+    .filename{
+      font-family:Inter, sans-serif;
+      font-weight:600;
+      font-size:0.85rem;
+      color:rgba(15,23,42,0.82);
+      word-break:break-word;
+    }
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:0.75rem;
+      flex-wrap:wrap;
+    }
+    label{
+      font-family:Inter, sans-serif;
+      font-weight:500;
+      font-size:0.75rem;
+      letter-spacing:0.05em;
+      text-transform:uppercase;
+      color:rgba(15,23,42,0.65);
+    }
+    input[type="text"], select, textarea{
+      width:100%;
+      padding:0.55rem 0.65rem;
+      border-radius:10px;
+      border:1px solid rgba(15,23,42,0.12);
+      background:rgba(255,255,255,0.75);
+      font-family:Inter, sans-serif;
+      font-size:0.95rem;
+      color:var(--navy);
+      outline:none;
+    }
+    input[type="checkbox"]{
+      width:18px;
+      height:18px;
+      accent-color: var(--teal);
+    }
+
+    /* Panel 2 — straplines */
+    .strapline-list{ display:flex; flex-direction:column; gap:0.75rem; }
+    .strapline-row{
+      display:grid;
+      grid-template-columns: 1fr 220px 90px 86px;
+      gap:0.75rem;
+      align-items:center;
+      padding:0.75rem;
+      border-radius:12px;
+      background:rgba(255,255,255,0.7);
+      border:1px solid rgba(255,255,255,0.55);
+    }
+    @media (max-width: 1100px){
+      .strapline-row{ grid-template-columns: 1fr; }
+    }
+    .del{
+      background:transparent;
+      border:1px solid rgba(255,138,0,0.35);
+      color:var(--orange);
+      border-radius:999px;
+      padding:0.5rem 0.8rem;
+      font-family:Inter, sans-serif;
+      font-weight:600;
+      cursor:pointer;
+      justify-self:start;
+    }
+    .del:hover{ background:rgba(255,138,0,0.08); }
+
+    /* Panel 3 — stats cards editor + preview */
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:1rem;
+    }
+    @media (max-width: 860px){ .stats-grid{ grid-template-columns:1fr; } }
+    .stat-editor{
+      background:rgba(255,255,255,0.7);
+      border:1px solid rgba(255,255,255,0.55);
+      border-radius:12px;
+      padding:1rem;
+      display:flex;
+      flex-direction:column;
+      gap:0.6rem;
+    }
+    .stat-fields{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:0.6rem;
+    }
+    .stat-fields .full{ grid-column:1 / -1; }
+    .toggle{
+      display:flex;
+      align-items:center;
+      gap:0.5rem;
+      font-family:Inter, sans-serif;
+      font-weight:500;
+      font-size:0.85rem;
+      color:rgba(15,23,42,0.75);
+    }
+    .preview{
+      margin-top:0.75rem;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.4);
+      box-shadow: 0 4px 24px rgba(15,23,42,0.08);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .preview .value{
+      font-family:"Playfair Display", serif;
+      font-weight:700;
+      font-size:2rem;
+      color:var(--navy);
+      margin:0;
+      line-height:1.1;
+    }
+    .preview .label{
+      margin:0.25rem 0 0;
+      font-family:Inter, sans-serif;
+      font-weight:500;
+      font-size:0.8rem;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color:#6b7280;
+    }
+    .preview .unit{
+      margin:0.35rem 0 0;
+      font-family:Inter, sans-serif;
+      font-weight:400;
+      font-size:0.75rem;
+      color:var(--teal);
+    }
+
+    /* Panel 4 — preview strip */
+    .preview-strip{
+      display:flex;
+      flex-direction:column;
+      gap:1.1rem;
+    }
+    .mini-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:0.6rem;
+      align-items:flex-start;
+    }
+    .mini-thumb{
+      width:64px;
+      height:44px;
+      border-radius:10px;
+      object-fit:cover;
+      border:1px solid rgba(15,23,42,0.12);
+      background:#fff;
+    }
+    .chip{
+      display:inline-block;
+      padding:0.35rem 0.75rem;
+      border-radius:999px;
+      border:1px solid rgba(15,23,42,0.12);
+      background:rgba(255,255,255,0.7);
+      font-family:Inter, sans-serif;
+      font-weight:500;
+      font-size:0.75rem;
+      color:rgba(15,23,42,0.78);
+      white-space:nowrap;
+    }
+    .chip.active{
+      border-color:rgba(94,234,212,0.7);
+      background:rgba(94,234,212,0.18);
+      color:var(--navy);
+    }
+    .mini-stat{
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.55);
+      background:rgba(255,255,255,0.7);
+      padding:0.7rem 0.8rem;
+      min-width:180px;
+    }
+    .mini-stat .v{
+      font-family:"Playfair Display", serif;
+      font-weight:700;
+      font-size:1.25rem;
+      margin:0;
+      line-height:1.1;
+      color:var(--navy);
+    }
+    .mini-stat .l{
+      margin:0.25rem 0 0;
+      font-family:Inter, sans-serif;
+      font-weight:500;
+      font-size:0.7rem;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color:#6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div>
+        <h1>Site Content Manager</h1>
+        <p class="sub">Local management tool for images, straplines, and stats. Saves into LocalStorage for this browser only.</p>
+      </div>
+      <a class="back" href="work-index.html">← Back to hub</a>
+    </div>
+
+    <!-- LOCKED TYPOGRAPHY STRIP -->
+    <section class="locked-strip" aria-label="Locked typography system">
+      <p class="overline">Locked Typography System — Do Not Change</p>
+      <div class="locked-grid">
+        <div class="locked-item">
+          <p class="k">H1 / Hero headline</p>
+          <p class="v">Playfair Display 700, clamp(2rem,4vw,3rem)</p>
+        </div>
+        <div class="locked-item">
+          <p class="k">H2 / Section heading</p>
+          <p class="v">Playfair Display 600, clamp(1.2rem,2.5vw,1.8rem)</p>
+        </div>
+        <div class="locked-item">
+          <p class="k">Overline / Label</p>
+          <p class="v">Inter 500, 0.65rem, uppercase, letter-spacing 0.2em</p>
+        </div>
+        <div class="locked-item">
+          <p class="k">Body</p>
+          <p class="v">Inter 400, 1rem, line-height 1.75</p>
+        </div>
+        <div class="locked-item">
+          <p class="k">Caption / Pill text</p>
+          <p class="v">Inter 500, 0.75rem</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="dash">
+      <!-- PANEL 1 — IMAGE LIBRARY -->
+      <section class="panel" id="panel-images" aria-label="Image library">
+        <h2>Image Library</h2>
+        <p class="hint">Images from <code>/continuity/images/</code>. Select which ones become carousel slides. Saves to <code>otosContinuity.carousel.v1.payload</code>.</p>
+        <div class="image-grid" id="imageGrid"></div>
+        <div class="btn-row">
+          <button class="btn" id="saveCarouselBtn" type="button">Save carousel selection</button>
+          <button class="btn secondary" id="reloadCarouselBtn" type="button">Reload from LocalStorage</button>
+        </div>
+      </section>
+
+      <!-- PANEL 2 — STRAPLINES BANK -->
+      <section class="panel" id="panel-straplines" aria-label="Straplines bank">
+        <h2>Straplines Bank</h2>
+        <p class="hint">Editable straplines with page assignment. Saves to <code>otosContinuity.straplines.v1</code>.</p>
+        <div class="strapline-list" id="straplineList"></div>
+        <div class="btn-row">
+          <button class="btn secondary" id="addStraplineBtn" type="button">Add strapline</button>
+          <button class="btn" id="saveStraplinesBtn" type="button">Save straplines</button>
+        </div>
+      </section>
+
+      <!-- PANEL 3 — STATS / GLASS PANELS -->
+      <section class="panel" id="panel-stats" aria-label="Stats manager">
+        <h2>Stats / Glass Panels</h2>
+        <p class="hint">Editable stat cards with live glass preview. Saves to <code>otosContinuity.stats.v1</code>.</p>
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="btn-row">
+          <button class="btn secondary" id="addStatBtn" type="button">Add stat</button>
+          <button class="btn" id="saveStatsBtn" type="button">Save stats</button>
+        </div>
+      </section>
+
+      <!-- PANEL 4 — PREVIEW STRIP -->
+      <section class="panel" id="panel-preview" aria-label="Preview strip">
+        <h2>Preview Strip</h2>
+        <p class="hint">Live preview of active slides, straplines, and stats from this page’s current state.</p>
+        <div class="preview-strip">
+          <div>
+            <label>Active carousel slides</label>
+            <div class="mini-row" id="previewSlides"></div>
+          </div>
+          <div>
+            <label>Active straplines per page</label>
+            <div class="mini-row" id="previewStraplines"></div>
+          </div>
+          <div>
+            <label>Active stats</label>
+            <div class="mini-row" id="previewStats"></div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="pushAllBtn" type="button">Push all to LocalStorage</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      'use strict';
+
+      // Keys (locked)
+      const KEY_CAROUSEL = 'otosContinuity.carousel.v1.payload';
+      const KEY_STRAPLINES = 'otosContinuity.straplines.v1';
+      const KEY_STATS = 'otosContinuity.stats.v1';
+
+      // Pages (locked list)
+      const PAGE_OPTIONS = [
+        'Home',
+        'How it works',
+        'Guided demos',
+        'Controls',
+        'Reporting',
+        'All pages',
+        'Unassigned'
+      ];
+
+      // Panel 1 — images (hardcoded list from /continuity/images/)
+      const IMAGES = [
+        "Consulting with OTOS dashboard in office.png",
+        "Therapist reviewing options on smartphone.png",
+        "Focused on progress in the office.png",
+        "Engaging conversation at NHS Community Hub.png",
+        "sun-dashboard-devices.png",
+        "Professional at work with data dashboard.png",
+        "NHS nurse assists patient with OTOS tool.png",
+        "Therapist reviewing OTOS app progress.png",
+        "Woman showing OTOS app at community centre.png"
+      ];
+
+      // Defaults (straplines)
+      const DEFAULT_STRAPLINES = [
+        "Low integration. Low disruption. High clarity.",
+        "One tap. One thread. You'll always know they made the next step.",
+        "The failure is not in the care — it is in the space between it.",
+        "One human. Many services. One joined-up pathway.",
+        "OTOS surfaces signals. The partner team makes the decision.",
+        "Out The Other Side.",
+        "20 avoided crisis events. £4,576 each. The maths is simple.",
+        "Nothing changes in how it work.",
+        "Where did they go? OTOS makes sure that question has an answer.",
+        "You refer. You signpost. You discharge. OTOS watches the gap.",
+        "Touchpoints, not records.",
+        "No wrong door.",
+        "The opposite of addiction is connection."
+      ];
+
+      // Defaults (stats)
+      const DEFAULT_STATS = [
+        { label:"Avoided crisis events", value:"20", unit:"", source:"", show:true },
+        { label:"Cost per avoided event", value:"£4,576", unit:"", source:"", show:true },
+        { label:"Pilot duration", value:"12", unit:"weeks", source:"", show:true },
+        { label:"ADHD waiting list (England)", value:"700,000+", unit:"", source:"", show:true },
+        { label:"Addiction + ADHD crossover", value:"25%", unit:"in treatment", source:"", show:true },
+        { label:"NHS ADHD economic cost", value:"£17bn", unit:"avoidable", source:"", show:true }
+      ];
+
+      // State
+      let carouselState = [];   // [{filename,use,alt}]
+      let straplinesState = []; // [{id,text,page,active}]
+      let statsState = [];      // [{id,label,value,unit,source,show}]
+
+      const el = (id) => document.getElementById(id);
+      const uid = () => Math.random().toString(16).slice(2) + Date.now().toString(16);
+
+      // ---------- Carousel ----------
+      function loadCarouselFromLocalStorage(){
+        try{
+          const raw = localStorage.getItem(KEY_CAROUSEL);
+          if(!raw){
+            // initialize from IMAGES unchecked
+            carouselState = IMAGES.map(fn => ({ filename: fn, use: false, alt: "" }));
+            return;
+          }
+          const parsed = JSON.parse(raw);
+          const slides = Array.isArray(parsed?.slides) ? parsed.slides : [];
+          // map by image filename
+          const used = new Map();
+          slides.forEach(s => {
+            const img = String(s?.image || '');
+            const fn = img.startsWith('images/') ? img.slice('images/'.length) : img;
+            if(fn) used.set(fn, s);
+          });
+          carouselState = IMAGES.map(fn => {
+            const s = used.get(fn);
+            return {
+              filename: fn,
+              use: Boolean(s),
+              alt: s?.headline ? String(s.headline) : ""
+            };
+          });
+        }catch{
+          carouselState = IMAGES.map(fn => ({ filename: fn, use: false, alt: "" }));
+        }
+      }
+
+      function saveCarouselToLocalStorage(){
+        const slides = carouselState
+          .filter(i => i.use)
+          .map((i, idx) => ({
+            id: `m${idx + 1}`,
+            aspect: 'landscape',
+            image: `images/${i.filename}`,
+            headline: i.alt || i.filename,
+            subcopy: '',
+            cta: 'Learn more',
+            ctaHref: '/continuity/how-it-works.html',
+            fallbacks: []
+          }));
+        localStorage.setItem(KEY_CAROUSEL, JSON.stringify({ slides }));
+      }
+
+      function renderImageGrid(){
+        const grid = el('imageGrid');
+        grid.innerHTML = '';
+        carouselState.forEach((img, index) => {
+          const card = document.createElement('div');
+          card.className = 'img-card';
+          card.innerHTML = `
+            <img class="thumb" src="images/${encodeURI(img.filename)}" alt="">
+            <div class="img-meta">
+              <div class="filename">${img.filename}</div>
+              <div class="row">
+                <label style="display:flex;align-items:center;gap:0.5rem;">
+                  <input type="checkbox" data-img-use="${index}" ${img.use ? 'checked' : ''}>
+                  Use in carousel
+                </label>
+              </div>
+              <div>
+                <label>Alt / slide label</label>
+                <input type="text" value="${escapeHtml(img.alt)}" data-img-alt="${index}" placeholder="e.g. Keyworker & client">
+              </div>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+        grid.querySelectorAll('[data-img-use]').forEach(cb => {
+          cb.addEventListener('change', (e) => {
+            const idx = Number(e.target.getAttribute('data-img-use'));
+            carouselState[idx].use = e.target.checked;
+            renderPreview();
+          });
+        });
+        grid.querySelectorAll('[data-img-alt]').forEach(inp => {
+          inp.addEventListener('input', (e) => {
+            const idx = Number(e.target.getAttribute('data-img-alt'));
+            carouselState[idx].alt = e.target.value;
+            renderPreview();
+          });
+        });
+      }
+
+      // ---------- Straplines ----------
+      function loadStraplines(){
+        try{
+          const raw = localStorage.getItem(KEY_STRAPLINES);
+          if(!raw){
+            straplinesState = DEFAULT_STRAPLINES.map(t => ({ id: uid(), text: t, page: 'Unassigned', active: false }));
+            return;
+          }
+          const parsed = JSON.parse(raw);
+          if(Array.isArray(parsed)){
+            straplinesState = parsed.map(s => ({
+              id: s.id || uid(),
+              text: String(s.text ?? ''),
+              page: String(s.page ?? 'Unassigned'),
+              active: Boolean(s.active)
+            }));
+          }else{
+            straplinesState = DEFAULT_STRAPLINES.map(t => ({ id: uid(), text: t, page: 'Unassigned', active: false }));
+          }
+        }catch{
+          straplinesState = DEFAULT_STRAPLINES.map(t => ({ id: uid(), text: t, page: 'Unassigned', active: false }));
+        }
+      }
+
+      function saveStraplines(){
+        localStorage.setItem(KEY_STRAPLINES, JSON.stringify(straplinesState));
+      }
+
+      function renderStraplines(){
+        const list = el('straplineList');
+        list.innerHTML = '';
+        straplinesState.forEach((s) => {
+          const row = document.createElement('div');
+          row.className = 'strapline-row';
+          row.innerHTML = `
+            <div>
+              <label>Strapline</label>
+              <input type="text" data-strapline-text="${s.id}" value="${escapeHtml(s.text)}">
+            </div>
+            <div>
+              <label>Assign to page</label>
+              <select data-strapline-page="${s.id}">
+                ${PAGE_OPTIONS.map(p => `<option ${p === s.page ? 'selected' : ''} value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('')}
+              </select>
+            </div>
+            <div class="row" style="justify-content:flex-start;">
+              <label style="display:flex;align-items:center;gap:0.5rem;">
+                <input type="checkbox" data-strapline-active="${s.id}" ${s.active ? 'checked' : ''}>
+                Active
+              </label>
+            </div>
+            <button class="del" type="button" data-strapline-del="${s.id}">Delete</button>
+          `;
+          list.appendChild(row);
+        });
+
+        list.querySelectorAll('[data-strapline-text]').forEach(inp => {
+          inp.addEventListener('input', (e) => {
+            const id = e.target.getAttribute('data-strapline-text');
+            straplinesState.find(x => x.id === id).text = e.target.value;
+            renderPreview();
+          });
+        });
+        list.querySelectorAll('[data-strapline-page]').forEach(sel => {
+          sel.addEventListener('change', (e) => {
+            const id = e.target.getAttribute('data-strapline-page');
+            straplinesState.find(x => x.id === id).page = e.target.value;
+            renderPreview();
+          });
+        });
+        list.querySelectorAll('[data-strapline-active]').forEach(cb => {
+          cb.addEventListener('change', (e) => {
+            const id = e.target.getAttribute('data-strapline-active');
+            straplinesState.find(x => x.id === id).active = e.target.checked;
+            renderPreview();
+          });
+        });
+        list.querySelectorAll('[data-strapline-del]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = e.target.getAttribute('data-strapline-del');
+            straplinesState = straplinesState.filter(x => x.id !== id);
+            renderStraplines();
+            renderPreview();
+          });
+        });
+      }
+
+      // ---------- Stats ----------
+      function loadStats(){
+        try{
+          const raw = localStorage.getItem(KEY_STATS);
+          if(!raw){
+            statsState = DEFAULT_STATS.map(s => ({ id: uid(), ...s }));
+            return;
+          }
+          const parsed = JSON.parse(raw);
+          if(Array.isArray(parsed)){
+            statsState = parsed.map(s => ({
+              id: s.id || uid(),
+              label: String(s.label ?? ''),
+              value: String(s.value ?? ''),
+              unit: String(s.unit ?? ''),
+              source: String(s.source ?? ''),
+              show: Boolean(s.show)
+            }));
+          }else{
+            statsState = DEFAULT_STATS.map(s => ({ id: uid(), ...s }));
+          }
+        }catch{
+          statsState = DEFAULT_STATS.map(s => ({ id: uid(), ...s }));
+        }
+      }
+
+      function saveStats(){
+        localStorage.setItem(KEY_STATS, JSON.stringify(statsState));
+      }
+
+      function renderStats(){
+        const grid = el('statsGrid');
+        grid.innerHTML = '';
+        statsState.forEach((s) => {
+          const card = document.createElement('div');
+          card.className = 'stat-editor';
+          card.innerHTML = `
+            <div class="stat-fields">
+              <div>
+                <label>Value</label>
+                <input type="text" data-stat-value="${s.id}" value="${escapeHtml(s.value)}">
+              </div>
+              <div>
+                <label>Unit</label>
+                <input type="text" data-stat-unit="${s.id}" value="${escapeHtml(s.unit)}">
+              </div>
+              <div class="full">
+                <label>Label</label>
+                <input type="text" data-stat-label="${s.id}" value="${escapeHtml(s.label)}">
+              </div>
+              <div class="full">
+                <label>Source (attribution)</label>
+                <input type="text" data-stat-source="${s.id}" value="${escapeHtml(s.source)}" placeholder="e.g. NHS ADHD Taskforce (2025)">
+              </div>
+            </div>
+            <div class="row" style="justify-content:flex-start;">
+              <label class="toggle">
+                <input type="checkbox" data-stat-show="${s.id}" ${s.show ? 'checked' : ''}>
+                Show on site
+              </label>
+              <button class="del" type="button" data-stat-del="${s.id}">Delete</button>
+            </div>
+            <div class="preview" aria-label="Preview">
+              <p class="value">${escapeHtml(s.value)}${s.unit ? ` <span style="font-family:Inter;font-weight:500;font-size:1rem;color:rgba(15,23,42,0.65);">${escapeHtml(s.unit)}</span>` : ''}</p>
+              <p class="label">${escapeHtml(s.label)}</p>
+              ${s.unit ? `<p class="unit">${escapeHtml(s.unit)}</p>` : `<p class="unit" style="opacity:0">.</p>`}
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+        grid.querySelectorAll('[data-stat-value]').forEach(inp => inp.addEventListener('input', onStatField));
+        grid.querySelectorAll('[data-stat-unit]').forEach(inp => inp.addEventListener('input', onStatField));
+        grid.querySelectorAll('[data-stat-label]').forEach(inp => inp.addEventListener('input', onStatField));
+        grid.querySelectorAll('[data-stat-source]').forEach(inp => inp.addEventListener('input', onStatField));
+        grid.querySelectorAll('[data-stat-show]').forEach(cb => cb.addEventListener('change', onStatField));
+        grid.querySelectorAll('[data-stat-del]').forEach(btn => btn.addEventListener('click', (e) => {
+          const id = e.target.getAttribute('data-stat-del');
+          statsState = statsState.filter(x => x.id !== id);
+          renderStats();
+          renderPreview();
+        }));
+      }
+
+      function onStatField(e){
+        const t = e.target;
+        const id = (t.getAttribute('data-stat-value') || t.getAttribute('data-stat-unit') || t.getAttribute('data-stat-label') || t.getAttribute('data-stat-source') || t.getAttribute('data-stat-show'));
+        const s = statsState.find(x => x.id === id);
+        if(!s) return;
+        if(t.hasAttribute('data-stat-value')) s.value = t.value;
+        if(t.hasAttribute('data-stat-unit')) s.unit = t.value;
+        if(t.hasAttribute('data-stat-label')) s.label = t.value;
+        if(t.hasAttribute('data-stat-source')) s.source = t.value;
+        if(t.hasAttribute('data-stat-show')) s.show = t.checked;
+        renderStats();
+        renderPreview();
+      }
+
+      // ---------- Preview strip ----------
+      function renderPreview(){
+        // slides
+        const slidesEl = el('previewSlides');
+        slidesEl.innerHTML = '';
+        carouselState.filter(i => i.use).forEach(i => {
+          const img = document.createElement('img');
+          img.className = 'mini-thumb';
+          img.src = `images/${encodeURI(i.filename)}`;
+          img.alt = '';
+          slidesEl.appendChild(img);
+        });
+
+        // straplines (active only)
+        const strapEl = el('previewStraplines');
+        strapEl.innerHTML = '';
+        straplinesState.filter(s => s.active).forEach(s => {
+          const chip = document.createElement('span');
+          chip.className = 'chip active';
+          chip.textContent = `${s.page}: ${s.text}`;
+          strapEl.appendChild(chip);
+        });
+
+        // stats (show only)
+        const statsEl = el('previewStats');
+        statsEl.innerHTML = '';
+        statsState.filter(s => s.show).forEach(s => {
+          const card = document.createElement('div');
+          card.className = 'mini-stat';
+          card.innerHTML = `
+            <p class="v">${escapeHtml(s.value)}${s.unit ? ` <span style="font-family:Inter;font-weight:500;font-size:0.95rem;color:rgba(15,23,42,0.65);">${escapeHtml(s.unit)}</span>` : ''}</p>
+            <p class="l">${escapeHtml(s.label)}</p>
+          `;
+          statsEl.appendChild(card);
+        });
+      }
+
+      // ---------- Utils ----------
+      function escapeHtml(s){
+        return String(s)
+          .replaceAll('&','&amp;')
+          .replaceAll('<','&lt;')
+          .replaceAll('>','&gt;')
+          .replaceAll('"','&quot;')
+          .replaceAll("'",'&#039;');
+      }
+
+      // ---------- Wire up ----------
+      el('saveCarouselBtn').addEventListener('click', () => {
+        saveCarouselToLocalStorage();
+        renderPreview();
+        alert('Saved carousel selection to LocalStorage.');
+      });
+      el('reloadCarouselBtn').addEventListener('click', () => {
+        loadCarouselFromLocalStorage();
+        renderImageGrid();
+        renderPreview();
+      });
+
+      el('addStraplineBtn').addEventListener('click', () => {
+        straplinesState.push({ id: uid(), text: "", page: "Unassigned", active: false });
+        renderStraplines();
+        renderPreview();
+      });
+      el('saveStraplinesBtn').addEventListener('click', () => {
+        saveStraplines();
+        renderPreview();
+        alert('Saved straplines to LocalStorage.');
+      });
+
+      el('addStatBtn').addEventListener('click', () => {
+        statsState.push({ id: uid(), label:"", value:"", unit:"", source:"", show:false });
+        renderStats();
+        renderPreview();
+      });
+      el('saveStatsBtn').addEventListener('click', () => {
+        saveStats();
+        renderPreview();
+        alert('Saved stats to LocalStorage.');
+      });
+
+      el('pushAllBtn').addEventListener('click', () => {
+        saveCarouselToLocalStorage();
+        saveStraplines();
+        saveStats();
+        renderPreview();
+        alert('Pushed carousel + straplines + stats to LocalStorage.');
+      });
+
+      // init
+      loadCarouselFromLocalStorage();
+      loadStraplines();
+      loadStats();
+      renderImageGrid();
+      renderStraplines();
+      renderStats();
+      renderPreview();
+    })();
+  </script>
+</body>
+</html>
+
