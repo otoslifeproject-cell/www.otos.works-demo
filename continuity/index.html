@@ -135,6 +135,31 @@ body{
 	color:#555;
 }
 
+/* Homepage breathing room below carousel */
+.welcome-section, .intro-section,
+section:not([class*="hero"]):first-of-type {
+	padding: 3rem 2rem 2.5rem !important;
+	margin-top: 0 !important;
+}
+
+.welcome-section h2, .intro-section h2,
+section:not([class*="hero"]):first-of-type h2 {
+	font-family: 'Playfair Display', serif !important;
+	font-size: clamp(1.6rem, 3vw, 2.2rem) !important;
+	color: #0f172a !important;
+	margin-bottom: 1.25rem !important;
+	letter-spacing: -0.02em !important;
+}
+
+section:not([class*="hero"]):first-of-type p {
+	font-family: Inter, sans-serif !important;
+	font-size: 1rem !important;
+	line-height: 1.75 !important;
+	color: rgba(15,23,42,0.78) !important;
+	max-width: 620px !important;
+	margin: 0 auto 2rem !important;
+}
+
 .next-btn{
 	margin:0 auto;
 	background:#111;
@@ -425,22 +450,20 @@ body{
   <div data-otos-hero-carousel></div>
 </section>
 <!-- NAV -->
-<div class="navbar">
+<nav class="navbar">
 	<div class="nav-left">
 		<img src="../assets/brain.png" class="nav-logo" alt="">
 		<div class="nav-links">
-			<a href="/continuity/index.html">Home</a>
+			<a class="active" href="/continuity/index.html">Home</a>
 			<a href="/continuity/how-it-works.html">How it works</a>
 			<a href="/continuity/guided-demos.html">Guided demos</a>
 			<a href="/continuity/controls.html">Controls</a>
 			<a href="/continuity/reporting.html">Reporting</a>
-			<a href="/continuity/founder-story-v2.html">Founder Journey</a>
+			<a href="/continuity/founder-journey-final.html">Founder Journey</a>
 			<a href="/continuity/references.html">References</a>
-			<a href="hero-overlays/hero-overlays.html">Hero images</a>
-			<a href="work-index.html">All deliverables</a>
 		</div>
 	</div>
-</div>
+</nav>
 
 <!-- PAGE (hidden content until Enter) -->
 <section class="stage">
@@ -455,7 +478,12 @@ body{
 </section>
 
 <!-- FOOTER -->
-<footer class="footer site-footer">© OTOS Digital Ltd. Company registered in England &amp; Wales with Company No. 17084455. Phone <a href="tel:+447466334143">+447466334143</a>. Email <a href="mailto:info@otos.life">info@otos.life</a>.</footer>
+<footer class="site-footer">
+  © OTOS Digital Ltd. Company registered in England 
+  &amp; Wales with Company No. 17084455. 
+  Phone <a href="tel:+447466334143">+447466334143</a>. 
+  Email <a href="mailto:info@otos.life">info@otos.life</a>.
+</footer>
 
 <!-- OVERLAY POP -->
 <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Quote">

@@ -135,10 +135,41 @@
     values.forEach(el => obs.observe(el));
   };
 
+  const initFloatingNav = () => {
+    if (qs('.floating-next')) return;
+
+    const nextBtn = document.querySelector(
+      '.page-nav .next, [class*="next-page"], .bottom-nav .nav-next, #btn-next'
+    );
+    if (!nextBtn) return;
+
+    // Clone as floating version
+    const floating = nextBtn.cloneNode(true);
+    if (floating.id) floating.removeAttribute('id');
+    floating.classList.add('floating-next');
+    floating.setAttribute('data-floating-next', 'true');
+    document.body.appendChild(floating);
+
+    // Ensure the floating button has the simple label requested
+    floating.textContent = 'Next →';
+
+    const footer = document.querySelector('footer, .site-footer');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        floating.style.opacity = entry.isIntersecting ? '0' : '1';
+        floating.style.pointerEvents = entry.isIntersecting ? 'none' : 'auto';
+      });
+    }, { threshold: 0.1 });
+
+    if (footer) observer.observe(footer);
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     initMobileNav();
     initReveals();
     initStatCount();
+    initFloatingNav();
     ensureHeroCarouselOnPage();
   });
 })();

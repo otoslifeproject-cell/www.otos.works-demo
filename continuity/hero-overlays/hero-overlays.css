@@ -382,9 +382,9 @@
 [class*="carousel-section"],
 [class*="hero-carousel"],
 .otos-hero-carousel-shell {
-  height: 480px !important;
-  max-height: 480px !important;
-  min-height: 320px !important;
+  height: 380px !important;
+  max-height: 380px !important;
+  min-height: 0 !important;
   overflow: hidden !important;
 }
 
@@ -402,4 +402,14 @@
 [class*="carousel-slide"],
 .otos-carousel__slide {
   transition: opacity 0.8s ease !important;
+}
+
+@media (max-width: 640px) {
+  .hero-carousel,
+  [class*="carousel-section"],
+  .otos-hero-carousel-shell {
+    height: 240px !important;
+    max-height: 240px !important;
+    min-height: 0 !important;
+  }
 }
