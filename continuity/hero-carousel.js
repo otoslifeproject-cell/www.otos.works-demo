@@ -22,40 +22,30 @@
   function buildSlideMarkup(slide, idx, total) {
     const headline = escapeHtml(slide.headline);
     const sub = escapeHtml(slide.subcopy);
-    const cta = escapeHtml(slide.cta);
-    const ctaHref = escapeHtml(slide.ctaHref || '#');
+    const imgSrc = escapeHtml(slide._imgSrc || slide.image || '');
 
     return `
-      <div class="otos-carousel__slide" data-slide="${idx}" aria-hidden="${idx === 0 ? 'false' : 'true'}">
-        <div class="hero-block ${slide.aspect === 'portrait' ? 'hero-block--portrait' : 'hero-block--landscape'} hero-block--fill" style="background-image: ${slide._bgCss}; background-size: cover; background-position: center center;">
-          <div class="hero-block__overlay">
-            <div class="hero-logo-strip">
-              <img class="hero-logo-strip__brain" src="../assets/brain.png" alt="">
-              <span class="hero-logo-strip__wordmark">OTOS</span>
-            </div>
-            <div></div>
-            <div class="hero-copy">
-              <h2 class="hero-headline">${headline}</h2>
-              <p class="hero-sub">${sub}</p>
-              <a href="${ctaHref}" class="hero-cta">${cta}</a>
-            </div>
-          </div>
+      <div class="carousel-slide" data-hero-slide aria-hidden="${idx === 0 ? 'false' : 'true'}">
+        <img src="${imgSrc}" alt="">
+        <div class="carousel-overlay">
+          <p class="carousel-headline">${headline}</p>
+          <p class="carousel-sub">${sub}</p>
         </div>
       </div>
     `.trim();
   }
 
-  async function resolveSlideBackground(slide) {
+  async function resolveSlideImageSrc(slide) {
     const candidates = [slide.image, ...(slide.fallbacks || [])].filter(Boolean);
     for (const src of candidates) {
       try {
         await preloadImage(src);
-        return `url('${src.replaceAll("'", "\\'")}')`;
+        return src;
       } catch {
         // try next
       }
     }
-    return `linear-gradient(135deg, #2a3544 0%, #0f172a 100%)`;
+    return candidates[0] || '';
   }
 
   async function initHeroCarousel() {
@@ -148,10 +138,10 @@
 
     const slides = loadManagedSlides() || defaultSlides;
 
-    // Resolve backgrounds with fallbacks (prevents blank slides)
+    // Resolve <img> sources with fallbacks (prevents broken/bare slides)
     for (const s of slides) {
       // s.image is relative to /continuity/ when used on index.html
-      s._bgCss = await resolveSlideBackground({
+      s._imgSrc = await resolveSlideImageSrc({
         image: s.image,
         fallbacks: (s.fallbacks || []).map(f => f)
       });
@@ -159,7 +149,7 @@
 
     mount.innerHTML = `
       <div class="otos-carousel" aria-label="OTOS hero carousel">
-        <div class="otos-carousel__track">
+        <div class="carousel-wrapper">
           ${slides.map((s, i) => buildSlideMarkup(s, i, slides.length)).join('')}
         </div>
         <button class="otos-carousel__btn otos-carousel__btn--prev" type="button" aria-label="Previous slide">‹</button>
@@ -172,8 +162,8 @@
       </div>
     `;
 
-    const track = qs('.otos-carousel__track', mount);
-    const slideEls = [...mount.querySelectorAll('.otos-carousel__slide')];
+    const wrapper = qs('.carousel-wrapper', mount);
+    const slideEls = [...mount.querySelectorAll('.carousel-slide')];
     const dotEls = [...mount.querySelectorAll('.otos-carousel__dot')];
     const prevBtn = qs('.otos-carousel__btn--prev', mount);
     const nextBtn = qs('.otos-carousel__btn--next', mount);
@@ -183,8 +173,11 @@
 
     const apply = (newIdx) => {
       idx = (newIdx + slideEls.length) % slideEls.length;
-      track.style.transform = `translateX(${idx * -100}%)`;
-      slideEls.forEach((el, i) => el.setAttribute('aria-hidden', i === idx ? 'false' : 'true'));
+      slideEls.forEach((el, i) => {
+        const active = i === idx;
+        el.classList.toggle('is-active', active);
+        el.setAttribute('aria-hidden', active ? 'false' : 'true');
+      });
       dotEls.forEach((el, i) => el.setAttribute('aria-selected', i === idx ? 'true' : 'false'));
     };
 
@@ -199,8 +192,8 @@
 
     // Touch swipe
     let startX = null;
-    track.addEventListener('touchstart', (e) => { startX = e.touches?.[0]?.clientX ?? null; }, { passive: true });
-    track.addEventListener('touchend', (e) => {
+    wrapper?.addEventListener('touchstart', (e) => { startX = e.touches?.[0]?.clientX ?? null; }, { passive: true });
+    wrapper?.addEventListener('touchend', (e) => {
       if (startX == null) return;
       const endX = e.changedTouches?.[0]?.clientX ?? startX;
       const dx = endX - startX;

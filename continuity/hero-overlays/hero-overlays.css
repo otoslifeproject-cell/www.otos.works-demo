@@ -380,12 +380,13 @@
 /* Carousel sizing + transitions (applies on logged-in carousel sections) */
 .hero-carousel,
 [class*="carousel-section"],
-[class*="hero-carousel"],
+.carousel-wrapper,
 .otos-hero-carousel-shell {
-  height: 380px !important;
-  max-height: 380px !important;
-  min-height: 0 !important;
+  height: 480px !important;
+  max-height: 480px !important;
+  min-height: 320px !important;
   overflow: hidden !important;
+  position: relative !important;
 }
 
 .hero-carousel img,
@@ -398,18 +399,78 @@
   object-position: center !important;
 }
 
-.carousel-slide,
-[class*="carousel-slide"],
-.otos-carousel__slide {
-  transition: opacity 0.8s ease !important;
+.carousel-slide {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: opacity 0.9s ease !important;
+  pointer-events: none !important;
+}
+
+.carousel-slide.is-active {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Carousel slide image fill + crop control */
+.carousel-slide img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center 35% !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+/* Carousel overlay text block */
+.carousel-overlay {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  padding: 2.5rem 3rem !important;
+  background: linear-gradient(
+    to top,
+    rgba(15, 23, 42, 0.85) 0%,
+    rgba(15, 23, 42, 0.45) 55%,
+    transparent 100%
+  ) !important;
+  z-index: 3 !important;
+}
+
+.carousel-headline {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(1.3rem, 2.8vw, 2rem) !important;
+  color: #ffffff !important;
+  line-height: 1.2 !important;
+  margin: 0 0 0.5rem !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4) !important;
+  max-width: 680px !important;
+}
+
+.carousel-sub {
+  font-family: Inter, sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 0.9rem !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  margin: 0 !important;
+  letter-spacing: 0.01em !important;
+  max-width: 560px !important;
 }
 
 @media (max-width: 640px) {
   .hero-carousel,
   [class*="carousel-section"],
+  .carousel-wrapper,
   .otos-hero-carousel-shell {
-    height: 240px !important;
-    max-height: 240px !important;
-    min-height: 0 !important;
+    height: 260px !important;
+    max-height: 260px !important;
   }
 }
