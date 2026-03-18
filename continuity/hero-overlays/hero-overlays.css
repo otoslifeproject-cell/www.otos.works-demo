@@ -421,7 +421,7 @@
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
-  object-position: center 35% !important;
+  object-position: center 50% !important;
   display: block !important;
   position: absolute !important;
   top: 0 !important;
@@ -463,6 +463,32 @@
   margin: 0 !important;
   letter-spacing: 0.01em !important;
   max-width: 560px !important;
+}
+
+/* Carousel dots scaling for many slides */
+.carousel-dots,
+.otos-carousel__dots {
+  display: flex !important;
+  gap: 6px !important;
+  justify-content: center !important;
+}
+
+.carousel-dot,
+.otos-carousel__dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.4) !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.carousel-dot.is-active,
+.otos-carousel__dot[aria-selected="true"] {
+  background: #ffffff !important;
+  width: 18px !important;
 }
 
 @media (max-width: 640px) {

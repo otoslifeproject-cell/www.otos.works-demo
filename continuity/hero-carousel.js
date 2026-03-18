@@ -36,15 +36,8 @@
   }
 
   async function resolveSlideImageSrc(slide) {
+    // For the built-in carousel we trust the filesystem; fallbacks handle manager variants.
     const candidates = [slide.image, ...(slide.fallbacks || [])].filter(Boolean);
-    for (const src of candidates) {
-      try {
-        await preloadImage(src);
-        return src;
-      } catch {
-        // try next
-      }
-    }
     return candidates[0] || '';
   }
 
@@ -55,63 +48,220 @@
     const STORAGE_KEY = 'otosContinuity.carousel.v1.payload';
 
     // Fallback slides: if LocalStorage is empty (fresh/locked session),
-    // use the first 6 real files in continuity/images/.
-    const defaultSlides = [
-      {
-        id: 'fb1',
-        image: 'images/A breakthrough moment in therapy.png',
-        headline: 'One human. Many services. One joined-up pathway.',
-        subcopy: 'OTOS Continuity — built by someone who lived inside the gaps.',
-        cta: 'See how it works',
-        ctaHref: '/continuity/how-it-works.html',
-        aspect: 'landscape'
-      },
-      {
-        id: 'fb2',
-        image: 'images/A corridor of colourful doors.png',
-        headline: 'You refer someone. Then what?',
-        subcopy: 'OTOS Continuity — built by someone who lived inside the gaps.',
-        cta: 'See how it works',
-        ctaHref: '/continuity/how-it-works.html',
-        aspect: 'landscape'
-      },
-      {
-        id: 'fb3',
-        image: 'images/A moment of quiet distress.png',
-        headline: 'The failure is not in the care — it is in the space between it.',
-        subcopy: 'OTOS Continuity — built by someone who lived inside the gaps.',
-        cta: 'See how it works',
-        ctaHref: '/continuity/how-it-works.html',
-        aspect: 'landscape'
-      },
-      {
-        id: 'fb4',
-        image: 'images/A warm farewell at the doorway.png',
-        headline: 'Recovery support for life.',
-        subcopy: 'OTOS Continuity — built by someone who lived inside the gaps.',
-        cta: 'See how it works',
-        ctaHref: '/continuity/how-it-works.html',
-        aspect: 'landscape'
-      },
-      {
-        id: 'fb5',
-        image: 'images/A warm handshake at sunset.png',
-        headline: 'Low integration. Low disruption. High clarity.',
-        subcopy: 'OTOS Continuity — built by someone who lived inside the gaps.',
-        cta: 'See how it works',
-        ctaHref: '/continuity/how-it-works.html',
-        aspect: 'landscape'
-      },
-      {
-        id: 'fb6',
-        image: 'images/Cambridge at dusk from above.png',
-        headline: 'Out The Other Side.',
-        subcopy: 'OTOS Continuity — built by someone who lived inside the gaps.',
-        cta: 'See how it works',
-        ctaHref: '/continuity/how-it-works.html',
-        aspect: 'landscape'
-      }
+    // show every image currently present in continuity/images/ (no limit).
+    const allImageFiles = [
+      'A breakthrough moment in therapy.png',
+      'A corridor of colourful doors.png',
+      'A moment of quiet distress.png',
+      'A warm farewell at the doorway.png',
+      'A warm handshake at sunset.png',
+      'Cambridge at dusk from above.png',
+      'Community conversation in a circle.png',
+      'Consulting with OTOS dashboard in office.png',
+      'Contemplating the morning brew.png',
+      'Contemplative moment in the park.png',
+      'Engaging conversation at NHS Community Hub.png',
+      'Focused on progress in the office.png',
+      'Golden hour in Cambridge.png',
+      'Hesitant arrival at the community centre.png',
+      'Man checking phone outside community centre.png',
+      'Man enjoying sunlight in the park.png',
+      'Meaningful conversation in a cosy café.png',
+      'Morning coffee and a smile.png',
+      'Morning light and morning routine.png',
+      'Morning reflections in a cozy room.png',
+      'NHS A&E waiting room buzz.png',
+      'NHS nurse assists patient with OTOS tool.png',
+      'NHS team meeting in progress.png',
+      'Professional at work with data dashboard.png',
+      'Ripple-1024x546 copy.jpg',
+      'Ripple-1024x546.jpg',
+      'The+Ripple+Effect+of+Nature+Connectedness+diagram (1).webp',
+      'The+Ripple+Effect+of+Nature+Connectedness+diagram.webp',
+      'Therapist reviewing OTOS app progress.png',
+      'Therapist reviewing options on smartphone.png',
+      'Waiting for consultation in the corridor.png',
+      'Woman reviewing NHS data dashboard.png',
+      'Woman showing OTOS app at community centre.png',
+      'hero-7-dean.png',
+      'roadmap final.png',
+      'sun-dashboard-devices.png',
     ];
+
+    const defaultSub =
+      'OTOS Continuity — built by someone who lived inside the gaps.';
+
+    const copyByFile = {
+      'A breakthrough moment in therapy.png': {
+        headline: 'When the right support arrives — everything changes.',
+        subcopy:
+          'The moment diagnosis lands right. OTOS holds the pathway so that moment is never missed.',
+        cta: 'Read Dean\'s Story',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'A corridor of colourful doors.png': {
+        headline: 'World-class services. No shared journey. Until now.',
+        subcopy:
+          'Every door open. Nobody knowing which one you came through last.',
+        cta: 'View System Overview',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'A moment of quiet distress.png': {
+        headline: 'This is where people are lost.',
+        subcopy:
+          'Not in crisis. Not demanding help. Just quietly falling between services. OTOS sees it.',
+        cta: 'See How OTOS Works',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'A warm farewell at the doorway.png': {
+        headline: 'Every good ending is someone\'s new beginning.',
+        subcopy:
+          'OTOS makes sure what happens next is never left to chance.',
+        cta: 'Keyworker View',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'A warm handshake at sunset.png': {
+        headline: 'One human. Many services. One joined-up pathway.',
+        subcopy:
+          'The moment of connection shouldn\'t be the last thing the system sees.',
+        cta: 'View System Overview',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Cambridge at dusk from above.png': {
+        headline: 'The tsunami is coming. Nobody can see it building.',
+        subcopy:
+          'Thousands of adults with undiagnosed ADHD cycling through A&E, housing, probation. OTOS is the early warning.',
+        cta: 'View System Overview',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Community conversation in a circle.png': {
+        headline: 'Community is the continuity.',
+        subcopy:
+          'Co-produced with SUN Network and people with lived experience — because the people who use it helped build it.',
+        cta: 'Keyworker View',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Contemplating the morning brew.png': {
+        headline: 'Care happens in moments. Continuity happens in the days between.',
+        subcopy: 'OTOS quietly fills that space.',
+        cta: 'Start Guided Tour',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Contemplative moment in the park.png': {
+        headline: 'Six years in the system. Three days to change everything.',
+        subcopy:
+          'The correct diagnosis and medication was the key. OTOS makes sure no one waits that long again.',
+        cta: 'Read Dean\'s Story',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Golden hour in Cambridge.png': {
+        headline: 'The silent layer that connects every service.',
+        subcopy:
+          'OTOS syncs CPFT, CGL, CRS, SUN, Primary Care and A&E into one encrypted continuity journey.',
+        cta: 'View System Overview',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'hero-7-dean.png': {
+        headline: 'I am the problem. I built the solution.',
+        subcopy:
+          'Two ICU admissions. Seizures. Probation. Rehab. Cost, carnage and chaos. Undiagnosed ADHD driving it all.',
+        cta: 'Read Dean\'s Story',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Hesitant arrival at the community centre.png': {
+        headline: 'The hardest step is the door. OTOS holds what comes after.',
+        subcopy:
+          'Re-engagement after silence. OTOS turns a missed contact into a safe route back to connection and community.',
+        cta: 'See How OTOS Works',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Man checking phone outside community centre.png': {
+        headline: 'One tap. The whole system knows.',
+        subcopy:
+          'Frontline staff log a touchpoint in seconds. The system does the rest.',
+        cta: 'Start with A&E',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Man enjoying sunlight in the park.png': {
+        headline: 'This is what stability looks like.',
+        subcopy: 'Calm. Present. Connected. OTOS holds the pathway so this moment can last.',
+        cta: 'Read Dean\'s Story',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Meaningful conversation in a cosy café.png': {
+        headline: 'Built for keyworkers. Engineered around real journeys.',
+        subcopy: 'No new system. No extra forms. Just clarity about what happened next.',
+        cta: 'Keyworker View',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Morning coffee and a smile.png': {
+        headline: 'This is what staying connected feels like.',
+        subcopy:
+          'A daily check-in. A small signal. The system quietly noting: still here, still stable, still connected.',
+        cta: 'Start Guided Tour',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Morning light and morning routine.png': {
+        headline: 'Every morning is a data point.',
+        subcopy:
+          'Anonymous. Encrypted. A quiet signal that someone is still on their journey.',
+        cta: 'Start Guided Tour',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Morning reflections in a cozy room.png': {
+        headline: 'The space between services is where people are lost.',
+        subcopy: 'OTOS fills that space. Quietly. Without changing anything you already do.',
+        cta: 'See How OTOS Works',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'NHS A&E waiting room buzz.png': {
+        headline: '463 people waiting. How many will fall through the gap after this?',
+        subcopy:
+          'OTOS gives A&E, CGL and CPFT a shared thread — so discharge is never the end of the story.',
+        cta: 'Start with A&E',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'NHS team meeting in progress.png': {
+        headline: 'World-class services. No shared journey. Until now.',
+        subcopy:
+          'Cambridge has everything it needs. OTOS is the connective tissue that joins it.',
+        cta: 'View System Overview',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Waiting for consultation in the corridor.png': {
+        headline: 'This is where people are lost.',
+        subcopy:
+          'Between appointments. Between services. In the silence after discharge. OTOS sees it.',
+        cta: 'See How OTOS Works',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+      'Woman reviewing NHS data dashboard.png': {
+        headline: 'The tsunami is coming. OTOS is the radar.',
+        subcopy:
+          'Early signals. Pattern detection. A city-wide view with zero clinical risk.',
+        cta: 'View System Overview',
+        ctaHref: '/continuity/how-it-works.html',
+      },
+    };
+
+    const defaultSlides = allImageFiles.map((filename, i) => {
+      const copy = copyByFile[filename] || {
+        headline: 'OTOS Continuity',
+        subcopy: defaultSub,
+        cta: 'See how it works',
+        ctaHref: '/continuity/how-it-works.html',
+      };
+
+      return {
+        id: `fb${i + 1}`,
+        image: `images/${filename}`,
+        headline: copy.headline,
+        subcopy: copy.subcopy,
+        cta: copy.cta,
+        ctaHref: copy.ctaHref,
+        aspect: 'landscape',
+      };
+    });
 
     const loadManagedSlides = () => {
       try {
@@ -138,6 +288,8 @@
 
     const slides = loadManagedSlides() || defaultSlides;
 
+    console.log('Carousel: ' + slides.length + ' slides loaded');
+
     // Resolve <img> sources with fallbacks (prevents broken/bare slides)
     for (const s of slides) {
       // s.image is relative to /continuity/ when used on index.html
@@ -154,9 +306,9 @@
         </div>
         <button class="otos-carousel__btn otos-carousel__btn--prev" type="button" aria-label="Previous slide">‹</button>
         <button class="otos-carousel__btn otos-carousel__btn--next" type="button" aria-label="Next slide">›</button>
-        <div class="otos-carousel__dots" role="tablist" aria-label="Slides">
+        <div class="otos-carousel__dots carousel-dots" role="tablist" aria-label="Slides">
           ${slides
-            .map((_, i) => `<button class="otos-carousel__dot" type="button" role="tab" aria-label="Go to slide ${i + 1}" aria-selected="${i === 0 ? 'true' : 'false'}" data-dot="${i}"></button>`)
+            .map((_, i) => `<button class="otos-carousel__dot carousel-dot" type="button" role="tab" aria-label="Go to slide ${i + 1}" aria-selected="${i === 0 ? 'true' : 'false'}" data-dot="${i}"></button>`)
             .join('')}
         </div>
       </div>
@@ -164,7 +316,7 @@
 
     const wrapper = qs('.carousel-wrapper', mount);
     const slideEls = [...mount.querySelectorAll('.carousel-slide')];
-    const dotEls = [...mount.querySelectorAll('.otos-carousel__dot')];
+    const dotEls = [...mount.querySelectorAll('.carousel-dot')];
     const prevBtn = qs('.otos-carousel__btn--prev', mount);
     const nextBtn = qs('.otos-carousel__btn--next', mount);
 
@@ -178,7 +330,11 @@
         el.classList.toggle('is-active', active);
         el.setAttribute('aria-hidden', active ? 'false' : 'true');
       });
-      dotEls.forEach((el, i) => el.setAttribute('aria-selected', i === idx ? 'true' : 'false'));
+      dotEls.forEach((el, i) => {
+        const active = i === idx;
+        el.classList.toggle('is-active', active);
+        el.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
     };
 
     const kick = () => {
