@@ -341,33 +341,49 @@ h1{
     "
   />
   <div style="position: relative; z-index: 2; padding: 0 2rem;">
-    <p style="
-      font-family: 'Inter', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #ff8a00;
-      margin: 0 0 1rem;
-    ">Guided demos</p>
-    <h1 style="
-      font-family: 'Playfair Display', serif;
-      font-weight: 600;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      color: #ffffff;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      margin: 0 0 1rem;
-    ">Here's what it looks like<br>from your desk.</h1>
-    <p style="
-      font-family: 'Inter', sans-serif;
-      font-size: 1.05rem;
-      color: rgba(255,255,255,0.75);
-      margin: 0;
-      max-width: 52ch;
-      margin-left: auto;
-      margin-right: auto;
-    ">Choose your role to see OTOS from where you actually sit. This is a guided explanation — not a live system.</p>
+    <!-- CHANGE: Restore required hero text overlay (dark glass + exact copy). -->
+    <div style="
+      background: rgba(15,23,42,0.45);
+      backdrop-filter: blur(6px);
+      border-radius: 8px;
+      padding: 2rem 2.5rem;
+      max-width: 640px;
+      margin: 0 auto;
+    ">
+      <!-- CHANGE: Headline (h1, Playfair Display 600, white). -->
+      <h1 style="
+        font-family: 'Playfair Display', serif;
+        font-weight: 600;
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        color: #ffffff;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        margin: 0 0 1rem;
+      ">Here's what it looks like<br>from your desk.</h1>
+
+      <!-- CHANGE: Subhead (Inter 400, #f4f5f7, 1.1rem). -->
+      <p style="
+        font-family: 'Inter', sans-serif;
+        font-weight: 400;
+        font-size: 1.1rem;
+        color: #f4f5f7;
+        margin: 0;
+        line-height: 1.6;
+      ">Choose your role to see OTOS from where you actually sit.</p>
+
+      <!-- CHANGE: Disclaimer pill directly below subhead. -->
+      <span style="
+        background: rgba(94,234,212,0.15);
+        border: 1px solid #5eead4;
+        border-radius: 999px;
+        padding: 0.3rem 1rem;
+        font-family: Inter, sans-serif;
+        font-weight: 500;
+        font-size: 0.8rem;
+        color: #f4f5f7;
+        display: inline-block;
+      ">This is a guided explanation — not a live system.</span>
+    </div>
   </div>
 </section>
 <div class="navbar">

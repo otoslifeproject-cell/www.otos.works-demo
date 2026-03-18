@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ripple Effect — Exported Assets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== Locked OTOS tokens ===== */
+    :root{
+      --otos-orange:#ff8a00;
+      --otos-teal:#5eead4;
+      --otos-navy:#0f172a;
+      --otos-bg:#f4f5f7;
+      --otos-light:#f4f5f7;
+    }
+
+    /* ===== Page base (OTOS palette) ===== */
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background:var(--otos-bg);
+      color:var(--otos-navy);
+      font-family:Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+      padding:2rem;
+    }
+    .wrap{
+      max-width:960px;
+      margin:0 auto;
+    }
+    h1,h2{
+      font-family:"Playfair Display", serif;
+      font-weight:600;
+      letter-spacing:-0.02em;
+      margin:0;
+      color:var(--otos-navy);
+    }
+    h1{ font-size:clamp(1.8rem, 3.2vw, 2.4rem); margin-bottom:0.5rem; }
+    .subtitle{
+      margin:0 0 1.5rem 0;
+      font-family:Inter, sans-serif;
+      font-weight:400;
+      color:rgba(15,23,42,0.65);
+      line-height:1.7;
+      font-size:1rem;
+    }
+
+    /* ===== Instruction block (Carousel Manager style) ===== */
+    .instructions{
+      background:rgba(15,23,42,0.05);
+      border-left:3px solid var(--otos-orange);
+      border-radius:8px;
+      padding:1.5rem 2rem;
+      margin-bottom:2rem;
+    }
+    .instructions h2{
+      font-size:1.4rem;
+      margin:0 0 0.5rem 0;
+    }
+    .instructions p{
+      margin:0;
+      font-family:Inter, sans-serif;
+      font-weight:400;
+      color:rgba(15,23,42,0.65);
+      line-height:1.7;
+    }
+
+    /* ===== Asset cards grid ===== */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:1.25rem;
+      margin-bottom:2rem;
+    }
+    @media (max-width: 820px){
+      .grid{ grid-template-columns:1fr; }
+    }
+    .asset-card{
+      display:block;
+      text-decoration:none;
+      color:inherit;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 8px 32px rgba(15,23,42,0.12);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .asset-card:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 12px 36px rgba(15,23,42,0.14);
+    }
+    .asset-label{
+      font-family:Inter, sans-serif;
+      font-weight:500;
+      color:var(--otos-navy);
+      line-height:1.4;
+      margin:0 0 0.75rem 0;
+    }
+    .pill{
+      display:inline-block;
+      border-radius:999px;
+      padding:0.25rem 0.75rem;
+      font-family:Inter, sans-serif;
+      font-weight:500;
+      font-size:0.75rem;
+      margin-right:0.5rem;
+      margin-bottom:0.5rem;
+    }
+    .pill--format{
+      background: rgba(15,23,42,0.06);
+      color: rgba(15,23,42,0.8);
+      border:1px solid rgba(15,23,42,0.10);
+    }
+    .pill--conservative{
+      background: rgba(94,234,212,0.22);
+      color: var(--otos-navy);
+      border:1px solid var(--otos-teal);
+    }
+    .pill--upper{
+      background: rgba(255,138,0,0.12);
+      color: var(--otos-orange);
+      border:1px solid var(--otos-orange);
+    }
+    .hint{
+      margin:0;
+      font-family:Inter, sans-serif;
+      font-weight:400;
+      font-size:0.9rem;
+      color:rgba(15,23,42,0.65);
+      line-height:1.6;
+    }
+
+    /* ===== Back link bottom bar (match bottom-nav dark bar) ===== */
+    .backbar{
+      width:100%;
+      background:var(--otos-navy);
+      padding:1rem 2rem;
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      border-radius:12px;
+    }
+    .backbar a{
+      font-family:Inter, sans-serif;
+      font-weight:500;
+      color:var(--otos-light);
+      text-decoration:none;
+      transition: color 0.15s;
+    }
+    .backbar a:hover{ color:var(--otos-orange); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- CHANGE: Page title + subtitle -->
+    <h1>Ripple Effect — Exported Assets</h1>
+    <p class="subtitle">Static SVG exports ready for presentations, reports, and decks.</p>
+
+    <!-- CHANGE: Instruction block (Carousel Manager style) -->
+    <section class="instructions" aria-label="Instructions">
+      <h2>Ripple Effect — Exported Assets</h2>
+      <p>
+        These are static SVG exports of the OTOS Ripple Cost Diagram.<br>
+        Use them in decks, proposals, and printed materials.<br>
+        Right-click any SVG → Open in new tab → Save as.
+      </p>
+    </section>
+
+    <!-- CHANGE: Asset cards (2×2 grid) -->
+    <section class="grid" aria-label="Exports">
+      <a class="asset-card" href="./ripple-premium-conservative-1200x1200-static.svg" target="_blank" rel="noreferrer">
+        <div class="pill pill--conservative">Conservative</div>
+        <div class="pill pill--format">Square</div>
+        <p class="asset-label">Conservative estimate · 1200×1200 (square)</p>
+        <p class="hint">Opens the SVG in a new tab.</p>
+      </a>
+
+      <a class="asset-card" href="./ripple-premium-upper-1200x1200-static.svg" target="_blank" rel="noreferrer">
+        <div class="pill pill--upper">Upper</div>
+        <div class="pill pill--format">Square</div>
+        <p class="asset-label">Upper estimate · 1200×1200 (square)</p>
+        <p class="hint">Opens the SVG in a new tab.</p>
+      </a>
+
+      <a class="asset-card" href="./ripple-premium-conservative-1200x675-static.svg" target="_blank" rel="noreferrer">
+        <div class="pill pill--conservative">Conservative</div>
+        <div class="pill pill--format">16:9 Presentation</div>
+        <p class="asset-label">Conservative estimate · 1200×675 (16:9)</p>
+        <p class="hint">Widescreen variant for decks.</p>
+      </a>
+
+      <a class="asset-card" href="./ripple-premium-upper-1200x675-static.svg" target="_blank" rel="noreferrer">
+        <div class="pill pill--upper">Upper</div>
+        <div class="pill pill--format">16:9 Presentation</div>
+        <p class="asset-label">Upper estimate · 1200×675 (16:9)</p>
+        <p class="hint">Widescreen variant for decks.</p>
+      </a>
+    </section>
+
+    <!-- CHANGE: Back link bottom bar -->
+    <nav class="backbar" aria-label="Back">
+      <a href="../work-index.html">← Back to hub</a>
+    </nav>
+  </div>
+</body>
+</html>
+

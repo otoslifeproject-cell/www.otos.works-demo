@@ -42,10 +42,11 @@ h1, h2, h3, h4 {
 
 .card, .panel, .callout, .stat-panel, .section-shell {
   border-radius: var(--otos-radius);
-  border: 1px solid rgba(255,255,255,0.55);
-  background: linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.58) 100%);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  /* Glassmorphic depth (locked tokens) */
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--otos-shadow);
 }
 
@@ -73,8 +74,11 @@ h1, h2, h3, h4 {
   font-size: clamp(1.25rem, 2.2vw, 1.75rem);
   line-height: 1.3;
   padding-left: 1rem;
-  border-left: 4px solid var(--otos-orange);
+  /* Issue 1: visible strapline text + locked accent line */
+  border-left: 3px solid var(--otos-orange);
   color: var(--otos-navy);
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
 }
 
 .key-number {
@@ -114,12 +118,129 @@ h1, h2, h3, h4 {
   padding: 2rem 1.5rem;
   text-align: center;
   font-size: 0.85rem;
-  color: rgba(15,23,42,0.55);
-  border-top: 1px solid rgba(15,23,42,0.08);
+  /* Locked footer tokens (dark background + light text) */
+  background: var(--otos-navy);
+  color: var(--otos-bg);
+  font-weight: 400;
+  border-top: 1px solid rgba(255,255,255,0.12);
 }
 
 .welcome-section, .portal-intro, .page-intro {
   font-family: inherit !important;
+}
+
+/* Issue 2 (CSS consistency check) — page-specific overrides via shared classes */
+
+/* Quote block: formal blockquote styling */
+.quote-strip {
+  background: transparent !important;
+  border: none !important;
+  border-left: 3px solid var(--otos-orange) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 0 0 1rem !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.quote-strip .quote-line {
+  /* Allow the attribution to sit below (quote-source becomes block) */
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  font-style: italic;
+  color: var(--otos-navy) !important;
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.35;
+  font-family: "Playfair Display", serif;
+}
+
+.quote-strip .quote-source {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-variant-caps: small-caps;
+  color: rgba(15, 23, 42, 0.65);
+}
+
+/* Step panels/cards: glassmorphic depth + locked borders */
+.panel,
+.step {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.panel {
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.step {
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: var(--otos-shadow);
+}
+
+/* Step number circles: teal accent + dark navy base */
+.step-num {
+  background: var(--otos-navy);
+  color: var(--otos-teal);
+  border: 1px solid rgba(94, 234, 212, 0.35);
+  box-shadow: var(--otos-shadow);
+  font-weight: 600;
+}
+
+/* Bottom tag row pills */
+.pill {
+  background: var(--otos-teal) !important;
+  color: var(--otos-navy) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0.3rem 0.9rem !important;
+  border-radius: 999px !important;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+/* CTA row (← Next: Guided demos →) */
+.bottom-nav {
+  background: var(--otos-navy) !important;
+  border-top: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 1rem !important;
+}
+
+.bottom-nav .nav-btn {
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  color: var(--otos-bg) !important;
+  font-weight: 500 !important;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.bottom-nav .nav-btn:hover {
+  color: var(--otos-orange) !important;
+  background: rgba(255, 138, 0, 0.12) !important;
+  border-color: rgba(255, 138, 0, 0.35) !important;
+}
+
+.bottom-nav .nav-next {
+  color: var(--otos-bg) !important;
+  font-weight: 500 !important;
+}
+
+/* Footer links in dark footer */
+.site-footer a {
+  color: var(--otos-bg);
+  text-decoration: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

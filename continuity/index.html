@@ -193,39 +193,46 @@ body{
 	justify-content:center;
 	align-items:center;
 	padding:28px;
-	background:rgba(0,0,0,0.22);
-	backdrop-filter:blur(10px);
+	background:rgba(15,23,42,0.92); /* CHANGE: dark premium overlay */
+	backdrop-filter:blur(8px); /* CHANGE: match requested blur */
 	z-index:50;
 }
 
 .pop{
-	width:min(900px, 100%);
-	background:rgba(255,255,255,0.72);
-	backdrop-filter:blur(14px);
-	padding:clamp(22px, 4.5vh, 60px);
-	border-radius:20px;
-	box-shadow:
-		0 25px 60px rgba(0,0,0,0.15),
-		0 3px 10px rgba(0,0,0,0.08);
+	width:100%; /* CHANGE: allow full width with max-width cap */
+	max-width:680px; /* CHANGE: locked modal card width */
+	background:rgba(15,23,42,0.95); /* CHANGE: dark modal card background */
+	backdrop-filter:none; /* CHANGE: avoid light/glass tint on card */
+	-webkit-backdrop-filter:none; /* CHANGE: Safari parity */
+	border:1px solid rgba(255,255,255,0.12); /* CHANGE: locked border */
+	border-radius:12px; /* CHANGE: locked radius */
+	box-shadow:0 8px 48px rgba(0,0,0,0.4); /* CHANGE: locked premium shadow */
+	padding:2.5rem 3rem; /* CHANGE: locked padding */
 	position:relative;
 	transform-origin:center;
 }
 
 .pop-quote{
-	font-family:"Playfair Display", serif;
-	font-size:clamp(18px, 2.6vw, 32px);
-	line-height:1.45;
-	margin:0;
-	text-align:center;
+	font-family:"Playfair Display", serif; /* CHANGE: locked font */
+	font-style:italic; /* CHANGE: italic quote */
+	font-size:1.2rem; /* CHANGE: locked quote size */
+	line-height:1.7; /* CHANGE: locked line-height */
+	color:#f4f5f7; /* CHANGE: locked light text */
+	border-left:3px solid #ff8a00; /* CHANGE: locked orange accent */
+	padding-left:1.25rem; /* CHANGE: locked padding */
+	margin:0 0 1.5rem; /* CHANGE: locked bottom spacing */
+	text-align:left; /* CHANGE: support border-left layout */
 }
 
 .pop-source{
 	margin-top:clamp(12px, 2.4vh, 24px);
-	font-size:12px;
+	font-family:Inter, sans-serif; /* CHANGE: locked attribution family */
+	font-weight:400; /* CHANGE: locked attribution weight */
+	font-size:0.8rem; /* CHANGE: locked attribution size */
 	letter-spacing:0.08em;
 	text-transform:uppercase;
-	color:#777;
-	margin-bottom:0;
+	color:#5eead4; /* CHANGE: locked teal attribution color */
+	margin-bottom:0; /* kept */
 	text-align:center;
 }
 
@@ -234,17 +241,19 @@ body{
 	display:inline-flex;
 	align-items:center;
 	justify-content:center;
-	padding:12px 18px;
+	padding:0.6rem 2rem; /* CHANGE: locked button padding */
 	border-radius:999px;
-	background:#111;
-	color:#fff;
+	background:#ff8a00; /* CHANGE: locked orange button */
+	color:#0f172a; /* CHANGE: locked navy button text */
+	font-family:Inter, sans-serif; /* CHANGE: locked button font family */
+	font-weight:600; /* CHANGE: locked button weight */
 	border:none;
 	cursor:pointer;
-	font-weight:600;
 	box-shadow:0 12px 28px rgba(0,0,0,0.18);
 	transition:.25s;
 }
 .pop-enter:hover{
+	background:#e07a00; /* CHANGE: locked hover background */
 	transform:translateY(-1px);
 	box-shadow:0 18px 36px rgba(0,0,0,0.22);
 }
@@ -254,7 +263,7 @@ body{
 	content:"";
 	position:absolute;
 	inset:0;
-	border-radius:20px;
+	border-radius:12px; /* CHANGE: keep pixel layer aligned with new card radius */
 	pointer-events:none;
 	opacity:0;
 	background:

@@ -83,13 +83,14 @@
 		align-items:center;
 		gap:10px;
 
-		border:1px solid var(--stroke2);
-		background:rgba(255,255,255,0.78);
-		backdrop-filter: blur(14px);
-		-webkit-backdrop-filter: blur(14px);
+		/* CHANGE (ISSUE 4): label chip treatment (SUN Network / Demo org) */
+		border:1px solid #ff8a00;
+		background:rgba(255,138,0,0.12);
+		backdrop-filter:none;
+		-webkit-backdrop-filter:none;
 		border-radius: 999px;
-		padding: 8px 10px;
-		box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+		padding:0.2rem 0.75rem;
+		box-shadow:none;
 	}
 
 	.orgLogo{
@@ -108,13 +109,18 @@
 		line-height:1.05;
 	}
 	.orgText .t{
-		font-size:12px;
-		font-weight:700;
-		color:#111;
+		/* CHANGE (ISSUE 4): Inter 500 orange */
+		font-family:Inter, sans-serif;
+		font-size:0.75rem;
+		font-weight:500;
+		color:#ff8a00;
 	}
 	.orgText .s{
-		font-size:11px;
-		color:#666;
+		/* CHANGE (ISSUE 4): Inter 500 orange */
+		font-family:Inter, sans-serif;
+		font-size:0.75rem;
+		font-weight:500;
+		color:#ff8a00;
 	}
 
 	.page{
@@ -154,11 +160,53 @@
 	}
 
 	.sub{
-		margin:0 auto;
-		max-width:1120px;
-		font-size:clamp(14px, 1.5vw, 17px);
-		line-height:1.6;
-		color:var(--muted);
+		/* CHANGE (ISSUE 1): lead paragraph style */
+		margin:0 auto 2rem;
+		max-width:680px;
+		font-family:Inter, sans-serif;
+		font-weight:500;
+		font-size:1.1rem;
+		line-height:1.7;
+		color:#0f172a;
+	}
+
+	/* CHANGE (ISSUE 1): section-hero strapline (top hero block) */
+	.hero-lead{
+		margin:0 auto 2rem !important;
+		max-width:680px !important;
+		font-family:Inter, sans-serif !important;
+		font-weight:500 !important;
+		font-size:1.1rem !important;
+		line-height:1.7 !important;
+		color:#0f172a !important;
+	}
+
+	/* CHANGE (ISSUE 2): killer stat callout */
+	.page .hero .strapline{
+		font-family:"Playfair Display", serif;
+		font-weight:600;
+		font-size:1.4rem;
+		color:#ff8a00;
+		border-left:3px solid #ff8a00;
+		padding-left:1.25rem;
+		margin:2rem 0;
+		line-height:1.7;
+	}
+
+	/* CHANGE (ISSUE 3): teal disclaimer pill badges */
+	.disclaimer-pill{
+		background:rgba(94,234,212,0.15);
+		border:1px solid #5eead4;
+		border-radius:8px;
+		padding:0.5rem 1rem;
+		font-family:Inter, sans-serif;
+		font-weight:400;
+		font-style:italic;
+		font-size:0.85rem;
+		color:#0f172a;
+		display:block;
+		margin:1rem 0 !important; /* override .note{margin-top:auto} */
+		line-height:1.7;
 	}
 
 	.panel{
@@ -205,13 +253,14 @@
 		display:inline-flex;
 		align-items:center;
 		gap:8px;
-		padding: 8px 10px;
+		/* CHANGE (ISSUE 4): label chip treatment */
+		padding:0.2rem 0.75rem;
 		border-radius: 999px;
-		border:1px solid rgba(255,138,0,0.28);
-		background: rgba(255,138,0,0.10);
-		color:#6a3c00;
-		font-weight:700;
-		font-size: 12px;
+		border:1px solid #ff8a00;
+		background: rgba(255,138,0,0.12);
+		color:#ff8a00;
+		font-weight:500;
+		font-size: 0.75rem;
 		white-space: nowrap;
 	}
 	.dot{
@@ -228,10 +277,15 @@
 	}
 
 	.dash{
-		border-radius:18px;
-		background:rgba(0,0,0,0.03);
-		border:1px solid var(--stroke);
-		padding:clamp(12px, 1.8vh, 16px);
+		/* CHANGE (ISSUE 4): glassmorphic dashboard card treatment */
+		border-radius:12px;
+		background:rgba(255,255,255,0.6);
+		border:1px solid rgba(255,255,255,0.15);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		box-shadow: 0 8px 32px rgba(15,23,42,0.12);
+		padding:1.5rem;
+		margin-bottom:2rem;
 		display:flex;
 		flex-direction:column;
 		gap:10px;
@@ -255,12 +309,15 @@
 	}
 
 	.smallHint{
-		font-size: 12px;
-		color:#666;
-		border: 1px solid var(--stroke);
-		background: rgba(255,255,255,0.70);
+		/* CHANGE (ISSUE 4): label chip treatment */
+		font-family:Inter, sans-serif;
+		font-weight:500;
+		font-size:0.75rem;
+		color:#ff8a00;
+		border:1px solid #ff8a00;
+		background: rgba(255,138,0,0.12);
 		border-radius: 999px;
-		padding: 6px 10px;
+		padding:0.2rem 0.75rem;
 		white-space: nowrap;
 	}
 
@@ -279,18 +336,22 @@
 	}
 
 	.tile .label{
-		font-size:12px;
-		color:#777;
+		/* CHANGE (ISSUE 4): KPI label typography */
+		font-family:Inter, sans-serif;
+		font-weight:400;
+		font-size:0.85rem;
+		color:#0f172a;
 		margin:0 0 6px 0;
-		letter-spacing:0.08em;
-		text-transform:uppercase;
+		letter-spacing:0;
+		text-transform:none;
 	}
 
 	.tile .val{
 		margin:0;
-		font-size:18px;
-		font-weight:700;
-		color:#111;
+		font-family:"Playfair Display", serif;
+		font-size:1.5rem;
+		font-weight:600;
+		color:#0f172a;
 	}
 
 	.note{
@@ -332,20 +393,41 @@
 		border-collapse: collapse;
 		font-size: 13px;
 	}
-	th, td{
-		padding: 10px 8px;
-		border-bottom: 1px solid rgba(0,0,0,0.06);
+	/* CHANGE (ISSUE 5): drift items table styling */
+	.tableBox table{
+		width:100%;
+		border-collapse: collapse;
+	}
+	.tableBox th, .tableBox td{
+		padding:0.6rem 1rem; /* locked */
+		border-bottom: 1px solid rgba(15,23,42,0.08); /* locked */
 		vertical-align: top;
 	}
-	th{
-		text-align:left;
-		color:#666;
-		font-size: 12px;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
+	.tableBox thead th{
+		background:#0f172a;
+		color:#f4f5f7;
+		font-family:Inter, sans-serif;
+		font-weight:500;
+		font-size:0.8rem;
+		text-transform:none;
+		letter-spacing:0;
 	}
-	td{
-		color:#111;
+	.tableBox tbody tr:nth-child(odd) td{
+		background: rgba(255,255,255,0.4);
+	}
+	.tableBox tbody tr:nth-child(even) td{
+		background: transparent;
+	}
+	.tableBox td{ color:#0f172a; }
+	.tableBox td.status-open{
+		color:#ff8a00;
+		font-family:Inter, sans-serif;
+		font-weight:500;
+	}
+	.tableBox td.status-review{
+		color:#5eead4;
+		font-family:Inter, sans-serif;
+		font-weight:500;
 	}
 	.mono{
 		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -354,18 +436,22 @@
 	}
 
 	.strip{
-		margin-top:clamp(10px, 1.6vh, 12px);
-		padding:12px 16px;
-		border-radius:16px;
-		background:var(--glass);
-		backdrop-filter:blur(14px);
-		-webkit-backdrop-filter:blur(14px);
-		border:1px solid var(--stroke);
-		box-shadow:0 10px 28px rgba(0,0,0,0.06);
+		/* CHANGE (ISSUE 6): bottom tag pill badge treatment */
+		margin:1.5rem auto 0;
+		padding:0.3rem 0.9rem;
+		border-radius:999px;
+		background:#5eead4;
+		color:#0f172a;
+		border:none;
+		box-shadow:none;
+		backdrop-filter:none;
+		-webkit-backdrop-filter:none;
 		text-align:center;
-		color:#555;
-		font-size:clamp(12.5px, 1.1vw, 13.5px);
+		font-family:Inter, sans-serif;
+		font-weight:500;
+		font-size:0.85rem;
 		line-height:1.35;
+		display:block;
 	}
 
 	/* BOTTOM NAV */
@@ -501,7 +587,7 @@
       letter-spacing: -0.02em;
       margin: 0 0 1rem;
     ">Where are people dropping off —<br>and why?</h1>
-    <p style="
+    <p class="hero-lead" style="
       font-family: 'Inter', sans-serif;
       font-size: 1.05rem;
       color: rgba(255,255,255,0.75);
@@ -557,12 +643,8 @@
       margin: 0 auto;
     "
   />
-  <p style="
-    font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
-    color: rgba(15,23,42,0.38);
-    margin: 1.5rem auto 0;
-  ">Illustrative fixture — not live data. Partner views are configured during onboarding.</p>
+  <!-- CHANGE (ISSUE 3): teal disclaimer pill badge -->
+  <p class="disclaimer-pill">Illustrative fixture — not live data. Partner views are configured during onboarding.</p>
 </section>
 	<div class="navbar">
 		<div class="nav-left">
@@ -646,7 +728,8 @@
 						</svg>
 					</div>
 
-					<p class="note">
+					<!-- CHANGE (ISSUE 3): second disclaimer pill badge -->
+					<p class="note disclaimer-pill">
 						This is a demo fixture. In the pilot, the exact KPI set and reporting language is agreed with delivery partners and kept governance-safe.
 					</p>
 				</div>
@@ -684,19 +767,19 @@
 									<td class="mono">JRN-9F3A</td>
 									<td>Missed contact threshold</td>
 									<td>2d</td>
-									<td>Open</td>
+									<td class="status-open">Open</td>
 								</tr>
 								<tr>
 									<td class="mono">JRN-1B7C</td>
 									<td>Drop-off after signpost</td>
 									<td>4d</td>
-									<td>Open</td>
+									<td class="status-open">Open</td>
 								</tr>
 								<tr>
 									<td class="mono">JRN-6D20</td>
 									<td>Repeated backtrack / re-entry flag</td>
 									<td>1d</td>
-									<td>In review</td>
+									<td class="status-review">In review</td>
 								</tr>
 							</tbody>
 						</table>
