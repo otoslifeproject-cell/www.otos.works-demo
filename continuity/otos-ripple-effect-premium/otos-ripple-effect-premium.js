@@ -4,6 +4,21 @@
   const svgTarget = document.getElementById('ripple-svg-target');
   if (!svgTarget) return;
 
+  const introLayer = document.getElementById('ripple-campaign-intro');
+  let campaignIntroHoldTimer = null;
+
+  function clearCampaignIntro() {
+    if (campaignIntroHoldTimer != null) {
+      clearTimeout(campaignIntroHoldTimer);
+      campaignIntroHoldTimer = null;
+    }
+    if (introLayer) {
+      introLayer.innerHTML = '';
+      introLayer.classList.remove('is-hold');
+      introLayer.setAttribute('aria-hidden', 'true');
+    }
+  }
+
   function getBuildRippleSvgString() {
     const api = window.OTSRippleSvgExport;
     return api && typeof api.buildRippleSvgString === 'function' ? api.buildRippleSvgString : null;
@@ -209,6 +224,87 @@
       .replaceAll("'", '&apos;');
   }
 
+  /** Dramatic 7–8s campaign layer: only invoked from ▶ Play intro (diagram unchanged). */
+  function startCampaignIntro() {
+    if (!introLayer) return;
+    if (campaignIntroHoldTimer != null) {
+      clearTimeout(campaignIntroHoldTimer);
+      campaignIntroHoldTimer = null;
+    }
+    introLayer.classList.remove('is-hold');
+    introLayer.innerHTML = '';
+
+    const api = window.OTSRippleSvgExport;
+    const focalFn = api && typeof api.getCampaignIntroFocals === 'function' ? api.getCampaignIntroFocals : null;
+    const W = 1200;
+    const H = 1200;
+    let focals;
+    if (focalFn) {
+      focals = focalFn(W, H);
+    } else {
+      const ex = W / 2;
+      const ey = H / 2 + H * 0.032;
+      focals = [
+        { x: ex - W * 0.11, y: ey - H * 0.065, label: 'REFERRAL' },
+        { x: ex, y: ey, label: 'DISCHARGE' },
+        { x: ex + W * 0.105, y: ey + H * 0.055, label: 'CRISIS POINT' },
+      ];
+    }
+
+    const baseDelays = [0, 2.5, 5];
+    const ringRadii = [48, 96, 144, 192, 240];
+    let body = '';
+    focals.forEach((fp, di) => {
+      const bd = baseDelays[di];
+      const fx = fp.x;
+      const fy = fp.y;
+      const lab = escapeHtml(String(fp.label || '').toUpperCase());
+      const flashD = bd + 0.35;
+
+      body +=
+        `<g transform="translate(${fx},${fy})">` +
+        `<g class="intro-drop-fall" style="animation: rippleIntro_dropFall 0.35s ease-in forwards; animation-delay: ${bd}s;">` +
+        `<ellipse cx="0" cy="0" rx="5" ry="6.5" fill="#ffffff"/>` +
+        `</g></g>`;
+
+      body +=
+        `<g transform="translate(${fx},${fy})">` +
+        `<circle r="46" fill="url(#introFlashRadial)" class="intro-flash" style="animation: rippleIntro_flash 0.3s ease-out forwards; animation-delay: ${flashD}s"/>` +
+        `</g>`;
+
+      ringRadii.forEach((r, ri) => {
+        const rd = flashD + ri * 0.3;
+        body +=
+          `<g transform="translate(${fx},${fy})">` +
+          `<circle r="${r}" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="1.35" class="intro-impact-ring" vector-effect="non-scaling-stroke" style="animation: rippleIntro_ringExpand 2.2s ease-out forwards; animation-delay: ${rd}s"/>` +
+          `</g>`;
+      });
+
+      body +=
+        `<text class="ripple-intro-label" x="${fx}" y="${fy + 26}" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="600" font-family="Inter, ui-sans-serif, system-ui, sans-serif" ` +
+        `style="letter-spacing:2.5px;opacity:0;text-transform:uppercase;animation: rippleIntro_labelIn 0.55s ease-out forwards;animation-delay:${flashD}s">${lab}</text>`;
+    });
+
+    introLayer.innerHTML =
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" preserveAspectRatio="xMidYMid meet" class="ripple-campaign-intro-svg" aria-hidden="true">` +
+      `<defs>` +
+      `<radialGradient id="introFlashRadial" cx="50%" cy="50%" r="50%">` +
+      `<stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>` +
+      `<stop offset="50%" stop-color="#ffffff" stop-opacity="0.3"/>` +
+      `<stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>` +
+      `</radialGradient>` +
+      `</defs>` +
+      body +
+      `</svg>`;
+    introLayer.setAttribute('aria-hidden', 'false');
+
+    campaignIntroHoldTimer = setTimeout(() => {
+      campaignIntroHoldTimer = null;
+      introLayer.classList.add('is-hold');
+      introLayer.setAttribute('aria-hidden', 'true');
+    }, 7500);
+  }
+
   let currentView = 'conservative';
   let currentMode = 'animated';
   let lockedRingIndex = null;
@@ -255,6 +351,7 @@
   }
 
   function renderSvg() {
+    clearCampaignIntro();
     const buildFn = getBuildRippleSvgString();
     if (!buildFn) {
       svgTarget.innerHTML = '<div class="ripple-error" style="padding:2rem;color:rgba(255,255,255,0.9);font-size:1rem;">Diagram script not loaded. Check that <code>rippleSvgExport.js</code> is available.</div>';
@@ -342,6 +439,9 @@
         svgTarget.innerHTML = '';
         requestAnimationFrame(() => {
           renderSvg();
+          requestAnimationFrame(() => {
+            startCampaignIntro();
+          });
         });
       });
     }

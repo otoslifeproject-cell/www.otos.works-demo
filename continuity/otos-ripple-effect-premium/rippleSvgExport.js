@@ -212,6 +212,16 @@ function pathTopArc(ex, ey, rx, ry) {
   return `M ${ex - rx} ${ey} A ${rx} ${ry} 0 1 1 ${ex + rx} ${ey}`;
 }
 
+/** Three narrative impact points for the campaign intro overlay (same 1200×1200 space as the diagram). */
+function getCampaignIntroFocals(w, h) {
+  const { ex, ey } = getOvalRipple(0, w, h);
+  return [
+    { x: ex - w * 0.11, y: ey - h * 0.065, label: 'REFERRAL' },
+    { x: ex, y: ey, label: 'DISCHARGE' },
+    { x: ex + w * 0.105, y: ey + h * 0.055, label: 'CRISIS POINT' },
+  ];
+}
+
 function buildRippleSvgString({
   width,
   height,
@@ -660,6 +670,7 @@ if (typeof window !== 'undefined') {
     exportRippleSvg,
     exportRippleSvg16x9,
     buildRippleSvgString,
+    getCampaignIntroFocals,
   };
 }
 
@@ -673,6 +684,7 @@ try {
       exportRippleSvg,
       exportRippleSvg16x9,
       buildRippleSvgString,
+      getCampaignIntroFocals,
     };
   }
 } catch (_) {

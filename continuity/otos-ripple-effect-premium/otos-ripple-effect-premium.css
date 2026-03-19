@@ -129,6 +129,80 @@ html, body{
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
+.ripple-svg-inner{
+  position: relative;
+  width: 100%;
+}
+
+/* Campaign intro: sits above diagram; pointer-events none so rings stay clickable */
+.ripple-campaign-intro{
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.ripple-campaign-intro svg{
+  width: 100%;
+  height: auto;
+  display: block;
+  vertical-align: top;
+}
+
+/* Play-intro-only animations (namespaced) */
+@keyframes rippleIntro_dropFall {
+  0% { transform: translateY(-30px); opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+
+@keyframes rippleIntro_flash {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes rippleIntro_ringExpand {
+  0% { transform: scale(0); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+@keyframes rippleIntro_labelIn {
+  from { opacity: 0; }
+  to { opacity: 0.7; }
+}
+
+.ripple-campaign-intro .intro-drop-fall{
+  transform-box: fill-box;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.ripple-campaign-intro .intro-flash{
+  transform-box: fill-box;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.ripple-campaign-intro .intro-impact-ring{
+  transform-box: fill-box;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+/* After 7.5s hold: rings off, labels at 0.5 (applied via JS) */
+.ripple-campaign-intro.is-hold .intro-impact-ring,
+.ripple-campaign-intro.is-hold .intro-flash,
+.ripple-campaign-intro.is-hold .intro-drop-fall{
+  animation: none !important;
+  opacity: 0 !important;
+}
+
+.ripple-campaign-intro.is-hold .ripple-intro-label{
+  animation: none !important;
+  opacity: 0.5 !important;
+}
+
 .ripple-svg{
   width: 100%;
   height: auto;
