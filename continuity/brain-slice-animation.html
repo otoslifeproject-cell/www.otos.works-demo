@@ -24,6 +24,7 @@
       --dur-retract: 700ms;
       --dur-logo: 400ms;
       --dur-start-hold: 800ms;
+      --slab-thickness: 56px; /* steak-like thickness */
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -83,7 +84,7 @@
       perspective: 800px;
     }
 
-    /* Brain container: 3D transform, slice thickness via ::after */
+    /* Brain container: 3D transform (no vertical spin) */
     .brain-wrapper {
       position: absolute;
       left: 50%;
@@ -97,18 +98,111 @@
       transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
     }
 
-    .brain-slice {
-      width: 100%;
-      height: 100%;
-      transform-origin: center;
+    /* Real 3D slab: front/back carry the brain form, cut face reveals thickness */
+    .brain-slab {
+      position: absolute;
+      inset: 0;
       transform-style: preserve-3d;
     }
 
-    .brain-slice img {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: contain;
+    .brain-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 0;
+      background-image: url("../assets/brain.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      backface-visibility: hidden;
+      filter: saturate(1.05) contrast(1.02);
+      opacity: 1;
+    }
+
+    .brain-face--front {
+      transform: translateZ(calc(var(--slab-thickness) / 2));
+    }
+
+    .brain-face--back {
+      transform: rotateY(180deg) translateZ(calc(var(--slab-thickness) / 2));
+      opacity: 0.92;
+    }
+
+    .brain-cutface {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transform-origin: center;
+      /* Counter-rotate so when wrapper turns 90° this face is front-on */
+      transform: rotateY(-90deg) translateZ(calc(var(--slab-thickness) / 2));
+      opacity: 0;
+      will-change: opacity;
+      pointer-events: none;
+    }
+
+    .brain-cutface::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 0;
+      background:
+        radial-gradient(90% 70% at 35% 45%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 60%),
+        radial-gradient(80% 60% at 60% 55%, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0) 60%),
+        linear-gradient(135deg, var(--slice-start), var(--slice-end));
+      /* keep the brain silhouette exactly */
+      -webkit-mask-image: url("../assets/brain.png");
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      -webkit-mask-size: contain;
+      mask-image: url("../assets/brain.png");
+      mask-repeat: no-repeat;
+      mask-position: center;
+      mask-size: contain;
+      box-shadow:
+        0 6px 26px rgba(255,140,0,0.22),
+        inset 0 0 0 1px rgba(0,0,0,0.08);
+    }
+
+    /* “Pathways inside” hint: reuse brain texture softly on the cut face */
+    .brain-cutface::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("../assets/brain.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      opacity: 0.16;
+      filter: contrast(1.15) saturate(1.1) brightness(0.95);
+      mix-blend-mode: multiply;
+      -webkit-mask-image: url("../assets/brain.png");
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      -webkit-mask-size: contain;
+      mask-image: url("../assets/brain.png");
+      mask-repeat: no-repeat;
+      mask-position: center;
+      mask-size: contain;
+    }
+
+    /* Wordmark printed on the cut face (the “side”) */
+    .cut-wordmark {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(10,14,26,0.86);
+      opacity: 0;
+      will-change: opacity, transform;
+      text-shadow: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(0,0,0,0.08);
+      backdrop-filter: blur(2px);
     }
 
     /* NHS + SP logo bands */
@@ -170,22 +264,7 @@
       width: auto;
     }
 
-    /* OTOS wordmark: slots on next to brain in step 7 */
-    .otos-wordmark {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      margin-left: 100px;
-      margin-top: -18px;
-      font-size: 18px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-main);
-      opacity: 0;
-      transform: translateX(-8px);
-      will-change: opacity, transform;
-    }
+    /* Retired: wordmark is now on the cut face (the “side”) */
 
     /* —— SEQUENCE: class-driven keyframes —— */
 
@@ -199,10 +278,8 @@
     .scene-root.step-1-start .band--sps {
       transform: translate(-50%, 0);
     }
-    .scene-root.step-1-start .otos-wordmark {
-      opacity: 0;
-      transform: translateX(-8px);
-    }
+    .scene-root.step-1-start .brain-cutface { opacity: 0; }
+    .scene-root.step-1-start .cut-wordmark { opacity: 0; transform: translate(-50%, -50%) translateY(6px); }
 
     /* 2. SPLIT: top up -120px, bottom down +120px, 600ms ease-in-out */
     .scene-root.step-2-split .band--nhs {
@@ -219,20 +296,26 @@
       animation: brainForward var(--dur-forward) ease-in-out forwards;
     }
 
-    /* 4. FLIP TO SIDE VIEW: rotateY(90deg), slow and smooth (no vertical spin) */
+    /* 4. TURN 90°: reveal the cut face (thick slab) */
     .scene-root.step-4-flip .brain-wrapper {
-      animation: brainFlip var(--dur-flip) ease-in-out forwards;
+      animation: brainTurnReveal var(--dur-flip) ease-in-out forwards;
     }
 
-    /* 5. RETRACT: slice moves straight back in between NHS and partners; logos stay apart */
+    .scene-root.step-4-flip .brain-cutface { animation: cutfaceReveal var(--dur-flip) ease-in-out forwards; }
+
+    /* 5. DOCK: reverse straight back into the gap; remain side-on (thick slab end state) */
     .scene-root.step-5-retract .brain-wrapper {
       animation: brainRetract var(--dur-retract) ease-in-out forwards;
     }
 
-    /* 6. LOGO SLOTS ON: wordmark on slice, opacity 0→1, translateX(-8px)→0 */
-    .scene-root.step-6-logo .otos-wordmark {
-      animation: wordmarkSlot var(--dur-logo) ease-in-out forwards;
-    }
+    .scene-root.step-5-retract .brain-cutface { opacity: 1; }
+
+    /* 6. PRINT: OTOS Continuity™ appears on the cut face */
+    .scene-root.step-6-logo .brain-cutface { opacity: 1; }
+    .scene-root.step-6-logo .cut-wordmark { animation: cutWordmarkIn var(--dur-logo) ease-in-out forwards; }
+
+    /* Keep cut face visible while docked (end state is the slab side) */
+    .scene-root.step-5-retract .cut-wordmark { opacity: 0; transform: translate(-50%, -50%) translateY(6px); }
 
     @keyframes brainForward {
       0% {
@@ -243,7 +326,7 @@
       }
     }
 
-    @keyframes brainFlip {
+    @keyframes brainTurnReveal {
       0% {
         transform: translate3d(0, 0, 320px) scale(1.6) rotateY(0deg);
       }
@@ -257,19 +340,22 @@
         transform: translate3d(0, 0, 320px) scale(1.6) rotateY(90deg);
       }
       100% {
-        transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+        transform: translate3d(0, 0, 0) scale(1) rotateY(90deg);
       }
     }
 
-    @keyframes wordmarkSlot {
+    @keyframes cutfaceReveal {
       0% {
         opacity: 0;
-        transform: translateX(-8px);
       }
-      100% {
-        opacity: 1;
-        transform: translateX(0);
-      }
+      45% { opacity: 0; }
+      70% { opacity: 1; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes cutWordmarkIn {
+      0% { opacity: 0; transform: translate(-50%, -50%) translateY(6px); }
+      100% { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
     }
 
     .frame {
@@ -339,8 +425,12 @@
       <div class="canvas">
         <div class="scene-root step-1-start" id="sceneRoot" aria-hidden="true">
           <div class="brain-wrapper" id="brainWrapper">
-            <div class="brain-slice">
-              <img src="../assets/brain.png" alt="OTOS brain slice">
+            <div class="brain-slab" id="brainSlab" aria-hidden="true">
+              <div class="brain-face brain-face--front"></div>
+              <div class="brain-face brain-face--back"></div>
+              <div class="brain-cutface">
+                <div class="cut-wordmark" id="cutWordmark">OTOS Continuity™</div>
+              </div>
             </div>
           </div>
 
@@ -389,7 +479,6 @@
             </div>
           </div>
 
-          <div class="otos-wordmark" id="otosWordmark">OTOS Continuity™</div>
         </div>
       </div>
 
@@ -402,17 +491,15 @@
       "use strict";
 
       var sceneRoot = document.getElementById("sceneRoot");
-      var brainWrapper = document.getElementById("brainWrapper");
       var replayBtn = document.getElementById("replayBtn");
 
       var STEPS = [
         { id: "step-1-start",   dur: 800 },
         { id: "step-2-split",   dur: 600 },
         { id: "step-3-forward", dur: 700 },
-        { id: "step-4-flip",    dur: 400 },
-        { id: "step-5-retract", dur: 600 },
-        { id: "step-6-close",  dur: 500 },
-        { id: "step-7-logo",   dur: 600 }
+        { id: "step-4-flip",    dur: 1000 }, /* single 90° reveal */
+        { id: "step-5-retract", dur: 700 },  /* reverse dock */
+        { id: "step-6-logo",    dur: 600 }   /* wordmark on cut face */
       ];
 
       var currentStepIndex = 0;

@@ -392,7 +392,7 @@ h1{
 	grid-template-columns: repeat(2, 1fr);
 	gap:1.5rem;
 	max-width:880px;
-	margin:clamp(1.5rem,3vw,2.5rem) auto 3rem;
+	margin:0 auto 3rem;
 	padding:clamp(2.5rem,5vw,4rem) 1.5rem clamp(3rem,6vw,5rem);
 }
 .steps::before{
@@ -979,7 +979,7 @@ body {
   border-radius: 14px !important;
   padding: 2rem 2.5rem !important;
   max-width: 680px !important;
-  margin: 2.5rem auto !important;
+  margin: 2.5rem auto 10px !important;
   border: none !important;
   border-left: none !important;
 }
@@ -1002,11 +1002,191 @@ body {
   margin-top: 1rem !important;
 }
 
+/* =========================================================
+   Oura-style cards section (How it works)
+   - no outer frames
+   - brain.png background + high-contrast overlay
+   - 2-column layout + floating glass stat cards
+   ========================================================= */
+.oura-how-cards{
+  position: relative !important;
+  width: 100% !important;
+  padding: clamp(24px, 4vw, 64px) 0 !important;
+  background-image: url('../assets/brain.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  overflow: hidden !important;
+}
+
+.oura-how-cards::before{
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(5, 8, 18, 0.78) !important;
+  /* makes the background feel darker but keeps the brain clearly present */
+  filter: brightness(1.15) contrast(1.2) !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+
+.oura-how-columns{
+  position: relative !important;
+  z-index: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: clamp(18px, 3.5vw, 46px) !important;
+  padding: 0 clamp(16px, 4vw, 64px) !important;
+}
+
+.oura-how-left{
+  flex: 0 0 45% !important;
+  max-width: 45% !important;
+}
+
+.oura-how-toplabel{
+  font-family: Inter, sans-serif !important;
+  font-size: 11px !important;
+  letter-spacing: 3px !important;
+  text-transform: uppercase !important;
+  color: #ff8a00 !important;
+  font-weight: 400 !important;
+  margin-bottom: 14px !important;
+}
+
+.oura-how-heading{
+  margin: 0 !important;
+}
+
+.oura-how-line1{
+  font-family: Georgia, 'Times New Roman', serif !important;
+  font-weight: 400 !important;
+  font-size: clamp(3rem, 8vw, 6rem) !important;
+  line-height: 1.05 !important;
+  color: #ffffff !important;
+}
+
+.oura-how-line2{
+  font-family: Georgia, 'Times New Roman', serif !important;
+  font-weight: 400 !important;
+  font-style: italic !important;
+  font-size: clamp(3rem, 8vw, 6rem) !important;
+  line-height: 1.1 !important;
+  color: #ffffff !important;
+}
+
+.oura-how-body{
+  margin-top: 18px !important;
+  max-width: 420px !important;
+  font-family: Inter, sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 15px !important;
+  line-height: 1.7 !important;
+  color: rgba(255,255,255,0.6) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+.oura-body-line{
+  /* keep as plain lines (no bullets, no full stops) */
+}
+
+.oura-how-right{
+  flex: 0 0 55% !important;
+  max-width: 55% !important;
+  position: relative !important;
+}
+
+.oura-how-right-image{
+  position: relative !important;
+  width: 100% !important;
+  height: min(430px, 52vh) !important;
+  background-image: url('../assets/brain.png') !important;
+  background-size: cover !important;
+  background-position: center 35% !important;
+  overflow: hidden !important;
+  z-index: 0 !important;
+}
+
+.oura-how-right-image::before{
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(5, 8, 18, 0.78) !important;
+  filter: brightness(1.15) contrast(1.2) !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+.oura-stat{
+  position: absolute !important;
+  z-index: 2 !important;
+  background: rgba(20,24,36,0.72) !important;
+  backdrop-filter: blur(18px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  border-radius: 16px !important;
+  padding: 16px 20px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+}
+
+.oura-stat-label{
+  font-family: Inter, sans-serif !important;
+  font-size: 11px !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  color: #ff8a00 !important;
+  font-weight: 400 !important;
+}
+
+.oura-stat-value{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-size: 2.2rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  color: #ffffff !important;
+  margin-top: 8px !important;
+}
+
+.oura-stat-value--amber{
+  color: #f59e0b !important;
+}
+
+.oura-stat-sub{
+  font-family: Inter, sans-serif !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  color: rgba(255,255,255,0.6) !important;
+  margin-top: 6px !important;
+}
+
+.oura-stat--threads{ top: 26px !important; right: 22px !important; }
+.oura-stat--touchpoints{ top: 150px !important; right: 10px !important; }
+.oura-stat--drift{ bottom: 26px !important; left: 28px !important; }
+
 @media (max-width: 640px) {
-  .steps {
-    grid-template-columns: 1fr !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+  .oura-how-columns{
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 0 16px !important;
+  }
+  .oura-how-left{
+    flex: 1 1 auto !important;
+    max-width: 100% !important;
+  }
+  .oura-how-right{
+    flex: 1 1 auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  .oura-how-right-image{
+    height: min(360px, 46vh) !important;
+    width: 100% !important;
+  }
+  .oura-stat{
+    position: static !important;
+    margin-top: 14px !important;
   }
 }
 </style>
@@ -1020,8 +1200,8 @@ body {
   overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  justify-content: flex-start;
+  text-align: left;
   background: #0f172a;
 ">
   <div style="
@@ -1054,25 +1234,25 @@ body {
       z-index: 10;
     "
   />
-  <div style="position: relative; z-index: 2; padding: 0 2rem;">
+  <div style="position: relative; z-index: 2; padding: 0 2rem; width: 100%;">
     <p style="
       font-family: 'Inter', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-weight: 400;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      color: #ff8a00;
-      margin: 0 0 1rem;
-    ">How it works</p>
+      color: rgba(255,255,255,0.45);
+      margin: 0 0 0.75rem;
+    ">How it works.</p>
     <h1 style="
-      font-family: 'Playfair Display', serif;
-      font-weight: 600;
-      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
       color: #ffffff;
       line-height: 1.1;
-      letter-spacing: -0.02em;
-      margin: 0 0 1rem;
-    ">One tap. One thread.<br>You'll always know they made the next step.</h1>
+      margin: 0;
+    ">One thread. Every step.</h1>
     <p style="
       font-family: 'Inter', sans-serif;
       font-size: 1.05rem;
@@ -1117,78 +1297,46 @@ body {
 	</div>
 
 	<div class="panel">
-		<div class="steps">
-			<div class="step">
-				<div class="step-num">1</div>
-				<div>
-					<h3>Anonymous at first contact</h3>
-					<!-- FIX 2: category tag (founder journey style) -->
-					<span class="step-cat">Anonymous by design</span>
-					<div class="copy">
-						When someone comes to your service, a staff member taps <strong>Register touchpoint</strong> or scans a QR code. That's it. OTOS creates a secure, anonymous journey ID.
+		<section class="oura-how-cards" aria-label="How it works">
+			<div class="oura-how-columns">
+				<div class="oura-how-left">
+					<div class="oura-how-toplabel">HOW IT WORKS</div>
+					<div class="oura-how-heading" role="heading" aria-level="2">
+						<div class="oura-how-line1">One tap. One thread.</div>
+						<div class="oura-how-line2">You'll always know they made the next step.</div>
 					</div>
-					<ul class="step-outcomes">
-						<li>No name.</li>
-						<li>No date of birth.</li>
-						<li>No diagnosis.</li>
-						<li>No extra form to fill in.</li>
-					</ul>
-				</div>
-			</div>
 
-			<div class="step">
-				<div class="step-num">2</div>
-				<div>
-					<h3>Touchpoints, not records</h3>
-					<!-- FIX 2: category tag (founder journey style) -->
-					<span class="step-cat">Touchpoints, not records</span>
-					<div class="copy">
-						As someone moves through services and community support, each provider can note that a touchpoint happened against the same journey ID:
+					<div class="oura-how-body">
+						<div class="oura-body-line">Anonymous by design</div>
+						<div class="oura-body-line">Touchpoints, not records</div>
+						<div class="oura-body-line">Early warning</div>
+						<div class="oura-body-line">Aggregate signals only</div>
 					</div>
-					<ul class="step-outcomes">
-						<li>Attended.</li>
-						<li>Missed.</li>
-						<li>Contacted.</li>
-						<li>Referred.</li>
-						<li>Stabilising.</li>
-					</ul>
 				</div>
-			</div>
 
-			<div class="step">
-				<div class="step-num">3</div>
-				<div>
-					<h3>Early warning, no extra work</h3>
-					<!-- FIX 2: category tag (founder journey style) -->
-					<span class="step-cat">Early warning</span>
-					<div class="copy">
-						OTOS notices when the pattern changes — repeated missed contacts, ping-pong referrals, long silences.
-					</div>
-					<ul class="step-outcomes">
-						<li>Your team gets an alert.</li>
-						<li>You decide what to do.</li>
-						<li>OTOS never makes clinical decisions.</li>
-						<li>It just makes sure the question "where did they go?" has an answer.</li>
-					</ul>
-				</div>
-			</div>
+				<div class="oura-how-right" aria-hidden="true">
+					<div class="oura-how-right-image"></div>
 
-			<div class="step">
-				<div class="step-num">4</div>
-				<div>
-					<h3>Reporting your manager will actually read</h3>
-					<!-- FIX 2: category tag (founder journey style) -->
-					<span class="step-cat">Aggregate signals only</span>
-					<div class="copy">
-						Team leads and service managers can see where journeys stall, where drop-off is happening, and where continuity is working.
+					<div class="oura-stat oura-stat--threads">
+						<div class="oura-stat-label">JOURNEY THREADS</div>
+						<div class="oura-stat-value">47</div>
+						<div class="oura-stat-sub">active this week</div>
 					</div>
-					<ul class="step-outcomes">
-						<li>Aggregate, anonymous signals — no individual patient data.</li>
-						<li>No GDPR headache.</li>
-					</ul>
+
+					<div class="oura-stat oura-stat--touchpoints">
+						<div class="oura-stat-label">TOUCHPOINTS</div>
+						<div class="oura-stat-value">312</div>
+						<div class="oura-stat-sub">logged in 7 days</div>
+					</div>
+
+					<div class="oura-stat oura-stat--drift">
+						<div class="oura-stat-label">DRIFT ALERTS</div>
+						<div class="oura-stat-value oura-stat-value--amber">4</div>
+						<div class="oura-stat-sub">require review</div>
+					</div>
 				</div>
 			</div>
-		</div>
+		</section>
 
 		<!-- CHANGE (SECTION 5): treat this line as the final accent pill -->
 		<p class="strapline hw-final-pill">Nothing changes in how you work. Your clinical decisions stay yours — always.</p>

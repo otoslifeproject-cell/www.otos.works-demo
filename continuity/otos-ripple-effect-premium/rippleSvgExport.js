@@ -615,9 +615,11 @@ function buildRippleSvgString({
   // SVG-level animations
   svg.push(
     `<style>
-      @keyframes ringFadeUp { 0% { opacity:0; transform: translateY(6px); } 60% { opacity:1; transform: translateY(0px); } 100% { opacity:1; transform: translateY(0px);} }
+      /* If SVG/CSS animations are blocked (e.g. reduced motion), we still want the rings to be visible.
+         So we start from a small non-zero opacity instead of 0. */
+      @keyframes ringFadeUp { 0% { opacity:0.18; transform: translateY(6px); } 60% { opacity:1; transform: translateY(0px); } 100% { opacity:1; transform: translateY(0px);} }
       @keyframes dashShimmer { 0% { stroke-dashoffset: ${dashOffset}; } 100% { stroke-dashoffset: ${dashOffset + 120}; } }
-      .ring--hidden { opacity: 0; }
+      .ring--hidden { opacity: 0.18; }
       .ripple-ring--0.ring--hidden, .ripple-oval-group.ring--hidden.ripple-ring--0 { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.05s; }
       .ripple-ring--1.ring--hidden, .ripple-oval-group.ring--hidden.ripple-ring--1 { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.22s; }
       .ripple-ring--2.ring--hidden, .ripple-oval-group.ring--hidden.ripple-ring--2 { animation: ringFadeUp 1.0s ease forwards; animation-delay: 0.38s; }
@@ -651,13 +653,7 @@ function exportRippleSvg16x9({ view = 'conservative', mode = 'static', waterText
   return buildRippleSvgString({ width: 1200, height: 675, view, mode, waterTextureSrc });
 }
 
-module.exports = {
-  exportRippleSvg,
-  exportRippleSvg16x9,
-  buildRippleSvgString,
-};
-
-// Browser fallback (this repo serves scripts directly without bundling).
+// Browser fallback first (this repo serves scripts directly without bundling).
 // Enables `window.OTSRippleSvgExport.buildRippleSvgString(...)`.
 if (typeof window !== 'undefined') {
   window.OTSRippleSvgExport = {
@@ -665,5 +661,21 @@ if (typeof window !== 'undefined') {
     exportRippleSvg16x9,
     buildRippleSvgString,
   };
+}
+
+// Node export (used by the static export scripts).
+// Guard + try/catch so the browser never breaks if `module` is missing.
+try {
+  // In browsers, `module` does not exist.
+  // This check is safe, but we still wrap it to be extra defensive.
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      exportRippleSvg,
+      exportRippleSvg16x9,
+      buildRippleSvgString,
+    };
+  }
+} catch (_) {
+  // No-op: browser execution.
 }
 

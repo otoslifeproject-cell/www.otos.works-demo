@@ -1,9 +1,16 @@
 (function () {
   'use strict';
 
-  const { buildRippleSvgString } = window.OTSRippleSvgExport;
-
   const svgTarget = document.getElementById('ripple-svg-target');
+  if (!svgTarget) return;
+
+  function getBuildRippleSvgString() {
+    const api = window.OTSRippleSvgExport;
+    return api && typeof api.buildRippleSvgString === 'function' ? api.buildRippleSvgString : null;
+  }
+  if (!getBuildRippleSvgString()) {
+    svgTarget.innerHTML = '<div class="ripple-error" style="padding:2rem;color:rgba(255,255,255,0.9);font-size:1rem;">Diagram script failed to load. Ensure <code>rippleSvgExport.js</code> loads before this file.</div>';
+  }
   const tooltip = document.getElementById('ripple-tooltip');
 
   const selectedRingTitle = document.getElementById('selected-ring-title');
@@ -248,15 +255,27 @@
   }
 
   function renderSvg() {
+    const buildFn = getBuildRippleSvgString();
+    if (!buildFn) {
+      svgTarget.innerHTML = '<div class="ripple-error" style="padding:2rem;color:rgba(255,255,255,0.9);font-size:1rem;">Diagram script not loaded. Check that <code>rippleSvgExport.js</code> is available.</div>';
+      return;
+    }
     const mode = currentMode === 'animated' ? 'animated' : 'static';
     const view = currentView === 'upper' ? 'upper' : 'conservative';
-    const svgString = buildRippleSvgString({
-      width: 1200,
-      height: 1200,
-      view,
-      mode,
-      waterTextureSrc: '../images/Ripple-1024x546.jpg',
-    });
+    let svgString;
+    try {
+      svgString = buildFn({
+        width: 1200,
+        height: 1200,
+        view,
+        mode,
+        waterTextureSrc: '../images/Ripple-1024x546.jpg',
+      });
+    } catch (err) {
+      console.error('Ripple SVG build failed:', err);
+      svgTarget.innerHTML = '<div class="ripple-error" style="padding:2rem;color:rgba(255,255,255,0.9);font-size:1rem;">Diagram failed to build. See console.</div>';
+      return;
+    }
     svgTarget.innerHTML = svgString;
 
     // Hit targets are circle (no photo) or ellipse (photo ripples).
@@ -328,8 +347,6 @@
     }
   }
 
-  // Fix pressed state: since the HTML uses data-view/data-mode rather than nested attributes,
-  // we just call setTogglesPressed once after first render.
   setTogglesPressed();
   initToggles();
   renderSvg();
