@@ -418,10 +418,32 @@
     });
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    initHeroCarousel().catch(() => {
-      // No-op: carousel should never break the page
-    });
-  });
+  const start = () => {
+    let didInit = false;
+
+    const tryInit = (attempt = 0) => {
+      if (didInit) return;
+      const mountExists = qs('[data-otos-hero-carousel]');
+      if (mountExists) {
+        didInit = true;
+        initHeroCarousel().catch(() => {
+          // No-op: carousel should never break the page
+        });
+        return;
+      }
+
+      // If otos-shared injects the mount slightly later, retry briefly.
+      if (attempt < 10) setTimeout(() => tryInit(attempt + 1), 100);
+    };
+
+    tryInit();
+  };
+
+  // If this script is injected after DOMContentLoaded, ensure we still mount.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
 })();
 
