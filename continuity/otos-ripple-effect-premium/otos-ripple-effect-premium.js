@@ -259,9 +259,9 @@
     });
     svgTarget.innerHTML = svgString;
 
-    // Bind hover + click on ring circles.
-    const circles = svgTarget.querySelectorAll('circle.ripple-ring');
-    circles.forEach((circle) => {
+    // Hit targets are circle (no photo) or ellipse (photo ripples).
+    const hitEls = svgTarget.querySelectorAll('.ripple-ring[data-ring]');
+    hitEls.forEach((circle) => {
       const ringIndex = Number(circle.getAttribute('data-ring'));
 
       circle.addEventListener('mousemove', (e) => {
@@ -313,6 +313,19 @@
         renderSvg();
       });
     });
+
+    const playBtn = document.getElementById('ripple-play-intro');
+    if (playBtn) {
+      playBtn.addEventListener('click', () => {
+        currentMode = 'animated';
+        lockedRingIndex = null;
+        setTogglesPressed();
+        svgTarget.innerHTML = '';
+        requestAnimationFrame(() => {
+          renderSvg();
+        });
+      });
+    }
   }
 
   // Fix pressed state: since the HTML uses data-view/data-mode rather than nested attributes,

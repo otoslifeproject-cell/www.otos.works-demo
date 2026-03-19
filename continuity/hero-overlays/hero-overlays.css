@@ -409,11 +409,33 @@
   opacity: 0 !important;
   transition: opacity 0.9s ease !important;
   pointer-events: none !important;
+  cursor: zoom-in !important;
 }
 
 .carousel-slide.is-active {
   opacity: 1 !important;
   pointer-events: auto !important;
+}
+
+/* ── CAROUSEL SCRIM + EXPAND (protects text on light images) ── */
+.carousel-slide::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.62) 0%,
+    rgba(0, 0, 0, 0.28) 55%,
+    rgba(0, 0, 0, 0) 100%
+  ) !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  transition: opacity 0.35s ease !important;
+  opacity: 1 !important;
+}
+
+.carousel-slide:hover::after {
+  opacity: 0.4 !important;
 }
 
 /* Carousel slide image fill + crop control */
@@ -426,6 +448,12 @@
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
+  z-index: 1 !important;
+  transition: transform 0.45s ease, object-position 0.45s ease !important;
+}
+
+.carousel-slide:hover img {
+  transform: scale(1.06) !important;
 }
 
 /* Carousel overlay text block */
@@ -442,6 +470,7 @@
     transparent 100%
   ) !important;
   z-index: 3 !important;
+  cursor: default !important;
 }
 
 .carousel-headline {
@@ -499,4 +528,64 @@
     height: 260px !important;
     max-height: 260px !important;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-slide img {
+    transition: none !important;
+  }
+  .carousel-slide:hover img {
+    transform: none !important;
+  }
+  .carousel-slide::after {
+    transition: none !important;
+  }
+}
+
+/* ── OTOS hero lightbox (carousel image zoom) ── */
+#otos-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.92);
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+#otos-lightbox.open {
+  display: flex;
+}
+
+#otos-lightbox img {
+  max-width: 92vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 0 80px rgba(0, 0, 0, 0.8);
+  cursor: default;
+}
+
+#otos-lightbox-close {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  font-size: 2rem;
+  color: #f4f5f7;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  z-index: 100000;
+  background: none;
+  border: 0;
+  padding: 0.25rem;
+  font-family: inherit;
+}
+
+#otos-lightbox-close:hover {
+  opacity: 1;
 }

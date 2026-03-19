@@ -362,6 +362,60 @@
 
     apply(0);
     kick();
+
+    initCarouselLightbox(mount);
+  }
+
+  /** Scrim/hover are in hero-overlays.css; opens full-size image on slide photo click */
+  function initCarouselLightbox(mount) {
+    let lb = document.getElementById('otos-lightbox');
+    if (!lb) {
+      lb = document.createElement('div');
+      lb.id = 'otos-lightbox';
+      lb.setAttribute('role', 'dialog');
+      lb.setAttribute('aria-modal', 'true');
+      lb.setAttribute('aria-label', 'Enlarged carousel image');
+      lb.innerHTML =
+        '<button type="button" id="otos-lightbox-close" aria-label="Close">&times;</button>' +
+        '<img id="otos-lightbox-img" src="" alt="" />';
+      document.body.appendChild(lb);
+
+      const lightboxImg = document.getElementById('otos-lightbox-img');
+      const closeBtn = document.getElementById('otos-lightbox-close');
+
+      const close = () => {
+        lb.classList.remove('open');
+        document.body.style.overflow = '';
+      };
+
+      lb.addEventListener('click', (e) => {
+        if (e.target === lb) close();
+      });
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        close();
+      });
+      lightboxImg.addEventListener('click', (e) => e.stopPropagation());
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lb.classList.contains('open')) close();
+      });
+    }
+
+    const lightboxImg = document.getElementById('otos-lightbox-img');
+
+    mount.addEventListener('click', (e) => {
+      const t = e.target;
+      if (!t || t.tagName !== 'IMG') return;
+      const slide = t.closest('.carousel-slide');
+      if (!slide || !slide.classList.contains('is-active')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      lightboxImg.src = t.currentSrc || t.src;
+      lightboxImg.alt = t.alt || '';
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
   }
 
   document.addEventListener('DOMContentLoaded', () => {

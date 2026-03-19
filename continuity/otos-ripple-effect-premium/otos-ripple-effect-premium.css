@@ -85,6 +85,32 @@ html, body{
   box-shadow: 0 0 0 1px rgba(244,185,66,0.20) inset;
 }
 
+.ripple-controlRow--play {
+  margin-top: 4px;
+}
+
+.ripple-playBtn{
+  padding: 12px 22px;
+  border-radius: 14px;
+  border: 2px solid var(--gold);
+  background: rgba(244,185,66,0.22);
+  color: #fff;
+  font-family: inherit;
+  font-weight: 850;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(244,185,66,0.25) inset;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.ripple-playBtn:hover{
+  background: rgba(244,185,66,0.35);
+  transform: translateY(-1px);
+}
+.ripple-playBtn:active{
+  transform: translateY(0);
+}
+
 .ripple-stage{
   display:grid;
   grid-template-columns: 1fr 360px;

@@ -1,0 +1,659 @@
+if (!window.location.search.includes('dean')) {
+  document.body.innerHTML = '';
+  window.location.href = '/';
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OTOS Site Manager</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0f1e;
+      --surface:  #111827;
+      --border:   #1e293b;
+      --text:     #f4f5f7;
+      --muted:    #64748b;
+      --green:    #10b981;
+      --amber:    #f59e0b;
+      --red:      #ef4444;
+      --teal:     #0d9488;
+      --purple:   #6366f1;
+      --orange:   #ff8a00;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+    }
+
+    /* ── LAYOUT ── */
+    #app { display: flex; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    #sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: #080d1a;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    #sidebar-logo {
+      padding: 22px 20px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #sidebar-logo .brand {
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    #sidebar-logo .sub {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    #sidebar nav { padding: 12px 0; flex: 1; }
+
+    .nav-group {
+      margin-bottom: 6px;
+    }
+
+    .nav-group-label {
+      padding: 8px 20px 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .nav-group a {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 20px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 13px;
+      border-left: 2px solid transparent;
+      transition: all 0.15s;
+    }
+
+    .nav-group a:hover,
+    .nav-group a.active {
+      background: var(--surface);
+      color: var(--text);
+      border-left-color: var(--orange);
+    }
+
+    .nav-group a .icon { font-size: 15px; }
+
+    #sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--border);
+    }
+
+    /* ── MAIN ── */
+    #main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px 36px;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+
+    /* ── STAT TILES ── */
+    .tiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .tile {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .tile .label {
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .tile .value {
+      font-size: 26px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tile .value.green { color: var(--green); }
+    .tile .value.amber { color: var(--amber); }
+    .tile .value.teal  { color: var(--teal);  }
+
+    /* ── TABLES ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      padding: 10px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 11px 20px;
+      font-size: 13px;
+      color: #cbd5e1;
+      border-bottom: 1px solid #0f172a;
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #0f172a; }
+
+    td a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+
+    td a:hover { text-decoration: underline; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-live   { background: rgba(16,185,129,0.15); color: var(--green); }
+    .badge-draft  { background: rgba(245,158,11,0.15);  color: var(--amber); }
+    .badge-wip    { background: rgba(13,148,136,0.15);  color: var(--teal);  }
+    .badge-ref    { background: rgba(99,102,241,0.15);  color: var(--purple);}
+
+    /* ── IMAGE GRID ── */
+    .img-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .img-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .img-card:hover { border-color: var(--orange); }
+
+    .img-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      display: block;
+      background: #1e293b;
+    }
+
+    .img-card .img-meta {
+      padding: 10px 12px;
+    }
+
+    .img-card .img-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .img-card .img-page {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* ── BUILD LOG ── */
+    .log-entry {
+      display: flex;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .log-entry:last-child { border-bottom: none; }
+
+    .log-date {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      min-width: 90px;
+      padding-top: 1px;
+    }
+
+    .log-text {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .log-tag {
+      display: inline-block;
+      font-size: 10px;
+      padding: 1px 7px;
+      border-radius: 20px;
+      margin-right: 6px;
+      font-weight: 600;
+      vertical-align: middle;
+    }
+
+    .tag-build   { background: rgba(13,148,136,0.2);  color: var(--teal);   }
+    .tag-design  { background: rgba(99,102,241,0.2);  color: var(--purple); }
+    .tag-content { background: rgba(245,158,11,0.2);  color: var(--amber);  }
+    .tag-fix     { background: rgba(239,68,68,0.2);   color: var(--red);    }
+
+    /* ── SEARCH ── */
+    #search-bar {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 9px 14px;
+      color: var(--text);
+      font-size: 13px;
+      margin-bottom: 22px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #search-bar:focus { border-color: var(--orange); }
+    #search-bar::placeholder { color: var(--muted); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      #sidebar { display: none; }
+      #main { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── SIDEBAR ── -->
+  <div id="sidebar">
+    <div id="sidebar-logo">
+      <div class="brand">OTOS</div>
+      <div class="sub">Site Manager · Admin</div>
+    </div>
+    <nav>
+      <div class="nav-group">
+        <div class="nav-group-label">Overview</div>
+        <a href="#" class="active" data-section="dashboard">
+          <span class="icon">⬛</span> Dashboard
+        </a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Content</div>
+        <a href="#" data-section="pages">
+          <span class="icon">📄</span> Pages
+        </a>
+        <a href="#" data-section="images">
+          <span class="icon">🖼</span> Images
+        </a>
+        <a href="#" data-section="assets">
+          <span class="icon">📦</span> Assets
+        </a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Work</div>
+        <a href="#" data-section="drafts">
+          <span class="icon">✏️</span> Drafts
+        </a>
+        <a href="#" data-section="wireframes">
+          <span class="icon">🔲</span> Wireframes
+        </a>
+        <a href="#" data-section="log">
+          <span class="icon">📋</span> Build Log
+        </a>
+      </div>
+    </nav>
+    <div id="sidebar-footer">OTOS Continuity™ · Dean Butler</div>
+  </div>
+
+  <!-- ── MAIN ── -->
+  <div id="main">
+
+    <!-- DASHBOARD -->
+    <div class="section active" id="section-dashboard">
+      <h1>Good evening, Dean.</h1>
+      <p class="section-sub">Cambridge Pilot · otos.works/continuity</p>
+
+      <div class="tiles">
+        <div class="tile">
+          <div class="label">Live Pages</div>
+          <div class="value green">9</div>
+        </div>
+        <div class="tile">
+          <div class="label">Drafts</div>
+          <div class="value amber">3</div>
+        </div>
+        <div class="tile">
+          <div class="label">Images in Use</div>
+          <div class="value teal">34</div>
+        </div>
+        <div class="tile">
+          <div class="label">Wireframes</div>
+          <div class="value">3</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Quick Links — Live Pages</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Page</th>
+              <th>Status</th>
+              <th>URL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Work Index</td><td><span class="badge badge-live">Live</span></td><td><a href="/continuity/work-index.html" target="_blank">work-index.html</a></td></tr>
+            <tr><td>How It Works</td><td><span class="badge badge-live">Live</span></td><td><a href="/continuity/how-it-works.html" target="_blank">how-it-works.html</a></td></tr>
+            <tr><td>Guided Demos</td><td><span class="badge badge-live">Live</span></td><td><a href="/continuity/demos.html" target="_blank">demos.html</a></td></tr>
+            <tr><td>Controls</td><td><span class="badge badge-live">Live</span></td><td><a href="/continuity/controls.html" target="_blank">controls.html</a></td></tr>
+            <tr><td>Reporting</td><td><span class="badge badge-live">Live</span></td><td><a href="/continuity/reporting.html" target="_blank">reporting.html</a></td></tr>
+            <tr><td>References</td><td><span class="badge badge-live">Live</span></td><td><a href="/continuity/references.html" target="_blank">references.html</a></td></tr>
+            <tr><td>Founder Journey</td><td><span class="badge badge-live">Live</span></td><td><a href="/continuity/founder-journey.html" target="_blank">founder-journey.html</a></td></tr>
+            <tr><td>Infrastructure Partners</td><td><span class="badge badge-live">Live</span></td><td><a href="/continuity/partners.html" target="_blank">partners.html</a></td></tr>
+            <tr><td>Hero Gallery</td><td><span class="badge badge-live">Live</span></td><td><a href="/continuity/hero-gallery.html" target="_blank">hero-gallery.html</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAGES -->
+    <div class="section" id="section-pages">
+      <h1>Pages</h1>
+      <p class="section-sub">All pages across the OTOS Continuity site.</p>
+      <input id="search-bar" type="text" placeholder="Search pages…" oninput="filterTable(this, 'pages-table')" />
+      <div class="card">
+        <table id="pages-table">
+          <thead>
+            <tr><th>Title</th><th>File</th><th>Status</th><th>Section</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Work Index</td><td><a href="/continuity/work-index.html" target="_blank">work-index.html</a></td><td><span class="badge badge-live">Live</span></td><td>Main</td></tr>
+            <tr><td>How It Works</td><td><a href="/continuity/how-it-works.html" target="_blank">how-it-works.html</a></td><td><span class="badge badge-live">Live</span></td><td>Main</td></tr>
+            <tr><td>Guided Demos</td><td><a href="/continuity/demos.html" target="_blank">demos.html</a></td><td><span class="badge badge-live">Live</span></td><td>Main</td></tr>
+            <tr><td>Controls</td><td><a href="/continuity/controls.html" target="_blank">controls.html</a></td><td><span class="badge badge-live">Live</span></td><td>Main</td></tr>
+            <tr><td>Reporting</td><td><a href="/continuity/reporting.html" target="_blank">reporting.html</a></td><td><span class="badge badge-live">Live</span></td><td>Main</td></tr>
+            <tr><td>References</td><td><a href="/continuity/references.html" target="_blank">references.html</a></td><td><span class="badge badge-live">Live</span></td><td>Main</td></tr>
+            <tr><td>Founder Journey</td><td><a href="/continuity/founder-journey.html" target="_blank">founder-journey.html</a></td><td><span class="badge badge-live">Live</span></td><td>Main</td></tr>
+            <tr><td>Infrastructure Partners</td><td><a href="/continuity/partners.html" target="_blank">partners.html</a></td><td><span class="badge badge-live">Live</span></td><td>Main</td></tr>
+            <tr><td>Hero Gallery</td><td><a href="/continuity/hero-gallery.html" target="_blank">hero-gallery.html</a></td><td><span class="badge badge-live">Live</span></td><td>Hero</td></tr>
+            <tr><td>Dashboard — Tier 1 (SUN)</td><td><a href="#">dashboard-sun.html</a></td><td><span class="badge badge-wip">WIP</span></td><td>Wireframes</td></tr>
+            <tr><td>Dashboard — Tier 2 (SP)</td><td><a href="#">dashboard-sp.html</a></td><td><span class="badge badge-wip">WIP</span></td><td>Wireframes</td></tr>
+            <tr><td>Dashboard — Tier 3 (Admin)</td><td><a href="#">dashboard-admin.html</a></td><td><span class="badge badge-wip">WIP</span></td><td>Wireframes</td></tr>
+            <tr><td>RFP Response</td><td><a href="#">rfp-response.html</a></td><td><span class="badge badge-draft">Draft</span></td><td>Docs</td></tr>
+            <tr><td>Site Manager (this page)</td><td><a href="/continuity/admin.html" target="_blank">admin.html</a></td><td><span class="badge badge-ref">Admin</span></td><td>System</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- IMAGES -->
+    <div class="section" id="section-images">
+      <h1>Images</h1>
+      <p class="section-sub">All images currently in use across the site. Update the config below to add new ones.</p>
+      <div class="img-grid" id="image-grid"></div>
+    </div>
+
+    <!-- ASSETS -->
+    <div class="section" id="section-assets">
+      <h1>Assets</h1>
+      <p class="section-sub">PDFs, animations, scripts, and other files.</p>
+      <div class="card">
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Type</th><th>Used on</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Brain Slice Animation</td><td>JS / Canvas</td><td>work-index.html</td><td><span class="badge badge-live">Live</span></td></tr>
+            <tr><td>Hero Overlays (1–7)</td><td>HTML</td><td>hero-gallery.html</td><td><span class="badge badge-live">Live</span></td></tr>
+            <tr><td>Ripple Effect</td><td>JS</td><td>work-index.html</td><td><span class="badge badge-live">Live</span></td></tr>
+            <tr><td>Carousel Script</td><td>JS</td><td>work-index.html</td><td><span class="badge badge-live">Live</span></td></tr>
+            <tr><td>Dashboard Spec (PDF)</td><td>PDF</td><td>—</td><td><span class="badge badge-draft">Draft</span></td></tr>
+            <tr><td>RFP Response (PDF)</td><td>PDF</td><td>—</td><td><span class="badge badge-draft">Draft</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DRAFTS -->
+    <div class="section" id="section-drafts">
+      <h1>Drafts &amp; Saved</h1>
+      <p class="section-sub">Work in progress. Update status when promoted to live.</p>
+      <div class="card">
+        <table>
+          <thead>
+            <tr><th>Item</th><th>Type</th><th>Notes</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Dashboard Spec</td><td>Document</td><td>Three-tier spec complete. Cursor build next.</td><td><span class="badge badge-draft">Draft</span></td></tr>
+            <tr><td>RFP Response</td><td>Document</td><td>Full response written. Awaiting review.</td><td><span class="badge badge-draft">Draft</span></td></tr>
+            <tr><td>Cursor Build Prompt</td><td>Prompt</td><td>To be written from dashboard spec.</td><td><span class="badge badge-draft">Draft</span></td></tr>
+            <tr><td>Dashboard — Tier 1 (SUN)</td><td>Wireframe</td><td>Spec complete. Build not started.</td><td><span class="badge badge-wip">WIP</span></td></tr>
+            <tr><td>Dashboard — Tier 2 (SP)</td><td>Wireframe</td><td>Spec complete. Build not started.</td><td><span class="badge badge-wip">WIP</span></td></tr>
+            <tr><td>Dashboard — Tier 3 (Admin)</td><td>Wireframe</td><td>Spec complete. Build not started.</td><td><span class="badge badge-wip">WIP</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- WIREFRAMES -->
+    <div class="section" id="section-wireframes">
+      <h1>Wireframes — Cambridge Pilot UI</h1>
+      <p class="section-sub">Three dashboard login states. Dark-mode control room aesthetic.</p>
+      <div class="card">
+        <table>
+          <thead>
+            <tr><th>Tier</th><th>Login</th><th>Scope</th><th>File</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Tier 1</strong></td>
+              <td>SUN Network Analyst</td>
+              <td>Full — journey map, drift, escalation, trends, export</td>
+              <td><a href="#">dashboard-sun.html</a></td>
+              <td><span class="badge badge-wip">WIP</span></td>
+            </tr>
+            <tr>
+              <td><strong>Tier 2</strong></td>
+              <td>SP Keyworker (e.g. CGL)</td>
+              <td>Scoped — own threads only, log touchpoint, weekly bar</td>
+              <td><a href="#">dashboard-sp.html</a></td>
+              <td><span class="badge badge-wip">WIP</span></td>
+            </tr>
+            <tr>
+              <td><strong>Tier 3</strong></td>
+              <td>Dean Butler / OTOS Admin</td>
+              <td>Everything + system controls, token registry, consent log</td>
+              <td><a href="#">dashboard-admin.html</a></td>
+              <td><span class="badge badge-wip">WIP</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-header">Design Spec</div>
+        <table>
+          <thead><tr><th>Item</th><th>Detail</th></tr></thead>
+          <tbody>
+            <tr><td>Background</td><td><code>#0a0f1e</code> — near-black navy</td></tr>
+            <tr><td>Surface</td><td><code>#111827</code> — card background</td></tr>
+            <tr><td>Signal green</td><td><code>#10b981</code></td></tr>
+            <tr><td>Signal amber</td><td><code>#f59e0b</code></td></tr>
+            <tr><td>Signal red</td><td><code>#ef4444</code></td></tr>
+            <tr><td>OTOS orange</td><td><code>#ff8a00</code> — CTA and logo only</td></tr>
+            <tr><td>Auth</td><td>RBAC — sun_admin / sp_worker / otos_admin</td></tr>
+            <tr><td>Mobile</td><td>Tier 2 (SP) must work on mobile</td></tr>
+            <tr><td>Session timeout</td><td>30 mins idle</td></tr>
+            <tr><td>Hosting</td><td>UK region only</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BUILD LOG -->
+    <div class="section" id="section-log">
+      <h1>Build Log</h1>
+      <p class="section-sub">A dated record of everything built. Add a new entry each time something ships.</p>
+      <div class="card" style="padding: 8px 24px;">
+        <div class="log-entry">
+          <div class="log-date">Mar 2026</div>
+          <div class="log-text"><span class="log-tag tag-build">Build</span>Admin CMS page created — all pages, images, assets, drafts, wireframes, build log.</div>
+        </div>
+        <div class="log-entry">
+          <div class="log-date">Mar 2026</div>
+          <div class="log-text"><span class="log-tag tag-design">Design</span>Three-tier dashboard spec written — Tier 1 SUN, Tier 2 SP, Tier 3 OTOS Admin. Glassmorphic stat cards defined.</div>
+        </div>
+        <div class="log-entry">
+          <div class="log-date">Mar 2026</div>
+          <div class="log-text"><span class="log-tag tag-build">Build</span>Carousel lightbox and hover scrim added to work-index hero.</div>
+        </div>
+        <div class="log-entry">
+          <div class="log-date">Mar 2026</div>
+          <div class="log-text"><span class="log-tag tag-content">Content</span>Hero carousel updated — stats panel removed from hero, reserved for dashboard wireframe screenshots.</div>
+        </div>
+        <div class="log-entry">
+          <div class="log-date">Mar 2026</div>
+          <div class="log-text"><span class="log-tag tag-build">Build</span>work-index.html launched — full deliverables index, hero carousel, nav grid.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+  // ── IMAGE CONFIG ──
+  // Add every image here: { src, name, page }
+  const IMAGES = [
+    { src: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400', name: 'woman-smiling.jpg', page: 'work-index (hero)' },
+    { src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400', name: 'two-people.jpg', page: 'work-index (hero)' },
+    { src: 'https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=400', name: 'man-in-crisis.jpg', page: 'work-index (hero)' },
+    { src: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400', name: 'clinician-laptop.jpg', page: 'work-index (hero)' },
+    // ← Add more images here
+  ];
+
+  // Render image grid
+  const grid = document.getElementById('image-grid');
+  IMAGES.forEach(function (img) {
+    grid.innerHTML += `
+      <div class="img-card">
+        <img src="${img.src}" alt="${img.name}" loading="lazy" />
+        <div class="img-meta">
+          <div class="img-name">${img.name}</div>
+          <div class="img-page">${img.page}</div>
+        </div>
+      </div>`;
+  });
+
+  // ── NAV ──
+  document.querySelectorAll('[data-section]').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      const id = this.dataset.section;
+
+      document.querySelectorAll('[data-section]').forEach(l => l.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
+      this.classList.add('active');
+      document.getElementById('section-' + id).classList.add('active');
+    });
+  });
+
+  // ── SEARCH / FILTER ──
+  function filterTable(input, tableId) {
+    const q = input.value.toLowerCase();
+    document.querySelectorAll('#' + tableId + ' tbody tr').forEach(function (row) {
+      row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  }
+</script>
+
+</body>
+</html>
