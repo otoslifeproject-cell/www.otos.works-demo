@@ -8,7 +8,9 @@ This folder contains a premium, concentric ripple-effect “cost to society” d
 - Export-ready SVG generator (including a 16:9 variant)
 
 ## How to view (interactive)
-- Open: `otos-ripple-effect-premium/otos-ripple-effect-premium.html`
+- **Canonical:** `otos-ripple-effect-premium/otos-ripple-effect-premium.html` — full cost-ring diagram (site links use this).
+- `index.html` — redirects to `otos-ripple-effect-premium.html` so folder URLs open the diagram on static hosts.
+- `ripple-cascade.html` — separate canvas cascade animation (optional demo).
 
 ## Static SVG exports (developer)
 The repo’s shared SVG generator lives at:
