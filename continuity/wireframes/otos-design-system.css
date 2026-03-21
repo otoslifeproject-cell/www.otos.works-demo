@@ -4,23 +4,27 @@
  * Use for wireframe UI screens (desktop 1440px, mobile iPhone 14 Pro).
  */
 :root {
-  /* Primary */
-  --otos-blue: #0066CC;
-  --otos-blue-hover: #0052A3;
-  --otos-blue-light: #E6F0FA;
-  --otos-blue-muted: rgba(0, 102, 204, 0.08);
+  /* Continuity portal (Cambridge pilot) — primary actions & links */
+  --brand-primary: #c17f24;
+  --brand-primary-hover: #a86a1f;
+  --brand-teal: #4a9e8e;
+  /* NHS-adjacent blue — secondary emphasis (metrics, info) */
+  --otos-blue: #2563eb;
+  --otos-blue-hover: #1d4ed8;
+  --otos-blue-light: #eff6ff;
+  --otos-blue-muted: rgba(37, 99, 235, 0.1);
 
-  /* Surfaces */
-  --bg-page: #FFFFFF;
-  --bg-panel: #F5F5F5;
-  --bg-panel-elevated: #FAFAFA;
-  --border: #E0E0E0;
-  --border-light: #EEEEEE;
+  /* Surfaces — warm paper inside UI */
+  --bg-page: #faf8f5;
+  --bg-panel: #f0ebe3;
+  --bg-panel-elevated: #fffefb;
+  --border: #e8e0d4;
+  --border-light: #f0ebe3;
 
-  /* Alerts only */
-  --alert-amber: #F59E0B;
-  --alert-amber-bg: #FFFBEB;
-  --alert-amber-border: #FCD34D;
+  /* Alerts / drift (amber aligned to brand) */
+  --alert-amber: #c17f24;
+  --alert-amber-bg: rgba(193, 127, 36, 0.1);
+  --alert-amber-border: rgba(193, 127, 36, 0.35);
 
   /* Text */
   --text: #1a1a1a;
@@ -56,7 +60,7 @@
   --radius-lg: 8px;
 
   /* Focus (accessibility) */
-  --focus-ring: 2px solid var(--otos-blue);
+  --focus-ring: 2px solid var(--brand-primary);
   --focus-offset: 2px;
 }
 
@@ -132,7 +136,7 @@ h3, .h3 { font-size: 1.125rem; font-weight: var(--weight-semibold); margin: 0 0 
 .text-secondary { color: var(--text-secondary); }
 
 /* Links */
-a { color: var(--otos-blue); text-decoration: none; }
+a { color: var(--brand-primary); text-decoration: none; }
 a:hover { text-decoration: underline; }
 a:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 

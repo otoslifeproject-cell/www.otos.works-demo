@@ -4,550 +4,307 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OTOS Continuity™ Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
-
+<meta name="description" content="OTOS Continuity. You refer someone. Then what?">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="otos-shared.css">
 <style>
-/* BASE (allow scroll — prevent cut-off/overlap) */
 :root{
-	--bg:#f4f4f4;
-	--text:#111;
+  --bg-page:#f5f0e8;--bg-section-alt:#ede8df;--bg-dark:#1e150a;--bg-dark-mid:#2a1c0f;--bg-card:rgba(255,252,246,0.78);--bg-nav:rgba(245,240,232,0.90);
+  --text-primary:#1a1410;--text-secondary:#7a6a58;--text-light:#a8998a;--text-on-dark:#f0ebe3;
+  --amber:#c17f24;--amber-light:#d4953c;--teal:#4a9e8e;
+  --shadow-xl:0 32px 80px rgba(26,20,16,0.22),0 12px 28px rgba(26,20,16,0.12);
+  --font-heading:'Playfair Display', Georgia, serif;--font-body:'Inter', -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; height: 100dvh; overflow: hidden; }
+body {
+  margin: 0; padding: 0;
+  height: 100dvh; overflow: hidden;
+  background: #0a0806;
+  font-family: var(--font-body);
+  display: flex; flex-direction: column;
 }
 
-*{ box-sizing:border-box; }
-
-/* FORCE OVERRIDE — allow scroll and prevent hero/footer trapping */
-html, body {
-	overflow: auto !important;
-	height: auto !important;
-	min-height: 100% !important;
-	position: static !important;
+/* otos-shared.css uses [class*="hero"] { min-height: 80vh; height: auto; } — breaks this page's CTA and layout */
+.home-hero,
+.home-hero__overlay,
+.home-hero__content,
+.home-hero__quote,
+.home-hero__body,
+.home-hero__cta,
+.hero-kicker,
+.hero-stats,
+.hero-stat,
+.hero-stat__number,
+.hero-stat__label {
+  min-height: 0 !important;
 }
 
-.hero, .hero-section, [class*="hero"] {
-	position: relative !important;
-	height: auto !important;
-	min-height: 80vh !important;
-	overflow: visible !important;
+.home-hero {
+  position: relative; width: 100%; height: 100dvh !important;
+  min-height: 0 !important;
+  background-image: url('images/Therapist reviewing OTOS app progress.png');
+  background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden !important;
+  flex: 1;
+  flex-shrink: 0;
+}
+.home-hero__overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(160deg,
+    rgba(10,8,6,0.62) 0%,
+    rgba(10,8,6,0.38) 45%,
+    rgba(10,8,6,0.70) 100%);
+}
+.home-hero::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 120px; z-index: 2;
+  background: linear-gradient(to top, rgba(10,8,6,0.75) 0%, transparent 100%);
+  pointer-events: none;
 }
 
-footer, .site-footer {
-	position: relative !important;
-	bottom: auto !important;
-	left: auto !important;
-	width: 100% !important;
+.home-hero__content {
+  position: relative; z-index: 3;
+  max-width: 680px; width: 100%;
+  padding: 0 200px 0 40px;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(8px, 1.5vh, 16px);
 }
 
-/* Keep copyright bar pinned to viewport bottom when content is short */
-.site-footer{
-	margin-top: auto;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	min-height: 64px;
-	padding: 0 2rem;
-	line-height: 1.4;
-	text-align: center;
+.hero-kicker {
+  display: block;
+  font-family: var(--font-body); font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.20em; text-transform: uppercase;
+  color: var(--amber); opacity: 0.90;
 }
 
-html, body{ height:100%; }
-
-body{
-	margin:0;
-	font-family:Inter, sans-serif;
-	background:var(--bg);
-	color:var(--text);
-
-	min-height:100svh;
-	overflow-x:hidden;
-	overflow-y:auto;
-
-	display:flex;
-	flex-direction:column;
+.home-hero__quote {
+  font-family: var(--font-heading); font-style: italic;
+  font-size: clamp(0.88rem, 1.6vw, 1.1rem); font-weight: 400;
+  color: rgba(245,240,232,0.78); line-height: 1.55;
+  margin: 0; padding: 0; border: none; background: none;
 }
 
-/* NAV */
-.navbar{
-	position:fixed;
-	top:0;
-	left:0;
-	right:0;
-	z-index:20;
+.home-hero__content h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700; line-height: 1.10; color: #f5f0e8;
+  margin: 0; background: none; -webkit-text-fill-color: unset;
+}
+.heading-italic-line { font-style: italic; color: var(--amber); -webkit-text-fill-color: var(--amber); }
 
-	display:flex;
-	align-items:center;
-	justify-content:space-between;
-	padding:clamp(14px, 2.2vh, 22px) clamp(18px, 4vw, 60px);
-	background:white;
-	box-shadow:0 4px 18px rgba(0,0,0,0.06);
+.home-hero__body {
+  font-size: clamp(0.82rem, 1.3vw, 0.98rem); font-weight: 400;
+  color: rgba(245,240,232,0.80); line-height: 1.65;
+  max-width: 520px; margin: 0;
 }
 
-.nav-left{
-	display:flex;
-	align-items:center;
-	gap:clamp(14px, 2vw, 40px);
+.home-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  max-height: 260px;
+  min-height: 0 !important;
+  height: auto;
+  width: 180px;
+  max-width: 180px;
+  position: absolute;
+  top: 50%;
+  right: 32px;
+  transform: translateY(-50%);
+  overflow: hidden;
+  background: #f5f0e8;
+  color: #1a1410;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 12px 28px;
+  border-radius: 100px;
+  text-decoration: none;
+  margin-top: 0;
+  transition: background 0.2s ease, color 0.2s ease;
+  text-align: center;
+  line-height: 1.25;
+  z-index: 5;
+  box-sizing: border-box;
+}
+.home-hero__cta:hover {
+  background: #c17f24;
+  color: #f5f0e8;
 }
 
-.nav-logo{ height:36px; }
-
-.nav-links a{
-	margin-right:clamp(12px, 1.6vw, 24px);
-	text-decoration:none;
-	color:#444;
-	font-weight:500;
+.hero-stats {
+  display: flex; gap: clamp(0.5rem, 1.5vw, 1.25rem);
+  justify-content: center; align-items: flex-start;
+  padding: clamp(0.65rem, 1.5vh, 1.1rem) clamp(1rem, 2.5vw, 1.5rem);
+  background: rgba(10, 8, 6, 0.52);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(193,127,36,0.25); border-radius: 16px;
+  width: auto; max-width: 520px;
+  flex-wrap: wrap;
 }
-.nav-links a:hover{ color:#000; }
-
-/* STAGE (fits under fixed nav) */
-.stage{
-	flex:1;
-	min-height:0;
-
-	padding:
-		clamp(18px, 3.2vh, 54px)
-		clamp(16px, 3.2vw, 40px)
-		clamp(16px, 3vh, 40px);
-
-	text-align:center;
-
-	/* reserve space for fixed nav */
-	margin-top:76px;
-
-	display:flex;
-	flex-direction:column;
-	justify-content:flex-start;
-	gap:clamp(10px, 1.8vh, 18px);
+.hero-stat { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; flex: 0 0 auto; }
+.hero-stat__number {
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 2.8vw, 2.1rem);
+  font-weight: 700; color: var(--amber); line-height: 1; letter-spacing: -0.03em;
+}
+.hero-stat__label {
+  font-size: clamp(10px, 1.1vw, 12px); font-weight: 600;
+  color: rgba(245,240,232,0.88); text-align: center;
+  text-transform: uppercase; letter-spacing: 0.06em; max-width: 100px; line-height: 1.3;
 }
 
-/* Avoid footer/button collisions on shorter viewports */
-.stage{ padding-bottom: clamp(22px, 4vh, 56px); }
+@media (prefers-reduced-motion: reduce) { .hero-stat__number { transition: none !important; } }
 
-.footer{
-	position: relative;
-	z-index: 1;
+@media (max-width: 900px) {
+  .home-hero__content { padding: 0 20px; gap: 10px; }
+  .home-hero__content h2 { font-size: 1.75rem; }
+  .hero-stats { gap: 0.5rem; padding: 0.6rem 0.85rem; max-width: 100%; }
 }
-
-.welcome{
-	display:none; /* hidden until Enter */
-	max-width:980px;
-	margin:0 auto;
-}
-
-.welcome h1{
-	font-family:"Playfair Display", serif;
-	font-size:clamp(30px, 4.6vw, 44px);
-	line-height:1.12;
-	margin:0 0 12px 0;
-	letter-spacing:-0.6px;
-}
-
-.welcome p{
-	margin:0 0 14px 0;
-	font-size:clamp(14px, 2vw, 18px);
-	line-height:1.5;
-	color:#555;
-}
-
-/* Homepage breathing room below carousel */
-.welcome-section, .intro-section,
-section:not([class*="hero"]):first-of-type {
-	padding: 3rem 2rem 2rem !important;
-	margin-top: 0 !important;
-	padding-bottom: 2rem !important;
-	margin-bottom: 0 !important;
-}
-
-.welcome-section h2, .intro-section h2,
-section:not([class*="hero"]):first-of-type h2 {
-	font-family: 'Playfair Display', serif !important;
-	font-size: clamp(1.6rem, 3vw, 2.2rem) !important;
-	color: #0f172a !important;
-	margin-bottom: 1.25rem !important;
-	letter-spacing: -0.02em !important;
-}
-
-section:not([class*="hero"]):first-of-type p {
-	font-family: Inter, sans-serif !important;
-	font-size: 1rem !important;
-	line-height: 1.75 !important;
-	color: rgba(15,23,42,0.78) !important;
-	max-width: 620px !important;
-	margin: 0 auto 2rem !important;
-}
-
-/* Ensure no extra bottom padding/margin on wrappers */
-body, main, .page-wrapper {
-	padding-bottom: 0 !important;
-	margin-bottom: 0 !important;
-}
-
-.next-btn{
-	margin:0 auto;
-	background:#111;
-	color:white;
-	padding:12px 18px;
-	border-radius:999px;
-	border:none;
-	cursor:pointer;
-	font-weight:600;
-	box-shadow:0 10px 25px rgba(0,0,0,0.20);
-	transition:.25s;
-}
-.next-btn:hover{
-	transform:translateY(-1px);
-	box-shadow:0 16px 34px rgba(0,0,0,0.22);
-}
-
-/* Partner strip (hidden until Enter) */
-.partner-strip{
-	display:none;
-	max-width:1600px;
-	margin:0 auto;
-
-	background:white;
-	border-radius:22px;
-	padding:clamp(12px, 2vh, 18px);
-	box-shadow:0 18px 50px rgba(0,0,0,0.08);
-	text-align:center;
-}
-
-.partner-strip .label{
-	font-size:12px;
-	letter-spacing:0.14em;
-	text-transform:uppercase;
-	color:#888;
-	margin:0 0 12px 0;
-}
-
-.partner-logos{
-	display:flex;
-	flex-wrap:wrap;
-	justify-content:center;
-	align-items:center;
-	gap:clamp(14px, 2.2vw, 28px);
-	padding:6px 0 4px;
-}
-
-.partner-logos img{
-	height:clamp(28px, 4vh, 38px);
-	width:auto;
-	max-width:175px;
-	object-fit:contain;
-	filter:grayscale(100%);
-	opacity:.75;
-	transition:.25s;
-}
-.partner-logos img:hover{
-	filter:none;
-	opacity:1;
-	transform:scale(1.06);
-}
-
-/* Targeted fixes */
-.partner-logos img.logo-addenbrookes{
-	height:clamp(70px, 10vh, 130px);
-	opacity:.78;
-}
-.partner-logos img.logo-workwell{
-	height:clamp(60px, 9vh, 110px);
-	opacity:.78;
-}
-
-/* OVERLAY POP */
-.overlay{
-	position:fixed;
-	inset:0;
-	display:flex;
-	justify-content:center;
-	align-items:center;
-	padding:28px;
-	background:rgba(15,23,42,0.92); /* CHANGE: dark premium overlay */
-	backdrop-filter:blur(8px); /* CHANGE: match requested blur */
-	z-index:50;
-}
-
-.pop{
-	width:100%; /* CHANGE: allow full width with max-width cap */
-	max-width:680px; /* CHANGE: locked modal card width */
-	background:rgba(15,23,42,0.95); /* CHANGE: dark modal card background */
-	backdrop-filter:none; /* CHANGE: avoid light/glass tint on card */
-	-webkit-backdrop-filter:none; /* CHANGE: Safari parity */
-	border:1px solid rgba(255,255,255,0.12); /* CHANGE: locked border */
-	border-radius:12px; /* CHANGE: locked radius */
-	box-shadow:0 8px 48px rgba(0,0,0,0.4); /* CHANGE: locked premium shadow */
-	padding:2.5rem 3rem; /* CHANGE: locked padding */
-	position:relative;
-	transform-origin:center;
-}
-
-.pop-quote{
-	font-family:"Playfair Display", serif; /* CHANGE: locked font */
-	font-style:italic; /* CHANGE: italic quote */
-	font-size:1.2rem; /* CHANGE: locked quote size */
-	line-height:1.7; /* CHANGE: locked line-height */
-	color:#f4f5f7; /* CHANGE: locked light text */
-	border-left:3px solid #ff8a00; /* CHANGE: locked orange accent */
-	padding-left:1.25rem; /* CHANGE: locked padding */
-	margin:0 0 1.5rem; /* CHANGE: locked bottom spacing */
-	text-align:left; /* CHANGE: support border-left layout */
-}
-
-.pop-source{
-	margin-top:clamp(12px, 2.4vh, 24px);
-	font-family:Inter, sans-serif; /* CHANGE: locked attribution family */
-	font-weight:400; /* CHANGE: locked attribution weight */
-	font-size:0.8rem; /* CHANGE: locked attribution size */
-	letter-spacing:0.08em;
-	text-transform:uppercase;
-	color:#5eead4; /* CHANGE: locked teal attribution color */
-	margin-bottom:0; /* kept */
-	text-align:center;
-}
-
-.pop-enter{
-	margin-top:clamp(12px, 2.2vh, 22px);
-	display:inline-flex;
-	align-items:center;
-	justify-content:center;
-	padding:0.6rem 2rem; /* CHANGE: locked button padding */
-	border-radius:999px;
-	background:#ff8a00; /* CHANGE: locked orange button */
-	color:#0f172a; /* CHANGE: locked navy button text */
-	font-family:Inter, sans-serif; /* CHANGE: locked button font family */
-	font-weight:600; /* CHANGE: locked button weight */
-	border:none;
-	cursor:pointer;
-	box-shadow:0 12px 28px rgba(0,0,0,0.18);
-	transition:.25s;
-}
-.pop-enter:hover{
-	background:#e07a00; /* CHANGE: locked hover background */
-	transform:translateY(-1px);
-	box-shadow:0 18px 36px rgba(0,0,0,0.22);
-}
-
-/* Pixelate effect layer (subtle) */
-.pop::after{
-	content:"";
-	position:absolute;
-	inset:0;
-	border-radius:12px; /* CHANGE: keep pixel layer aligned with new card radius */
-	pointer-events:none;
-	opacity:0;
-	background:
-		repeating-linear-gradient(90deg, rgba(0,0,0,0.10) 0px, rgba(0,0,0,0.10) 2px, transparent 2px, transparent 8px),
-		repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 2px, transparent 2px, transparent 8px);
-	mix-blend-mode:multiply;
-	filter:blur(0.35px);
-}
-
-/* Smooth disappear */
-.overlay.closing{ animation:overlayFade 0.9s ease forwards; }
-@keyframes overlayFade{ 0%{ opacity:1; } 100%{ opacity:0; } }
-
-.pop.closing{ animation:popOut 1.1s cubic-bezier(.2,.9,.2,1) forwards; }
-@keyframes popOut{
-	0%{ opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
-	35%{ opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
-	100%{ opacity:0; transform:translateY(-22px) scale(0.94); filter:blur(2px) contrast(1.05); }
-}
-.pop.closing::after{ animation:pix 1.1s ease forwards; }
-@keyframes pix{ 0%{ opacity:0; } 40%{ opacity:0; } 70%{ opacity:0.14; } 100%{ opacity:0; } }
-
-/* Page content comes in */
-.reveal{ animation:pageIn 0.9s ease forwards; }
-@keyframes pageIn{
-	from{ opacity:0; transform:translateY(10px); filter:blur(1.6px); }
-	to{ opacity:1; transform:translateY(0); filter:blur(0); }
-}
-
-/* FOOTER */
-.footer{
-	padding:clamp(10px, 2vh, 18px) 40px clamp(10px, 2vh, 24px);
-	text-align:center;
-	color:#777;
-	font-size:13px;
-}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-	.navbar{ padding:16px 18px; }
-	.stage{ margin-top:72px; padding:22px 18px 18px; justify-content:flex-start; }
-	.pop{ padding:28px 22px; }
-}
-
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce){
-	*{ animation:none !important; transition:none !important; }
+@media (max-width: 480px) {
+  .hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
 }
 </style>
-<link rel="stylesheet" href="otos-shared.css">
-<link rel="stylesheet" href="hero-overlays/hero-overlays.css">
 </head>
-
 <body>
-<section class="otos-hero-carousel-shell" aria-label="Hero carousel">
-  <style>
-    .otos-hero-carousel-shell{
-      position: relative;
-      width: 100%;
-      height: min(62vh, 620px); /* CHANGE: reduce oversized hero height */
-      min-height: 420px; /* CHANGE: lower minimum so it doesn't dominate the page */
-      overflow: hidden;
-      background: #000;
-    }
-    .otos-carousel{
-      width: 100%;
-      height: 100%;
-      position: relative;
-    }
-    .otos-carousel__track{
-      height: 100%;
-      display: flex;
-      transition: transform 520ms ease;
-      will-change: transform;
-    }
-    .otos-carousel__slide{
-      min-width: 100%;
-      height: 100%;
-    }
-    .otos-carousel__slide .hero-block{
-      height: 100%;
-    }
-    .otos-carousel__btn{
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 10;
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(0,0,0,0.35);
-      color: #fff;
-      font-size: 26px;
-      line-height: 1;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-    .otos-carousel__btn--prev{ left: 18px; }
-    .otos-carousel__btn--next{ right: 18px; }
-    .otos-carousel__btn:hover{ background: rgba(0,0,0,0.5); }
-    .otos-carousel__dots{
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 14px;
-      z-index: 10;
-      display: flex;
-      gap: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,0.25);
-      border: 1px solid rgba(255,255,255,0.12);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-    .otos-carousel__dot{
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      border: 0;
-      background: rgba(255,255,255,0.35);
-      cursor: pointer;
-      padding: 0;
-    }
-    .otos-carousel__dot[aria-selected="true"]{ background: rgba(255,255,255,0.9); }
-    @media (prefers-reduced-motion: reduce){
-      .otos-carousel__track{ transition: none; }
-    }
-
-    /* Keep dots clear of page footer on shorter heights */
-    @media (max-height: 760px){
-      .otos-carousel__dots{ bottom: 10px; }
-    }
-  </style>
-  <div data-otos-hero-carousel></div>
-</section>
-<!-- NAV -->
-<nav class="navbar">
-	<div class="nav-left">
-		<img src="../assets/brain.png" class="nav-logo" alt="">
-		<div class="nav-links">
-			<a class="active" href="/continuity/index.html">Home</a>
-			<a href="/continuity/how-it-works.html">How it works</a>
-			<a href="/continuity/guided-demos.html">Guided demos</a>
-			<a href="/continuity/controls.html">Controls</a>
-			<a href="/continuity/reporting.html">Reporting</a>
-			<a href="/continuity/founder-journey-final.html">Founder Journey</a>
-			<a href="/continuity/references.html">References</a>
-		</div>
-	</div>
-</nav>
-
-<!-- PAGE (hidden content until Enter) -->
-<section class="stage">
-	<div class="welcome" id="welcome">
-		<h1>You refer someone. Then what?</h1>
-		<p>
-			OTOS Continuity™ shows what happens after a referral, handoff, or discharge — so nobody disappears quietly. It takes one scan or one tap to connect someone to their journey thread. No system changes. No extra paperwork. No clinical risk. Built by someone who lived inside the gaps. Designed so the people working hardest never have to wonder "did they make it?" again.
-		</p>
-		<button class="next-btn" type="button" onclick="window.location.href='/continuity/how-it-works.html'">See how it works →</button>
-	</div>
-
+<section class="home-hero"
+  data-hero-image-key="otos-hero-main"
+  data-hero-image-default="images/Therapist reviewing OTOS app progress.png">
+  <div class="home-hero__overlay"></div>
+  <div class="home-hero__content">
+    <span class="hero-kicker">OTOS Continuity™</span>
+    <blockquote class="home-hero__quote"
+      data-hero-quote-key="otos-hero-quote">&ldquo;The failure is not in the care &mdash; it is in the space between it.&rdquo;</blockquote>
+    <h2 class="index-heading">You refer someone. <span class="heading-italic-line">Then what?</span></h2>
+    <p class="home-hero__body">OTOS Continuity™ shows what happens after a referral, handoff, or discharge &mdash; so nobody disappears quietly. One scan. One tap. Always knowing they made the next step.</p>
+    <div class="hero-stats" role="list" aria-label="Personal journey statistics">
+      <div class="hero-stat" role="listitem">
+        <span class="hero-stat__number" data-stat-value="30">30</span>
+        <span class="hero-stat__label">years self-medicating</span>
+      </div>
+      <div class="hero-stat" role="listitem">
+        <span class="hero-stat__number" data-stat-value="6">6</span>
+        <span class="hero-stat__label">years waiting</span>
+      </div>
+      <div class="hero-stat" role="listitem">
+        <span class="hero-stat__number" data-stat-value="11">11</span>
+        <span class="hero-stat__label">services used</span>
+      </div>
+      <div class="hero-stat" role="listitem">
+        <span class="hero-stat__number" data-stat-value="3">3</span>
+        <span class="hero-stat__label">days to change everything</span>
+      </div>
+    </div>
+  </div>
+  <a href="how-it-works.html" class="home-hero__cta">See how it works →</a>
 </section>
 
-<!-- FOOTER -->
-<footer class="site-footer">
-  © OTOS Digital Ltd. Company registered in England 
-  &amp; Wales with Company No. 17084455. 
-  Phone <a href="tel:+447466334143">+447466334143</a>. 
-  Email <a href="mailto:info@otos.life">info@otos.life</a>.
-</footer>
-
-<!-- OVERLAY POP -->
-<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Quote">
-	<div class="pop" id="pop">
-		<p class="pop-quote">
-			“Attention deficit hyperactivity disorder (ADHD), when unsupported, is a potent route into educational failure, long-term unemployment, crime, substance misuse, suicide, mental and physical illness. Economic costs of at least £17 billion are avoidable as, when appropriately supported, individuals with ADHD can thrive.”
-		</p>
-		<p class="pop-source">
-			NHS Independent ADHD Taskforce Report, April 2025
-		</p>
-
-		<div style="text-align:center">
-			<button class="pop-enter" id="enterBtn" type="button">Enter</button>
-		</div>
-	</div>
-</div>
-
+<script defer src="otos-shared.js"></script>
 <script>
 (function(){
-	const overlay = document.getElementById('overlay');
-	const pop = document.getElementById('pop');
-	const enterBtn = document.getElementById('enterBtn');
+  var initHeroContentManager = function() {
+    var hero  = document.querySelector('[data-hero-image-key="otos-hero-main"]');
+    var quote = document.querySelector('[data-hero-quote-key="otos-hero-quote"]');
+    if (hero) {
+      var savedImg = localStorage.getItem('otos-hero-main');
+      var def   = hero.dataset.heroImageDefault;
+      if (savedImg || def) hero.style.backgroundImage = 'url(\'' + (savedImg || def) + '\')';
+    }
+    if (quote) {
+      var savedQ = localStorage.getItem('otos-hero-quote');
+      if (savedQ) quote.textContent = savedQ;
+    }
+  };
+  initHeroContentManager();
 
-	const welcome = document.getElementById('welcome');
+  function applyOtosHomeContent() {
+    var raw = localStorage.getItem('otos_home_content');
+    if (!raw) return;
 
-	function revealPage(){
-		welcome.style.display = 'block';
-		welcome.classList.add('reveal');
-	}
+    var d;
+    try {
+      d = JSON.parse(raw);
+    } catch (e) { return; }
 
-	function closePop(){
-		overlay.classList.add('closing');
-		pop.classList.add('closing');
+    var isMobile = window.innerWidth < 768;
+    var heading    = isMobile ? (d.heading_mobile || d.heading_desktop) : d.heading_desktop;
+    var subheading = isMobile ? (d.subheading_mobile || d.subheading_desktop) : d.subheading_desktop;
+    var colour     = d.text_colour || '#ffffff';
 
-		setTimeout(() => {
-			overlay.style.display = 'none';
-			revealPage();
-		}, 1000);
-	}
+    var h1 = document.querySelector('.index-heading');
+    if (h1 && heading != null && String(heading).trim() !== '') {
+      h1.textContent = heading;
+      h1.style.whiteSpace = 'pre-line';
+      h1.style.color = colour;
+      h1.style.webkitTextFillColor = colour;
+    }
 
-	enterBtn.addEventListener('click', closePop);
+    var sub = document.querySelector('.home-hero__body');
+    if (sub && subheading != null && String(subheading).trim() !== '') {
+      sub.textContent = subheading;
+      sub.style.whiteSpace = 'pre-line';
+      sub.style.color = colour;
+    }
+
+    var heroEl = document.querySelector('[data-hero-image-key="otos-hero-main"]');
+    if (heroEl && d.image) {
+      heroEl.style.backgroundImage = 'url(\'' + d.image + '\')';
+    }
+
+    if (h1 && d.headingSize) {
+      h1.style.fontSize = d.headingSize + 'px';
+    }
+    if (sub && d.subSize) {
+      sub.style.fontSize = d.subSize + 'px';
+    }
+
+    var content = document.querySelector('.home-hero__content');
+    if (content && d.posDesktop && d.posMobile) {
+      var pos = isMobile ? d.posMobile : d.posDesktop;
+      var x = parseFloat(pos.x);
+      var y = parseFloat(pos.y);
+      if (isFinite(x) && isFinite(y) && x >= 10 && x <= 90 && y >= 10 && y <= 90) {
+        if (window.innerWidth < 480) {
+          content.style.cssText = '';
+        } else {
+          content.style.position = 'absolute';
+          content.style.left = x + '%';
+          content.style.top = y + '%';
+          content.style.transform = 'translate(-50%, -50%)';
+          content.style.padding = '0 200px 0 40px';
+          if (x < 35) {
+            content.style.textAlign = 'left';
+            content.style.alignItems = 'flex-start';
+          } else if (x > 65) {
+            content.style.textAlign = 'right';
+            content.style.alignItems = 'flex-end';
+          } else {
+            content.style.textAlign = 'center';
+            content.style.alignItems = 'center';
+          }
+        }
+      }
+    }
+  }
+
+  function scheduleApply() {
+    setTimeout(applyOtosHomeContent, 0);
+    setTimeout(applyOtosHomeContent, 80);
+  }
+
+  document.addEventListener('DOMContentLoaded', scheduleApply);
+  window.addEventListener('load', scheduleApply);
+  window.addEventListener('pageshow', function(ev) {
+    if (ev.persisted) scheduleApply();
+  });
 })();
 </script>
-<script defer src="otos-shared.js"></script>
-<script defer src="hero-carousel.js"></script>
 </body>
 </html>

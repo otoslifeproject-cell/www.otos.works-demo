@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>OTOS Continuity™ — Alert (Mobile)</title>
   <link rel="stylesheet" href="otos-design-system.css">
+  <link rel="stylesheet" href="wireframe-shared.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     .device-frame {
@@ -49,7 +50,7 @@
     .btn--full { width: 100%; padding: var(--space-4); margin-top: var(--space-2); }
   </style>
 </head>
-<body style="background: #e5e5e5; padding: 40px 0;">
+<body class="wf-page">
   <div class="device-frame">
     <div class="device-screen">
       <div class="notch" aria-hidden="true"></div>
@@ -69,5 +70,9 @@
       <div class="safe-bottom"></div>
     </div>
   </div>
+  <nav class="wf-toolbar" aria-label="Screen navigation">
+    <a class="wf-toolbar__link" href="index.html">Hub</a>
+    <a class="wf-toolbar__link" href="flow-overview.html#flow-legacy">Flow map</a>
+  </nav>
 </body>
 </html>

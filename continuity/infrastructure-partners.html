@@ -1,236 +1,533 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Infrastructure Partners — OTOS Continuity™</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="otos-shared.css"/>
-  <style>
-    html, body { min-height: 100%; margin: 0; padding: 0; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f4f5f7;
-      color: #0f172a;
-      min-height: 100vh;
-      overflow: visible;
-    }
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(15,23,42,0.08);
-      display: flex;
-      align-items: center;
-      gap: 2rem;
-      padding: 0 2rem;
-      height: 64px;
-    }
-    nav a {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 500;
-      color: rgba(15,23,42,0.6);
-      text-decoration: none;
-    }
-    nav a:hover { color: #0f172a; }
-    nav a.active { color: #0f172a; font-weight: 600; }
-    .logo {
-      height: 32px;
-      width: auto;
-      margin-right: 1rem;
-    }
-    .page { min-height: calc(100svh - 64px); }
-    @media (max-width: 980px) {
-      .page { min-height: calc(100svh - 64px); }
-      nav { gap: 1rem; padding: 0 1rem; }
-    }
-  </style>
-</head>
-<body>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Infrastructure Partners — OTOS Continuity™</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="otos-shared.css">
+<style>
+:root {
+  --bg-page: #f5f0e8;
+  --bg-section-alt: #ede8df;
+  --bg-dark: #1e150a;
+  --text-primary: #1a1410;
+  --text-secondary: #7a6a58;
+  --amber: #c17f24;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; min-height: 100%; }
+html, body { margin: 0; }
+body {
+  background: #f5f0e8;
+  color: #1a1410;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  line-height: 1.68;
+  margin: 0;
+  overflow-x: hidden;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-style: italic;
+  color: #1a1410;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+p, li { color: rgba(26,20,10,0.82); line-height: 1.7; }
+a { color: #c17f24; }
+img, svg { max-width: 100%; height: auto; }
 
-<!-- SECTION HERO -->
-<section style="
-  position: relative;
-  height: 48vh;
-  min-height: 320px;
-  overflow: hidden;
+/* Nav: always visible, Oura-style sticky */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 64px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  background: rgba(245, 240, 232, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(193, 127, 36, 0.1);
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  box-shadow: 0 1px 0 rgba(255,252,246,0.8), 0 4px 16px rgba(26,20,16,0.06);
+}
+.nav-logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+.nav-logo img { height: 36px; width: auto; display: block; }
+.nav-links { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.1px;
+  transition: color 0.15s, background 0.15s;
+}
+.nav-links a:hover { color: var(--text-primary); background: rgba(193,127,36,0.08); }
+.nav-links a.active { color: var(--text-primary); font-weight: 600; }
+
+.infra-main { flex: 1; width: 100%; }
+
+.page-kicker {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c17f24;
+  margin-bottom: 1rem;
+}
+
+.page-header {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: clamp(2.1rem, 4.2vw, 3.5rem) 2rem clamp(1.4rem, 2.8vw, 2.1rem);
   text-align: center;
-  background: #0f172a;
-">
-  <div style="
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(10,18,35,0.45), rgba(10,18,35,0.82));
-    z-index: 1;
-  "></div>
-  <img
-    src="images/hero-7-dean.png"
-    alt=""
-    style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"
-  />
-  <img
-    src="../assets/brain.png"
-    alt="OTOS"
-    style="position:absolute;top:24px;right:32px;width:32px;height:32px;z-index:10;"
-  />
-  <div style="position:relative;z-index:2;padding:0 2rem;">
-    <p style="font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#ff8a00;margin:0 0 1rem;">Infrastructure Partners</p>
-    <h1 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(2rem,4vw,3.2rem);color:#ffffff;line-height:1.1;letter-spacing:-0.02em;margin:0 0 1rem;">The infrastructure already exists.<br>OTOS connects it.</h1>
-    <p style="font-family:'Inter',sans-serif;font-size:1.05rem;color:rgba(255,255,255,0.75);margin:0;max-width:52ch;margin-left:auto;margin-right:auto;">Three strategic relationships. Each one strengthening a different dimension of the OTOS proposition.</p>
+}
+
+.page-header h1 {
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  margin-bottom: 1rem;
+}
+
+.page-header .page-intro {
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  color: rgba(26,20,10,0.72);
+  max-width: 56ch;
+  margin: 0 auto;
+}
+
+.partners-intro {
+  text-align: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem 1rem;
+}
+.partners-intro__label {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c17f24;
+  margin: 0 0 0.75rem;
+}
+.partners-intro h2 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin: 0 0 0.5rem;
+}
+
+.partners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(1rem, 2vw, 1.75rem);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem clamp(3rem, 5vw, 4rem);
+}
+
+.partner-card {
+  background: rgba(255,255,255,0.68);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(193,127,36,0.15);
+  border-radius: 20px;
+  padding: clamp(1.2rem, 2.4vw, 1.6rem) clamp(1.5rem, 3vw, 2rem);
+  box-shadow: 0 8px 32px rgba(26,20,10,0.08);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.partner-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(26,20,10,0.12);
+}
+
+.partner-card__phase {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c17f24;
+  border: 1px solid rgba(193,127,36,0.35);
+  border-radius: 100px;
+  padding: 0.25rem 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.partner-card__icon {
+  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.partner-card h3 {
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  margin-bottom: 0.75rem;
+}
+
+.partner-card p { font-size: 0.92rem; margin-bottom: 1rem; }
+
+.partner-card ul { list-style: none; padding: 0; margin: 0; }
+
+.partner-card ul li {
+  font-size: 0.88rem;
+  padding: 0.35rem 0;
+  border-top: 1px solid rgba(193,127,36,0.1);
+  color: rgba(26,20,10,0.75);
+}
+
+.partner-card ul li:first-child { border-top: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .partner-card { transition: none; }
+}
+
+.quote-strap {
+  background: transparent;
+  padding: 0 2rem;
+  box-sizing: border-box;
+  max-width: 640px;
+  margin: 24px auto 28px;
+  text-align: center;
+}
+
+.quote-strap__sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: rgba(26,20,10,0.45);
+  margin: 1rem auto 0;
+  max-width: 52ch;
+  text-align: center;
+}
+
+.quote-strap .pull-quote {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 600;
+  color: #1a1410;
+  text-align: center;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  padding-left: 0;
+  line-height: 1.35;
+  border: none;
+  border-left: none;
+}
+
+.quote-strap .pull-quote em {
+  font-style: italic;
+  font-weight: inherit;
+}
+
+.stats-section {
+  background: #1a1410;
+  padding: clamp(3rem, 6vw, 5rem) 2rem;
+  margin: clamp(2rem, 4vw, 4rem) 0;
+}
+
+.stats-section__header {
+  text-align: center;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.stats-section__header .stats-overline {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c17f24;
+  margin: 0 0 1rem;
+}
+
+.stats-section__header h2 { color: #f5f0e8; font-size: clamp(1.6rem, 3.5vw, 2.8rem); margin: 0 0 0.5rem; }
+.stats-section__header p { color: rgba(245,240,232,0.65); max-width: 52ch; margin: 0.75rem auto 0; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+  max-width: 1000px;
+  margin: 0 auto 3rem;
+}
+
+.stat-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(193,127,36,0.2);
+  border-radius: 16px;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  text-align: left;
+}
+
+.stat-card__value {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: #c17f24;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+}
+
+.stat-card__label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(245,240,232,0.65);
+  line-height: 1.5;
+}
+
+.stats-section__cta {
+  text-align: center;
+}
+.stats-section__cta a {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #c17f24;
+  text-decoration: none;
+  border: 1px solid #c17f24;
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+}
+
+.infra-arch {
+  background: var(--bg-section-alt);
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.infra-arch__overline {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c17f24;
+  margin: 0 0 0.75rem;
+}
+
+.infra-arch h2 {
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  margin: 0 0 1rem;
+}
+
+.infra-arch p {
+  font-size: 0.95rem;
+  color: rgba(26,20,10,0.6);
+  max-width: 48ch;
+  margin: 0 auto 2rem;
+  line-height: 1.7;
+}
+
+.infra-arch__cta {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #f5f0e8;
+  text-decoration: none;
+  background: #1a1410;
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+}
+
+.bottom-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 48px;
+  height: 56px;
+  background: rgba(245,240,232,0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(193,127,36,0.10);
+  box-shadow: 0 -4px 20px rgba(26,20,16,0.05);
+  margin-top: auto;
+}
+.bottom-nav a {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.bottom-nav a:hover { color: var(--text-primary); }
+
+.site-footer {
+  background: var(--bg-dark);
+  padding: 22px 48px;
+  text-align: center;
+  margin-top: auto;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: rgba(240,235,227,0.40);
+  line-height: 1.6;
+}
+.site-footer a { color: rgba(240,235,227,0.55); text-decoration: none; }
+.site-footer a:hover { color: rgba(240,235,227,0.85); }
+
+@media (max-width: 900px) {
+  .site-nav { padding: 0 20px; }
+  .nav-links a { font-size: 11.5px; padding: 4px 8px; }
+  .bottom-nav { padding: 0 24px; }
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo" aria-label="OTOS Home">
+    <img src="brain.png" alt="OTOS" height="36" style="display:block;width:auto;">
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="guided-demos.html">Guided demos</a>
+    <a href="controls.html">Controls</a>
+    <a href="reporting.html">Reporting</a>
+    <a href="founder-journey-final.html">Founder Journey</a>
+    <a href="references.html">References</a>
+    <a href="infrastructure-partners.html" class="active">Infrastructure</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <span class="page-kicker">Infrastructure Partners</span>
+  <h1>The infrastructure already exists.<br>OTOS connects it.</h1>
+  <p class="page-intro">Three strategic relationships. Each one strengthening a different dimension of the OTOS proposition.</p>
+</div>
+
+<main class="infra-main">
+<!-- layout: quote block sits above partner cards (not below) -->
+<section class="partners-intro">
+  <span class="partners-intro__label">Strategic connections</span>
+  <h2>Not operating alone.</h2>
+</section>
+
+<section class="quote-strap">
+  <p class="pull-quote"><em>"Community is the continuity."</em></p>
+  <p class="quote-strap__sub">Co-produced with SUN Network and people with lived experience.</p>
+</section>
+
+<div class="partners-grid">
+
+  <div class="partner-card">
+    <span class="partner-card__phase">Phase 1 — Active</span>
+    <span class="partner-card__icon" aria-hidden="true">☀️</span>
+    <h3>SUN Network</h3>
+    <p>Co-production lead. Service user voice, participant-facing language design, and evaluation credibility. SUN's involvement is budgeted, structured, and produces a named deliverable in the evaluation report.</p>
+    <ul>
+      <li>Independent service user representation</li>
+      <li>ND-safe language review for all check-in content</li>
+      <li>Evaluation input — week 12 report</li>
+      <li>Local credibility with CPFT, CGL and the ICB</li>
+    </ul>
+  </div>
+
+  <div class="partner-card">
+    <span class="partner-card__phase">L2 — Named strategic connection</span>
+    <span class="partner-card__icon" aria-hidden="true">⚡</span>
+    <h3>QbTest</h3>
+    <p>When a partner flags a suspected ADHD indicator, OTOS carries that signal to the referral route. NHS Right to Choose is already available — every service provider can use it. QbTest is the fast-track assessment tool at the end of that pathway.</p>
+    <ul>
+      <li>Partner flags indicator — OTOS carries the signal</li>
+      <li>NHS Right to Choose — the existing standard pathway</li>
+      <li>QbTest: objective, CE-marked ADHD assessment</li>
+      <li>Goal: 50 people to faster diagnosis, not years of waiting</li>
+    </ul>
+  </div>
+
+  <div class="partner-card">
+    <span class="partner-card__phase">L3 — Named strategic connection</span>
+    <span class="partner-card__icon" aria-hidden="true">🔗</span>
+    <h3>Joy (JoyConnect)</h3>
+    <p>Joy gets people to the right front door. OTOS makes sure they follow through. A natural Phase 3 extension as OTOS expands into Neighbourhood Health and the 250 planned NHS community hubs across England.</p>
+    <ul>
+      <li>Joy: GP-level signposting, primary care workflow</li>
+      <li>OTOS: continuity after the signpost lands</li>
+      <li>250 NHS community hubs — the expansion context</li>
+      <li>Phase 1 requires no Joy integration</li>
+    </ul>
+  </div>
+
+</div>
+
+<section class="stats-section">
+  <div class="stats-section__header">
+    <span class="stats-overline">The cost of doing nothing</span>
+    <h2>The tsunami is coming.<br>Nobody can see it building.</h2>
+    <p>Thousands of adults with undiagnosed ADHD cycling through A&amp;E, housing, probation. OTOS is the early warning — and the breakwater.</p>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-card__value">£17bn</span>
+      <span class="stat-card__label">Cost to UK economy of untreated ADHD — NHS England ADHD Taskforce 2025</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value">£4.07</span>
+      <span class="stat-card__label">Saved per £1 spent on integrated dual diagnosis — Turning Point / LSE</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value">877</span>
+      <span class="stat-card__label">People in CPFT region with ADHD and addiction — estimated direct cost £3m–£6m per year</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value">250</span>
+      <span class="stat-card__label">NHS community hubs planned under the 10 Year Health Plan — the expansion network</span>
+    </div>
+  </div>
+  <div class="stats-section__cta">
+    <a href="ripple-cost-diagram.html">View full ripple cost diagram →</a>
   </div>
 </section>
 
-<!-- NAVBAR -->
-<nav>
-  <img src="../assets/brain.png" alt="OTOS" class="logo"/>
-  <a href="index.html">Home</a>
-  <a href="how-it-works.html">How it works</a>
-  <a href="guided-demos.html">Guided demos</a>
-  <a href="controls.html">Controls</a>
-  <a href="reporting.html">Reporting</a>
-  <a href="founder-story-v2.html">Founder Journey</a>
-  <a href="references.html">References</a>
-</nav>
+<section class="infra-arch">
+  <span class="infra-arch__overline">System architecture</span>
+  <h2>The silent layer that connects every service.</h2>
+  <p>OTOS syncs CPFT, CGL, CRS, SUN, Primary Care and A&amp;E into one encrypted continuity journey. No record write-back. No diagnostic claims. Human control always.</p>
+  <a class="infra-arch__cta" href="architecture-map.html">View architecture map →</a>
+</section>
 
-<div class="page">
+</main>
 
-  <!-- STRAPLINE -->
-  <section style="background:#f4f5f7;padding:3.5rem 2rem;text-align:center;">
-    <p style="font-family:'Playfair Display',serif;font-size:clamp(1.2rem,2vw,1.7rem);font-weight:600;color:#0f172a;max-width:52ch;margin:0 auto;line-height:1.4;font-style:italic;">"Community is the continuity."</p>
-    <p style="font-family:'Inter',sans-serif;font-size:0.85rem;color:rgba(15,23,42,0.45);margin:1rem auto 0;">Co-produced with SUN Network and people with lived experience.</p>
-  </section>
-
-  <!-- PARTNER CARDS -->
-  <section style="background:#ffffff;padding:4rem 2rem;">
-    <div style="max-width:1100px;margin:0 auto;">
-      <p style="font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#ff8a00;margin:0 0 0.75rem;text-align:center;">Strategic connections</p>
-      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:600;color:#0f172a;text-align:center;margin:0 0 3rem;line-height:1.2;">Not operating alone.</h2>
-
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;">
-
-        <!-- SUN NETWORK -->
-        <div style="background:#f8f8f6;border-radius:16px;padding:2rem;box-shadow:0 2px 16px rgba(15,23,42,0.07);">
-          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
-            <div style="width:48px;height:48px;background:#5eead4;border-radius:12px;display:flex;align-items:center;justify-content:center;">
-              <span style="font-size:1.4rem;">☀️</span>
-            </div>
-            <div>
-              <p style="font-family:'Inter',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#ff8a00;margin:0 0 0.2rem;">Phase 1 — Active</p>
-              <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:600;color:#0f172a;margin:0;">SUN Network</h3>
-            </div>
-          </div>
-          <p style="font-family:'Inter',sans-serif;font-size:0.92rem;color:rgba(15,23,42,0.65);line-height:1.7;margin:0 0 1rem;">Co-production lead. Service user voice, participant-facing language design, and evaluation credibility. SUN's involvement is budgeted, structured, and produces a named deliverable in the evaluation report.</p>
-          <ul style="font-family:'Inter',sans-serif;font-size:0.88rem;color:rgba(15,23,42,0.7);line-height:1.9;padding-left:1.2rem;margin:0;">
-            <li>Independent service user representation</li>
-            <li>ND-safe language review for all check-in content</li>
-            <li>Evaluation input — week 12 report</li>
-            <li>Local credibility with CPFT, CGL and the ICB</li>
-          </ul>
-        </div>
-
-        <!-- QBTEST -->
-        <div style="background:#f8f8f6;border-radius:16px;padding:2rem;box-shadow:0 2px 16px rgba(15,23,42,0.07);">
-          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
-            <div style="width:48px;height:48px;background:#ff8a00;border-radius:12px;display:flex;align-items:center;justify-content:center;">
-              <span style="font-size:1.4rem;">⚡</span>
-            </div>
-            <div>
-              <p style="font-family:'Inter',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#ff8a00;margin:0 0 0.2rem;">L2 — Named strategic connection</p>
-              <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:600;color:#0f172a;margin:0;">QbTest</h3>
-            </div>
-          </div>
-          <p style="font-family:'Inter',sans-serif;font-size:0.92rem;color:rgba(15,23,42,0.65);line-height:1.7;margin:0 0 1rem;">When a partner flags a suspected ADHD indicator, OTOS carries that signal to the referral route. NHS Right to Choose is already available — every service provider can use it. QbTest is the fast-track assessment tool at the end of that pathway.</p>
-          <ul style="font-family:'Inter',sans-serif;font-size:0.88rem;color:rgba(15,23,42,0.7);line-height:1.9;padding-left:1.2rem;margin:0;">
-            <li>Partner flags indicator — OTOS carries the signal</li>
-            <li>NHS Right to Choose — the existing standard pathway</li>
-            <li>QbTest: objective, CE-marked ADHD assessment</li>
-            <li>Goal: 50 people to faster diagnosis, not years of waiting</li>
-          </ul>
-        </div>
-
-        <!-- JOY -->
-        <div style="background:#f8f8f6;border-radius:16px;padding:2rem;box-shadow:0 2px 16px rgba(15,23,42,0.07);">
-          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
-            <div style="width:48px;height:48px;background:#818cf8;border-radius:12px;display:flex;align-items:center;justify-content:center;">
-              <span style="font-size:1.4rem;">🔗</span>
-            </div>
-            <div>
-              <p style="font-family:'Inter',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#ff8a00;margin:0 0 0.2rem;">L3 — Named strategic connection</p>
-              <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:600;color:#0f172a;margin:0;">Joy (JoyConnect)</h3>
-            </div>
-          </div>
-          <p style="font-family:'Inter',sans-serif;font-size:0.92rem;color:rgba(15,23,42,0.65);line-height:1.7;margin:0 0 1rem;">Joy gets people to the right front door. OTOS makes sure they follow through. A natural Phase 3 extension as OTOS expands into Neighbourhood Health and the 250 planned NHS community hubs across England.</p>
-          <ul style="font-family:'Inter',sans-serif;font-size:0.88rem;color:rgba(15,23,42,0.7);line-height:1.9;padding-left:1.2rem;margin:0;">
-            <li>Joy: GP-level signposting, primary care workflow</li>
-            <li>OTOS: continuity after the signpost lands</li>
-            <li>250 NHS community hubs — the expansion context</li>
-            <li>Phase 1 requires no Joy integration</li>
-          </ul>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- RIPPLE COST SECTION -->
-  <section style="background:#0f172a;padding:4rem 2rem;text-align:center;">
-    <p style="font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#ff8a00;margin:0 0 1rem;">The cost of doing nothing</p>
-    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:600;color:#ffffff;margin:0 0 1rem;line-height:1.2;">The tsunami is coming.<br>Nobody can see it building.</h2>
-    <p style="font-family:'Inter',sans-serif;font-size:1rem;color:rgba(255,255,255,0.65);max-width:52ch;margin:0 auto 3rem;line-height:1.7;">Thousands of adults with undiagnosed ADHD cycling through A&amp;E, housing, probation. OTOS is the early warning — and the breakwater.</p>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;max-width:900px;margin:0 auto 3rem;">
-      <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:2rem;">
-        <p style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:600;color:#ff8a00;margin:0 0 0.5rem;">£17bn</p>
-        <p style="font-family:'Inter',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.55);margin:0;line-height:1.5;">Cost to UK economy of untreated ADHD — NHS England ADHD Taskforce 2025</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:2rem;">
-        <p style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:600;color:#ff8a00;margin:0 0 0.5rem;">£4.07</p>
-        <p style="font-family:'Inter',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.55);margin:0;line-height:1.5;">Saved per £1 spent on integrated dual diagnosis — Turning Point / LSE</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:2rem;">
-        <p style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:600;color:#ff8a00;margin:0 0 0.5rem;">877</p>
-        <p style="font-family:'Inter',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.55);margin:0;line-height:1.5;">People in CPFT region with ADHD and addiction — estimated direct cost £3m–£6m per year</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:2rem;">
-        <p style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:600;color:#ff8a00;margin:0 0 0.5rem;">250</p>
-        <p style="font-family:'Inter',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.55);margin:0;line-height:1.5;">NHS community hubs planned under the 10 Year Health Plan — the expansion network</p>
-      </div>
-    </div>
-
-    <a href="ripple-cost-diagram.html" style="display:inline-block;font-family:'Inter',sans-serif;font-size:0.88rem;font-weight:600;color:#ff8a00;text-decoration:none;border:1px solid #ff8a00;padding:0.75rem 1.75rem;border-radius:8px;">View full ripple cost diagram →</a>
-  </section>
-
-  <!-- ARCHITECTURE LINK -->
-  <section style="background:#f8f8f6;padding:3rem 2rem;text-align:center;">
-    <p style="font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#ff8a00;margin:0 0 0.75rem;">System architecture</p>
-    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.4rem,2.5vw,2rem);font-weight:600;color:#0f172a;margin:0 0 1rem;line-height:1.2;">The silent layer that connects every service.</h2>
-    <p style="font-family:'Inter',sans-serif;font-size:0.95rem;color:rgba(15,23,42,0.6);max-width:48ch;margin:0 auto 2rem;line-height:1.7;">OTOS syncs CPFT, CGL, CRS, SUN, Primary Care and A&amp;E into one encrypted continuity journey. No record write-back. No diagnostic claims. Human control always.</p>
-    <a href="architecture-map.html" style="display:inline-block;font-family:'Inter',sans-serif;font-size:0.88rem;font-weight:600;color:#ffffff;text-decoration:none;background:#0f172a;padding:0.75rem 1.75rem;border-radius:8px;">View architecture map →</a>
-  </section>
-
+<div class="bottom-nav">
+  <a href="references.html">&larr; References</a>
+  <a href="index.html">Back to Home &rarr;</a>
 </div>
 
-<!-- BOTTOM NAV -->
-<div class="bottom-nav" style="position:static;width:100%;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(255,255,255,0.72);border-top:1px solid rgba(15,23,42,0.08);box-shadow:0 -4px 24px rgba(15,23,42,0.06);display:flex;align-items:center;justify-content:center;gap:1.5rem;padding:1rem 2rem;">
-  <a href="references.html" style="font-family:'Inter',sans-serif;font-size:0.88rem;font-weight:600;color:rgba(15,23,42,0.5);text-decoration:none;">← References</a>
-  <a href="index.html" style="font-family:'Inter',sans-serif;font-size:0.88rem;font-weight:600;color:#0f172a;text-decoration:none;">Back to Home →</a>
-</div>
-
-<!-- FOOTER -->
-<footer style="background:#0f172a;color:rgba(255,255,255,0.5);font-family:'Inter',sans-serif;font-size:0.8rem;text-align:center;padding:2rem;line-height:1.8;">
-  © OTOS Digital Ltd. Company registered in England &amp; Wales
-  with Company No. 17084455.
-  Phone +447466334143.
-  Email info@otos.life.
+<footer class="site-footer">
+  © OTOS Digital Ltd. Company registered in England &amp; Wales with Company No. 17084455.
+  Phone <a href="tel:+447466334143">+447466334143</a>.
+  Email <a href="mailto:info@otos.life">info@otos.life</a>.
 </footer>
-
+<script defer src="otos-shared.js"></script>
 </body>
 </html>

@@ -1,684 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Reporting — OTOS Continuity™</title>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
-
-	<style>
-	:root{
-		--bg:#f4f4f4;
-		--text:#111;
-		--muted:#555;
-		--panel:#ffffff;
-		--glass:rgba(255,255,255,0.72);
-
-		--stroke: rgba(0,0,0,0.06);
-		--stroke2: rgba(0,0,0,0.08);
-		--shadow: 0 18px 50px rgba(0,0,0,0.08);
-
-		--accent: #ff8a00;
-		--accentSoft: rgba(255,138,0,0.16);
-	}
-
-	*{ box-sizing:border-box; }
-	html, body{ min-height:100%; }
-
-	body{
-		margin:0;
-		font-family:Inter, sans-serif;
-		background:var(--bg);
-		color:var(--text);
-		min-height:100vh;
-		overflow:visible;
-		display:flex;
-		flex-direction:column;
-	}
-
-	.navbar{
-		position:fixed;
-		top:0; left:0; right:0;
-		z-index:50;
-
-		display:flex;
-		align-items:center;
-		justify-content:space-between;
-
-		padding:clamp(12px, 1.8vh, 18px) clamp(16px, 4vw, 60px);
-		background:var(--glass);
-		backdrop-filter:blur(14px);
-		-webkit-backdrop-filter:blur(14px);
-
-		border-bottom:1px solid var(--stroke);
-		box-shadow:0 12px 30px rgba(0,0,0,0.08);
-	}
-
-	.nav-left{
-		display:flex;
-		align-items:center;
-		gap:clamp(14px, 2vw, 40px);
-	}
-
-	.nav-logo{ height:36px; }
-
-	.nav-links a{
-		margin-right:clamp(12px, 1.6vw, 24px);
-		text-decoration:none;
-		color:#444;
-		font-weight:500;
-	}
-	.nav-links a:hover{ color:#000; }
-	.nav-links a.active{ color:#000; font-weight:600; }
-
-	/* Logged-in org (SUN) */
-	.nav-right{
-		display:flex;
-		align-items:center;
-		gap:12px;
-	}
-
-	.orgBadge{
-		display:flex;
-		align-items:center;
-		gap:10px;
-
-		/* CHANGE (ISSUE 4): label chip treatment (SUN Network / Demo org) */
-		border:1px solid #ff8a00;
-		background:rgba(255,138,0,0.12);
-		backdrop-filter:none;
-		-webkit-backdrop-filter:none;
-		border-radius: 999px;
-		padding:0.2rem 0.75rem;
-		box-shadow:none;
-	}
-
-	.orgLogo{
-		width:30px;
-		height:30px;
-		border-radius: 999px;
-		background:#fff;
-		border:1px solid var(--stroke);
-		padding:4px;
-		object-fit: contain;
-	}
-
-	.orgText{
-		display:flex;
-		flex-direction:column;
-		line-height:1.05;
-	}
-	.orgText .t{
-		/* CHANGE (ISSUE 4): Inter 500 orange */
-		font-family:Inter, sans-serif;
-		font-size:0.75rem;
-		font-weight:500;
-		color:#ff8a00;
-	}
-	.orgText .s{
-		/* CHANGE (ISSUE 4): Inter 500 orange */
-		font-family:Inter, sans-serif;
-		font-size:0.75rem;
-		font-weight:500;
-		color:#ff8a00;
-	}
-
-	.page{
-		min-height:calc(100svh - 76px);
-		height:auto;
-		margin:0 auto;
-		width:min(1320px, 100%);
-
-		padding:
-			clamp(18px, 2.4vh, 32px)
-			clamp(16px, 3.2vw, 46px)
-			calc(clamp(16px, 2.6vh, 26px) + 84px);
-
-		margin-top:76px;
-
-		display:flex;
-		flex-direction:column;
-		gap:clamp(10px, 1.4vh, 14px);
-	}
-
-	.hero{ text-align:center; }
-
-	.kicker{
-		font-size:12px;
-		letter-spacing:0.14em;
-		text-transform:uppercase;
-		color:#888;
-		margin:0 0 10px 0;
-	}
-
-	h1{
-		font-family:"Playfair Display", serif;
-		font-size:clamp(30px, 4.4vw, 46px);
-		line-height:1.12;
-		letter-spacing:-0.6px;
-		margin:0 0 10px 0;
-	}
-
-	.sub{
-		/* CHANGE (ISSUE 1): lead paragraph style */
-		margin:0 auto 2rem;
-		max-width:680px;
-		font-family:Inter, sans-serif;
-		font-weight:500;
-		font-size:1.1rem;
-		line-height:1.7;
-		color:#0f172a;
-	}
-
-	/* CHANGE (ISSUE 1): section-hero strapline (top hero block) */
-	.hero-lead{
-		margin:0 auto 2rem !important;
-		max-width:680px !important;
-		font-family:Inter, sans-serif !important;
-		font-weight:500 !important;
-		font-size:1.1rem !important;
-		line-height:1.7 !important;
-		color:#0f172a !important;
-	}
-
-	/* CHANGE (ISSUE 2): killer stat callout */
-	.page .hero .strapline{
-		font-family:"Playfair Display", serif;
-		font-weight:600;
-		font-size:1.4rem;
-		color:#ff8a00;
-		border-left:3px solid #ff8a00;
-		padding-left:1.25rem;
-		margin:2rem 0;
-		line-height:1.7;
-	}
-
-	/* CHANGE (ISSUE 3): teal disclaimer pill badges */
-	.disclaimer-pill{
-		background:rgba(94,234,212,0.15);
-		border:1px solid #5eead4;
-		border-radius:8px;
-		padding:0.5rem 1rem;
-		font-family:Inter, sans-serif;
-		font-weight:400;
-		font-style:italic;
-		font-size:0.85rem;
-		color:#0f172a;
-		display:block;
-		margin:1rem 0 !important; /* override .note{margin-top:auto} */
-		line-height:1.7;
-	}
-
-	.panel{
-		flex:1 1 auto;
-		min-height:0;
-
-		margin-top:clamp(10px, 1.4vh, 18px);
-		background:var(--panel);
-		border-radius:22px;
-		padding:clamp(12px, 1.8vh, 18px);
-		box-shadow:var(--shadow);
-
-		display:flex;
-		flex-direction:column;
-		gap: 12px;
-	}
-
-	.topNote{
-		display:flex;
-		align-items:flex-start;
-		justify-content:space-between;
-		gap: 12px;
-		flex-wrap: wrap;
-
-		border:1px solid var(--stroke);
-		background: rgba(0,0,0,0.02);
-		border-radius: 18px;
-		padding: 12px 14px;
-	}
-
-	.topNote .left{
-		max-width: 860px;
-	}
-	.topNote .left .t{
-		font-weight:800;
-		margin-bottom: 4px;
-	}
-	.topNote .left .s{
-		color:#555;
-		line-height:1.45;
-		font-size: 13px;
-	}
-	.badge{
-		display:inline-flex;
-		align-items:center;
-		gap:8px;
-		/* CHANGE (ISSUE 4): label chip treatment */
-		padding:0.2rem 0.75rem;
-		border-radius: 999px;
-		border:1px solid #ff8a00;
-		background: rgba(255,138,0,0.12);
-		color:#ff8a00;
-		font-weight:500;
-		font-size: 0.75rem;
-		white-space: nowrap;
-	}
-	.dot{
-		width:10px;height:10px;border-radius:999px;background: var(--accent);
-		box-shadow: 0 0 0 4px var(--accentSoft);
-	}
-
-	.dash-grid{
-		display:grid;
-		grid-template-columns:1fr 1fr;
-		gap:clamp(10px, 1.4vh, 14px);
-		flex:1 1 auto;
-		min-height:0;
-	}
-
-	.dash{
-		/* CHANGE (ISSUE 4): glassmorphic dashboard card treatment */
-		border-radius:12px;
-		background:rgba(255,255,255,0.6);
-		border:1px solid rgba(255,255,255,0.15);
-		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
-		box-shadow: 0 8px 32px rgba(15,23,42,0.12);
-		padding:1.5rem;
-		margin-bottom:2rem;
-		display:flex;
-		flex-direction:column;
-		gap:10px;
-		min-height: 0;
-	}
-
-	.dashHead{
-		display:flex;
-		align-items:flex-start;
-		justify-content:space-between;
-		gap:10px;
-		flex-wrap: wrap;
-	}
-
-	.dash h3{
-		margin:0;
-		font-size:clamp(15px, 1.4vw, 18px);
-		font-weight:700;
-		color:#111;
-		line-height:1.25;
-	}
-
-	.smallHint{
-		/* CHANGE (ISSUE 4): label chip treatment */
-		font-family:Inter, sans-serif;
-		font-weight:500;
-		font-size:0.75rem;
-		color:#ff8a00;
-		border:1px solid #ff8a00;
-		background: rgba(255,138,0,0.12);
-		border-radius: 999px;
-		padding:0.2rem 0.75rem;
-		white-space: nowrap;
-	}
-
-	.tiles{
-		display:grid;
-		grid-template-columns:repeat(3, 1fr);
-		gap:10px;
-	}
-
-	.tile{
-		background:#fff;
-		border:1px solid var(--stroke);
-		border-radius:14px;
-		padding:10px 12px;
-		box-shadow:0 10px 25px rgba(0,0,0,0.06);
-	}
-
-	.tile .label{
-		/* CHANGE (ISSUE 4): KPI label typography */
-		font-family:Inter, sans-serif;
-		font-weight:400;
-		font-size:0.85rem;
-		color:#0f172a;
-		margin:0 0 6px 0;
-		letter-spacing:0;
-		text-transform:none;
-	}
-
-	.tile .val{
-		margin:0;
-		font-family:"Playfair Display", serif;
-		font-size:1.5rem;
-		font-weight:600;
-		color:#0f172a;
-	}
-
-	.note{
-		margin-top:auto;
-		font-size:clamp(12.5px, 1.1vw, 13.5px);
-		line-height:1.45;
-		color:#555;
-	}
-
-	/* Chart + table blocks */
-	.chartBox, .tableBox{
-		background:#fff;
-		border:1px solid var(--stroke);
-		border-radius:14px;
-		padding:12px;
-		box-shadow:0 10px 25px rgba(0,0,0,0.06);
-	}
-
-	.chartTitle{
-		font-size: 12px;
-		letter-spacing: 0.10em;
-		text-transform: uppercase;
-		color:#777;
-		margin: 0 0 10px 0;
-	}
-
-	/* Simple inline SVG chart placeholder */
-	.chartSvg{
-		width:100%;
-		height:160px;
-		display:block;
-		border-radius: 10px;
-		background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(0,0,0,0.02));
-		border:1px dashed rgba(0,0,0,0.10);
-	}
-
-	table{
-		width:100%;
-		border-collapse: collapse;
-		font-size: 13px;
-	}
-	/* CHANGE (ISSUE 5): drift items table styling */
-	.tableBox table{
-		width:100%;
-		border-collapse: collapse;
-	}
-	.tableBox th, .tableBox td{
-		padding:0.6rem 1rem; /* locked */
-		border-bottom: 1px solid rgba(15,23,42,0.08); /* locked */
-		vertical-align: top;
-	}
-	.tableBox thead th{
-		background:#0f172a;
-		color:#f4f5f7;
-		font-family:Inter, sans-serif;
-		font-weight:500;
-		font-size:0.8rem;
-		text-transform:none;
-		letter-spacing:0;
-	}
-	.tableBox tbody tr:nth-child(odd) td{
-		background: rgba(255,255,255,0.4);
-	}
-	.tableBox tbody tr:nth-child(even) td{
-		background: transparent;
-	}
-	.tableBox td{ color:#0f172a; }
-	.tableBox td.status-open{
-		color:#ff8a00;
-		font-family:Inter, sans-serif;
-		font-weight:500;
-	}
-	.tableBox td.status-review{
-		color:#5eead4;
-		font-family:Inter, sans-serif;
-		font-weight:500;
-	}
-	.mono{
-		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-		font-size: 12px;
-		color:#222;
-	}
-
-	.strip{
-		/* CHANGE (ISSUE 6): bottom tag pill badge treatment */
-		margin:1.5rem auto 0;
-		padding:0.3rem 0.9rem;
-		border-radius:999px;
-		background:#5eead4;
-		color:#0f172a;
-		border:none;
-		box-shadow:none;
-		backdrop-filter:none;
-		-webkit-backdrop-filter:none;
-		text-align:center;
-		font-family:Inter, sans-serif;
-		font-weight:500;
-		font-size:0.85rem;
-		line-height:1.35;
-		display:block;
-	}
-
-	/* BOTTOM NAV */
-	.bottom-nav{
-		position:static;
-		width:100%;
-
-		display:flex;
-		align-items:center;
-		justify-content:center;
-		gap:12px;
-
-		backdrop-filter:blur(16px);
-		-webkit-backdrop-filter:blur(16px);
-		background:rgba(255,255,255,0.72);
-		border-top:1px solid rgba(15,23,42,0.08);
-		box-shadow:0 -4px 24px rgba(15,23,42,0.06);
-
-		border-radius:999px;
-		padding:10px 12px;
-	}
-
-	.nav-btn{
-		display:inline-flex;
-		align-items:center;
-		justify-content:center;
-		width:44px;
-		height:44px;
-		border-radius:999px;
-		text-decoration:none;
-		border:1px solid rgba(0,0,0,0.10);
-		background:#fff;
-		color:#111;
-		font-weight:700;
-		transition:.2s;
-	}
-
-	.nav-btn:hover{
-		transform:translateY(-1px);
-		box-shadow:0 12px 26px rgba(0,0,0,0.12);
-	}
-
-	.nav-next{
-		min-width:168px;
-		padding:0 16px;
-		width:auto;
-		gap:10px;
-		font-weight:700;
-	}
-
-	@media (max-height: 900px){
-		.page{ min-height:calc(100svh - 72px); margin-top:72px; }
-		.navbar{ padding:12px clamp(16px, 4vw, 60px); }
-	}
-
-	@media(max-width:980px){
-		.navbar{ padding:14px 18px; }
-		.page{
-			min-height:calc(100svh - 70px);
-			margin-top:70px;
-			padding:18px 18px calc(18px + 84px);
-		}
-		.dash-grid{ grid-template-columns:1fr; }
-		.tiles{ grid-template-columns:repeat(2, 1fr); }
-		h1{ font-size:34px; }
-		.orgText{ display:none; } /* keep nav clean on mobile */
-	}
-	@media (prefers-reduced-motion: reduce){
-		*{ transition:none !important; }
-	}
-	</style>
-	<link rel="stylesheet" href="otos-shared.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reporting &mdash; OTOS Continuity™</title>
+<meta name="description" content="20 avoided crisis events. 4,576 each. Anonymous continuity signals for partner reporting.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="otos-shared.css">
+<style>
+:root{
+  --bg-page:#f5f0e8;
+  --bg-section-alt:#ede8df;
+  --bg-dark:#1e150a;
+  --bg-dark-mid:#2a1c0f;
+  --bg-card:rgba(255,252,246,0.78);
+  --bg-nav:rgba(245,240,232,0.90);
+  --text-primary:#1a1410;
+  --text-secondary:#7a6a58;
+  --text-light:#a8998a;
+  --text-on-dark:#f0ebe3;
+  --text-on-dark-dim:rgba(240,235,227,0.65);
+  --amber:#c17f24;
+  --amber-light:#d4953c;
+  --orange:#e8720c;
+  --teal:#4a9e8e;
+  --teal-soft:rgba(74,158,142,0.70);
+  --shadow-sm:0 2px 8px rgba(26,20,16,0.08),0 1px 2px rgba(26,20,16,0.05);
+  --shadow-md:0 8px 24px rgba(26,20,16,0.12),0 3px 8px rgba(26,20,16,0.08);
+  --shadow-lg:0 20px 56px rgba(26,20,16,0.18),0 8px 20px rgba(26,20,16,0.10);
+  --shadow-xl:0 32px 80px rgba(26,20,16,0.22),0 12px 28px rgba(26,20,16,0.12);
+  --font-heading:'Playfair Display', Georgia, serif;
+  --font-body:'Inter', -apple-system, sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:16px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html,body{margin:0;overflow:hidden}
+html{height:100dvh;overflow:hidden}
+body{background:var(--bg-page);color:var(--text-primary);font-family:var(--font-body);margin:0;padding:0;height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+.site-nav{position:fixed;top:0;left:0;right:0;height:64px;z-index:100;background:var(--bg-nav);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border-bottom:1px solid rgba(193,127,36,0.12);box-shadow:0 1px 0 rgba(255,252,246,0.8),0 4px 16px rgba(26,20,16,0.06);display:flex;align-items:center;justify-content:space-between;padding:0 40px}
+.nav-brand{display:flex;align-items:center}
+.navbar-logo{height:36px;width:auto}
+.nav-logo{display:flex;align-items:center;text-decoration:none;flex-shrink:0}
+.nav-logo img{height:36px;width:auto;display:block}
+.text-gradient{background:linear-gradient(92deg,#1a1410 0%,#1a1410 35%,#7a4f1a 60%,#c17f24 80%,#d4a020 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links a{font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--text-secondary);text-decoration:none;letter-spacing:0.1px;padding:6px 14px;border-radius:20px;transition:color 0.15s, background 0.15s}
+.nav-links a:hover{color:var(--text-primary);background:rgba(193,127,36,0.08)}
+.nav-links a.active{color:var(--text-primary);font-weight:600}
+.reporting-intro{display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:900px;margin:0 auto;padding:24px 34px;background:var(--bg-page)}
+/* Phase 2: Editorial Playfair heading */
+.reporting-intro h2{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.6rem);font-weight:600;font-style:italic;line-height:1.2;color:#1a1410;text-align:center;max-width:780px;margin:0 auto;padding:1rem 0 0.5rem;letter-spacing:-0.01em;-webkit-text-fill-color:unset;background:none}
+.reporting-intro p{font-family:var(--font-body);font-size:14px;color:var(--text-secondary);line-height:1.7;margin:0}
+.page{width:min(1320px,100%);margin:0 auto;padding:12px 24px 18px;display:flex;flex-direction:column;gap:8px}
+.hero{text-align:center}
+.hero .strapline{font-family:"Playfair Display",serif;font-weight:600;font-size:1.2rem;color:var(--amber);margin:0 0 8px;line-height:1.45}
+.hero .sub{margin:0 auto 12px;max-width:680px;font-family:Inter,sans-serif;font-weight:500;font-size:0.95rem;line-height:1.5;color:#0f172a}
+.panel{flex:1 1 auto;min-height:0;margin-top:0;background:#fff;border-radius:18px;padding:12px;box-shadow:0 18px 50px rgba(26,20,16,0.08);display:flex;flex-direction:column;gap:10px}
+.topNote{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;border:1px solid rgba(0,0,0,0.06);background:rgba(0,0,0,0.02);border-radius:14px;padding:10px 12px}
+.topNote .left .t{font-weight:800;margin-bottom:4px}
+.topNote .left .s{color:#555;line-height:1.4;font-size:12px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:0.2rem 0.75rem;border-radius:999px;border:1px solid var(--amber);background:rgba(193,127,36,0.12);color:var(--amber);font-weight:500;font-size:0.72rem;white-space:nowrap}
+.dot{width:10px;height:10px;border-radius:999px;background:var(--amber);box-shadow:0 0 0 4px rgba(193,127,36,0.16)}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1 1 auto;min-height:0}
+.dash{border-radius:12px;background:rgba(255,255,255,0.75);border:1px solid rgba(255,255,255,0.35);box-shadow:0 8px 24px rgba(26,20,16,0.08);padding:0.95rem;margin-bottom:0.5rem;display:flex;flex-direction:column;gap:10px;min-height:0}
+.dashHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.dash h3{margin:0;font-size:clamp(14px,1.2vw,16px);font-weight:700;color:#111;line-height:1.25}
+.smallHint{font-family:Inter,sans-serif;font-weight:500;font-size:0.72rem;color:var(--amber);border:1px solid var(--amber);background:rgba(193,127,36,0.12);border-radius:999px;padding:0.2rem 0.75rem;white-space:nowrap}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:#fff;border:1px solid rgba(0,0,0,0.06);border-radius:12px;padding:8px 10px;box-shadow:0 10px 25px rgba(26,20,16,0.06)}
+.tile .label{font-family:Inter,sans-serif;font-weight:400;font-size:0.75rem;color:#0f172a;margin:0 0 4px}
+.tile .val{margin:0;font-family:"Playfair Display",serif;font-size:1.2rem;font-weight:600;color:#0f172a}
+.note{margin-top:auto;font-size:12px;line-height:1.4;color:#555}
+.chartBox,.tableBox{background:#fff;border:1px solid rgba(0,0,0,0.06);border-radius:12px;padding:10px;box-shadow:0 10px 25px rgba(26,20,16,0.06)}
+.chartTitle{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#777;margin:0 0 8px}
+.chartSvg{width:100%;height:130px;display:block;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(0,0,0,0.02));border:1px dashed rgba(0,0,0,0.10)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+.tableBox table{width:100%;border-collapse:collapse}
+.tableBox th,.tableBox td{padding:0.45rem 0.8rem;border-bottom:1px solid rgba(15,23,42,0.08);vertical-align:top}
+.tableBox thead th{background:#0f172a;color:#f4f5f7;font-family:Inter,sans-serif;font-weight:500;font-size:0.75rem;text-transform:none;letter-spacing:0}
+.tableBox tbody tr:nth-child(odd) td{background:rgba(255,255,255,0.4)}
+.tableBox tbody tr:nth-child(even) td{background:transparent}
+.tableBox td{color:#0f172a}
+.tableBox td.status-open{color:var(--amber);font-family:Inter,sans-serif;font-weight:500}
+.tableBox td.status-review{color:var(--teal);font-family:Inter,sans-serif;font-weight:500}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:11px;color:#222}
+.strip{margin:0.4rem auto 0;padding:0.3rem 0.9rem;border-radius:999px;background:#5eead4;color:#0f172a;border:none;text-align:center;font-family:Inter,sans-serif;font-weight:500;font-size:0.78rem;line-height:1.3;display:block}
+.disclaimer-pill{background:rgba(74,158,142,0.15);border:1px solid #5eead4;border-radius:8px;padding:0.5rem 1rem;font-family:Inter,sans-serif;font-weight:400;font-style:italic;font-size:0.78rem;color:#0f172a;display:block;margin:0.6rem 0;line-height:1.45}
+/* Phase 4: Quote right-aligned below dashboard */
+.site-quote{max-width:520px;margin:0 0 20px auto;text-align:right;position:relative;padding:16px 32px 16px 16px;border-left:none}
+.site-quote::before{content:'\201C';font-family:var(--font-heading);font-size:7rem;line-height:0.8;color:rgba(193,127,36,0.14);position:absolute;top:-8px;right:0;left:auto;pointer-events:none}
+.site-quote p{font-family:var(--font-heading);font-style:italic;font-size:clamp(1.25rem,2.5vw,1.65rem);font-weight:600;color:var(--text-primary);line-height:1.50;margin:0 0 16px;position:relative;z-index:1}
+.site-quote cite{font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);font-style:normal}
+.quote-section{position:relative;overflow:hidden;padding:16px 48px 32px;display:flex;justify-content:flex-end}
+.bottom-nav{display:flex;justify-content:space-between;align-items:center;padding:0 48px;height:56px;background:rgba(245,240,232,0.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(193,127,36,0.10);box-shadow:0 -4px 20px rgba(26,20,16,0.05);margin-top:auto}
+.bottom-nav a{font-family:var(--font-body);font-size:13px;font-weight:600;letter-spacing:0.4px;color:var(--text-secondary);text-decoration:none;transition:color 0.15s}
+.bottom-nav a:hover{color:var(--text-primary)}
+.site-footer{background:var(--bg-dark);padding:22px 48px;text-align:center;margin-top:auto;color:rgba(240,235,227,0.40);font-family:var(--font-body);font-size:12px;line-height:1.6}
+@media (max-width: 900px){.reporting-intro{grid-template-columns:1fr;gap:20px;padding:18px 20px}.site-nav{padding:0 20px}.nav-links a{font-size:11.5px;margin-left:12px;padding:4px 8px}.bottom-nav{padding:0 24px}}
+@media(max-width:980px){.dash-grid{grid-template-columns:1fr}.tiles{grid-template-columns:repeat(2,1fr)}}
+/* viewport no-scroll */
+img,video,svg{max-width:100%;height:auto}
+body{overflow:hidden}
+.page{width:100%;max-width:100%;overflow-x:auto}
+</style>
 </head>
-
 <body>
-	<section style="
-  position: relative;
-  height: 48vh;
-  min-height: 320px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background: #0f172a;
-">
-  <div style="
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(10,18,35,0.45), rgba(10,18,35,0.82));
-    z-index: 1;
-  "></div>
-  <img
-    src="images/hero-7-dean.png"
-    alt=""
-    style="
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 0;
-    "
-  />
-  <img
-    src="../assets/brain.png"
-    alt="OTOS"
-    style="
-      position: absolute;
-      top: 24px;
-      right: 32px;
-      width: 32px;
-      height: 32px;
-      z-index: 10;
-    "
-  />
-  <div style="position: relative; z-index: 2; padding: 0 2rem;">
-    <p style="
-      font-family: 'Inter', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #ff8a00;
-      margin: 0 0 1rem;
-    ">Reporting</p>
-    <h1 style="
-      font-family: 'Playfair Display', serif;
-      font-weight: 600;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      color: #ffffff;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      margin: 0 0 1rem;
-    ">Where are people dropping off —<br>and why?</h1>
-    <p class="hero-lead" style="
-      font-family: 'Inter', sans-serif;
-      font-size: 1.05rem;
-      color: rgba(255,255,255,0.75);
-      margin: 0;
-      max-width: 52ch;
-      margin-left: auto;
-      margin-right: auto;
-    ">Not case notes. Not clinical records. Just the shape of a pathway — so you can see where it bends and where it breaks.</p>
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo" aria-label="OTOS Home">
+    <img src="brain.png" alt="OTOS" height="36" style="display:block;width:auto;">
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="guided-demos.html">Guided demos</a>
+    <a href="controls.html">Controls</a>
+    <a href="reporting.html" class="active">Reporting</a>
+    <a href="founder-journey-final.html">Founder Journey</a>
+    <a href="references.html">References</a>
+    <a href="infrastructure-partners.html">Infrastructure</a>
   </div>
-</section>
-	<section style="
-  background: #ffffff;
-  padding: 5rem 2rem 4rem;
-  text-align: center;
-">
-  <p style="
-    font-family: 'Inter', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #ff8a00;
-    margin: 0 0 1rem;
-  ">Partner reporting view</p>
-  <h2 style="
-    font-family: 'Playfair Display', serif;
-    font-weight: 600;
-    font-size: clamp(1.6rem, 3vw, 2.4rem);
-    color: #0f172a;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin: 0 0 1rem;
-    max-width: 42ch;
-    margin-left: auto;
-    margin-right: auto;
-  ">For the first time, you can see whether the handoffs you're making are actually landing.</h2>
-  <p style="
-    font-family: 'Inter', sans-serif;
-    font-size: 1rem;
-    color: rgba(15,23,42,0.65);
-    max-width: 52ch;
-    margin: 0 auto 3rem;
-    line-height: 1.7;
-  ">Each partner organisation gets their own reporting view — anonymous journey signals, no personal data, no clinical records. Just the picture your team needs to act earlier.</p>
-  <img
-    src="images/sun-dashboard-devices.png"
-    alt="SUN Network reporting dashboard shown on MacBook, iPad and iPhone"
-    style="
-      max-width: 860px;
-      width: 100%;
-      height: auto;
-      display: block;
-      margin: 0 auto;
-    "
-  />
-  <!-- CHANGE (ISSUE 3): teal disclaimer pill badge -->
-  <p class="disclaimer-pill">Illustrative fixture — not live data. Partner views are configured during onboarding.</p>
-</section>
-	<nav class="navbar">
-		<div class="nav-left">
-			<img src="../assets/brain.png" class="nav-logo" alt="" />
-			<div class="nav-links">
-				<a href="/continuity/index.html">Home</a>
-				<a href="/continuity/how-it-works.html">How it works</a>
-				<a href="/continuity/guided-demos.html">Guided demos</a>
-				<a href="/continuity/controls.html">Controls</a>
-				<a class="active" href="/continuity/reporting.html">Reporting</a>
-				<a href="/continuity/founder-journey-final.html">Founder Journey</a>
-				<a href="/continuity/references.html">References</a>
-			</div>
-		</div>
-
-		<div class="nav-right">
-			<div class="orgBadge" title="Demo fixture only. Not an endorsement.">
-				<img class="orgLogo" src="../assets/partners/The_Sun_Network_Logo.png" alt="SUN Network logo" />
-				<div class="orgText">
-					<div class="t">SUN Network</div>
-					<div class="s">Demo org (fixture)</div>
-				</div>
-			</div>
-		</div>
-	</nav>
-
-	<div class="page">
-		<div class="hero">
-			<p class="strapline">20 avoided crisis events. £4,576 each. The maths is simple.</p>
-			<p class="sub">
-				OTOS Continuity turns anonymous engagement signals into a picture your whole team can act on. Not case notes. Not clinical records. Just the shape of a pathway — so you can see where it bends and where it breaks.
-			</p>
-		</div>
-
+</nav>
+<main style="padding-top:0;flex:1;overflow-y:auto">
+  <section class="reporting-intro">
+    <div>
+      <h2>For the first time, you can see whether the handoffs you're actually landing.</h2>
+    </div>
+    <div>
+      <p>OTOS Continuity turns anonymous engagement signals into a picture your whole team can act on. Not case notes. Not clinical records. Just the shape of a pathway &mdash; so you can see where it bends and where it breaks.</p>
+    </div>
+  </section>
+  <div class="page">
 		<div class="panel">
 			<div class="topNote">
 				<div class="left">
@@ -717,8 +170,7 @@
 						<svg class="chartSvg" viewBox="0 0 600 160" role="img" aria-label="Follow-through completion trend chart placeholder">
 							<text x="16" y="28" fill="#888" font-size="12">Chart placeholder</text>
 							<text x="16" y="48" fill="#888" font-size="12">No performance stats shown in demo</text>
-							<polyline points="60,120 160,92 260,98 360,70 460,74 540,62"
-								fill="none" stroke="rgba(255,138,0,0.55)" stroke-width="4" stroke-linecap="round" />
+							<polyline points="60,120 160,92 260,98 360,70 460,74 540,62" fill="none" stroke="rgba(255,138,0,0.55)" stroke-width="4" stroke-linecap="round" />
 							<circle cx="60" cy="120" r="5" fill="rgba(255,138,0,0.65)"></circle>
 							<circle cx="160" cy="92" r="5" fill="rgba(255,138,0,0.65)"></circle>
 							<circle cx="260" cy="98" r="5" fill="rgba(255,138,0,0.65)"></circle>
@@ -796,17 +248,20 @@
 			</div>
 		</div>
 	</div>
-
-	<div class="bottom-nav" aria-label="Page navigation">
-		<a class="nav-btn" href="/continuity/controls.html" aria-label="Back">←</a>
-		<a class="nav-btn nav-next" href="/continuity/references.html" aria-label="Next"><span>Next: References</span> →</a>
-	</div>
-	<footer class="site-footer">
-		© OTOS Digital Ltd. Company registered in England 
-		&amp; Wales with Company No. 17084455. 
-		Phone <a href="tel:+447466334143">+447466334143</a>. 
-		Email <a href="mailto:info@otos.life">info@otos.life</a>.
-	</footer>
-	<script defer src="otos-shared.js"></script>
+  <section class="quote-section">
+    <blockquote class="site-quote">
+      <p class="text-gradient">&ldquo;[System lead or commissioner quote placeholder]&rdquo;</p>
+      <cite>&mdash; Name, Role, Organisation</cite>
+    </blockquote>
+  </section>
+</main>
+<div class="bottom-nav">
+  <a href="controls.html">&larr; Previous</a>
+  <a href="references.html">Next: References &rarr;</a>
+</div>
+<footer class="site-footer">
+  © OTOS Digital Ltd. Company registered in England & Wales with Company No. 17084455. Phone +447466334143. Email info@otos.life.
+</footer>
+<script defer src="otos-shared.js"></script>
 </body>
 </html>

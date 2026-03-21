@@ -3,431 +3,175 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Controls — OTOS Continuity™</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
-
+<title>Controls &mdash; OTOS Continuity™</title>
+<meta name="description" content="OTOS is designed to increase visibility, not reduce control. Role-based access, NHS-aligned governance, human-only escalation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="otos-shared.css">
 <style>
 :root{
-	--bg:#f4f4f4;
-	--text:#111;
-	--muted:#555;
-	--panel:#ffffff;
-	--glass:rgba(255,255,255,0.72);
+  --bg-page:#f5f0e8;--bg-section-alt:#ede8df;--bg-dark:#1e150a;--bg-dark-mid:#2a1c0f;--bg-card:rgba(255,252,246,0.78);--bg-nav:rgba(245,240,232,0.90);
+  --text-primary:#1a1410;--text-secondary:#7a6a58;--text-light:#a8998a;--text-on-dark:#f0ebe3;--text-on-dark-dim:rgba(240,235,227,0.65);
+  --amber:#c17f24;--amber-light:#d4953c;--orange:#e8720c;--teal:#4a9e8e;--teal-soft:rgba(74,158,142,0.70);
+  --shadow-sm:0 2px 8px rgba(26,20,16,0.08),0 1px 2px rgba(26,20,16,0.05);--shadow-md:0 8px 24px rgba(26,20,16,0.12),0 3px 8px rgba(26,20,16,0.08);--shadow-lg:0 20px 56px rgba(26,20,16,0.18),0 8px 20px rgba(26,20,16,0.10);--shadow-xl:0 32px 80px rgba(26,20,16,0.22),0 12px 28px rgba(26,20,16,0.12);
+  --font-heading:'Playfair Display', Georgia, serif;--font-body:'Inter', -apple-system, sans-serif;
 }
-
-*{ box-sizing:border-box; }
-html, body{ min-height:100%; }
-
-body{
-	margin:0;
-	font-family:Inter, sans-serif;
-	background:var(--bg);
-	color:var(--text);
-
-	min-height:100vh;
-	overflow:visible;
-
-	display:flex;
-	flex-direction:column;
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:16px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html,body{margin:0;overflow:hidden}
+html{height:100dvh;overflow:hidden}
+body{background:var(--bg-page);color:var(--text-primary);font-family:var(--font-body);margin:0;padding:0;height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+.site-nav{position:sticky;top:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(245,240,232,0.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(193,127,36,0.1);opacity:1!important;pointer-events:auto!important;box-shadow:0 1px 0 rgba(255,252,246,0.8),0 4px 16px rgba(26,20,16,0.06)}
+.nav-brand{display:flex;align-items:center}
+.navbar-logo{height:36px;width:auto}
+.nav-logo{display:flex;align-items:center;text-decoration:none;flex-shrink:0}
+.nav-logo img{height:36px;width:auto;display:block}
+.text-gradient{background:linear-gradient(92deg,#1a1410 0%,#1a1410 35%,#7a4f1a 60%,#c17f24 80%,#d4a020 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links a{font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--text-secondary);text-decoration:none;letter-spacing:0.1px;padding:6px 14px;border-radius:20px;transition:color 0.15s, background 0.15s}
+.nav-links a:hover{color:var(--text-primary);background:rgba(193,127,36,0.08)}
+.nav-links a.active{color:var(--text-primary);font-weight:600}
+main{flex:1;padding-top:0;overflow-y:auto}
+/* Phase 2: subheading-strip → editorial Playfair in amber */
+.subheading-strip{font-family:'Playfair Display', serif;font-size:clamp(1.6rem,3vw,2.6rem);font-weight:600;font-style:italic;line-height:1.2;color:#c17f24;text-align:center;max-width:780px;margin:0 auto;padding:3rem 2rem 2rem;letter-spacing:-0.01em}
+.journey-section{background:var(--bg-page);padding:0 0 16px;overflow:hidden}
+.journey-stage{position:relative;width:100%;max-width:1200px;margin:0 auto;min-height:300px;height:clamp(300px,55vh,520px);padding:0 40px}
+.journey-svg{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+/* Phase 3: Journey units with text inside circles */
+.journey-unit{position:absolute;display:flex;flex-direction:column;align-items:center;z-index:2}
+.journey-stage > .journey-unit:nth-child(2){left:2%;flex-direction:column;top:0;bottom:auto}
+.journey-stage > .journey-unit:nth-child(3){left:26%;flex-direction:column-reverse;bottom:0;top:auto}
+.journey-stage > .journey-unit:nth-child(4){left:52%;flex-direction:column;top:0;bottom:auto}
+.journey-stage > .journey-unit:nth-child(5){left:74%;flex-direction:column-reverse;bottom:0;top:auto}
+.journey-circle{width:clamp(180px,22vw,260px);height:clamp(180px,22vw,260px);border-radius:50%;flex-shrink:0;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(1rem,3vw,2rem);text-align:center;overflow:hidden;background:linear-gradient(145deg,rgba(255,252,246,0.90) 0%,rgba(245,237,220,0.72) 100%);backdrop-filter:blur(16px) saturate(130%);-webkit-backdrop-filter:blur(16px) saturate(130%);border:1.5px solid rgba(255,252,246,0.95);border-top:1.5px solid #fff}
+.journey-circle.teal{box-shadow:0 0 40px rgba(74,158,142,0.18),0 0 16px rgba(74,158,142,0.10),var(--shadow-xl),inset 0 2px 0 rgba(255,255,255,0.95),inset 0 -2px 12px rgba(193,127,36,0.06);border-color:rgba(74,158,142,0.25)}
+.journey-circle.amber{box-shadow:0 0 40px rgba(232,114,12,0.20),0 0 16px rgba(232,114,12,0.12),var(--shadow-xl),inset 0 2px 0 rgba(255,255,255,0.95),inset 0 -2px 12px rgba(193,127,36,0.08);border-color:rgba(232,114,12,0.28)}
+.journey-circle::before{content:'';position:absolute;inset:-12px;border-radius:50%;border:1px solid rgba(74,158,142,0.14);animation:ring-breathe 4s ease-in-out infinite;pointer-events:none}
+.journey-circle.amber::before{border-color:rgba(232,114,12,0.14)}
+.circle-number{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--font-heading);font-size:5rem;font-weight:700;color:var(--text-primary);opacity:0.08;line-height:1;user-select:none;pointer-events:none}
+.float-label{display:block;font-family:var(--font-body);font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--amber);margin-bottom:6px;position:relative;z-index:1}
+.float-title{font-family:var(--font-heading);font-size:clamp(0.8rem,1.4vw,1.0rem);font-weight:600;color:var(--text-primary);line-height:1.2;margin-bottom:6px;position:relative;z-index:1}
+.float-body{font-family:var(--font-body);font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:8px;position:relative;z-index:1}
+.float-bullets{list-style:none;padding:0;margin:0;text-align:left;display:inline-block;position:relative;z-index:1}
+.float-bullets li{font-family:var(--font-body);font-size:10px;color:var(--text-secondary);padding:2px 0 2px 12px;position:relative;line-height:1.4}
+.float-bullets li::before{content:'→';position:absolute;left:0;top:3px;color:var(--teal);font-size:9px}
+.quote-section{padding:40px 48px;background:var(--bg-section-alt);position:relative;overflow:hidden}
+.site-quote{max-width:680px;margin:0 auto;text-align:center;position:relative;padding:16px 32px}
+.site-quote::before{content:'\201C';font-family:var(--font-heading);font-size:7rem;line-height:0.8;color:rgba(193,127,36,0.14);position:absolute;top:-8px;left:0;pointer-events:none}
+.site-quote p{font-family:var(--font-heading);font-style:italic;font-size:clamp(1.25rem,2.5vw,1.65rem);font-weight:600;color:var(--text-primary);line-height:1.50;margin:0 0 16px;position:relative;z-index:1}
+.site-quote cite{font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);font-style:normal}
+/* Phase 3+4: closing-line with nowrap, Phase 4: centred as-is */
+.closing-line{font-family:var(--font-heading);font-size:clamp(1rem,1.8vw,1.4rem);color:var(--text-primary);text-align:center;max-width:760px;margin:0 auto 10px;line-height:1.35;white-space:nowrap}
+.bottom-nav{display:flex;justify-content:space-between;align-items:center;padding:0 48px;height:56px;background:rgba(245,240,232,0.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(193,127,36,0.10);box-shadow:0 -4px 20px rgba(26,20,16,0.05);margin-top:auto}
+.bottom-nav a{font-family:var(--font-body);font-size:13px;font-weight:600;letter-spacing:0.4px;color:var(--text-secondary);text-decoration:none;transition:color 0.15s}
+.bottom-nav a:hover{color:var(--text-primary)}
+.site-footer{background:var(--bg-dark);padding:22px 48px;text-align:center;margin-top:auto;font-family:var(--font-body);font-size:12px;color:rgba(240,235,227,0.40);line-height:1.6}
+@keyframes ring-breathe{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:1;transform:scale(1.025)}}
+@media (max-width: 900px){
+  .journey-stage{min-height:auto;display:flex;flex-direction:column;gap:40px;padding:24px 24px}
+  .journey-unit{position:relative;top:auto;bottom:auto;left:auto;width:100%;max-width:280px;margin:0 auto;flex-direction:column}
+  .journey-svg{display:none}
+  .site-nav{padding:0 20px}
+  .nav-links a{font-size:11.5px;margin-left:12px;padding:4px 8px}
+  .bottom-nav{padding:0 24px}
+  .closing-line{white-space:normal}
 }
-
-.navbar{
-	position:fixed;
-	top:0; left:0; right:0;
-	z-index:50;
-
-	display:flex;
-	align-items:center;
-	justify-content:space-between;
-
-	padding:clamp(12px, 1.8vh, 18px) clamp(16px, 4vw, 60px);
-	background:var(--glass);
-	backdrop-filter:blur(14px);
-	-webkit-backdrop-filter:blur(14px);
-
-	border-bottom:1px solid rgba(0,0,0,0.06);
-	box-shadow:0 12px 30px rgba(0,0,0,0.08);
-}
-
-.nav-left{ display:flex; align-items:center; gap:clamp(14px, 2vw, 40px); }
-.nav-logo{ height:36px; }
-
-.nav-links a{
-	margin-right:clamp(12px, 1.6vw, 24px);
-	text-decoration:none;
-	color:#444;
-	font-weight:500;
-}
-.nav-links a:hover{ color:#000; }
-.nav-links a.active{ color:#000; font-weight:600; }
-
-.page{
-	min-height:calc(100svh - 76px);
-	height:auto;
-	margin:0 auto;
-	width:min(1320px, 100%);
-
-	padding:
-		clamp(18px, 2.4vh, 32px)
-		clamp(16px, 3.2vw, 46px)
-		calc(clamp(16px, 2.6vh, 26px) + 84px);
-
-	margin-top:76px;
-
-	display:flex;
-	flex-direction:column;
-	gap:clamp(10px, 1.4vh, 14px);
-}
-
-.hero{ text-align:center; }
-.kicker{
-	font-size:12px;
-	letter-spacing:0.14em;
-	text-transform:uppercase;
-	color:#888;
-	margin:0 0 10px 0;
-}
-h1{
-	font-family:"Playfair Display", serif;
-	font-size:clamp(30px, 4.4vw, 46px);
-	line-height:1.12;
-	letter-spacing:-0.6px;
-	margin:0 0 10px 0;
-}
-.sub{
-	/* CHANGE (ISSUE 4): intro lead paragraph */
-	margin:0 auto 2rem;
-	max-width:680px;
-	font-family:Inter, sans-serif;
-	font-weight:500;
-	font-size:1.1rem;
-	line-height:1.7;
-	color:#0f172a;
-}
-
-/* CHANGE (ISSUE 1): ensure the specific “Low integration…” strapline matches spec */
-.hero .strapline + .strapline{
-	color:#0f172a;
-	border-left:3px solid #ff8a00;
-	padding-left:1rem;
-	font-family:Inter, sans-serif;
-	font-weight:500;
-	display:inline-block;
-	text-align:left;
-}
-
-.panel{
-	flex:1 1 auto;
-	min-height:0;
-
-	margin-top:clamp(10px, 1.4vh, 18px);
-	background:var(--panel);
-	border-radius:22px;
-	padding:clamp(12px, 1.8vh, 18px);
-	box-shadow:0 18px 50px rgba(0,0,0,0.08);
-
-	display:flex;
-	flex-direction:column;
-}
-
-.grid{
-	display:grid;
-	grid-template-columns:1fr 1fr;
-	gap:clamp(10px, 1.4vh, 14px);
-	margin-top:clamp(10px, 1.6vh, 12px);
-	flex:1 1 auto;
-	min-height:0;
-}
-
-.card{
-	/* CHANGE (ISSUE 2): glassmorphic governance cards */
-	backdrop-filter:blur(12px);
-	-webkit-backdrop-filter:blur(12px);
-	background:rgba(255,255,255,0.6);
-	border:1px solid rgba(255,255,255,0.15);
-	box-shadow:0 8px 32px rgba(15,23,42,0.12);
-	border-radius:12px;
-	padding:1.5rem;
-	margin-bottom:1.5rem;
-}
-
-.card h3{
-	margin:0;
-	/* CHANGE (ISSUE 2): Playfair Display heading */
-	font-family:"Playfair Display", serif;
-	font-weight:600;
-	font-size:clamp(15px, 1.4vw, 18px);
-	color:#0f172a;
-	line-height:1.25;
-}
-
-.card ul{
-	margin:10px 0 0 0;
-	/* CHANGE (ISSUE 2): teal arrow bullets */
-	padding-left:0;
-	list-style:none;
-	color:#0f172a;
-	font-size:clamp(12.5px, 1.2vw, 14px);
-	line-height:1.5;
-}
-.card ul li{
-	position:relative;
-	padding-left:1.25rem;
-	color:#0f172a;
-}
-.card ul li::before{
-	content:"→";
-	position:absolute;
-	left:0;
-	top:0;
-	color:#5eead4;
-	font-weight:600;
-}
-
-.strip{
-	/* CHANGE (ISSUE 3): teal pill badge */
-	margin:1.5rem auto 0;
-	padding:0.3rem 0.9rem;
-	border-radius:999px;
-	background:#5eead4;
-	color:#0f172a;
-	border:none;
-	box-shadow:none;
-	backdrop-filter:none;
-	-webkit-backdrop-filter:none;
-	text-align:center;
-	font-family:Inter, sans-serif;
-	font-weight:500;
-	font-size:0.85rem;
-	line-height:1.35;
-	display:block;
-}
-
-/* BOTTOM NAV */
-.bottom-nav{
-	position:static;
-	width:100%;
-
-	display:flex;
-	align-items:center;
-	justify-content:center;
-	gap:12px;
-
-	backdrop-filter:blur(16px);
-	-webkit-backdrop-filter:blur(16px);
-	background:rgba(255,255,255,0.72);
-	border-top:1px solid rgba(15,23,42,0.08);
-	box-shadow:0 -4px 24px rgba(15,23,42,0.06);
-
-	border-radius:999px;
-	padding:10px 12px;
-}
-
-.nav-btn{
-	display:inline-flex;
-	align-items:center;
-	justify-content:center;
-	width:44px;
-	height:44px;
-	border-radius:999px;
-	text-decoration:none;
-	border:1px solid rgba(0,0,0,0.10);
-	background:#fff;
-	color:#111;
-	font-weight:700;
-	transition:.2s;
-}
-
-.nav-btn:hover{
-	transform:translateY(-1px);
-	box-shadow:0 12px 26px rgba(0,0,0,0.12);
-}
-
-.nav-next{
-	min-width:168px;
-	padding:0 16px;
-	width:auto;
-	gap:10px;
-	font-weight:700;
-}
-
-@media (max-height: 900px){
-	.page{ min-height:calc(100svh - 72px); margin-top:72px; }
-	.navbar{ padding:12px clamp(16px, 4vw, 60px); }
-}
-
-@media(max-width:980px){
-	.navbar{ padding:14px 18px; }
-	.page{
-		min-height:calc(100svh - 70px);
-		margin-top:70px;
-		padding:18px 18px calc(18px + 84px);
-	}
-	.grid{ grid-template-columns:1fr; }
-	h1{ font-size:34px; }
-}
-
-@media (prefers-reduced-motion: reduce){
-	*{ transition:none !important; }
-}
+/* viewport no-scroll */
+img,video,svg{max-width:100%;height:auto}
+body{overflow:hidden}
 </style>
-<link rel="stylesheet" href="otos-shared.css">
 </head>
-
 <body>
-<section style="
-  position: relative;
-  height: 48vh;
-  min-height: 320px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background: #0f172a;
-">
-  <div style="
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(10,18,35,0.45), rgba(10,18,35,0.82));
-    z-index: 1;
-  "></div>
-  <img
-    src="images/hero-7-dean.png"
-    alt=""
-    style="
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 0;
-    "
-  />
-  <img
-    src="../assets/brain.png"
-    alt="OTOS"
-    style="
-      position: absolute;
-      top: 24px;
-      right: 32px;
-      width: 32px;
-      height: 32px;
-      z-index: 10;
-    "
-  />
-  <div style="position: relative; z-index: 2; padding: 0 2rem;">
-    <p style="
-      font-family: 'Inter', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #ff8a00;
-      margin: 0 0 1rem;
-    ">Governance &amp; controls</p>
-    <h1 style="
-      font-family: 'Playfair Display', serif;
-      font-weight: 600;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      color: #ffffff;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      margin: 0 0 1rem;
-    ">You stay in control.<br>Always.</h1>
-    <p style="
-      font-family: 'Inter', sans-serif;
-      font-size: 1.05rem;
-      color: rgba(255,255,255,0.75);
-      margin: 0;
-      max-width: 52ch;
-      margin-left: auto;
-      margin-right: auto;
-    ">OTOS follows your team's definitions — not the other way around.</p>
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo" aria-label="OTOS Home">
+    <img src="brain.png" alt="OTOS" height="36" style="display:block;width:auto;">
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="guided-demos.html">Guided demos</a>
+    <a href="controls.html" class="active">Controls</a>
+    <a href="reporting.html">Reporting</a>
+    <a href="founder-journey-final.html">Founder Journey</a>
+    <a href="references.html">References</a>
+    <a href="infrastructure-partners.html">Infrastructure</a>
   </div>
-</section>
-<nav class="navbar">
-	<div class="nav-left">
-		<img src="../assets/brain.png" class="nav-logo" alt="">
-		<div class="nav-links">
-			<a href="/continuity/index.html">Home</a>
-			<a href="/continuity/how-it-works.html">How it works</a>
-			<a href="/continuity/guided-demos.html">Guided demos</a>
-			<a class="active" href="/continuity/controls.html">Controls</a>
-			<a href="/continuity/reporting.html">Reporting</a>
-			<a href="/continuity/founder-journey-final.html">Founder Journey</a>
-			<a href="/continuity/references.html">References</a>
-		</div>
-	</div>
 </nav>
+<main>
+  <!-- Phase 2: subheading-strip now editorial Playfair amber -->
+  <div class="subheading-strip">OTOS surfaces signals. The partner team makes the decision.</div>
+  <section class="journey-section">
+    <div class="journey-stage">
+      <svg class="journey-svg" viewBox="0 0 1120 520" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="rgc" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#4a9e8e" stop-opacity="0.55"/>
+            <stop offset="45%" stop-color="#c17f24" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#e8720c" stop-opacity="0.60"/>
+          </linearGradient>
+        </defs>
+        <path d="M 140 160 C 260 160, 260 380, 430 380 C 600 380, 600 160, 760 160 C 890 160, 920 380, 1020 380" stroke="#c17f24" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.12"/>
+        <path d="M 140 160 C 260 160, 260 380, 430 380 C 600 380, 600 160, 760 160 C 890 160, 920 380, 1020 380" stroke="url(#rgc)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M 140 160 C 260 160, 260 380, 430 380 C 600 380, 600 160, 760 160 C 890 160, 920 380, 1020 380" stroke="rgba(255,248,235,0.55)" stroke-width="1" fill="none" stroke-linecap="round"/>
+      </svg>
+      <!-- Phase 3: Text moved inside circles -->
+      <div class="journey-unit" data-step="1">
+        <div class="journey-circle teal">
+          <span class="circle-number">1</span>
+          <span class="float-label">ACCESS</span>
+          <div class="float-title text-gradient">Who can see what</div>
+          <p class="float-body">Access is role-based. Keyworkers see their own touchpoints. Managers see aggregate signals.</p>
+          <ul class="float-bullets"><li>Role-based access</li><li>No cross-org patient data</li><li>Audit trail on every action</li><li>Anonymous journey IDs only</li></ul>
+        </div>
+      </div>
 
-<div class="page">
-	<div class="hero">
-		<p class="strapline">OTOS follows your team's definitions — not the other way around.</p>
-		<p class="strapline">Low integration. Low disruption. High clarity.</p>
-		<p class="sub">
-			You decide what counts as a touchpoint. You escalate — OTOS never does. If a signal looks serious, it goes to a named person on your team for a human decision. And you can stop at any time. There's no lock-in. No procurement commitment required to explore.
-		</p>
-	</div>
+      <div class="journey-unit" data-step="2">
+        <div class="journey-circle teal">
+          <span class="circle-number">2</span>
+          <span class="float-label">GOVERNANCE</span>
+          <div class="float-title text-gradient">Aligned with NHS standards</div>
+          <p class="float-body">Designed to align with DTAC, DSPT, NICE ESF, and NHS IG standards.</p>
+          <ul class="float-bullets"><li>DTAC aligned</li><li>DSPT aligned</li><li>No EPR write-back</li><li>No clinical record storage</li><li>Human-gated escalation</li></ul>
+        </div>
+      </div>
 
-	<div class="panel">
-		<div class="grid">
-			<div class="card">
-				<h3>Minimum viable data</h3>
-				<ul>
-					<li>Tokenised or pseudonymised at source</li>
-					<li>Identity remains with the originating service</li>
-					<li>No cross‑organisation record coupling</li>
-					<li>No stored personal profiles in the pilot view</li>
-				</ul>
-			</div>
+      <div class="journey-unit" data-step="3">
+        <div class="journey-circle teal">
+          <span class="circle-number">3</span>
+          <span class="float-label">ESCALATION</span>
+          <div class="float-title text-gradient">Human decisions only</div>
+          <p class="float-body">When OTOS detects a signal, it alerts the relevant team. A human decides what to take. Always.</p>
+          <ul class="float-bullets"><li>Signal detected by OTOS</li><li>Alert sent to team</li><li>Human decides action</li><li>OTOS logs the outcome</li></ul>
+        </div>
+      </div>
 
-			<div class="card">
-				<h3>Integration posture (Phase 1)</h3>
-				<ul>
-					<li>No integration required for pilot entry and reporting</li>
-					<li>No EPR write‑back</li>
-					<li>No clinical record fields captured in the demo</li>
-					<li>Designed to sit around existing workflows</li>
-				</ul>
-			</div>
-
-			<div class="card">
-				<h3>Claims guardrails</h3>
-				<ul>
-					<li>No diagnosing</li>
-					<li>No prescribing</li>
-					<li>No automated clinical decisions</li>
-					<li>No claims of outcomes in a demo context</li>
-				</ul>
-			</div>
-
-			<div class="card">
-				<h3>Escalation is always human controlled</h3>
-				<ul>
-					<li>Signals can prompt a review</li>
-					<li>A human reviewer records a decision</li>
-					<li>Timestamped audit trail of actions and handoffs</li>
-					<li>Designed to reduce silent drift, not replace care</li>
-				</ul>
-			</div>
-		</div>
-
-		<div class="strip">
-			Tokenised. No EPR write‑back. Human review required for escalation.
-		</div>
-	</div>
-</div>
-
-<div class="bottom-nav" aria-label="Page navigation">
-	<a class="nav-btn" href="/continuity/guided-demos.html" aria-label="Back">←</a>
-	<a class="nav-btn nav-next" href="/continuity/reporting.html" aria-label="Next"><span>Next: Reporting</span> →</a>
+      <div class="journey-unit" data-step="4">
+        <div class="journey-circle amber">
+          <span class="circle-number">4</span>
+          <span class="float-label">DATA</span>
+          <div class="float-title text-gradient">What OTOS stores</div>
+          <p class="float-body">Continuity signals and audit receipts only. Tokenised IDs. No name. No diagnosis.</p>
+          <ul class="float-bullets"><li>Tokenised IDs only</li><li>No clinical records</li><li>Audit receipts only</li><li>UK-hosted infrastructure</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Phase 4: Quote centred as-is, between bubbles and footer -->
+  <section class="quote-section">
+    <p class="closing-line">Low integration. Low disruption. High clarity.</p>
+    <blockquote class="site-quote">
+      <p class="text-gradient">&ldquo;[Commissioner or governance lead quote placeholder]&rdquo;</p>
+      <cite>&mdash; Name, Role, Organisation</cite>
+    </blockquote>
+  </section>
+</main>
+<div class="bottom-nav">
+  <a href="guided-demos.html">&larr; Previous</a>
+  <a href="reporting.html">Next: Reporting &rarr;</a>
 </div>
 <footer class="site-footer">
-  © OTOS Digital Ltd. Company registered in England 
-  &amp; Wales with Company No. 17084455. 
-  Phone <a href="tel:+447466334143">+447466334143</a>. 
-  Email <a href="mailto:info@otos.life">info@otos.life</a>.
+  © OTOS Digital Ltd. Company registered in England & Wales with Company No. 17084455. Phone +447466334143. Email info@otos.life.
 </footer>
 <script defer src="otos-shared.js"></script>
 </body>

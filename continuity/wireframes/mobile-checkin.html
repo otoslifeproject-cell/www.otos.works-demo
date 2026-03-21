@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>OTOS Continuity™ — Check-in (Mobile)</title>
   <link rel="stylesheet" href="otos-design-system.css">
+  <link rel="stylesheet" href="wireframe-shared.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* iPhone 14 Pro frame: 393×852 logical; frame includes notch + safe area */
@@ -43,7 +44,7 @@
       border-bottom: 1px solid var(--border-light);
       background: var(--bg-page);
     }
-    .mobile-header .logo { font-weight: 700; font-size: 1rem; color: var(--otos-blue); }
+    .mobile-header .logo { font-weight: 700; font-size: 1rem; color: var(--brand-primary); }
     .mobile-main { padding: var(--space-6) var(--space-4); min-height: 600px; }
     .mobile-main h1 { font-size: 1.25rem; margin-bottom: var(--space-2); }
     .mobile-main p { font-size: var(--text-sm); color: var(--text-muted); margin-bottom: var(--space-6); }
@@ -62,12 +63,12 @@
       cursor: pointer;
     }
     .option-btn:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
-    .option-btn.selected { border-color: var(--otos-blue); background: var(--otos-blue-light); color: var(--otos-blue); font-weight: 500; }
+    .option-btn.selected { border-color: var(--brand-primary); background: rgba(193,127,36,0.08); color: var(--text); font-weight: 600; }
     .submit-wrap { padding: var(--space-4); padding-bottom: var(--space-6); }
     .btn--full { width: 100%; padding: var(--space-4); }
   </style>
 </head>
-<body style="background: #e5e5e5; padding: 40px 0;">
+<body class="wf-page">
   <div class="device-frame">
     <div class="device-screen">
       <div class="notch" aria-hidden="true"></div>
@@ -91,5 +92,9 @@
       <div class="safe-bottom"></div>
     </div>
   </div>
+  <nav class="wf-toolbar" aria-label="Screen navigation">
+    <a class="wf-toolbar__link" href="index.html">Hub</a>
+    <a class="wf-toolbar__link" href="flow-overview.html#flow-legacy">Flow map</a>
+  </nav>
 </body>
 </html>

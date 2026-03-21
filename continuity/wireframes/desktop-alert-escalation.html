@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OTOS Continuity™ — Escalation alert (Desktop)</title>
   <link rel="stylesheet" href="otos-design-system.css">
+  <link rel="stylesheet" href="wireframe-shared.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     .viewport { width: 1440px; min-height: 900px; margin: 0 auto; background: var(--bg-page); }
     .header { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) var(--space-8); border-bottom: 1px solid var(--border); }
-    .logo { font-weight: 700; font-size: 1.25rem; color: var(--otos-blue); }
+    .logo { font-weight: 700; font-size: 1.25rem; color: var(--brand-primary); }
     .main { padding: var(--space-8); }
     .page-title { margin-bottom: var(--space-2); }
     .page-sub { color: var(--text-muted); font-size: var(--text-sm); margin-bottom: var(--space-6); }
@@ -20,7 +21,11 @@
     .actions { display: flex; gap: var(--space-4); margin-top: var(--space-6); }
   </style>
 </head>
-<body>
+<body class="wf-page wf-page--desktop">
+  <nav class="wf-desktop-bar" aria-label="Wireframe navigation">
+    <a href="index.html">← Hub</a>
+    <a href="flow-overview.html#flow-legacy">Flow map</a>
+  </nav>
   <div class="viewport">
     <header class="header">
       <div class="logo">OTOS Continuity™</div>

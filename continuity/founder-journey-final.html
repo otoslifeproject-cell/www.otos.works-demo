@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OTOS Continuity™ — Founder Journey</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --map-bg: #0a1628;
@@ -18,7 +18,9 @@
       --red-dark: #DC2626;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--map-bg); color: var(--text); overflow: hidden; }
+    html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--map-bg); color: var(--text); overflow-x: hidden; overflow-y: auto; }
+    body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
+    .site-footer { margin-top: auto; background: #0a0f1e; color: rgba(255,255,255,0.6); font-family: Inter, sans-serif; font-size: 13px; text-align: center; padding: 14px 20px; }
 
     /* Shared continuity nav */
     .navbar{
@@ -28,28 +30,30 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      padding:14px 18px;
-      background: rgba(13, 27, 42, 0.72);
+      height: 64px;
+      padding:0 clamp(16px,3vw,40px);
+      background: rgba(10, 15, 30, 0.72);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(255,255,255,0.10);
+      border-bottom: 1px solid rgba(255,255,255,0.12);
     }
     .nav-left{ display:flex; align-items:center; gap:16px; }
-    .nav-logo{ height:32px; width:auto; }
+    .nav-logo-link{ display:flex; align-items:center; line-height:0; text-decoration:none; }
+    .nav-logo{ height:34px; width:auto; }
     .nav-links a{
       margin-right:16px;
       text-decoration:none;
-      color: rgba(255,255,255,0.82);
-      font-weight:600;
+      color: rgba(255,255,255,0.74);
+      font-weight:500;
       font-size:13px;
     }
     .nav-links a:hover{ color:#fff; }
-    .nav-links a.active{ color:#fff; }
+    .nav-links a.active{ color:#fff; font-weight:700; }
 
-    .app{ height: calc(100vh - 60px); margin-top: 60px; }
+    .app{ height: calc(100vh - 64px); margin-top: 64px; }
 
     /* ========== LAYOUT — TWO PANEL ========== */
-    .app { display: flex; width: 100%; height: 100vh; }
+    .app { display: flex; width: 100%; height: calc(100vh - 64px); }
     .panel-map { width: 65%; height: 100%; position: relative; overflow: hidden; flex-shrink: 0; }
     .panel-info { width: 35%; height: 100%; display: flex; flex-direction: column; background: var(--info-bg); border-left: 1px solid var(--info-border); flex-shrink: 0; }
     @media (max-width: 768px) {
@@ -118,6 +122,7 @@
     .neuron-line { stroke: rgba(249,115,22,0.4); stroke-width: 1; fill: none; }
     .neuron-dot { fill: #F97316; }
     .node-pulse { animation: nodePulse 0.6s ease-out; }
+    #neurons-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
     @keyframes nodePulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.4); }
@@ -142,15 +147,18 @@
 <body>
   <nav class="navbar">
     <div class="nav-left">
-      <img src="../assets/brain.png" class="nav-logo" alt="">
+      <a href="index.html" class="nav-logo-link" aria-label="OTOS Home">
+        <img src="images/brain-logo.svg" class="nav-logo" alt="OTOS Continuity">
+      </a>
       <div class="nav-links">
-        <a href="/continuity/index.html">Home</a>
-        <a href="/continuity/how-it-works.html">How it works</a>
-        <a href="/continuity/guided-demos.html">Guided demos</a>
-        <a href="/continuity/controls.html">Controls</a>
-        <a href="/continuity/reporting.html">Reporting</a>
-        <a class="active" href="/continuity/founder-journey-final.html">Founder Journey</a>
-        <a href="/continuity/references.html">References</a>
+        <a href="index.html">Home</a>
+        <a href="how-it-works.html">How it works</a>
+        <a href="guided-demos.html">Guided demos</a>
+        <a href="controls.html">Controls</a>
+        <a href="reporting.html">Reporting</a>
+        <a class="active" href="founder-journey-final.html">Founder Journey</a>
+        <a href="references.html">References</a>
+        <a href="infrastructure-partners.html">Infrastructure</a>
       </div>
     </div>
   </nav>
@@ -184,7 +192,7 @@
         <svg class="otos-brain" id="otos-brain-svg" viewBox="0 0 64 64" aria-hidden="true">
           <path fill="#F97316" d="M32 8c-4 0-8 2-10 6-2 4-2 10 0 14 2 4 4 8 8 10 4 2 8 2 12 0 4-2 8-6 10-10 2-4 2-10 0-14C40 10 36 8 32 8zm-4 12c-2 0-4 2-4 4s2 4 4 4 4-2 4-4-2-4-4-4zm8 0c-2 0-4 2-4 4s2 4 4 4 4-2 4-4-2-4-4-4zm-6 14c-2 2-2 6 0 8 2 2 6 2 8 0 2-2 2-6 0-8s-6-2-8 0z"/>
         </svg>
-        <svg id="neurons-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:0;width:100%;height:100%;"></svg>
+        <svg id="neurons-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet"></svg>
       </div>
     </div>
 
@@ -723,10 +731,7 @@
   </script>
 
   <footer class="site-footer">
-    © OTOS Digital Ltd. Company registered in England 
-    &amp; Wales with Company No. 17084455. 
-    Phone <a href="tel:+447466334143">+447466334143</a>. 
-    Email <a href="mailto:info@otos.life">info@otos.life</a>.
+    &copy; OTOS Digital Ltd. Company registered in England &amp; Wales with Company No. 17084455. Phone +447466334143. Email info@otos.life.
   </footer>
 </body>
 </html>

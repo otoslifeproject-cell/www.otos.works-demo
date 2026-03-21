@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo routes — user flows · OTOS Continuity™ wireframes</title>
+  <link rel="stylesheet" href="otos-design-system.css">
+  <link rel="stylesheet" href="wireframe-shared.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #ede8df;
+      font-family: 'Inter', var(--font-sans);
+      color: #1a1410;
+    }
+    .fo-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+    .fo-hero {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .fo-hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700;
+      font-style: italic;
+      margin: 0 0 12px;
+      color: #1a1410;
+      letter-spacing: -0.02em;
+    }
+    .fo-hero p {
+      max-width: 52ch;
+      margin: 0 auto;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #7a6a58;
+    }
+    .fo-back {
+      display: inline-flex;
+      margin-bottom: 24px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #7a6a58 !important;
+      text-decoration: none !important;
+    }
+    .fo-back:hover { color: #c17f24 !important; }
+
+    .fo-section {
+      margin-bottom: 56px;
+    }
+    .fo-section h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      font-style: italic;
+      margin: 0 0 8px;
+      color: #1a1410;
+    }
+    .fo-section .fo-desc {
+      font-size: 0.875rem;
+      color: #7a6a58;
+      margin: 0 0 24px;
+      max-width: 70ch;
+      line-height: 1.6;
+    }
+
+    .fo-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 0;
+      position: relative;
+      padding: 8px 0 24px;
+    }
+
+    .fo-step {
+      flex: 1 1 140px;
+      min-width: 120px;
+      max-width: 200px;
+      position: relative;
+      text-align: center;
+      padding: 0 6px;
+    }
+    .fo-step__card {
+      display: block;
+      text-decoration: none !important;
+      color: inherit !important;
+      background: rgba(255, 252, 246, 0.92);
+      border: 1px solid rgba(193, 127, 36, 0.2);
+      border-radius: 16px;
+      padding: 16px 12px 18px;
+      min-height: 120px;
+      box-shadow: 0 8px 28px rgba(26, 20, 16, 0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .fo-step__card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(26, 20, 16, 0.1);
+      border-color: rgba(193, 127, 36, 0.45);
+    }
+    .fo-step__num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #4a9e8e 0%, #c17f24 100%);
+      margin-bottom: 10px;
+    }
+    .fo-step__title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      line-height: 1.35;
+      color: #1a1410;
+      margin: 0;
+    }
+    .fo-step__hint {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #c17f24;
+    }
+
+    .fo-arrow {
+      flex: 0 0 auto;
+      width: 24px;
+      align-self: center;
+      color: rgba(193, 127, 36, 0.45);
+      font-size: 1.25rem;
+      font-weight: 300;
+      user-select: none;
+      margin: 0 -4px;
+      z-index: 1;
+    }
+
+    @media (max-width: 900px) {
+      .fo-flow { flex-direction: column; align-items: stretch; }
+      .fo-step { max-width: none; }
+      .fo-arrow {
+        transform: rotate(90deg);
+        width: auto;
+        height: 24px;
+        margin: 4px auto;
+      }
+    }
+
+    .fo-legacy {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .fo-legacy a {
+      display: block;
+      padding: 14px 16px;
+      background: rgba(255, 252, 246, 0.85);
+      border: 1px solid rgba(193, 127, 36, 0.15);
+      border-radius: 12px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-decoration: none !important;
+      color: #1a1410 !important;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .fo-legacy a:hover {
+      border-color: rgba(193, 127, 36, 0.4);
+      background: #fffefb;
+    }
+
+    .fo-note {
+      margin-top: 48px;
+      padding: 20px;
+      background: rgba(74, 158, 142, 0.08);
+      border: 1px solid rgba(74, 158, 142, 0.22);
+      border-radius: 14px;
+      font-size: 0.8125rem;
+      color: #5a5248;
+      line-height: 1.55;
+    }
+    .fo-note code { font-size: 0.8em; background: rgba(255,255,255,0.7); padding: 2px 6px; border-radius: 4px; }
+
+    @media print {
+      .fo-back, .wf-desktop-bar { display: none; }
+      .fo-step__card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body class="wf-page wf-page--desktop">
+  <nav class="wf-desktop-bar" aria-label="Wireframe hub">
+    <a href="index.html">← Wireframe hub</a>
+    <span class="wf-toolbar__gap" style="display:inline-block;width:1px;height:16px;"></span>
+    <a href="../guided-demos.html">Live portal · Guided demos</a>
+  </nav>
+
+  <div class="fo-wrap">
+    <a class="fo-back" href="index.html">← Back to wireframe index</a>
+    <header class="fo-hero">
+      <h1>Demo routes — user flow map</h1>
+      <p>Each card opens the interactive wireframe screen. Flows match the Cambridge pilot narrative: participant onboarding, bedside handoff, coordinator operations, and commissioner read-only reporting.</p>
+    </header>
+
+    <section class="fo-section" id="flow-onboarding">
+      <h2>1 · Participant onboarding</h2>
+      <p class="fo-desc">Person in recovery / cohort member · Mobile (QR → web) · Ultra-minimal · Single primary action per screen · Large tap targets.</p>
+      <div class="fo-flow" role="list">
+        <div class="fo-step" role="listitem">
+          <a class="fo-step__card" href="mobile-onboarding-welcome.html">
+            <span class="fo-step__num">1</span>
+            <p class="fo-step__title">Welcome — OTOS Continuity™</p>
+            <span class="fo-step__hint">Open screen</span>
+          </a>
+        </div>
+        <span class="fo-arrow" aria-hidden="true">→</span>
+        <div class="fo-step" role="listitem">
+          <a class="fo-step__card" href="mobile-onboarding-consent.html">
+            <span class="fo-step__num">2</span>
+            <p class="fo-step__title">Simple consent</p>
+            <span class="fo-step__hint">Open screen</span>
+          </a>
+        </div>
+        <span class="fo-arrow" aria-hidden="true">→</span>
+        <div class="fo-step" role="listitem">
+          <a class="fo-step__card" href="mobile-onboarding-id.html">
+            <span class="fo-step__num">3</span>
+            <p class="fo-step__title">Anonymous ID · XXXX-XXXX</p>
+            <span class="fo-step__hint">Open screen</span>
+          </a>
+        </div>
+        <span class="fo-arrow" aria-hidden="true">→</span>
+        <div class="fo-step" role="listitem">
+          <a class="fo-step__card" href="mobile-onboarding-checkin.html">
+            <span class="fo-step__num">4</span>
+            <p class="fo-step__title">First check-in — How are you today?</p>
+            <span class="fo-step__hint">Open screen</span>
+          </a>
+        </div>
+        <span class="fo-arrow" aria-hidden="true">→</span>
+        <div class="fo-step" role="listitem">
+          <a class="fo-step__card" href="mobile-onboarding-nextstep.html">
+            <span class="fo-step__num">5</span>
+            <p class="fo-step__title">Next step · Got it / I need help</p>
+            <span class="fo-step__hint">Open screen</span>
+          </a>
+        </div>
+        <span class="fo-arrow" aria-hidden="true">→</span>
+        <div class="fo-step" role="listitem">
+          <a class="fo-step__card" href="mobile-onboarding-done.html">
+            <span class="fo-step__num">6</span>
+            <p class="fo-step__title">Done — you're connected</p>
+            <span class="fo-step__hint">Open screen</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="fo-section" id="flow-helen">
+      <h2>2 · Bedside / rapid handoff — Helen view</h2>
+      <p class="fo-desc">Hospital liaison, A&amp;E, bedside staff · Mobile-first · ≤3 actions per screen · Fast-track ADHD path · Receipt auto-generated.</p>
+      <div class="fo-flow" role="list">
+        <div class="fo-step" role="listitem">
+          <a class="fo-step__card" href="mobile-helen-scan.html">
+            <span class="fo-step__num">1</span>
+            <p class="fo-step__title">Scan QR or enter code</p>
+            <span class="fo-step__hint">Open screen</span>
+          </a>
+        </div>
+        <span class="fo-arrow" aria-hidden="true">→</span>
+        <div class="fo-step" role="listitem">
+          <a class="fo-step__card" href="mobile-helen-participant.html">
+            <span class="fo-step__num">2</span>
+            <p class="fo-step__title">Participant found · Record touchpoint</p>
+            <span class="fo-step__hint">Open screen</span>
+          </a>
+        </div>
+        <span class="fo-arrow" aria-hidden="true">→</span>
+        <div class="fo-step" role="listitem">
+          <a class="fo-step__card" href="mobile-helen-record.html">
+            <span class="fo-step__num">3</span>
+            <p class="fo-step__title">Attended / Referred / ADHD flag</p>
+            <span class="fo-step__hint">Open screen</span>
+          </a>
+        </div>
+        <span class="fo-arrow" aria-hidden="true">→</span>
+        <div class="fo-step" role="listitem">
+          <a class="fo-step__card" href="mobile-helen-adhd-route.html">
+            <span class="fo-step__num">4</span>
+            <p class="fo-step__title">ADHD route · QbTest / RTC</p>
+            <span class="fo-step__hint">Open screen</span>
+          </a>
+        </div>
+        <span class="fo-arrow" aria-hidden="true">→</span>
+        <div class="fo-step" role="listitem">
+          <a class="fo-step__card" href="mobile-helen-receipt.html">
+            <span class="fo-step__num">5</span>
+            <p class="fo-step__title">Receipt generated</p>
+            <span class="fo-step__hint">Open screen</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="fo-section" id="flow-coordinator">
+      <h2>3 · Coordinator dashboard — CGL / CRS</h2>
+      <p class="fo-desc">Keyworker, coordinator, reviewer · Desktop / tablet · Overview + drift queue + human review · Anonymous codes only · CSV export.</p>
+      <div class="fo-flow" style="flex-wrap: nowrap;">
+        <div class="fo-step" style="max-width: 100%; flex: 1 1 100%;">
+          <a class="fo-step__card" href="desktop-coordinator-dashboard.html" style="min-height: auto; text-align: left; max-width: 720px; margin: 0 auto;">
+            <span class="fo-step__num">1</span>
+            <p class="fo-step__title">Overview + Drift queue + Human review panel (single dashboard view)</p>
+            <span class="fo-step__hint">Open desktop wireframe — 1440px canvas</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="fo-section" id="flow-commissioner">
+      <h2>4 · Commissioner reporting — Scott view</h2>
+      <p class="fo-desc">Commissioner, sponsor · Desktop · Read-only · Core metrics · ADHD fast-track / RTC headline · Trend chart · Download snapshot.</p>
+      <div class="fo-flow" style="flex-wrap: nowrap;">
+        <div class="fo-step" style="max-width: 100%; flex: 1 1 100%;">
+          <a class="fo-step__card" href="desktop-commissioner-report.html" style="min-height: auto; text-align: left; max-width: 720px; margin: 0 auto;">
+            <span class="fo-step__num">1</span>
+            <p class="fo-step__title">Week 8 of 12 — Metrics, follow-through trend, open items, download</p>
+            <span class="fo-step__hint">Open desktop wireframe</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="fo-section" id="flow-legacy">
+      <h2>Legacy / reference screens</h2>
+      <p class="fo-desc">Additional low-fidelity views for ops, alerts, and participant touchpoints.</p>
+      <div class="fo-legacy">
+        <a href="desktop-dashboard.html">Dashboard (generic)</a>
+        <a href="desktop-ops-touchpoints.html">Ops — Touchpoints log</a>
+        <a href="desktop-alert-escalation.html">Reviewer — Escalation alert</a>
+        <a href="mobile-checkin.html">Participant — Quick check-in</a>
+        <a href="mobile-alert.html">Participant — Reminder / alert</a>
+      </div>
+    </section>
+
+    <p class="fo-note">
+      <strong>Export for slides or the website:</strong> open this page in Chrome → full-page screenshot, or run <code>npm run export</code> from this folder (Puppeteer) after adding this file to your export script if needed. Wireframe screens use the same cream/amber system as <a href="../index.html">continuity/index.html</a>.
+    </p>
+  </div>
+</body>
+</html>

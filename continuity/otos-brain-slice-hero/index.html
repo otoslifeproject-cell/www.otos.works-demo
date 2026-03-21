@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OTOS Brain Slice / NHS Layer Install — Hero prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app" class="app" data-phase="base" aria-hidden="true">
+    <main class="stage" role="img" aria-label="OTOS continuity layer animation (decorative)">
+      <div class="stage__grid">
+        <!-- NHS: replace .nhs-placeholder with official asset img; do not restyle beyond sizing -->
+        <header class="row row--nhs">
+          <div class="nhs-placeholder" data-asset="NHS_LOGO">
+            <span class="nhs-placeholder__mark">NHS</span>
+          </div>
+        </header>
+
+        <div class="row row--mid perspective-root">
+          <div class="gap-visual" aria-hidden="true"></div>
+          <div class="slice-anchor">
+            <div class="slice-pivot">
+              <div class="slice-cube">
+                <div class="face face--front">
+                  <div class="face__brain">
+                    <img
+                      src="../brain.png"
+                      alt=""
+                      class="slice-img"
+                      width="739"
+                      height="557"
+                      draggable="false"
+                    />
+                  </div>
+                </div>
+                <div class="face face--back"></div>
+                <div class="face face--right"></div>
+                <div class="face face--left"></div>
+                <div class="face face--top"></div>
+                <div class="face face--bottom"></div>
+              </div>
+              <div class="slice-sheen" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div class="layer-copy">
+            <p class="layer-copy__brand">OTOS Continuity™</p>
+          </div>
+
+          <svg class="pulse-svg" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <path class="pulse-line pulse-line--nhs" d="M 200 160 L 200 42" />
+            <path class="pulse-line pulse-line--sp1" d="M 200 160 L 72 278" />
+            <path class="pulse-line pulse-line--sp2" d="M 200 160 L 200 278" />
+            <path class="pulse-line pulse-line--sp3" d="M 200 160 L 328 278" />
+          </svg>
+
+          <div class="crackle-layer" aria-hidden="true">
+            <svg class="crackle-svg" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet">
+              <path class="crackle crackle--a" d="M 200 160 L 200 52" />
+              <path class="crackle crackle--b" d="M 200 160 L 88 268" />
+              <path class="crackle crackle--c" d="M 200 160 L 312 268" />
+            </svg>
+          </div>
+        </div>
+
+        <footer class="row row--sp">
+          <div class="sp-cluster" data-asset="SERVICE_PROVIDER_LOGOS">
+            <div class="sp-placeholder" data-sp-index="1">SP</div>
+            <div class="sp-placeholder" data-sp-index="2">SP</div>
+            <div class="sp-placeholder" data-sp-index="3">SP</div>
+          </div>
+          <p class="tagline" data-copy="TAGLINE">
+            A silent continuity layer that holds people in the pathway — without changing what clinicians do.
+          </p>
+        </footer>
+      </div>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

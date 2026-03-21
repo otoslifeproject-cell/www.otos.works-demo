@@ -15,10 +15,13 @@ if (!fs.existsSync(exportsDir)) fs.mkdirSync(exportsDir, { recursive: true });
 
 const baseUrl = 'file://' + __dirname.replace(/\\/g, '/') + '/';
 
-const mobileView = { width: 393 + 24, height: 852 + 24 + 80, scale: 2 };
+const mobileView = { width: 393 + 24, height: 852 + 24 + 120, scale: 2 };
 const desktopView = { width: 1440, height: 900, scale: 2 };
+const flowMapView = { width: 1240, height: 4800, scale: 2 };
 
 const screens = [
+  // User-flow diagram (screenshot for decks / website)
+  { file: 'flow-overview.html', name: '0-demo-routes-flow-map', ...flowMapView },
   // Wireframe 1 — Participant onboarding
   { file: 'mobile-onboarding-welcome.html', name: '1-participant-welcome', ...mobileView },
   { file: 'mobile-onboarding-consent.html', name: '1-participant-consent', ...mobileView },

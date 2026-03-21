@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Coordinator dashboard — CGL / CRS view (Wireframe 3)</title>
   <link rel="stylesheet" href="otos-design-system.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="wireframe-shared.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
   <style>
-    .viewport { width: 1440px; min-height: 900px; margin: 0 auto; background: var(--bg-page); }
+    .viewport { width: 1440px; min-height: 900px; margin: 0 auto; background: var(--bg-page); box-shadow: 0 24px 60px rgba(26,20,16,0.08); border-radius: 0 0 12px 12px; overflow: hidden; }
     .header { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) var(--space-8); border-bottom: 1px solid var(--border); }
-    .logo { font-weight: 700; font-size: 1.25rem; color: var(--otos-blue); }
+    .logo { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 700; font-size: 1.2rem; color: var(--brand-primary); }
     .header-actions { display: flex; align-items: center; gap: var(--space-4); }
     .export-btn { font-size: var(--text-sm); }
     .main { padding: var(--space-6) var(--space-8); display: grid; grid-template-columns: 1fr 400px; gap: var(--space-8); }
@@ -36,7 +37,12 @@
     .review-panel .btn { width: 100%; margin-top: var(--space-2); }
   </style>
 </head>
-<body>
+<body class="wf-page wf-page--desktop">
+  <nav class="wf-desktop-bar" aria-label="Wireframe navigation">
+    <a href="index.html">← Hub</a>
+    <a href="flow-overview.html#flow-coordinator">Flow diagram</a>
+    <a href="../guided-demos.html">Live portal</a>
+  </nav>
   <div class="viewport">
     <header class="header">
       <div class="logo">OTOS Continuity™ — CGL Coordinator</div>

@@ -1,594 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>References — OTOS Continuity™</title>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
-
-	<style>
-	:root{
-		--bg:#f4f4f4;
-		--text:#111;
-		--muted:#555;
-		--panel:#ffffff;
-		--glass:rgba(255,255,255,0.72);
-
-		--stroke: rgba(0,0,0,0.06);
-		--stroke2: rgba(0,0,0,0.08);
-
-		--shadow:0 18px 50px rgba(0,0,0,0.08);
-
-		--accent:#ff8a00;
-		--accentSoft:rgba(255,138,0,0.12);
-	}
-
-	*{ box-sizing:border-box; }
-	html, body{ min-height:100%; }
-
-	body{
-		margin:0;
-		font-family:Inter, sans-serif;
-		background:var(--bg);
-		color:var(--text);
-
-		min-height:100vh;
-		overflow:visible;
-
-		display:flex;
-		flex-direction:column;
-	}
-
-	.navbar{
-		position:fixed;
-		top:0; left:0; right:0;
-		z-index:50;
-
-		display:flex;
-		align-items:center;
-		justify-content:space-between;
-
-		padding:clamp(12px, 1.8vh, 18px) clamp(16px, 4vw, 60px);
-		background:var(--glass);
-		backdrop-filter:blur(14px);
-		-webkit-backdrop-filter:blur(14px);
-
-		border-bottom:1px solid rgba(0,0,0,0.06);
-		box-shadow:0 12px 30px rgba(0,0,0,0.08);
-	}
-
-	.nav-left{ display:flex; align-items:center; gap:clamp(14px, 2vw, 40px); }
-	.nav-logo{ height:36px; }
-
-	.nav-links a{
-		margin-right:clamp(12px, 1.6vw, 22px);
-		text-decoration:none;
-		color:#444;
-		font-weight:500;
-	}
-	.nav-links a:hover{ color:#000; }
-	.nav-links a.active{ color:#000; font-weight:600; }
-
-	.page{
-		min-height:calc(100svh - 76px);
-		margin:0 auto;
-		width:min(1320px, 100%);
-
-		padding:
-			clamp(18px, 2.4vh, 32px)
-			clamp(16px, 3.2vw, 46px)
-			calc(clamp(16px, 2.6vh, 26px) + 84px);
-
-		margin-top:76px;
-
-		display:flex;
-		flex-direction:column;
-		gap:clamp(10px, 1.4vh, 14px);
-	}
-
-	.hero{ text-align:center; }
-	.kicker{
-		font-size:12px;
-		letter-spacing:0.14em;
-		text-transform:uppercase;
-		color:#888;
-		margin:0 0 10px 0;
-	}
-	h1{
-		font-family:"Playfair Display", serif;
-		font-size:clamp(30px, 4.4vw, 46px);
-		line-height:1.12;
-		letter-spacing:-0.6px;
-		margin:0 0 10px 0;
-	}
-	.sub{
-		margin:0 auto;
-		max-width:980px;
-		font-size:clamp(14px, 1.5vw, 17px);
-		line-height:1.6;
-		color:var(--muted);
-	}
-
-	.panel{
-		flex:1 1 auto;
-		min-height:0;
-
-		margin-top:clamp(10px, 1.4vh, 18px);
-		background:var(--panel);
-		border-radius:22px;
-		padding:clamp(12px, 1.8vh, 18px);
-		box-shadow:var(--shadow);
-
-		overflow:auto;
-	}
-
-	.note{
-		border:1px solid var(--stroke);
-		background: rgba(255,138,0,0.08);
-		border-radius:18px;
-		padding: 12px 14px;
-		color:#5b3a00;
-		line-height:1.45;
-		margin-bottom: 14px;
-	}
-
-	.section{
-		border: 1px solid var(--stroke);
-		background: rgba(0,0,0,0.02);
-		border-radius: 18px;
-		padding: 14px;
-		margin-bottom: 12px;
-	}
-
-	.section h2{
-		margin:0 0 8px 0;
-		font-size: 16px;
-		letter-spacing: -0.2px;
-	}
-	.section p{
-		margin: 0 0 10px 0;
-		color:#555;
-		line-height:1.55;
-		font-size: 13.5px;
-	}
-
-	.list{
-		display:flex;
-		flex-direction:column;
-		gap:10px;
-	}
-
-	.item{
-		background:#fff;
-		border:1px solid var(--stroke);
-		border-radius:14px;
-		padding: 12px;
-		box-shadow: 0 10px 25px rgba(0,0,0,0.06);
-	}
-
-	.item .t{
-		font-weight:800;
-		margin:0 0 4px 0;
-	}
-	.item .s{
-		margin:0 0 8px 0;
-		color:#666;
-		font-size: 13px;
-		line-height: 1.45;
-	}
-	.item a{
-		color:#0b5bd3;
-		word-break: break-word;
-	}
-	.tagRow{
-		margin-top: 8px;
-		display:flex;
-		flex-wrap:wrap;
-		gap:8px;
-	}
-	.tag{
-		display:inline-flex;
-		align-items:center;
-		gap:8px;
-		padding: 6px 10px;
-		border-radius: 999px;
-		border:1px solid var(--stroke);
-		background: rgba(255,255,255,0.75);
-		color:#666;
-		font-size: 12px;
-		font-weight: 700;
-	}
-	.dot{
-		width:10px;height:10px;border-radius:999px;background: var(--accent);
-		box-shadow: 0 0 0 4px var(--accentSoft);
-	}
-
-	hr{
-		border:none;
-		border-top:1px solid rgba(0,0,0,0.06);
-		margin: 14px 0;
-	}
-
-	.bottom-nav{
-		position:static;
-		width:100%;
-
-		display:flex;
-		align-items:center;
-		justify-content:center;
-		gap:12px;
-
-		backdrop-filter:blur(16px);
-		-webkit-backdrop-filter:blur(16px);
-		background:rgba(255,255,255,0.72);
-		border-top:1px solid rgba(15,23,42,0.08);
-		box-shadow:0 -4px 24px rgba(15,23,42,0.06);
-
-		border-radius:999px;
-		padding:10px 12px;
-	}
-
-	.nav-btn{
-		display:inline-flex;
-		align-items:center;
-		justify-content:center;
-		width:44px;
-		height:44px;
-		border-radius:999px;
-		text-decoration:none;
-		border:1px solid rgba(0,0,0,0.10);
-		background:#fff;
-		color:#111;
-		font-weight:700;
-		transition:.2s;
-	}
-
-	.nav-btn:hover{
-		transform:translateY(-1px);
-		box-shadow:0 12px 26px rgba(0,0,0,0.12);
-	}
-
-	.nav-next{
-		min-width:190px;
-		padding:0 16px;
-		width:auto;
-		gap:10px;
-		font-weight:700;
-	}
-
-	@media(max-width:980px){
-		.navbar{ padding:14px 18px; }
-		.page{
-			min-height:calc(100svh - 70px);
-			margin-top:70px;
-			padding:18px 18px calc(18px + 84px);
-		}
-		h1{ font-size:34px; }
-	}
-	@media (prefers-reduced-motion: reduce){
-		*{ transition:none !important; }
-	}
-	</style>
-	<link rel="stylesheet" href="otos-shared.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evidence &amp; References &mdash; OTOS Continuity™</title>
+<meta name="description" content="Evidence and references behind the Continuity pilot. Research, service context, and operational thinking.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="otos-shared.css">
+<style>
+:root{
+  --bg-page:#f5f0e8;--bg-section-alt:#ede8df;--bg-dark:#1e150a;--bg-dark-mid:#2a1c0f;--bg-card:rgba(255,252,246,0.78);--bg-nav:rgba(245,240,232,0.90);
+  --text-primary:#1a1410;--text-secondary:#7a6a58;--text-light:#a8998a;--text-on-dark:#f0ebe3;--text-on-dark-dim:rgba(240,235,227,0.65);
+  --amber:#c17f24;--amber-light:#d4953c;--orange:#e8720c;--teal:#4a9e8e;--teal-soft:rgba(74,158,142,0.70);
+  --shadow-sm:0 2px 8px rgba(26,20,16,0.08),0 1px 2px rgba(26,20,16,0.05);--shadow-md:0 8px 24px rgba(26,20,16,0.12),0 3px 8px rgba(26,20,16,0.08);--shadow-lg:0 20px 56px rgba(26,20,16,0.18),0 8px 20px rgba(26,20,16,0.10);--shadow-xl:0 32px 80px rgba(26,20,16,0.22),0 12px 28px rgba(26,20,16,0.12);
+  --font-heading:'Playfair Display', Georgia, serif;--font-body:'Inter', -apple-system, sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:16px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html,body{margin:0;overflow:hidden}
+html{height:100dvh;overflow:hidden}
+body{
+  background:#f5f0e8;
+  color:#1a1410;font-family:var(--font-body);margin:0;padding:0;height:100dvh;overflow:hidden;display:flex;flex-direction:column;
+}
+.site-nav{position:sticky;top:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(245,240,232,0.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(193,127,36,0.1);opacity:1!important;pointer-events:auto!important;box-shadow:0 1px 0 rgba(255,252,246,0.8),0 4px 16px rgba(26,20,16,0.06)}
+.nav-brand{display:flex;align-items:center}
+.navbar-logo{height:36px;width:auto}
+.nav-logo{display:flex;align-items:center;text-decoration:none;flex-shrink:0}
+.nav-logo img{height:36px;width:auto;display:block}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links a{font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--text-secondary);text-decoration:none;letter-spacing:0.1px;padding:6px 14px;border-radius:20px;transition:color 0.15s, background 0.15s}
+.nav-links a:hover{color:var(--text-primary);background:rgba(193,127,36,0.08)}
+.nav-links a.active{color:var(--text-primary);font-weight:600}
+.ref-intro{padding:18px 24px 8px;max-width:860px;margin:0 auto}
+.ref-intro p{font-size:14px;color:var(--text-secondary);line-height:1.7;margin:0}
+.ref-content{max-width:860px;margin:0 auto;padding:8px 24px 20px}
+.ref-note{font-size:13px;color:var(--text-secondary);background:rgba(193,127,36,0.08);border:1px solid rgba(193,127,36,0.20);border-radius:14px;padding:12px 14px;margin-bottom:16px;line-height:1.55}
+.ref-section-heading{font-family:var(--font-body);font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin:2.5rem 0 0.75rem;display:block}
+.ref-group{background:rgba(255,255,255,0.62);border:1px solid rgba(193,127,36,0.12);border-radius:16px;padding:1.75rem;margin-bottom:16px;max-width:840px;margin-left:auto;margin-right:auto;box-shadow:0 4px 16px rgba(26,20,16,0.06),0 1px 4px rgba(26,20,16,0.04);backdrop-filter:blur(14px)}
+.ref-group h2{font-family:var(--font-heading);font-size:1.2rem;color:#1a1410;margin:0 0 0.55rem;line-height:1.3}
+.ref-group p.ref-desc{font-size:13px;color:var(--text-secondary);line-height:1.60;margin:0 0 10px}
+.ref-group ul{list-style:none;padding:0;margin:0}
+.ref-item{border-top:1px solid rgba(193,127,36,0.10);padding:14px 0}
+.ref-item:first-child{border-top:none;padding-top:0}
+.ref-item strong{font-family:var(--font-body);font-size:14px;font-weight:600;color:#1a1410;display:block;margin-bottom:4px}
+.ref-item p{font-family:var(--font-body);font-size:13px;color:var(--text-secondary);margin:0 0 8px;line-height:1.60}
+.ref-item a{font-family:var(--font-body);font-size:12px;color:var(--teal);text-decoration:none;word-break:break-all;transition:color 0.15s}
+.ref-item a:hover{color:#3a8e7e}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.ref-tag{display:inline-block;font-family:var(--font-body);font-size:10px;font-weight:600;color:var(--amber);background:rgba(193,127,36,0.10);border:1px solid rgba(193,127,36,0.22);border-radius:20px;padding:3px 10px;margin:4px 3px 0 0;letter-spacing:0.3px}
+.site-quote{max-width:680px;margin:0 auto;text-align:center;position:relative;padding:16px 32px}
+.site-quote::before{content:'\201C';font-family:var(--font-heading);font-size:7rem;line-height:0.8;color:rgba(193,127,36,0.14);position:absolute;top:-8px;left:0;pointer-events:none}
+.site-quote p{font-family:var(--font-heading);font-style:italic;font-size:clamp(1.25rem,2.5vw,1.65rem);font-weight:600;color:#1a1410;line-height:1.50;margin:0 0 16px;position:relative;z-index:1}
+.site-quote cite{font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);font-style:normal}
+/* Phase 4: refs inline quote — left-aligned, italic only, no decoration */
+.ref-inline-quote{font-family:var(--font-heading);font-style:italic;font-size:clamp(1rem,1.8vw,1.3rem);font-weight:600;color:#1a1410;line-height:1.55;text-align:left;max-width:560px;margin:2rem 0;padding:0;border:none;background:none;position:relative}
+.ref-inline-quote cite{display:block;font-family:var(--font-body);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--amber);font-style:normal;margin-top:8px}
+.bottom-nav{display:flex;justify-content:space-between;align-items:center;padding:0 48px;height:56px;background:rgba(245,240,232,0.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(193,127,36,0.10);box-shadow:0 -4px 20px rgba(26,20,16,0.05);margin-top:auto}
+.bottom-nav a{font-family:var(--font-body);font-size:13px;font-weight:600;letter-spacing:0.4px;color:var(--text-secondary);text-decoration:none;transition:color 0.15s}
+.bottom-nav a:hover{color:var(--text-primary)}
+.site-footer{background:var(--bg-dark);padding:22px 48px;text-align:center;margin-top:auto;font-family:var(--font-body);font-size:12px;color:rgba(240,235,227,0.40);line-height:1.6}
+@media (max-width: 900px){.site-nav{padding:0 20px}.nav-links a{font-size:11.5px;margin-left:12px;padding:4px 8px}.bottom-nav{padding:0 24px}}
+/* viewport no-scroll */
+*{box-sizing:border-box}
+img,video,svg{max-width:100%;height:auto}
+body{overflow:hidden}
+.site-nav{background:var(--bg-nav);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%)}
+</style>
 </head>
-
 <body>
-	<section style="
-  position: relative;
-  height: 48vh;
-  min-height: 320px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background: #0f172a;
-">
-  <div style="
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(10,18,35,0.45), rgba(10,18,35,0.82));
-    z-index: 1;
-  "></div>
-  <img
-    src="images/hero-7-dean.png"
-    alt=""
-    style="
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 0;
-    "
-  />
-  <img
-    src="../assets/brain.png"
-    alt="OTOS"
-    style="
-      position: absolute;
-      top: 24px;
-      right: 32px;
-      width: 32px;
-      height: 32px;
-      z-index: 10;
-    "
-  />
-  <div style="position: relative; z-index: 2; padding: 0 2rem;">
-    <p style="
-      font-family: 'Inter', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #ff8a00;
-      margin: 0 0 1rem;
-    ">References</p>
-    <h1 style="
-      font-family: 'Playfair Display', serif;
-      font-weight: 600;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      color: #ffffff;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      margin: 0 0 1rem;
-    ">The people who know<br>what this is for.</h1>
-    <p style="
-      font-family: 'Inter', sans-serif;
-      font-size: 1.05rem;
-      color: rgba(255,255,255,0.75);
-      margin: 0;
-      max-width: 52ch;
-      margin-left: auto;
-      margin-right: auto;
-    ">Available to speak with commissioners. Each contact has agreed to discuss their experience of the pilot directly.</p>
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo" aria-label="OTOS Home">
+    <img src="brain.png" alt="OTOS" height="36" style="display:block;width:auto;">
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="guided-demos.html">Guided demos</a>
+    <a href="controls.html">Controls</a>
+    <a href="reporting.html">Reporting</a>
+    <a href="founder-journey-final.html">Founder Journey</a>
+    <a href="references.html" class="active">References</a>
+    <a href="infrastructure-partners.html">Infrastructure</a>
   </div>
-</section>
-	<nav class="navbar">
-		<div class="nav-left">
-			<img src="../assets/brain.png" class="nav-logo" alt="" />
-			<div class="nav-links">
-				<a href="/continuity/index.html">Home</a>
-				<a href="/continuity/how-it-works.html">How it works</a>
-				<a href="/continuity/guided-demos.html">Guided demos</a>
-				<a href="/continuity/controls.html">Controls</a>
-				<a href="/continuity/reporting.html">Reporting</a>
-				<a href="/continuity/founder-journey-final.html">Founder Journey</a>
-				<a class="active" href="/continuity/references.html">References</a>
-			</div>
-		</div>
-	</nav>
+</nav>
+<main class="page-content" style="padding-top:0;flex:1;overflow-y:auto">
+  <div class="ref-intro">
+    <p>This page brings together the evidence behind the Continuity pilot: the research, the service context, and the operational thinking that supports the model. For commissioners, this is the source material. For partners, it shows the proposal is grounded in real evidence, not aspiration.</p>
+  </div>
+  <div class="ref-content">
+    <div class="ref-note"><strong>How to use this page:</strong> if you see a quote or claim in the portal (or in a pilot conversation), use the sections below to find the source link. If you think something is missing, we will add it.</div>
 
-	<div class="page">
-		<div class="hero">
-			<p class="sub">
-				Each person listed here has agreed to speak directly with commissioners about their experience. These are not endorsements — they are conversations available to you.
-			</p>
-		</div>
+    <h3 class="ref-section-heading">Core policy and guidance</h3>
+    <div class="ref-group">
+      <h2>Core policy and guidance (the &ldquo;why&rdquo;)</h2>
+      <p class="ref-desc">These are the main documents that support the idea that continuity, joined-up working, and &ldquo;no wrong door&rdquo; delivery are already expected in UK health and care.</p>
+      <ul>
+        <li class="ref-item">
+          <strong>NHS England &mdash; Independent ADHD Taskforce Report (Part 1 and Part 2)</strong>
+          Background, pressures, and recommended direction of travel for ADHD care in England.<br>
+          <a href="https://www.england.nhs.uk/mental-health/adhd-taskforce/" target="_blank" rel="noreferrer">https://www.england.nhs.uk/mental-health/adhd-taskforce/</a>
+          <div class="tags"><span class="ref-tag">ADHD</span><span class="ref-tag">Joined-up care</span><span class="ref-tag">Service pressure</span></div>
+        </li>
+        <li class="ref-item">
+          <strong>DHSC &mdash; Co-occurring mental health and substance use delivery framework</strong>
+          National framing for co-occurring need and practical expectations for delivery partnerships.<br>
+          <a href="https://www.gov.uk/government/publications/co-occurring-substance-misuse-and-mental-health-conditions-delivery-framework" target="_blank" rel="noreferrer">https://www.gov.uk/government/publications/co-occurring-substance-misuse...</a>
+          <div class="tags"><span class="ref-tag">Dual diagnosis</span><span class="ref-tag">No wrong door</span><span class="ref-tag">Partnership delivery</span></div>
+        </li>
+        <li class="ref-item">
+          <strong>NICE guideline NG87 &mdash; Attention deficit hyperactivity disorder</strong>
+          NICE recommendations for ADHD recognition, diagnosis, and management.<br>
+          <a href="https://www.nice.org.uk/guidance/ng87" target="_blank" rel="noreferrer">https://www.nice.org.uk/guidance/ng87</a>
+          <div class="tags"><span class="ref-tag">NICE</span><span class="ref-tag">ADHD</span></div>
+        </li>
+        <li class="ref-item">
+          <strong>Royal College of Psychiatrists &mdash; CR235 (ADHD in adults)</strong>
+          Good practice guidance for adult ADHD services and pathways.<br>
+          <a href="https://www.rcpsych.ac.uk/improving-care/campaigning-for-better-mental-health-policy/college-reports/2023-college-reports/cr235" target="_blank" rel="noreferrer">https://www.rcpsych.ac.uk/.../cr235</a>
+          <div class="tags"><span class="ref-tag">RCPsych</span><span class="ref-tag">Adult ADHD</span><span class="ref-tag">Pathway quality</span></div>
+        </li>
+      </ul>
+    </div>
 
-		<div class="panel">
-			<div class="note">
-				<b>How to use this page:</b> if you see a quote or claim in the portal (or in a pilot conversation),
-				use the sections below to find the source link. If you think something is missing, we will add it.
-			</div>
+    <h3 class="ref-section-heading">Piloting and evaluation</h3>
+    <div class="ref-group">
+      <h2>Piloting and evaluation</h2>
+      <p class="ref-desc">These sources support the idea that pilots are meant to reduce uncertainty, understand workflow impact, and create decision-grade evidence before wider adoption.</p>
+      <ul>
+        <li class="ref-item">
+          <strong>AI and Digital Regulations Service &mdash; Piloting digital technologies in a health or care service</strong>
+          Practical guidance for what local piloting is for, and why evidence and monitoring matter.<br>
+          <a href="https://www.digitalregulations.innovation.nhs.uk/regulations-and-guidance-for-adopters/all-adopters-guidance/piloting-digital-technologies-in-a-health-or-care-service/" target="_blank" rel="noreferrer">https://www.digitalregulations.innovation.nhs.uk/...</a>
+          <div class="tags"><span class="ref-tag">Piloting</span><span class="ref-tag">Workflow impact</span><span class="ref-tag">Evidence plan</span></div>
+        </li>
+        <li class="ref-item">
+          <strong>NHS England &mdash; How-to guide for measurement for improvement</strong>
+          Common NHS approach to choosing measures that are safe and realistic.<br>
+          <a href="https://www.england.nhs.uk/improvement-hub/wp-content/uploads/sites/44/2017/11/How-to-Guide-for-Measurement-for-Improvement.pdf" target="_blank" rel="noreferrer">https://www.england.nhs.uk/.../How-to-Guide-for-Measurement-for-Improvement.pdf</a>
+          <div class="tags"><span class="ref-tag">KPIs</span><span class="ref-tag">Balancing measures</span><span class="ref-tag">Improvement</span></div>
+        </li>
+        <li class="ref-item">
+          <strong>NIHR &mdash; Guidance on applying for feasibility studies (RfPB)</strong>
+          What funders expect: demonstrate promise and name the uncertainties you are testing.<br>
+          <a href="https://www.nihr.ac.uk/guidance-applying-feasibility-studies" target="_blank" rel="noreferrer">https://www.nihr.ac.uk/guidance-applying-feasibility-studies</a>
+          <div class="tags"><span class="ref-tag">Feasibility</span><span class="ref-tag">Uncertainty reduction</span><span class="ref-tag">Credible claims</span></div>
+        </li>
+      </ul>
+    </div>
 
-			<div class="section">
-				<h2>Core policy and guidance (the “why”)</h2>
-				<p>
-					These are the main documents that support the idea that continuity, joined-up working,
-					and “no wrong door” delivery are already expected in UK health and care.
-				</p>
+    <!-- Phase 4: Quote repositioned — between Piloting and Assurance sections -->
+    <blockquote class="ref-inline-quote">
+      &ldquo;[Partner quote placeholder &mdash; to be confirmed]&rdquo;
+      <cite>&mdash; Name, Role, Organisation</cite>
+    </blockquote>
 
-				<div class="list">
-					<div class="item">
-						<div class="t">NHS England — Independent ADHD Taskforce Report (Part 1 and Part 2)</div>
-						<div class="s">Background, pressures, and recommended direction of travel for ADHD care in England.</div>
-						<a href="https://www.england.nhs.uk/mental-health/adhd-taskforce/" target="_blank" rel="noreferrer">https://www.england.nhs.uk/mental-health/adhd-taskforce/</a>
-						<div class="tagRow">
-							<span class="tag"><span class="dot"></span>ADHD</span>
-							<span class="tag">Joined-up care</span>
-							<span class="tag">Service pressure</span>
-						</div>
-					</div>
+    <h3 class="ref-section-heading">Assurance and safety</h3>
+    <div class="ref-group">
+      <h2>Assurance and safety</h2>
+      <p class="ref-desc">These sources are commonly referenced in NHS digital assurance conversations. We do not claim certification unless evidenced, but we design the pilot to be governance-safe.</p>
+      <ul>
+        <li class="ref-item">
+          <strong>DTAC &mdash; Digital Technology Assessment Criteria</strong>
+          Baseline assurance framework used in NHS procurement and due diligence conversations.<br>
+          <a href="https://transform.england.nhs.uk/key-tools-and-info/digital-technology-assessment-criteria-dtac/" target="_blank" rel="noreferrer">https://transform.england.nhs.uk/.../dtac/</a>
+          <div class="tags"><span class="ref-tag">DTAC</span><span class="ref-tag">Assurance</span><span class="ref-tag">Buyer questions</span></div>
+        </li>
+        <li class="ref-item">
+          <strong>NHS England Digital &mdash; Information standards for health and care</strong>
+          How standards support consistent processing and exchange of information.<br>
+          <a href="https://digital.nhs.uk/data-and-information/information-standards" target="_blank" rel="noreferrer">https://digital.nhs.uk/.../information-standards</a>
+          <div class="tags"><span class="ref-tag">Information standards</span><span class="ref-tag">Governance</span></div>
+        </li>
+      </ul>
+    </div>
 
-					<div class="item">
-						<div class="t">DHSC — Co-occurring mental health and substance use delivery framework</div>
-						<div class="s">National framing for co-occurring need and practical expectations for delivery partnerships.</div>
-						<a href="https://www.gov.uk/government/publications/co-occurring-substance-misuse-and-mental-health-conditions-delivery-framework" target="_blank" rel="noreferrer">https://www.gov.uk/government/publications/co-occurring-substance-misuse-and-mental-health-conditions-delivery-framework</a>
-						<div class="tagRow">
-							<span class="tag"><span class="dot"></span>Dual diagnosis</span>
-							<span class="tag">No wrong door</span>
-							<span class="tag">Partnership delivery</span>
-						</div>
-					</div>
+    <h3 class="ref-section-heading">Quotes and claims</h3>
+    <div class="ref-group">
+      <h2>Quotes and claims used in the portal</h2>
+      <p class="ref-desc">This section is here so partners can check where a quote came from. If a quote is removed from the portal, we will remove it from this list too.</p>
+      <ul>
+        <li class="ref-item">
+          <strong>&ldquo;The opposite of addiction is human connection.&rdquo; &mdash; Johann Hari</strong>
+          Used as a framing quote. Not a clinical claim. Not an endorsement of OTOS.<br>
+          <a href="https://www.theguardian.com/society/2015/jan/18/johann-hari-addiction-isolation-interview" target="_blank" rel="noreferrer">Guardian interview link</a>
+          <div class="tags"><span class="ref-tag">Framing quote</span></div>
+        </li>
+        <li class="ref-item">
+          <strong>Portal statements about &ldquo;between-space&rdquo; and &ldquo;follow-through&rdquo;</strong>
+          These are operational continuity concepts, not medical outcome claims.
+          <div class="tags"><span class="ref-tag">Operational continuity</span><span class="ref-tag">Claims-safe</span></div>
+        </li>
+      </ul>
+    </div>
 
-					<div class="item">
-						<div class="t">NICE guideline NG87 — Attention deficit hyperactivity disorder</div>
-						<div class="s">NICE recommendations for ADHD recognition, diagnosis, and management.</div>
-						<a href="https://www.nice.org.uk/guidance/ng87" target="_blank" rel="noreferrer">https://www.nice.org.uk/guidance/ng87</a>
-						<div class="tagRow">
-							<span class="tag"><span class="dot"></span>NICE</span>
-							<span class="tag">ADHD</span>
-						</div>
-					</div>
+    <h3 class="ref-section-heading">Partner support</h3>
+    <div class="ref-group">
+      <h2>Partner support (wording we will add as it arrives)</h2>
+      <p class="ref-desc">As partners provide wording, we will add it here so it can be referenced consistently. Nothing here implies procurement commitment unless explicitly stated in writing.</p>
+      <ul>
+        <li class="ref-item"><strong>CPFT (draft placeholder)</strong> Paste partner wording here when received.</li>
+        <li class="ref-item"><strong>CGL (draft placeholder)</strong> Paste partner wording here when received.</li>
+        <li class="ref-item"><strong>CRS / VCSE partner (draft placeholder)</strong> Paste partner wording here when received.</li>
+        <li class="ref-item"><strong>WorkWell / MIND / therapy partner (draft placeholder)</strong> Paste partner wording here when received.</li>
+      </ul>
+    </div>
 
-					<div class="item">
-						<div class="t">Royal College of Psychiatrists — CR235 (ADHD in adults)</div>
-						<div class="s">Good practice guidance for adult ADHD services and pathways.</div>
-						<a href="https://www.rcpsych.ac.uk/improving-care/campaigning-for-better-mental-health-policy/college-reports/2023-college-reports/cr235" target="_blank" rel="noreferrer">https://www.rcpsych.ac.uk/.../cr235</a>
-						<div class="tagRow">
-							<span class="tag"><span class="dot"></span>RCPsych</span>
-							<span class="tag">Adult ADHD</span>
-							<span class="tag">Pathway quality</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<hr />
-
-			<div class="section">
-				<h2>Piloting and evaluation (what “good pilot feedback” looks like)</h2>
-				<p>
-					These sources support the idea that pilots are meant to reduce uncertainty, understand workflow impact,
-					and create decision-grade evidence before wider adoption.
-				</p>
-
-				<div class="list">
-					<div class="item">
-						<div class="t">AI and Digital Regulations Service — Piloting digital technologies in a health or care service</div>
-						<div class="s">Practical guidance for what local piloting is for, and why evidence and monitoring matter.</div>
-						<a href="https://www.digitalregulations.innovation.nhs.uk/regulations-and-guidance-for-adopters/all-adopters-guidance/piloting-digital-technologies-in-a-health-or-care-service/" target="_blank" rel="noreferrer">https://www.digitalregulations.innovation.nhs.uk/.../piloting-digital-technologies...</a>
-						<div class="tagRow">
-							<span class="tag"><span class="dot"></span>Piloting</span>
-							<span class="tag">Workflow impact</span>
-							<span class="tag">Evidence plan</span>
-						</div>
-					</div>
-
-					<div class="item">
-						<div class="t">NHS England — How-to guide for measurement for improvement (Outcome / Process / Balancing)</div>
-						<div class="s">Common NHS approach to choosing measures that are safe and realistic.</div>
-						<a href="https://www.england.nhs.uk/improvement-hub/wp-content/uploads/sites/44/2017/11/How-to-Guide-for-Measurement-for-Improvement.pdf" target="_blank" rel="noreferrer">https://www.england.nhs.uk/.../How-to-Guide-for-Measurement-for-Improvement.pdf</a>
-						<div class="tagRow">
-							<span class="tag"><span class="dot"></span>KPIs</span>
-							<span class="tag">Balancing measures</span>
-							<span class="tag">Improvement</span>
-						</div>
-					</div>
-
-					<div class="item">
-						<div class="t">NIHR — Guidance on applying for feasibility studies (RfPB)</div>
-						<div class="s">What funders expect: demonstrate promise and name the uncertainties you are testing.</div>
-						<a href="https://www.nihr.ac.uk/guidance-applying-feasibility-studies" target="_blank" rel="noreferrer">https://www.nihr.ac.uk/guidance-applying-feasibility-studies</a>
-						<div class="tagRow">
-							<span class="tag"><span class="dot"></span>Feasibility</span>
-							<span class="tag">Uncertainty reduction</span>
-							<span class="tag">Credible claims</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<hr />
-
-			<div class="section">
-				<h2>Assurance and safety (what partners often ask for)</h2>
-				<p>
-					These sources are commonly referenced in NHS digital assurance conversations.
-					We do not claim certification unless evidenced, but we design the pilot to be governance-safe.
-				</p>
-
-				<div class="list">
-					<div class="item">
-						<div class="t">DTAC — Digital Technology Assessment Criteria (guidance for buyers and suppliers)</div>
-						<div class="s">Baseline assurance framework used in NHS procurement and due diligence conversations.</div>
-						<a href="https://transform.england.nhs.uk/key-tools-and-info/digital-technology-assessment-criteria-dtac/" target="_blank" rel="noreferrer">https://transform.england.nhs.uk/.../dtac/</a>
-						<div class="tagRow">
-							<span class="tag"><span class="dot"></span>DTAC</span>
-							<span class="tag">Assurance</span>
-							<span class="tag">Buyer questions</span>
-						</div>
-					</div>
-
-					<div class="item">
-						<div class="t">NHS England Digital — Information standards for health and care</div>
-						<div class="s">How standards support consistent processing and exchange of information.</div>
-						<a href="https://digital.nhs.uk/data-and-information/information-standards" target="_blank" rel="noreferrer">https://digital.nhs.uk/.../information-standards</a>
-						<div class="tagRow">
-							<span class="tag"><span class="dot"></span>Information standards</span>
-							<span class="tag">Governance</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<hr />
-
-			<div class="section">
-				<h2>Quotes and claims used in the portal (traceability)</h2>
-				<p>
-					This section is here so partners can check where a quote came from.
-					If a quote is removed from the portal, we will remove it from this list too.
-				</p>
-
-				<div class="list">
-					<div class="item">
-						<div class="t">“The opposite of addiction is human connection.” — Johann Hari</div>
-						<div class="s">Used as a framing quote. Not a clinical claim. Not an endorsement of OTOS.</div>
-						<a href="https://www.theguardian.com/society/2015/jan/18/johann-hari-addiction-isolation-interview" target="_blank" rel="noreferrer">Guardian interview link</a>
-						<div class="tagRow">
-							<span class="tag"><span class="dot"></span>Framing quote</span>
-						</div>
-					</div>
-
-					<div class="item">
-						<div class="t">Portal statements about “between-space” and “follow-through”</div>
-						<div class="s">These are operational continuity concepts, not medical outcome claims.</div>
-						<div class="tagRow">
-							<span class="tag"><span class="dot"></span>Operational continuity</span>
-							<span class="tag">Claims-safe</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<hr />
-
-			<div class="section">
-				<h2>Partner support (wording we will add as it arrives)</h2>
-				<p>
-					As partners provide wording, we will add it here so it can be referenced consistently.
-					Nothing here implies procurement commitment unless explicitly stated in writing.
-				</p>
-
-				<div class="list">
-					<div class="item">
-						<div class="t">CPFT (draft placeholder)</div>
-						<div class="s">Paste partner wording here when received.</div>
-					</div>
-					<div class="item">
-						<div class="t">CGL (draft placeholder)</div>
-						<div class="s">Paste partner wording here when received.</div>
-					</div>
-					<div class="item">
-						<div class="t">CRS / VCSE partner (draft placeholder)</div>
-						<div class="s">Paste partner wording here when received.</div>
-					</div>
-					<div class="item">
-						<div class="t">WorkWell / MIND / therapy partner (draft placeholder)</div>
-						<div class="s">Paste partner wording here when received.</div>
-					</div>
-				</div>
-			</div>
-
-			<hr />
-
-			<div class="section">
-				<h2>Contact</h2>
-				<p>
-					If you spot a quote that needs a better reference, or you want to add an additional source,
-					reply to the pilot invite email and we will update this list.
-				</p>
-				<div class="item">
-					<div class="t">Dean Butler — OTOS Digital</div>
-					<div class="s"><a href="mailto:info@otos.life">info@otos.life</a></div>
-				</div>
-			</div>
-
-		</div>
-	</div>
-
-	<div class="bottom-nav" aria-label="Page navigation">
-		<a class="nav-btn" href="/continuity/reporting.html" aria-label="Back">←</a>
-		<a class="nav-btn nav-next" href="/continuity/founder-story.html" aria-label="Next"><span>Next: Founder journey</span> →</a>
-	</div>
-	<footer class="site-footer">
-		© OTOS Digital Ltd. Company registered in England 
-		&amp; Wales with Company No. 17084455. 
-		Phone <a href="tel:+447466334143">+447466334143</a>. 
-		Email <a href="mailto:info@otos.life">info@otos.life</a>.
-	</footer>
-	<script defer src="otos-shared.js"></script>
+    <h3 class="ref-section-heading">Contact</h3>
+    <div class="ref-group">
+      <h2>Contact</h2>
+      <p class="ref-desc">If you spot a quote that needs a better reference, or you want to add an additional source, reply to the pilot invite email and we will update this list.</p>
+      <ul>
+        <li class="ref-item"><strong>Dean Butler &mdash; OTOS Digital</strong> <a href="mailto:info@otos.life">info@otos.life</a></li>
+      </ul>
+    </div>
+  </div>
+</main>
+<div class="bottom-nav">
+  <a href="reporting.html">&larr; Reporting</a>
+  <a href="founder-journey-final.html">Next: Founder Journey &rarr;</a>
+</div>
+<footer class="site-footer">
+  © OTOS Digital Ltd. Company registered in England & Wales with Company No. 17084455. Phone +447466334143. Email info@otos.life.
+</footer>
+<script defer src="otos-shared.js"></script>
 </body>
 </html>
