@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How it works — Style test — OTOS Continuity™</title>
+<meta name="description" content="Test layout: same copy as How it works, home/infrastructure visual language.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="otos-shared.css">
+<style>
+:root {
+  --bg-page: #f5f0e8;
+  --bg-section-alt: #ede8df;
+  --bg-dark: #1e150a;
+  --text-primary: #1a1410;
+  --text-secondary: #7a6a58;
+  --amber: #c17f24;
+  --teal: #4a9e8e;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --shadow-card: 0 8px 32px rgba(26, 20, 10, 0.08);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+html, body { margin: 0; }
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  line-height: 1.68;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+a { color: var(--amber); }
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  background: rgba(245, 240, 232, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(193, 127, 36, 0.1);
+  box-shadow: 0 1px 0 rgba(255, 252, 246, 0.8), 0 4px 16px rgba(26, 20, 16, 0.06);
+}
+.nav-logo { display: flex; align-items: center; text-decoration: none; }
+.nav-logo img { height: 36px; width: auto; display: block; }
+.nav-links { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+.nav-links a:hover { color: var(--text-primary); background: rgba(193, 127, 36, 0.08); }
+.nav-links a.active { color: var(--text-primary); font-weight: 600; }
+.text-gradient {
+  background: linear-gradient(92deg, #1a1410 0%, #1a1410 35%, #7a4f1a 60%, #c17f24 80%, #d4a020 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* —— Hero: image + overlay (home-style) —— */
+.hiw-test-hero {
+  position: relative;
+  min-height: min(52vh, 520px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2rem, 5vw, 4rem) 2rem;
+  background-color: #1a1410;
+  background-image: url('images/Therapist reviewing OTOS app progress.png');
+  background-size: cover;
+  background-position: center;
+}
+.hiw-test-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg,
+    rgba(10, 8, 6, 0.75) 0%,
+    rgba(10, 8, 6, 0.45) 45%,
+    rgba(10, 8, 6, 0.82) 100%);
+  pointer-events: none;
+}
+.hiw-test-hero__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 820px;
+  text-align: center;
+}
+.hiw-test-kicker {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 1rem;
+}
+.hiw-test-hero h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.85rem, 4.5vw, 3.2rem);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.12;
+  margin: 0 0 1rem;
+  color: #f5f0e8;
+}
+.hiw-test-hero .hiw-test-lead {
+  font-size: clamp(1rem, 1.9vw, 1.2rem);
+  font-weight: 300;
+  font-style: italic;
+  color: rgba(245, 240, 232, 0.78);
+  margin: 0 auto;
+  max-width: 52ch;
+  line-height: 1.55;
+}
+
+/* —— Pills strip (cream) —— */
+.hiw-test-pills-band {
+  background: var(--bg-page);
+  padding: 1.5rem 2rem 1.25rem;
+  border-bottom: 1px solid rgba(193, 127, 36, 0.08);
+}
+.hiw-test-pills-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 10px;
+}
+.pill {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: rgba(255, 252, 248, 0.85);
+  border: 1px solid rgba(200, 146, 42, 0.28);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(26, 20, 10, 0.78);
+}
+.pill--accent {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 600;
+  color: var(--amber);
+  border-color: rgba(193, 127, 36, 0.4);
+  background: rgba(255, 252, 246, 0.95);
+}
+
+/* —— Step cards: image strip + glass body (infrastructure card language) —— */
+.hiw-test-steps {
+  padding: clamp(2rem, 4vw, 3rem) 2rem clamp(2.5rem, 5vw, 4rem);
+  background: var(--bg-section-alt);
+}
+.hiw-test-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.hiw-test-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(193, 127, 36, 0.15);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hiw-test-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(26, 20, 10, 0.12);
+}
+.hiw-test-card__visual {
+  position: relative;
+  min-height: 160px;
+  background-size: cover;
+  background-position: center;
+}
+.hiw-test-card__visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 8, 6, 0.15) 0%, rgba(10, 8, 6, 0.55) 100%);
+  pointer-events: none;
+}
+.hiw-test-card__step {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(245, 240, 232, 0.95);
+  color: var(--amber);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(193, 127, 36, 0.3);
+}
+.hiw-test-card__body { padding: 1.25rem 1.35rem 1.4rem; }
+.hiw-test-card__eyebrow {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.35rem;
+}
+.hiw-test-card__body h3 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  font-weight: 700;
+  font-style: italic;
+  margin: 0 0 0.65rem;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+.hiw-test-card__body > p {
+  font-size: 0.92rem;
+  color: rgba(26, 20, 10, 0.78);
+  margin: 0 0 0.85rem;
+  line-height: 1.6;
+}
+.hiw-test-card__body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.hiw-test-card__body li {
+  font-size: 0.88rem;
+  padding: 0.35rem 0 0.35rem 1rem;
+  position: relative;
+  color: rgba(26, 20, 10, 0.75);
+  border-top: 1px solid rgba(193, 127, 36, 0.1);
+}
+.hiw-test-card__body li:first-child { border-top: none; padding-top: 0; }
+.hiw-test-card__body li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+  color: var(--teal);
+  font-size: 0.85rem;
+}
+.hiw-test-card--amber .hiw-test-card__eyebrow { color: #e8720c; }
+.hiw-test-card--amber { border-color: rgba(232, 114, 12, 0.22); }
+
+/* —— Quote band: second image + dark overlay —— */
+.hiw-test-quote-band {
+  position: relative;
+  padding: clamp(3rem, 6vw, 4.5rem) 2rem;
+  background: #1a1410;
+  background-image: url('images/Consulting with OTOS dashboard in office.png');
+  background-size: cover;
+  background-position: center;
+}
+.hiw-test-quote-band__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(10, 8, 6, 0.88) 0%, rgba(30, 21, 10, 0.82) 50%, rgba(10, 8, 6, 0.9) 100%);
+}
+.hiw-test-quote-band__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+.hiw-test-quote-band blockquote {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+.hiw-test-quote-band blockquote p {
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 2.4vw, 1.65rem);
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.45;
+  margin: 0 0 1rem;
+  color: #f5f0e8;
+}
+.hiw-test-quote-band blockquote p.text-gradient {
+  -webkit-text-fill-color: unset;
+  background: linear-gradient(92deg, #f5f0e8 0%, #f0d090 45%, #c17f24 85%, #e8b84a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hiw-test-quote-band cite {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(245, 240, 232, 0.55);
+  font-style: normal;
+}
+
+/* —— Closing cream band —— */
+.hiw-test-closing {
+  background: var(--bg-page);
+  padding: 2.5rem 2rem 3rem;
+  text-align: center;
+}
+.hiw-test-closing .pill--accent {
+  display: inline-block;
+  max-width: min(560px, 100%);
+  line-height: 1.45;
+}
+
+.bottom-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 48px;
+  height: 56px;
+  background: rgba(245, 240, 232, 0.94);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(193, 127, 36, 0.1);
+  margin-top: auto;
+}
+.bottom-nav a {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.bottom-nav a:hover { color: var(--text-primary); }
+
+.site-footer {
+  background: var(--bg-dark);
+  padding: 22px 48px;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(240, 235, 227, 0.4);
+  line-height: 1.6;
+}
+.site-footer a { color: rgba(240, 235, 227, 0.55); text-decoration: none; }
+
+@media (max-width: 768px) {
+  .hiw-test-grid { grid-template-columns: 1fr; }
+  .site-nav { padding: 0 20px; }
+  .nav-links a { font-size: 11.5px; padding: 4px 8px; }
+  .bottom-nav { padding: 0 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hiw-test-card { transition: none; }
+  .hiw-test-card:hover { transform: none; }
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo" aria-label="OTOS Home"><img src="brain.png" alt="OTOS" height="36" width="auto"></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="guided-demos.html">Guided demos</a>
+    <a href="controls.html">Controls</a>
+    <a href="reporting.html">Reporting</a>
+    <a href="founder-story-v2.html">Founder Journey</a>
+    <a href="references.html">References</a>
+    <a href="infrastructure-partners.html">Infrastructure</a>
+  </div>
+</nav>
+
+<header class="hiw-test-hero">
+  <div class="hiw-test-hero__overlay" aria-hidden="true"></div>
+  <div class="hiw-test-hero__inner">
+    <span class="hiw-test-kicker">How it works</span>
+    <h1>One tap. One thread. You&rsquo;ll always know they made the next step.</h1>
+    <p class="hiw-test-lead">Nothing changes in how you work. Your clinical decisions stay yours &mdash; always.</p>
+  </div>
+</header>
+
+<section class="hiw-test-pills-band" aria-label="Continuity principles">
+  <div class="hiw-test-pills-inner">
+    <span class="pill">Touchpoints, not records</span>
+    <span class="pill">No system integration</span>
+    <span class="pill">No extra paperwork</span>
+    <span class="pill">No disruption</span>
+    <span class="pill pill--accent">Recovery support for life &mdash; maintained through micro check-ins</span>
+  </div>
+</section>
+
+<section class="hiw-test-steps" aria-label="Four steps: anonymous touchpoints, early warning, reporting">
+  <div class="hiw-test-grid">
+
+    <article class="hiw-test-card">
+      <div class="hiw-test-card__visual" style="background-image:url('images/NHS nurse assists patient with OTOS tool.png');">
+        <span class="hiw-test-card__step" aria-hidden="true">1</span>
+      </div>
+      <div class="hiw-test-card__body">
+        <p class="hiw-test-card__eyebrow">Anonymous by design</p>
+        <h3>Anonymous at first contact</h3>
+        <p>Staff taps Register touchpoint or scans QR. OTOS creates a secure, anonymous journey ID.</p>
+        <ul>
+          <li>No name</li>
+          <li>No date of birth</li>
+          <li>No diagnosis</li>
+          <li>No extra form</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="hiw-test-card">
+      <div class="hiw-test-card__visual" style="background-image:url('images/Professional at work with data dashboard.png');">
+        <span class="hiw-test-card__step" aria-hidden="true">2</span>
+      </div>
+      <div class="hiw-test-card__body">
+        <p class="hiw-test-card__eyebrow">Touchpoints, not records</p>
+        <h3>Touchpoints, not records</h3>
+        <p>Each provider notes a touchpoint against the same anonymous journey ID.</p>
+        <ul>
+          <li>Attended</li>
+          <li>Missed</li>
+          <li>Contacted</li>
+          <li>Referred</li>
+          <li>Stabilising</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="hiw-test-card">
+      <div class="hiw-test-card__visual" style="background-image:url('images/sun-dashboard-devices.png');">
+        <span class="hiw-test-card__step" aria-hidden="true">3</span>
+      </div>
+      <div class="hiw-test-card__body">
+        <p class="hiw-test-card__eyebrow">Early warning</p>
+        <h3>Early warning, no extra work</h3>
+        <p>OTOS notices when the pattern changes. Your team gets an alert. You decide what to do.</p>
+        <ul>
+          <li>Team gets an alert</li>
+          <li>You decide what to do</li>
+          <li>No automated clinical decisions</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="hiw-test-card hiw-test-card--amber">
+      <div class="hiw-test-card__visual" style="background-image:url('images/Engaging conversation at NHS Community Hub.png');">
+        <span class="hiw-test-card__step" aria-hidden="true">4</span>
+      </div>
+      <div class="hiw-test-card__body">
+        <p class="hiw-test-card__eyebrow">Reporting</p>
+        <h3>Reporting your manager will actually read</h3>
+        <p>See where journeys stall, where drop-off happens, where continuity is working.</p>
+        <ul>
+          <li>Aggregate anonymous signals</li>
+          <li>No individual patient data</li>
+          <li>No GDPR headache</li>
+        </ul>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section class="hiw-test-quote-band">
+  <div class="hiw-test-quote-band__overlay" aria-hidden="true"></div>
+  <div class="hiw-test-quote-band__inner">
+    <blockquote>
+      <p class="text-gradient">&ldquo;[Partner quote placeholder &mdash; to be confirmed]&rdquo;</p>
+      <cite>&mdash; Name, Role, Organisation</cite>
+    </blockquote>
+  </div>
+</section>
+
+<section class="hiw-test-closing" aria-label="Recovery support reminder">
+  <span class="pill pill--accent">Recovery support for life &mdash; maintained through micro check-ins</span>
+</section>
+
+<div class="bottom-nav">
+  <a href="index.html">&larr; Previous</a>
+  <a href="guided-demos.html">Next: Guided demos &rarr;</a>
+</div>
+<footer class="site-footer">© OTOS Digital Ltd. Company registered in England &amp; Wales with Company No. 17084455. Phone +447466334143. Email info@otos.life.</footer>
+<script defer src="otos-shared.js"></script>
+</body>
+</html>

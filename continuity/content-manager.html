@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home Page Editor — OTOS</title>
+  <title>Homepage &amp; dock — OTOS Content Manager</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -38,31 +38,32 @@
     .toast { font-size: 12px; font-weight: 600; color: #4a9e8e; opacity: 0; transition: opacity 0.3s; white-space: nowrap; }
     .toast.on { opacity: 1; }
 
-    .view-toolbar {
-      background: #120e09;
-      border-bottom: 1px solid rgba(193,127,36,0.10);
-      display: flex; align-items: center; justify-content: center;
-      gap: 4px; padding: 8px 20px;
-    }
-    .view-btn {
-      background: transparent; border: 1px solid rgba(193,127,36,0.20);
+    .bar .view-btn {
+      background: transparent; border: 1px solid rgba(193,127,36,0.22);
       color: #7a6a58; font-family: 'Inter', sans-serif;
-      font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-      padding: 5px 16px; border-radius: 999px; cursor: pointer;
-      transition: all 0.15s;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 999px; cursor: pointer;
     }
-    .view-btn.active { background: rgba(193,127,36,0.15); border-color: #c17f24; color: #c17f24; }
-    .view-btn:hover:not(.active) { color: #f5f0e8; border-color: rgba(193,127,36,0.4); }
-    .view-hint { font-size: 11px; color: #4a4030; margin-left: 12px; }
+    .bar .view-btn.active { background: rgba(193,127,36,0.2); border-color: #c17f24; color: #e8c27a; }
+    .bar .view-btn:hover:not(.active) { color: #f5f0e8; border-color: rgba(193,127,36,0.45); }
 
     .preview-outer {
       background: #080504;
       display: flex; align-items: center; justify-content: center;
       overflow: hidden;
-      transition: height 0.3s ease;
+      /* No height / layout tween — preview is a static WYSIWYG */
+      transition: none;
     }
-    .preview-outer.mode-desktop { height: calc(100dvh - 56px - 42px); min-height: 400px; }
-    .preview-outer.mode-mobile { height: calc(100dvh - 56px - 42px); min-height: 400px; padding: 20px; }
+    /* No slide/fade animations inside the preview (unlike Full scroll marketing reveals) */
+    .preview-outer .preview-wrap,
+    .preview-outer .preview-wrap * {
+      animation: none !important;
+    }
+    .preview-outer .preview-content {
+      transition: none !important;
+    }
+    .preview-outer.mode-desktop { height: calc(100dvh - 56px); min-height: 400px; }
+    .preview-outer.mode-mobile { height: calc(100dvh - 56px); min-height: 400px; padding: 20px; }
 
     .preview-wrap {
       position: relative; overflow: hidden;
@@ -90,25 +91,95 @@
     }
     .preview-content {
       position: absolute; z-index: 5;
-      max-width: 90%; width: max-content;
-      display: flex; flex-direction: column; align-items: center; gap: 10px;
-      cursor: grab; user-select: none; padding: 14px;
+      max-width: min(92%, 720px); width: max-content;
+      display: flex; flex-direction: column; align-items: stretch; gap: 0;
+      user-select: none; padding: 14px;
       left: 50%; top: 50%; transform: translate(-50%, -50%);
+      box-sizing: border-box;
     }
     .preview-content.dragging { cursor: grabbing; }
     .drag-handle {
-      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-      background: rgba(193,127,36,0.85); color: #fff;
-      font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-      padding: 3px 10px; border-radius: 999px; opacity: 0; transition: opacity 0.2s;
-      pointer-events: none; white-space: nowrap;
+      align-self: center;
+      margin-bottom: 10px;
+      background: rgba(193,127,36,0.9); color: #fff;
+      font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 999px;
+      cursor: grab; white-space: nowrap;
+      flex-shrink: 0;
     }
-    .preview-content:hover .drag-handle { opacity: 1; }
+    .preview-content.dragging .drag-handle { cursor: grabbing; }
+    .preview-resize {
+      resize: horizontal;
+      overflow: auto;
+      min-width: 140px;
+      max-width: 100%;
+      min-height: 32px;
+      border: 1px dashed rgba(193,127,36,0.5);
+      border-radius: 8px;
+      padding: 6px 8px;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+      background: rgba(8,6,5,0.15);
+    }
+    .preview-resize:last-of-type { margin-bottom: 0; }
+    .preview-resize .preview-p,
+    .preview-resize .preview-h { margin: 0; max-width: none !important; }
+    .preview-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 5px;
+      width: 100%;
+      max-width: 520px;
+      margin-top: 12px;
+      align-self: center;
+    }
+    .preview-stat {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 8px 4px;
+      text-align: center;
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.75);
+      line-height: 1.25;
+    }
+    .preview-stat b {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #e8c27a;
+      margin-bottom: 4px;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .preview-cta {
+      align-self: center;
+      margin-top: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      border-radius: 999px;
+      background: rgba(245,240,232,0.95);
+      color: #1a1410;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+      line-height: 1.3;
+      white-space: pre-line;
+      max-width: 240px;
+    }
     .preview-wrap.is-dragging { cursor: grabbing; }
     .preview-h {
       font-family: 'Playfair Display', serif;
-      font-weight: 700; line-height: 1.1; margin: 0;
+      font-weight: 700; line-height: 1.12; margin: 0;
       text-shadow: 0 2px 20px rgba(0,0,0,0.5); text-align: inherit;
+      max-width: min(34ch, 92vw);
     }
     .preview-p {
       font-family: 'Inter', sans-serif;
@@ -124,6 +195,25 @@
 
     .field { display: flex; flex-direction: column; gap: 7px; }
     .field-row { display: flex; align-items: flex-start; gap: 10px; }
+    /* Label + Clear on one row; textarea below = full width of column */
+    .field-label-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .field-label-row label { margin: 0; flex: 1 1 auto; min-width: 12rem; }
+    .field textarea.field-textarea-grow {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+    .field textarea.field-textarea-grow--both {
+      resize: both;
+      min-height: 88px;
+    }
     .field label {
       font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
       text-transform: uppercase; color: #c17f24;
@@ -173,23 +263,47 @@
       padding: 16px 0 0;
       border-top: 1px solid rgba(193,127,36,0.12);
     }
+    .dock-inp {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(193,127,36,0.2);
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: #f5f0e8;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .dock-inp::placeholder { color: #5c5044; }
+    .palette-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 8px; }
+    .palette-btn {
+      width: 34px; height: 34px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.15);
+      cursor: pointer; padding: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2);
+      transition: transform 0.12s, border-color 0.12s;
+    }
+    .palette-btn:hover { transform: scale(1.08); }
+    .palette-btn.on { border-color: #c17f24; box-shadow: 0 0 0 2px rgba(193,127,36,0.35); }
+    .cw-select {
+      margin-top: 10px; width: 100%; max-width: 420px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(193,127,36,0.25);
+      border-radius: 8px; padding: 10px 12px; color: #f5f0e8; font-family: inherit; font-size: 13px;
+    }
+    .cw-check { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px; color: #c4b8a8; }
+    .cw-check input { width: 16px; height: 16px; accent-color: #c17f24; }
   </style>
 </head>
 <body>
 
 <div class="bar">
-  <h1>Home Page Editor</h1>
-  <div class="bar-right">
+  <h1>Homepage &amp; dock editor</h1>
+  <div class="bar-right" style="flex-wrap:wrap;justify-content:flex-end;gap:8px;">
+    <button class="view-btn active" id="btnDesktop" type="button" title="Desktop preview width">Desktop</button>
+    <button class="view-btn" id="btnMobile" type="button" title="Mobile preview frame">Mobile</button>
     <span class="toast" id="toast">✓ Saved</span>
-    <a class="btn-view" href="index.html" target="otos-home">View home page ↗</a>
+    <a class="btn-view" href="index.html" target="otos-home">Portal home ↗</a>
+    <a class="btn-view" href="continuity-full-scroll.html" target="_blank">Full scroll ↗</a>
     <button class="btn-save-top" id="btnSave" type="button">Save &amp; apply</button>
   </div>
-</div>
-
-<div class="view-toolbar">
-  <button class="view-btn active" id="btnDesktop" type="button">🖥 Desktop</button>
-  <button class="view-btn" id="btnMobile" type="button">📱 Mobile</button>
-  <span class="view-hint">Drag text to position · each view saves separately</span>
 </div>
 
 <div class="preview-outer mode-desktop" id="previewOuter">
@@ -197,9 +311,21 @@
     <div class="preview-img" id="previewImg"></div>
     <div class="preview-overlay"></div>
     <div class="preview-content" id="dragContent">
-      <div class="drag-handle">drag to position</div>
-      <p class="preview-h" id="previewH">You refer someone. Then what?</p>
-      <p class="preview-p" id="previewP">OTOS Continuity™ shows what happens after a referral, handoff, or discharge — so nobody disappears quietly.</p>
+      <div class="drag-handle" id="previewDragHandle" title="Drag to move hero stack">Drag to position</div>
+      <div class="preview-resize" data-preview-box="kicker" title="Resize width for line breaks">
+        <p class="preview-p" id="previewK" style="letter-spacing:0.18em;text-transform:uppercase;font-weight:700;color:#e8c27a;margin:0;">OTOS Continuity™</p>
+      </div>
+      <div class="preview-resize" data-preview-box="quote" title="Resize width for line breaks">
+        <p class="preview-p" id="previewQ" style="font-family:'Playfair Display',serif;font-style:italic;margin:0;">“The failure is not in the care — it’s in the space between it.”</p>
+      </div>
+      <div class="preview-resize" data-preview-box="heading" title="Resize width for line breaks">
+        <p class="preview-h" id="previewH" style="margin:0;">When ADHD is left waiting, addiction steps in.</p>
+      </div>
+      <div class="preview-resize" data-preview-box="body" title="Resize width for line breaks">
+        <p class="preview-p" id="previewP" style="margin:0;">People with ADHD are not being held on waiting lists — they are being left exposed…</p>
+      </div>
+      <div class="preview-stats" id="previewStats" aria-hidden="true"></div>
+      <a class="preview-cta" id="previewCta" href="#">See how it works →</a>
     </div>
   </div>
 </div>
@@ -207,58 +333,196 @@
 <div class="panel">
   <div class="panel-grid">
 
-    <div class="field">
-      <label for="fHeading">Heading (desktop)</label>
-      <div class="field-row">
-        <textarea id="fHeading" rows="3" style="width:100%; resize:vertical; font-size:inherit; font-family:inherit; padding:8px; box-sizing:border-box;" placeholder="Enter hero heading (press Enter for a new line)"></textarea>
-        <button class="field-clear" id="clearHeading" type="button">Clear</button>
-      </div>
+    <div class="field" style="grid-column:1/-1; background:rgba(193,127,36,0.08); border:1px solid rgba(193,127,36,0.2); border-radius:14px; padding:16px 18px;">
+      <span style="font-size:10px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#e8c27a;">Hero — top quote</span>
+      <p style="margin:8px 0 14px;font-size:12px;color:#9a8b7a;line-height:1.55;">This is the <strong>gold italic</strong> line above the headline on Full scroll + portal. Edit below; use <strong>Return</strong> for manual line breaks. In the preview above, <strong>resize the dashed box</strong> to control how those lines wrap, then <strong>Save &amp; apply</strong>.</p>
+    </div>
+    <div class="field" style="grid-column:1/-1;">
+      <label for="fKicker">Kicker <span style="opacity:0.55;font-weight:500;">(line breaks OK)</span></label>
+      <textarea id="fKicker" rows="2" placeholder="OTOS Continuity™"></textarea>
       <div class="size-row">
         <span class="size-label">Size</span>
-        <input type="range" id="fHeadingSize" min="20" max="80" step="1" value="48">
-        <span class="size-val" id="headingSizeVal">48px</span>
+        <input type="range" id="fKickerSize" min="8" max="18" step="0.5" value="11">
+        <span class="size-val" id="kickerSizeVal">11px</span>
+      </div>
+    </div>
+    <div class="field" style="grid-column:1/-1;">
+      <label for="fQuote">Top quote — same field as hero gold italic <span style="opacity:0.55;font-weight:500;">(Return for new lines)</span></label>
+      <p style="margin:0 0 8px; font-size:11px; color:#6b5c4d; line-height:1.45;">This textarea drives the <strong>top quote</strong> on portal home and Full scroll. Resize its dashed box in the preview to set width.</p>
+      <textarea id="fQuote" rows="4" placeholder="Top quote (hero)"></textarea>
+      <div class="size-row">
+        <span class="size-label">Size</span>
+        <input type="range" id="fQuoteSize" min="10" max="22" step="0.5" value="14">
+        <span class="size-val" id="quoteSizeVal">14px</span>
       </div>
     </div>
 
-    <div class="field">
-      <label for="fSub">Sub heading (desktop)</label>
-      <div class="field-row">
-        <textarea id="fSub" rows="2" style="width:100%; resize:vertical; font-size:inherit; font-family:inherit; padding:8px; box-sizing:border-box;" placeholder="Enter hero subheading (press Enter for a new line)"></textarea>
-        <button class="field-clear" id="clearSub" type="button">Clear</button>
-      </div>
+    <div class="field" style="grid-column:1/-1;">
+      <label for="fQuotePhoto">Photo-band quote <span style="opacity:0.55;font-weight:500;">(Full scroll only)</span></label>
+      <p style="margin:0 0 8px; font-size:11px; color:#6b5c4d; line-height:1.45;">Large quote on the photo strip <strong>below &ldquo;How it works&rdquo;</strong> — not on the portal home.</p>
+      <textarea id="fQuotePhoto" rows="3" placeholder="Partner or framing quote"></textarea>
       <div class="size-row">
         <span class="size-label">Size</span>
-        <input type="range" id="fSubSize" min="10" max="24" step="0.5" value="16">
-        <span class="size-val" id="subSizeVal">16px</span>
+        <input type="range" id="fQuotePhotoSize" min="12" max="28" step="0.5" value="18">
+        <span class="size-val" id="quotePhotoSizeVal">18px</span>
+      </div>
+      <label for="fQuotePhotoCite" style="display:block; margin-top:12px;">Attribution <span style="opacity:0.55;font-weight:500;">(e.g. — Name, Role)</span></label>
+      <input type="text" id="fQuotePhotoCite" class="dock-inp" style="margin-top:6px;" placeholder="— Name, Role, Organisation">
+    </div>
+
+    <div class="field" style="grid-column:1/-1;">
+      <div class="field-label-row">
+        <label for="fHeading">Headline (desktop) <span style="opacity:0.55;font-weight:500;">(Return for new lines)</span></label>
+        <button class="field-clear" id="clearHeading" type="button">Clear</button>
+      </div>
+      <textarea id="fHeading" class="field-textarea-grow" rows="3" placeholder="Enter hero heading (press Enter for a new line)"></textarea>
+      <div class="size-row">
+        <span class="size-label">Size</span>
+        <input type="range" id="fHeadingSize" min="20" max="72" step="1" value="40">
+        <span class="size-val" id="headingSizeVal">40px</span>
+      </div>
+    </div>
+
+    <div class="field" style="grid-column:1/-1;">
+      <div class="field-label-row">
+        <label for="fSub">Body / strapline (desktop) <span style="opacity:0.55;font-weight:500;">(Return for new lines)</span></label>
+        <button class="field-clear" id="clearSub" type="button">Clear</button>
+      </div>
+      <textarea id="fSub" class="field-textarea-grow field-textarea-grow--both" rows="4" placeholder="Enter hero subheading (press Enter for a new line)"></textarea>
+      <div class="size-row">
+        <span class="size-label">Size</span>
+        <input type="range" id="fSubSize" min="10" max="22" step="0.5" value="15">
+        <span class="size-val" id="subSizeVal">15px</span>
       </div>
       <label style="display:block; margin-top:16px; font-size:13px; font-weight:600;">
-        Text colour <span style="font-weight:400; opacity:0.6;">(adjust for light or dark photos)</span>
+        Solid text colour <span style="font-weight:400; opacity:0.6;">(headline &amp; body when colour work is off)</span>
       </label>
       <input type="color" id="otos_text_colour" value="#ffffff"
         style="width:60px; height:36px; border:none; padding:2px; cursor:pointer; margin-top:6px;">
+      <span style="display:block; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#a8998a; margin-top:14px;">Palette</span>
+      <div class="palette-row" id="paletteRow" aria-label="Brand palette"></div>
     </div>
 
-    <div class="field">
-      <label for="fHeadingMobile">Mobile heading</label>
-      <div class="field-row">
-        <textarea id="fHeadingMobile" rows="3" style="width:100%; resize:vertical; font-size:inherit; font-family:inherit; padding:8px; box-sizing:border-box;" placeholder="Enter hero heading (press Enter for a new line)"></textarea>
+    <div class="field" style="grid-column:1/-1;">
+      <label style="font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#c17f24;">Colour work (Continuity gradients)</label>
+      <p style="margin:6px 0 0; font-size:12px; color:#7a6a58; line-height:1.5;">Tick to preview OTOS tonal gradients on the headline and/or quote. Off = solid colour above for those lines.</p>
+      <label class="cw-check"><input type="checkbox" id="cwHeadline"> Apply colour work to <strong>headline</strong></label>
+      <label class="cw-check"><input type="checkbox" id="cwQuote"> Apply colour work to <strong>opening quote</strong></label>
+      <label for="cwStyle" style="display:block; margin-top:12px; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#a8998a;">Gradient style</label>
+      <select id="cwStyle" class="cw-select">
+        <option value="hero">Hero mist — light cream / gold / teal (best on dark photos)</option>
+        <option value="softlight">Soft light wash — warm paper tones</option>
+        <option value="amber">Amber accent — gold through teal</option>
+      </select>
+    </div>
+
+    <div class="field" style="grid-column:1/-1;">
+      <div class="field-label-row">
+        <label for="fHeadingMobile">Headline (mobile)</label>
         <button class="field-clear" id="clearHeadingMobile" type="button">Clear</button>
       </div>
+      <textarea id="fHeadingMobile" class="field-textarea-grow" rows="3" placeholder="Enter hero heading (press Enter for a new line)"></textarea>
+    </div>
+
+    <div class="field" style="grid-column:1/-1;">
+      <div class="field-label-row">
+        <label for="fSubMobile">Body (mobile)</label>
+        <button class="field-clear" id="clearSubMobile" type="button">Clear</button>
+      </div>
+      <textarea id="fSubMobile" class="field-textarea-grow field-textarea-grow--both" rows="4" placeholder="Enter hero subheading (press Enter for a new line)"></textarea>
+    </div>
+
+    <div class="field" style="grid-column:1/-1;">
+      <label>Stats panel — four areas <span style="opacity:0.55;font-weight:500;">(labels: Return for line breaks)</span></label>
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;align-items:start;">
+        <span style="font-size:10px;color:#7a6a58;font-weight:600;">#1 value</span>
+        <input type="text" id="fS1v" style="background:rgba(255,255,255,0.06);border:1px solid rgba(193,127,36,0.2);border-radius:8px;padding:8px;color:#f5f0e8;width:100%;box-sizing:border-box;">
+        <span style="font-size:10px;color:#7a6a58;font-weight:600;">#1 label</span>
+        <textarea id="fS1l" rows="2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(193,127,36,0.2);border-radius:8px;padding:8px;color:#f5f0e8;width:100%;resize:vertical;box-sizing:border-box;"></textarea>
+        <span style="font-size:10px;color:#7a6a58;font-weight:600;">#2 value</span>
+        <input type="text" id="fS2v" style="background:rgba(255,255,255,0.06);border:1px solid rgba(193,127,36,0.2);border-radius:8px;padding:8px;color:#f5f0e8;width:100%;box-sizing:border-box;">
+        <span style="font-size:10px;color:#7a6a58;font-weight:600;">#2 label</span>
+        <textarea id="fS2l" rows="2" style="width:100%;resize:vertical;box-sizing:border-box;background:rgba(255,255,255,0.06);border:1px solid rgba(193,127,36,0.2);border-radius:8px;padding:8px;color:#f5f0e8;"></textarea>
+        <span style="font-size:10px;color:#7a6a58;font-weight:600;">#3 value</span>
+        <input type="text" id="fS3v" style="background:rgba(255,255,255,0.06);border:1px solid rgba(193,127,36,0.2);border-radius:8px;padding:8px;color:#f5f0e8;width:100%;box-sizing:border-box;">
+        <span style="font-size:10px;color:#7a6a58;font-weight:600;">#3 label</span>
+        <textarea id="fS3l" rows="2" style="width:100%;resize:vertical;box-sizing:border-box;background:rgba(255,255,255,0.06);border:1px solid rgba(193,127,36,0.2);border-radius:8px;padding:8px;color:#f5f0e8;"></textarea>
+        <span style="font-size:10px;color:#7a6a58;font-weight:600;">#4 value</span>
+        <input type="text" id="fS4v" style="background:rgba(255,255,255,0.06);border:1px solid rgba(193,127,36,0.2);border-radius:8px;padding:8px;color:#f5f0e8;width:100%;box-sizing:border-box;">
+        <span style="font-size:10px;color:#7a6a58;font-weight:600;">#4 label</span>
+        <textarea id="fS4l" rows="2" style="width:100%;resize:vertical;box-sizing:border-box;background:rgba(255,255,255,0.06);border:1px solid rgba(193,127,36,0.2);border-radius:8px;padding:8px;color:#f5f0e8;"></textarea>
+      </div>
     </div>
 
     <div class="field">
-      <label for="fSubMobile">Mobile subheading</label>
-      <div class="field-row">
-        <textarea id="fSubMobile" rows="2" style="width:100%; resize:vertical; font-size:inherit; font-family:inherit; padding:8px; box-sizing:border-box;" placeholder="Enter hero subheading (press Enter for a new line)"></textarea>
-        <button class="field-clear" id="clearSubMobile" type="button">Clear</button>
+      <label for="fCta">Home CTA text <span style="opacity:0.55;">(Return for new lines)</span></label>
+      <textarea id="fCta" rows="2"></textarea>
+      <div class="size-row">
+        <span class="size-label">CTA size</span>
+        <input type="range" id="fCtaSize" min="11" max="20" step="0.5" value="14">
+        <span class="size-val" id="ctaSizeVal">14px</span>
       </div>
+    </div>
+    <div class="field">
+      <label for="fCtaHref">Home CTA link</label>
+      <textarea id="fCtaHref" rows="2" placeholder="how-it-works.html or https://…" style="min-height:48px;"></textarea>
     </div>
 
   </div>
 
   <hr class="divider">
 
+  <div class="panel-grid" style="max-width:960px;margin:0 auto;">
+    <div class="field" style="grid-column:1/-1;">
+      <label for="fPinHint">Full-scroll: “Scroll to advance” text <span style="opacity:0.55;">(all pinned sections)</span></label>
+      <textarea id="fPinHint" rows="2" placeholder="Leave blank to keep default"></textarea>
+    </div>
+    <p style="grid-column:1/-1;font-size:12px;color:#7a6a58;margin:0 0 8px;line-height:1.5;"><strong>Note:</strong> The fixed bottom pill was removed from Full scroll — navigation is via the top menu and in-page cues. These rows still save in your JSON for reference or a future layout; they are not shown on the page right now.</p>
+
+    <div class="field" style="grid-column:1/-1;">
+      <label style="color:#e8c27a;">Home →</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <input type="text" id="dock_home_label" class="dock-inp" placeholder="Label e.g. Continue">
+        <input type="text" id="dock_home_action" class="dock-inp" placeholder="Action e.g. See how it works">
+        <input type="text" id="dock_home_href" class="dock-inp" placeholder="Link e.g. #fs-how">
+        <input type="text" id="dock_home_aria" class="dock-inp" placeholder="Aria label (optional)">
+      </div>
+    </div>
+    <div class="field" style="grid-column:1/-1;">
+      <label style="color:#e8c27a;">How it works →</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <input type="text" id="dock_how_label" class="dock-inp" placeholder="Label">
+        <input type="text" id="dock_how_action" class="dock-inp" placeholder="Action">
+        <input type="text" id="dock_how_href" class="dock-inp" placeholder="Link">
+        <input type="text" id="dock_how_aria" class="dock-inp" placeholder="Aria (optional)">
+      </div>
+    </div>
+    <div class="field" style="grid-column:1/-1;">
+      <label style="color:#e8c27a;">Guided demos →</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <input type="text" id="dock_demos_label" class="dock-inp" placeholder="Label">
+        <input type="text" id="dock_demos_action" class="dock-inp" placeholder="Action">
+        <input type="text" id="dock_demos_href" class="dock-inp" placeholder="Link">
+        <input type="text" id="dock_demos_aria" class="dock-inp" placeholder="Aria (optional)">
+      </div>
+    </div>
+    <div class="field" style="grid-column:1/-1;">
+      <label style="color:#e8c27a;">Infrastructure →</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <input type="text" id="dock_infra_label" class="dock-inp" placeholder="Label">
+        <input type="text" id="dock_infra_action" class="dock-inp" placeholder="Action">
+        <input type="text" id="dock_infra_href" class="dock-inp" placeholder="Link">
+        <input type="text" id="dock_infra_aria" class="dock-inp" placeholder="Aria (optional)">
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
   <div class="img-wrap">
+    <label class="img-group-label" for="fImageCustom" style="display:block;">Custom image path (optional)</label>
+    <p style="font-size:11px;color:#7a6a58;margin:-4px 0 10px;">Paste a path under <code>continuity/</code> e.g. <code>images/My photo.png</code> — overrides the grid when saved.</p>
+    <input type="text" id="fImageCustom" class="dock-inp" style="max-width:720px;margin-bottom:18px;" placeholder="images/…">
     <span class="img-group-label">Continuity photos</span>
     <div class="img-grid" id="gridMain"></div>
     <span class="img-group-label">Hero assets</span>
@@ -269,6 +533,22 @@
 <script>
 (function () {
   const LEGACY_KEY = 'otosContinuity.homepage.v2';
+
+  const CW_GRAD = {
+    hero: 'linear-gradient(95deg, #f7f2ea 0%, #ebe3d6 32%, #dcc8a8 58%, #c4a574 78%, #9ab0a4 100%)',
+    softlight: 'linear-gradient(98deg, #fdf9f3 0%, #e8dfd2 35%, #d2c2a8 62%, #c9a86a 82%, #a8bdb4 100%)',
+    amber: 'linear-gradient(100deg, #e8d4b8 0%, #d4a862 45%, #c17f24 70%, #7a9e92 100%)'
+  };
+  const PALETTE = [
+    { hex: '#ffffff', title: 'White' },
+    { hex: '#f5f0e8', title: 'Cream page' },
+    { hex: '#ebe3d6', title: 'Warm paper' },
+    { hex: '#e8c27a', title: 'Amber light' },
+    { hex: '#c17f24', title: 'Amber' },
+    { hex: '#a8bdb4', title: 'Teal light' },
+    { hex: '#4a9e8e', title: 'Teal' },
+    { hex: '#1a1410', title: 'Charcoal' }
+  ];
 
   const MAIN = [
     "images/Therapist reviewing OTOS app progress.png",
@@ -313,16 +593,39 @@
   ];
 
   const DEFAULTS = {
-    image: "images/Therapist reviewing OTOS app progress.png",
-    heading_desktop: "You refer someone. Then what?",
-    subheading_desktop: "OTOS Continuity\u2122 shows what happens after a referral, handoff, or discharge \u2014 so nobody disappears quietly. One scan. One tap. Always knowing they made the next step.",
-    heading_mobile: "You refer someone. Then what?",
-    subheading_mobile: "OTOS Continuity\u2122 shows what happens after a referral, handoff, or discharge \u2014 so nobody disappears quietly. One scan. One tap. Always knowing they made the next step.",
+    image: "images/Focused on progress in the office.png",
+    kicker: "OTOS Continuity\u2122",
+    quote: "\u201cThe failure is not in the care \u2014 it\u2019s in the space between it.\u201d",
+    heading_desktop: "When ADHD is left waiting, addiction steps in.",
+    subheading_desktop: "People with ADHD are not being held on waiting lists \u2014 they are being left exposed. Exposed to self-medicate. And in that gap, addiction often arrives before ADHD support does.",
+    heading_mobile: "When ADHD is left waiting, addiction steps in.",
+    subheading_mobile: "People with ADHD are not being held on waiting lists \u2014 they are being left exposed. Exposed to self-medicate. And in that gap, addiction often arrives before ADHD support does.",
     text_colour: "#ffffff",
-    headingSize: 48,
-    subSize: 16,
-    posDesktop: { x: 50, y: 50 },
-    posMobile:  { x: 50, y: 55 }
+    headingSize: 40,
+    subSize: 15,
+    posDesktop: { x: 30, y: 54 },
+    posMobile:  { x: 50, y: 54 },
+    stat1: { value: "30", label: "Years self-medicating" },
+    stat2: { value: "6", label: "Years waiting" },
+    stat3: { value: "11", label: "Services used" },
+    stat4: { value: "3", label: "Days to change everything" },
+    cta_text: "See how it works \u2192",
+    cta_href: "how-it-works.html",
+    ctaSize: 14,
+    kickerSize: 11,
+    quoteSize: 14,
+    quote_photo_band: "\u201c[Partner quote placeholder \u2014 to be confirmed]\u201d",
+    quote_photo_band_cite: "\u2014 Name, Role, Organisation",
+    quote_photo_band_size: 18,
+    apply_colourwork_headline: false,
+    apply_colourwork_quote: false,
+    colourwork_style: "hero",
+    pin_hint: "",
+    dock_by_section: {},
+    box_w_kicker: 0,
+    box_w_quote: 0,
+    box_w_heading: 0,
+    box_w_body: 0
   };
 
   let saved = JSON.parse(JSON.stringify(DEFAULTS));
@@ -365,53 +668,177 @@
   const previewWrap  = document.getElementById('previewWrap');
   const previewImg   = document.getElementById('previewImg');
   const dragContent  = document.getElementById('dragContent');
+  const previewK     = document.getElementById('previewK');
+  const previewQ     = document.getElementById('previewQ');
   const previewH     = document.getElementById('previewH');
   const previewP     = document.getElementById('previewP');
+  const previewStats = document.getElementById('previewStats');
+  const previewCta   = document.getElementById('previewCta');
+  const previewDragHandle = document.getElementById('previewDragHandle');
+  const fKicker      = document.getElementById('fKicker');
+  const fQuote       = document.getElementById('fQuote');
   const fHeading     = document.getElementById('fHeading');
   const fSub         = document.getElementById('fSub');
   const fHeadingMobile = document.getElementById('fHeadingMobile');
   const fSubMobile   = document.getElementById('fSubMobile');
   const fHeadingSize = document.getElementById('fHeadingSize');
   const fSubSize     = document.getElementById('fSubSize');
+  const fKickerSize  = document.getElementById('fKickerSize');
+  const fQuoteSize   = document.getElementById('fQuoteSize');
+  const fCtaSize     = document.getElementById('fCtaSize');
   const otosTextColour = document.getElementById('otos_text_colour');
+  const cwHeadlineEl = document.getElementById('cwHeadline');
+  const cwQuoteEl    = document.getElementById('cwQuote');
+  const cwStyleEl    = document.getElementById('cwStyle');
 
+  fKicker.value = saved.kicker != null ? saved.kicker : DEFAULTS.kicker;
+  fQuote.value = saved.quote != null ? saved.quote : DEFAULTS.quote;
   fHeading.value = saved.heading_desktop != null ? saved.heading_desktop : DEFAULTS.heading_desktop;
   fSub.value = saved.subheading_desktop != null ? saved.subheading_desktop : DEFAULTS.subheading_desktop;
   fHeadingMobile.value = saved.heading_mobile != null ? saved.heading_mobile : fHeading.value;
   fSubMobile.value = saved.subheading_mobile != null ? saved.subheading_mobile : fSub.value;
+
+  function statLoad(n) {
+    var s = saved['stat' + n];
+    var def = DEFAULTS['stat' + n];
+    if (!s) s = def;
+    document.getElementById('fS' + n + 'v').value = (s && s.value != null && s.value !== '') ? s.value : (def && def.value) || '';
+    document.getElementById('fS' + n + 'l').value = (s && s.label != null && s.label !== '') ? s.label : (def && def.label) || '';
+  }
+  for (var si = 1; si <= 4; si++) statLoad(si);
+
+  document.getElementById('fCta').value = saved.cta_text != null ? saved.cta_text : DEFAULTS.cta_text;
+  document.getElementById('fCtaHref').value = saved.cta_href != null ? saved.cta_href : DEFAULTS.cta_href;
+  document.getElementById('fPinHint').value = saved.pin_hint != null ? saved.pin_hint : '';
+
+  function loadDockRow(prefix, id) {
+    var o = (saved.dock_by_section && saved.dock_by_section[id]) || {};
+    document.getElementById('dock_' + prefix + '_label').value = o.label || '';
+    document.getElementById('dock_' + prefix + '_action').value = o.action || '';
+    document.getElementById('dock_' + prefix + '_href').value = o.href || '';
+    document.getElementById('dock_' + prefix + '_aria').value = o.aria || '';
+  }
+  loadDockRow('home', 'fs-home');
+  loadDockRow('how', 'fs-how');
+  loadDockRow('demos', 'fs-demos');
+  loadDockRow('infra', 'fs-infra');
   fHeadingSize.value = saved.headingSize || DEFAULTS.headingSize;
   fSubSize.value = saved.subSize || DEFAULTS.subSize;
+  fKickerSize.value = saved.kickerSize != null ? saved.kickerSize : DEFAULTS.kickerSize;
+  fQuoteSize.value = saved.quoteSize != null ? saved.quoteSize : DEFAULTS.quoteSize;
+  document.getElementById('fQuotePhoto').value = saved.quote_photo_band != null ? saved.quote_photo_band : DEFAULTS.quote_photo_band;
+  document.getElementById('fQuotePhotoCite').value = saved.quote_photo_band_cite != null ? saved.quote_photo_band_cite : DEFAULTS.quote_photo_band_cite;
+  document.getElementById('fQuotePhotoSize').value = saved.quote_photo_band_size != null ? saved.quote_photo_band_size : DEFAULTS.quote_photo_band_size;
+  fCtaSize.value = saved.ctaSize != null ? saved.ctaSize : DEFAULTS.ctaSize;
   otosTextColour.value = saved.text_colour && /^#[0-9A-Fa-f]{6}$/.test(saved.text_colour) ? saved.text_colour : '#ffffff';
+  cwHeadlineEl.checked = !!saved.apply_colourwork_headline;
+  cwQuoteEl.checked = !!saved.apply_colourwork_quote;
+  cwStyleEl.value = saved.colourwork_style && CW_GRAD[saved.colourwork_style] ? saved.colourwork_style : 'hero';
+
+  (function buildPalette() {
+    var row = document.getElementById('paletteRow');
+    if (!row) return;
+    PALETTE.forEach(function (sw) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'palette-btn';
+      b.title = sw.title + ' — ' + sw.hex;
+      b.style.background = sw.hex;
+      b.dataset.hex = sw.hex;
+      b.addEventListener('click', function () {
+        otosTextColour.value = sw.hex;
+        row.querySelectorAll('.palette-btn').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        updateText();
+      });
+      row.appendChild(b);
+    });
+  })();
 
   function activeHeadingEl() { return viewMode === 'mobile' ? fHeadingMobile : fHeading; }
   function activeSubEl() { return viewMode === 'mobile' ? fSubMobile : fSub; }
+
+  function applyColourworkPreview() {
+    var st = cwStyleEl.value || 'hero';
+    var grad = CW_GRAD[st] || CW_GRAD.hero;
+    var col = otosTextColour.value || '#ffffff';
+    function clearGrad(el) {
+      el.style.background = 'none';
+      el.style.webkitBackgroundClip = '';
+      el.style.backgroundClip = '';
+      el.style.webkitTextFillColor = '';
+    }
+    var hEl = activeHeadingEl();
+    if (hEl.value.trim() !== '' && cwHeadlineEl.checked) {
+      previewH.style.background = grad;
+      previewH.style.webkitBackgroundClip = 'text';
+      previewH.style.backgroundClip = 'text';
+      previewH.style.webkitTextFillColor = 'transparent';
+      previewH.style.color = 'transparent';
+    } else {
+      clearGrad(previewH);
+      previewH.style.color = col;
+    }
+    if (fQuote.value.trim() !== '' && cwQuoteEl.checked) {
+      previewQ.style.background = grad;
+      previewQ.style.webkitBackgroundClip = 'text';
+      previewQ.style.backgroundClip = 'text';
+      previewQ.style.webkitTextFillColor = 'transparent';
+      previewQ.style.color = 'transparent';
+    } else {
+      clearGrad(previewQ);
+      previewQ.style.color = 'rgba(245,240,232,0.92)';
+    }
+  }
 
   function updateText() {
     const hEl = activeHeadingEl();
     const sEl = activeSubEl();
     const col = otosTextColour.value || '#ffffff';
+    if (fKicker.value.trim() === '') {
+      previewK.innerHTML = '<em class="preview-empty">(no kicker)</em>';
+    } else {
+      previewK.textContent = fKicker.value;
+    }
+    previewK.style.color = '#e8c27a';
+    if (fQuote.value.trim() === '') {
+      previewQ.innerHTML = '<em class="preview-empty">(no quote)</em>';
+    } else {
+      previewQ.textContent = fQuote.value;
+    }
     if (hEl.value === '') {
-      previewH.innerHTML = '<em class="preview-empty">(no heading)</em>';
+      previewH.innerHTML = '<em class="preview-empty">(no headline)</em>';
     } else {
       previewH.textContent = hEl.value;
     }
-    previewH.style.color = col;
     if (sEl.value === '') {
-      previewP.innerHTML = '<em class="preview-empty">(no sub heading)</em>';
+      previewP.innerHTML = '<em class="preview-empty">(no body)</em>';
     } else {
       previewP.textContent = sEl.value;
     }
     previewP.style.color = col;
     previewP.style.opacity = '0.92';
+    applyColourworkPreview();
+    updatePreviewStats();
+    updatePreviewCta();
   }
 
   function updateSizes() {
-    const hs = parseFloat(fHeadingSize.value) || 48;
-    const ss = parseFloat(fSubSize.value) || 16;
+    const hs = parseFloat(fHeadingSize.value) || 40;
+    const ss = parseFloat(fSubSize.value) || 15;
+    const ks = parseFloat(fKickerSize.value) || 11;
+    const qs = parseFloat(fQuoteSize.value) || 14;
+    const qps = parseFloat(document.getElementById('fQuotePhotoSize').value) || 18;
     previewH.style.fontSize = hs + 'px';
     previewP.style.fontSize = ss + 'px';
+    previewK.style.fontSize = ks + 'px';
+    previewQ.style.fontSize = qs + 'px';
     document.getElementById('headingSizeVal').textContent = hs + 'px';
     document.getElementById('subSizeVal').textContent = ss + 'px';
+    document.getElementById('kickerSizeVal').textContent = ks + 'px';
+    document.getElementById('quoteSizeVal').textContent = qs + 'px';
+    document.getElementById('quotePhotoSizeVal').textContent = qps + 'px';
+    document.getElementById('ctaSizeVal').textContent = (parseFloat(fCtaSize.value) || 14) + 'px';
   }
 
   function applyPos() {
@@ -419,16 +846,62 @@
     dragContent.style.left = p.x + '%';
     dragContent.style.top = p.y + '%';
     dragContent.style.transform = 'translate(-50%, -50%)';
-    if (p.x < 35) {
+    /* Match continuity-full-scroll applyFsHomeFromStore thresholds */
+    if (p.x < 36) {
       dragContent.style.textAlign = 'left';
-      dragContent.style.alignItems = 'flex-start';
-    } else if (p.x > 65) {
+      dragContent.style.alignItems = 'stretch';
+    } else if (p.x > 64) {
       dragContent.style.textAlign = 'right';
-      dragContent.style.alignItems = 'flex-end';
+      dragContent.style.alignItems = 'stretch';
     } else {
       dragContent.style.textAlign = 'center';
-      dragContent.style.alignItems = 'center';
+      dragContent.style.alignItems = 'stretch';
     }
+  }
+
+  function applyPreviewBoxWidths() {
+    function setW(boxName, key) {
+      var wrap = document.querySelector('[data-preview-box="' + boxName + '"]');
+      if (!wrap) return;
+      var w = saved[key];
+      if (w != null && parseFloat(w) >= 72) {
+        wrap.style.width = Math.round(parseFloat(w)) + 'px';
+      } else {
+        wrap.style.width = '';
+      }
+    }
+    setW('kicker', 'box_w_kicker');
+    setW('quote', 'box_w_quote');
+    setW('heading', 'box_w_heading');
+    setW('body', 'box_w_body');
+  }
+
+  function updatePreviewStats() {
+    if (!previewStats) return;
+    previewStats.textContent = '';
+    for (var i = 1; i <= 4; i++) {
+      var v = document.getElementById('fS' + i + 'v').value.trim();
+      var lab = document.getElementById('fS' + i + 'l').value.trim() || '—';
+      var div = document.createElement('div');
+      div.className = 'preview-stat';
+      var b = document.createElement('b');
+      b.textContent = v || '—';
+      div.appendChild(b);
+      lab.split(/\n/).forEach(function (line, idx) {
+        if (idx) div.appendChild(document.createElement('br'));
+        div.appendChild(document.createTextNode(line));
+      });
+      previewStats.appendChild(div);
+    }
+  }
+
+  function updatePreviewCta() {
+    if (!previewCta) return;
+    var t = document.getElementById('fCta').value.trim();
+    previewCta.textContent = t || 'See how it works →';
+    var href = document.getElementById('fCtaHref').value.trim() || '#fs-how';
+    previewCta.setAttribute('href', href);
+    previewCta.style.fontSize = (parseFloat(document.getElementById('fCtaSize').value) || 14) + 'px';
   }
 
   function setPreviewImage(src) {
@@ -436,17 +909,38 @@
   }
 
   setPreviewImage(saved.image);
+  applyPreviewBoxWidths();
   updateText();
   updateSizes();
   applyPos();
 
+  fKicker.addEventListener('input', updateText);
+  fQuote.addEventListener('input', updateText);
   fHeading.addEventListener('input', updateText);
   fSub.addEventListener('input', updateText);
   fHeadingMobile.addEventListener('input', updateText);
   fSubMobile.addEventListener('input', updateText);
-  fHeadingSize.addEventListener('input', updateSizes);
+  fHeadingSize.addEventListener('input', function () { updateSizes(); applyColourworkPreview(); });
   fSubSize.addEventListener('input', updateSizes);
-  otosTextColour.addEventListener('input', updateText);
+  fKickerSize.addEventListener('input', updateSizes);
+  fQuoteSize.addEventListener('input', updateSizes);
+  document.getElementById('fQuotePhotoSize').addEventListener('input', updateSizes);
+  fCtaSize.addEventListener('input', function () { updateSizes(); updatePreviewCta(); });
+  document.getElementById('fCta').addEventListener('input', updatePreviewCta);
+  document.getElementById('fCtaHref').addEventListener('input', updatePreviewCta);
+  for (var sj = 1; sj <= 4; sj++) {
+    document.getElementById('fS' + sj + 'v').addEventListener('input', updatePreviewStats);
+    document.getElementById('fS' + sj + 'l').addEventListener('input', updatePreviewStats);
+  }
+  otosTextColour.addEventListener('input', function () {
+    document.querySelectorAll('#paletteRow .palette-btn').forEach(function (b) {
+      b.classList.toggle('on', b.dataset.hex && b.dataset.hex.toLowerCase() === otosTextColour.value.toLowerCase());
+    });
+    updateText();
+  });
+  cwHeadlineEl.addEventListener('change', updateText);
+  cwQuoteEl.addEventListener('change', updateText);
+  cwStyleEl.addEventListener('change', updateText);
 
   document.getElementById('clearHeading').addEventListener('click', function () { fHeading.value = ''; updateText(); });
   document.getElementById('clearSub').addEventListener('click', function () { fSub.value = ''; updateText(); });
@@ -492,6 +986,14 @@
   buildGrid('gridMain', MAIN);
   buildGrid('gridHero', HERO);
 
+  (function syncCustomImageField() {
+    var inp = document.getElementById('fImageCustom');
+    if (!inp || !saved.image) return;
+    var inMain = MAIN.indexOf(saved.image) >= 0;
+    var inHero = HERO.indexOf(saved.image) >= 0;
+    if (!inMain && !inHero) inp.value = saved.image;
+  })();
+
   var dragging = false;
   var startMouseX, startMouseY, startPosX, startPosY;
 
@@ -511,8 +1013,10 @@
     e.preventDefault();
   }
 
-  dragContent.addEventListener('mousedown', dragStart);
-  dragContent.addEventListener('touchstart', dragStart, { passive: false });
+  if (previewDragHandle) {
+    previewDragHandle.addEventListener('mousedown', dragStart);
+    previewDragHandle.addEventListener('touchstart', dragStart, { passive: false });
+  }
 
   function dragMove(e) {
     if (!dragging) return;
@@ -540,25 +1044,85 @@
   window.addEventListener('mouseup', dragEnd);
   window.addEventListener('touchend', dragEnd);
 
+  function collectDockSection(prefix, sectionId) {
+    var label = document.getElementById('dock_' + prefix + '_label').value.trim();
+    var action = document.getElementById('dock_' + prefix + '_action').value.trim();
+    var href = document.getElementById('dock_' + prefix + '_href').value.trim();
+    var aria = document.getElementById('dock_' + prefix + '_aria').value.trim();
+    if (!label && !action && !href && !aria) return null;
+    var o = {};
+    if (label) o.label = label;
+    if (action) o.action = action;
+    if (href) o.href = href;
+    if (aria) o.aria = aria;
+    return o;
+  }
+
   document.getElementById('btnSave').addEventListener('click', function () {
     var data = {
+      kicker: document.getElementById('fKicker').value,
+      quote: document.getElementById('fQuote').value,
       heading_desktop: document.getElementById('fHeading').value,
       subheading_desktop: document.getElementById('fSub').value,
       heading_mobile: document.getElementById('fHeadingMobile').value,
       subheading_mobile: document.getElementById('fSubMobile').value,
-      text_colour: document.getElementById('otos_text_colour').value
+      text_colour: document.getElementById('otos_text_colour').value,
+      cta_text: document.getElementById('fCta').value,
+      cta_href: document.getElementById('fCtaHref').value.trim(),
+      kickerSize: parseFloat(document.getElementById('fKickerSize').value) || 11,
+      quoteSize: parseFloat(document.getElementById('fQuoteSize').value) || 14,
+      quote_photo_band: document.getElementById('fQuotePhoto').value,
+      quote_photo_band_cite: document.getElementById('fQuotePhotoCite').value,
+      quote_photo_band_size: parseFloat(document.getElementById('fQuotePhotoSize').value) || 18,
+      ctaSize: parseFloat(document.getElementById('fCtaSize').value) || 14,
+      apply_colourwork_headline: document.getElementById('cwHeadline').checked,
+      apply_colourwork_quote: document.getElementById('cwQuote').checked,
+      colourwork_style: document.getElementById('cwStyle').value || 'hero',
+      pin_hint: document.getElementById('fPinHint').value
     };
-    if (!data.heading_desktop.trim()) {
-      alert('Please enter a desktop heading before saving.');
-      return;
+    for (var sn = 1; sn <= 4; sn++) {
+      data['stat' + sn] = {
+        value: document.getElementById('fS' + sn + 'v').value.trim(),
+        label: document.getElementById('fS' + sn + 'l').value
+      };
     }
+    var customImg = document.getElementById('fImageCustom').value.trim();
     var sel = document.querySelector('input[name="img"]:checked');
-    data.image = sel ? sel.value : saved.image;
-    data.headingSize = parseFloat(fHeadingSize.value) || 48;
-    data.subSize = parseFloat(fSubSize.value) || 16;
+    data.image = customImg || (sel ? sel.value : saved.image);
+    data.headingSize = parseFloat(fHeadingSize.value) || 40;
+    data.subSize = parseFloat(fSubSize.value) || 15;
     data.posDesktop = { x: Math.round(posDesktop.x * 10) / 10, y: Math.round(posDesktop.y * 10) / 10 };
     data.posMobile = { x: Math.round(posMobile.x * 10) / 10, y: Math.round(posMobile.y * 10) / 10 };
+
+    function readPreviewBoxW(name) {
+      var el = document.querySelector('[data-preview-box="' + name + '"]');
+      if (!el) return 0;
+      var w = el.offsetWidth;
+      return w >= 72 ? Math.round(w) : 0;
+    }
+    data.box_w_kicker = readPreviewBoxW('kicker');
+    data.box_w_quote = readPreviewBoxW('quote');
+    data.box_w_heading = readPreviewBoxW('heading');
+    data.box_w_body = readPreviewBoxW('body');
+
+    var dockBy = {};
+    var a = collectDockSection('home', 'fs-home');
+    if (a) dockBy['fs-home'] = a;
+    var b = collectDockSection('how', 'fs-how');
+    if (b) dockBy['fs-how'] = b;
+    var c = collectDockSection('demos', 'fs-demos');
+    if (c) dockBy['fs-demos'] = c;
+    var d0 = collectDockSection('infra', 'fs-infra');
+    if (d0) dockBy['fs-infra'] = d0;
+    data.dock_by_section = dockBy;
+
     localStorage.setItem('otos_home_content', JSON.stringify(data));
+    saved = Object.assign({}, DEFAULTS, data);
+    applyPreviewBoxWidths();
+    try {
+      localStorage.setItem('otos-hero-main', data.image);
+      localStorage.setItem('otos-hero-quote', data.quote);
+    } catch (e1) {}
     try {
       localStorage.setItem(LEGACY_KEY, JSON.stringify({
         image: data.image,
@@ -570,7 +1134,9 @@
         posMobile: data.posMobile
       }));
     } catch (e2) {}
-    window.location.href = 'index.html';
+    var toast = document.getElementById('toast');
+    toast.classList.add('on');
+    setTimeout(function () { toast.classList.remove('on'); }, 2200);
   });
 })();
 </script>

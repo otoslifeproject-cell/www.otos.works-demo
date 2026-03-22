@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTOS Ripple Cascade — OTOS Digital Ltd</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500&display=swap');
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0a0f1e;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="rippleCanvas"></canvas>
+  <script>
+    // ============================================================
+    // OTOS RIPPLE CASCADE — Layer 2: Ring Fix, Vignette, Narrator, Freeze
+    // Single-file canvas animation — NHS commissioner briefing tool
+    // OTOS Digital Ltd — All values sourced from OTOS Evidence Ledger V1.1
+    // ============================================================
+
+    // ============================================================
+    // CONFIG: all constants — Layer 1 keys unchanged, Layer 2 appended
+    // ============================================================
+    const CONFIG = {
+      // Canvas origin as ratios of canvas dimensions
+      ORIGIN_X_RATIO: 0.42,
+      ORIGIN_Y_RATIO: 0.48,
+
+      // Act durations in milliseconds
+      ACT1_DURATION: 8000,
+      ACT2_DURATION: 14000,
+      ACT3_DURATION: 20000,
+      ACT4_DURATION: 14000,
+      ACT5_DURATION: 16000,
+      ACT6_DURATION: 10000,
+      TRANSITION_DURATION: 800,
+      TEXT_FADE_DURATION: 600,
+
+      // Ring expansion ratios and speeds
+      PRIMARY_RING_MAX_RADIUS_RATIO: 0.55,
+      CHILD_RING_MAX_RADIUS_RATIO: 0.45,
+      ACT6_RING_STOP_RADIUS: 80,
+      SECONDARY_RING_SPEED: 3000,
+      TERTIARY_RING_SPEED: 2200,
+
+      // Colour palette — do not deviate
+      BG_COLOR_1: '#0a0f1e',
+      BG_COLOR_2: '#0d1a2e',
+      RING_PRIMARY:   'rgba(255, 138, 0, 0.6)',
+      RING_SECONDARY: 'rgba(200, 146, 42, 0.4)',
+      RING_TERTIARY:  'rgba(255, 255, 255, 0.15)',
+      RING_CHILD:     'rgba(200, 146, 42, 0.45)',
+      COLOR_COST_LABEL: '#F0C060',
+      COLOR_NAME_LABEL: '#ffffff',
+      COLOR_COUNTER:    '#ff8a00',
+      COLOR_SUBTEXT:    'rgba(255,255,255,0.55)',
+      COLOR_TINY:       'rgba(255,255,255,0.4)',
+
+      // Stone sizes in pre-scale pixels
+      STONE_RADIUS: 8,
+      STONE_GLOW_RINGS: [12, 18, 24],
+      CHILD_STONE_RADIUS: 6,
+
+      // Counter values
+      COUNTER_FLOOR:     40070,
+      COUNTER_CHILD_ADD: 40070,
+
+      // Child stone offset from origin in pre-scale pixels
+      CHILD_OFFSET_X: 280,
+      CHILD_OFFSET_Y: 180,
+
+      // Layer 1 — ring rendering per generation (unchanged)
+      RING_GEN1_LINE_WIDTH:  3,
+      RING_GEN1_START_ALPHA: 0.85,
+      RING_GEN1_GLOW_BLUR:   25,
+      RING_GEN1_GLOW_COLOR:  'rgba(255,138,0,0.6)',
+      RING_GEN1_EXPAND_MS:   5500,
+      RING_GEN1_FADE_MS:     4000,
+
+      RING_GEN2_LINE_WIDTH:  2,
+      RING_GEN2_START_ALPHA: 0.70,
+      RING_GEN2_GLOW_BLUR:   15,
+      RING_GEN2_GLOW_COLOR:  'rgba(200,146,42,0.4)',
+      RING_GEN2_EXPAND_MS:   4000,
+      RING_GEN2_FADE_MS:     3500,
+
+      RING_GEN3_LINE_WIDTH:  1,
+      RING_GEN3_START_ALPHA: 0.35,
+      RING_GEN3_EXPAND_MS:   2500,
+      RING_GEN3_FADE_MS:     2000,
+
+      // Impact pulse dimensions (unchanged)
+      IMPACT_PULSE_MAX_RADIUS: 30,
+      IMPACT_PULSE_DURATION_MS: 400,
+
+      // Ring cascade trigger window (unchanged)
+      RING_TRIGGER_TOLERANCE: 6,
+
+      // Ghost trace styling (unchanged)
+      GHOST_TRACE_ALPHA:      0.04,
+      GHOST_TRACE_LINE_WIDTH: 0.8,
+
+      // ============================================================
+      // Layer 2 additions
+      // ============================================================
+
+      // Gen 2 ring — corrected visibility values
+      RING_GEN2_LINE_WIDTH_L2:  2.5,
+      RING_GEN2_START_ALPHA_L2: 0.82,
+      RING_GEN2_GLOW_BLUR_L2:   20,
+      RING_GEN2_GLOW_COLOR_L2:  'rgba(200,146,42,0.55)',
+      RING_GEN2_FADE_DELAY_RATIO: 0.70,
+
+      // Gen 3 ring — corrected visibility values
+      RING_GEN3_LINE_WIDTH_L2:  1.2,
+      RING_GEN3_START_ALPHA_L2: 0.28,
+      RING_GEN3_FADE_DELAY_RATIO: 0.65,
+
+      // Vignette
+      VIGNETTE_INNER_STOP:         0.55,
+      VIGNETTE_OUTER_ALPHA:        0.60,
+      VIGNETTE_OUTER_RADIUS_FACTOR: 0.55,
+
+      // Narrator text
+      NARRATOR_Y_RATIO:        0.10,
+      NARRATOR_FONT_SIZE:      38,
+      NARRATOR_FADE_IN_SPEED:  0.045,
+      NARRATOR_FADE_OUT_SPEED: 0.035,
+      NARRATOR_COLOR:          '#ffffff',
+      NARRATOR_SHADOW_BLUR:    12,
+      NARRATOR_SHADOW_COLOR:   'rgba(255,255,255,0.15)',
+
+      // Cinematic freeze (Act 5 "It breeds" beat)
+      FREEZE_START_ELAPSED:  6500,
+      FREEZE_DURATION:       7500,
+      FREEZE_LABEL_DIM_ALPHA: 0.10,
+      FREEZE_LINE1_DELAY:    0,
+      FREEZE_LINE2_DELAY:    1800,
+      FREEZE_LINE3_DELAY:    3800,
+      FREEZE_TEXT_FADE_MS:   700,
+      FREEZE_LINE1_SIZE:     34,
+      FREEZE_LINE2_SIZE:     42,
+      FREEZE_LINE3_SIZE:     16,
+    };
+
+    // ============================================================
+    // Impact point arrays: hardcoded narrative positions (unchanged)
+    // ============================================================
+
+    // Act 2: direct system costs to the person
+    const ACT2_POINTS = [
+      {
+        angleRad: -60 * Math.PI / 180,
+        radiusPx: 160,
+        label: 'A&E attendance',
+        sublabel: '£200–£560 per presentation',
+        costValue: 380,
+        triggerRadiusTolerance: 8
+      },
+      {
+        angleRad: 30 * Math.PI / 180,
+        radiusPx: 185,
+        label: 'Inpatient detox',
+        sublabel: '£3,500 (10-day episode)',
+        costValue: 3500,
+        triggerRadiusTolerance: 8
+      },
+      {
+        angleRad: 150 * Math.PI / 180,
+        radiusPx: 170,
+        label: 'Crisis MH team',
+        sublabel: '£250–£600 per intervention',
+        costValue: 425,
+        triggerRadiusTolerance: 8
+      },
+      {
+        angleRad: 220 * Math.PI / 180,
+        radiusPx: 155,
+        label: 'Ambulance call-out',
+        sublabel: '£330–£500 per conveyance',
+        costValue: 415,
+        triggerRadiusTolerance: 8
+      }
+    ];
+
+    // Act 3: named humans in the ripple
+    const ACT3_POINTS = [
+      {
+        parentIndex: 0,
+        offsetAngleRad: -45 * Math.PI / 180,
+        offsetRadiusPx: 140,
+        name: 'Mum',
+        label: 'Time off work. Therapy referral.',
+        cost: '£1,000–£5,000',
+        costValue: 3000
+      },
+      {
+        parentIndex: 1,
+        offsetAngleRad: 20 * Math.PI / 180,
+        offsetRadiusPx: 155,
+        name: 'Child',
+        label: 'CAMHS referral. School support.',
+        cost: '£2,000–£6,000',
+        costValue: 4000
+      },
+      {
+        parentIndex: 2,
+        offsetAngleRad: 160 * Math.PI / 180,
+        offsetRadiusPx: 145,
+        name: 'Employer',
+        label: 'Productivity loss. HR load. Sick cover.',
+        cost: '£10,000–£25,000',
+        costValue: 17500
+      },
+      {
+        parentIndex: 3,
+        offsetAngleRad: 200 * Math.PI / 180,
+        offsetRadiusPx: 130,
+        name: 'Police',
+        label: 'Incident. Custody. Follow-up.',
+        cost: '£200–£700',
+        costValue: 450
+      },
+      {
+        parentIndex: -1,
+        offsetAngleRad: 90 * Math.PI / 180,
+        offsetRadiusPx: 200,
+        name: 'Housing',
+        label: 'Temporary accommodation. Support placement.',
+        cost: '£350–£1,000',
+        costValue: 675
+      },
+      {
+        parentIndex: -1,
+        offsetAngleRad: -120 * Math.PI / 180,
+        offsetRadiusPx: 210,
+        name: 'Benefits system',
+        label: 'UC, PIP, lost tax contribution.',
+        cost: '£15,000–£25,000',
+        costValue: 20000
+      }
+    ];
+
+    // Act 4: the invisible tail — real but untracked, no cost increment
+    const ACT4_POINTS = [
+      {
+        parentName: 'Mum',
+        offsetAngleRad: -30 * Math.PI / 180,
+        offsetRadiusPx: 130,
+        label: "Mum's boss",
+        sublabel: 'Target missed. Bonus unpaid.',
+        costLabel: 'Unquantified — real'
+      },
+      {
+        parentName: 'Mum',
+        offsetAngleRad: 10 * Math.PI / 180,
+        offsetRadiusPx: 150,
+        label: 'Business performance',
+        sublabel: 'Productivity downturn. Contract underperforms.',
+        costLabel: 'Unquantified — real'
+      },
+      {
+        parentName: 'Employer',
+        offsetAngleRad: 170 * Math.PI / 180,
+        offsetRadiusPx: 135,
+        label: 'Council services',
+        sublabel: 'Additional collections. Environmental load.',
+        costLabel: 'Pennies. Per trip. Logged. Real.'
+      }
+    ];
+
+    // ============================================================
+    // Canvas, context, and module-level rendering state
+    // ============================================================
+    const canvas = document.getElementById('rippleCanvas');
+    const ctx = canvas.getContext('2d');
+    let scaleFactor = 1;
+
+    // Global ring ID counter — incremented for each spawned ring
+    let ringIdCounter = 0;
+
+    // Vignette gradient — cached, rebuilt on resize
+    let vignetteGradient = null;
+
+    // ============================================================
+    // Easing and utility functions
+    // ============================================================
+
+    function easeInOut(t) {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    }
+
+    function easeOut(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
+    }
+
+    function scaled(px) {
+      return px * scaleFactor;
+    }
+
+    // ============================================================
+    // Animation state object
+    // ============================================================
+    const state = {
+      currentAct: 1,
+      actStartTime: null,
+      transitioning: false,
+      transitionStartTime: null,
+      transitionTargetAct: 1,
+
+      // Act 6 special ring variables
+      act6RingStartTime: null,
+      act6FadeOutStartTime: null,
+
+      // Ring pool
+      rings: [],
+      pulses: [],
+      ghostTraces: [],
+
+      // Per-act ring spawn flags
+      act1RingSpawned: false,
+      act2RingSpawned: false,
+      act5RingSpawned: false,
+
+      // Act canvas point arrays
+      act2Points_canvas: [],
+      act3Points_canvas: [],
+      act4Points_canvas: [],
+      act4ClimaxVisible: false,
+      act4ClimaxAlpha: 0,
+      act4ClimaxStartTime: null,
+
+      // Cost counter
+      counterDisplayValue: 0,
+      counterAnimating: false,
+      counterAnimStartTime: null,
+      counterAnimFrom: 0,
+      counterAnimTo: 0,
+      counterAnimDuration: 0,
+      counterPulseAlpha: 1,
+
+      // Text fade state objects
+      textAct1:      { visible: false, alpha: 0, startTime: null, duration: CONFIG.TEXT_FADE_DURATION },
+      textAct6Line1: { visible: false, alpha: 0, startTime: null, duration: CONFIG.TEXT_FADE_DURATION },
+      textAct6Line2: { visible: false, alpha: 0, startTime: null, duration: CONFIG.TEXT_FADE_DURATION },
+      textAct6Line3: { visible: false, alpha: 0, startTime: null, duration: CONFIG.TEXT_FADE_DURATION },
+
+      // Act 5 child state
+      childVisible: false,
+      childAlpha: 0,
+      childFadeStartTime: null,
+      childStoneDropped: false,
+      childTextVisible: false,
+      childTextAlpha: 0,
+      childTextStartTime: null,
+
+      // Global fade overlay
+      globalAlpha: 1,
+      origin: { x: 0, y: 0 },
+
+      // Layer 2 — narrator text system
+      narratorCurrentText: '',
+      narratorPendingText: '',
+      narratorAlpha: 0,
+      narratorTargetAlpha: 0,
+      narratorPendingSet: false,
+      narratorSetForAct: false,
+
+      // Layer 2 — cinematic freeze (Act 5)
+      cinematicFreeze: false,
+      freezeStartTime: null,
+      freezeFired: false,
+      freezeLines: [
+        { text: "The cost doesn't decline.", alpha: 0, triggered: false,
+          size: CONFIG.FREEZE_LINE1_SIZE, color: '#ffffff',   style: '700' },
+        { text: 'It breeds.',               alpha: 0, triggered: false,
+          size: CONFIG.FREEZE_LINE2_SIZE, color: '#ff8a00', style: '700 italic' },
+        { text: 'Ignore it now, and the waveform doubles.', alpha: 0, triggered: false,
+          size: CONFIG.FREEZE_LINE3_SIZE, color: 'rgba(255,255,255,0.65)', style: '400' }
+      ],
+    };
+
+    // ============================================================
+    // Canvas resize — recalculate scaleFactor, origin, vignette
+    // ============================================================
+    function resizeCanvas() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      scaleFactor = Math.min(canvas.width / 1280, canvas.height / 800);
+      state.origin.x = canvas.width  * CONFIG.ORIGIN_X_RATIO;
+      state.origin.y = canvas.height * CONFIG.ORIGIN_Y_RATIO;
+      buildVignetteGradient();
+      if (state.act2Points_canvas.length > 0) reinitAct2Coords();
+      if (state.act3Points_canvas.length > 0) reinitAct3Coords();
+      if (state.act4Points_canvas.length > 0) reinitAct4Coords();
+    }
+
+    function reinitAct2Coords() {
+      state.act2Points_canvas.forEach((p, i) => {
+        p.x = state.origin.x + Math.cos(ACT2_POINTS[i].angleRad) * scaled(ACT2_POINTS[i].radiusPx);
+        p.y = state.origin.y + Math.sin(ACT2_POINTS[i].angleRad) * scaled(ACT2_POINTS[i].radiusPx);
+      });
+    }
+
+    function reinitAct3Coords() {
+      state.act3Points_canvas.forEach((p, i) => {
+        const src = ACT3_POINTS[i];
+        const parent = src.parentIndex >= 0
+          ? state.act2Points_canvas[src.parentIndex]
+          : state.origin;
+        p.parentX = parent.x;
+        p.parentY = parent.y;
+        p.x = parent.x + Math.cos(src.offsetAngleRad) * scaled(src.offsetRadiusPx);
+        p.y = parent.y + Math.sin(src.offsetAngleRad) * scaled(src.offsetRadiusPx);
+      });
+    }
+
+    function reinitAct4Coords() {
+      state.act4Points_canvas.forEach((p, i) => {
+        const src = ACT4_POINTS[i];
+        const parent = state.act3Points_canvas.find(a => a.name === src.parentName);
+        if (parent) {
+          p.parentX = parent.x;
+          p.parentY = parent.y;
+          p.x = parent.x + Math.cos(src.offsetAngleRad) * scaled(src.offsetRadiusPx);
+          p.y = parent.y + Math.sin(src.offsetAngleRad) * scaled(src.offsetRadiusPx);
+        }
+      });
+    }
+
+    // ============================================================
+    // Cost counter functions (unchanged)
+    // ============================================================
+
+    function startCounterAnimation(fromValue, toValue, durationMs, timestamp) {
+      state.counterAnimating    = true;
+      state.counterAnimStartTime = timestamp;
+      state.counterAnimFrom      = fromValue;
+      state.counterAnimTo        = toValue;
+      state.counterAnimDuration  = durationMs;
+    }
+
+    function updateCounter(timestamp) {
+      if (!state.counterAnimating) return;
+      const t = clamp((timestamp - state.counterAnimStartTime) / state.counterAnimDuration, 0, 1);
+      const easedT = easeInOut(t);
+      state.counterDisplayValue = lerp(state.counterAnimFrom, state.counterAnimTo, easedT);
+      if (t >= 1) {
+        state.counterAnimating    = false;
+        state.counterDisplayValue = state.counterAnimTo;
+      }
+    }
+
+    function drawCounter() {
+      if (state.counterDisplayValue < 1) return;
+      ctx.save();
+      const x    = canvas.width - scaled(40);
+      const topY = scaled(32);
+
+      ctx.textAlign    = 'right';
+      ctx.textBaseline = 'top';
+      ctx.globalAlpha  = 0.6;
+      ctx.fillStyle    = CONFIG.COLOR_TINY;
+      ctx.font         = `500 ${scaled(11)}px 'Inter', sans-serif`;
+      ctx.fillText('ANNUAL SYSTEM COST', x, topY);
+
+      ctx.textAlign    = 'right';
+      ctx.textBaseline = 'top';
+      ctx.globalAlpha  = state.counterPulseAlpha;
+      ctx.fillStyle    = CONFIG.COLOR_COUNTER;
+      ctx.font         = `700 ${scaled(36)}px 'Playfair Display', serif`;
+      ctx.fillText('£' + Math.round(state.counterDisplayValue).toLocaleString('en-GB'), x, topY + scaled(16));
+
+      ctx.textAlign    = 'right';
+      ctx.textBaseline = 'top';
+      ctx.globalAlpha  = 0.3;
+      ctx.fillStyle    = 'rgba(255,255,255,0.3)';
+      ctx.font         = `${scaled(10)}px 'Inter', sans-serif`;
+      ctx.fillText('per person · per year · minimum', x, topY + scaled(58));
+
+      ctx.restore();
+    }
+
+    // Update alpha for all registered text-fade state objects every frame
+    function updateTextFades(timestamp) {
+      const keys = [
+        'textAct1',
+        'textAct6Line1', 'textAct6Line2', 'textAct6Line3'
+      ];
+      keys.forEach(key => {
+        const t = state[key];
+        if (t.visible && t.startTime !== null) {
+          t.alpha = easeInOut(clamp((timestamp - t.startTime) / t.duration, 0, 1));
+        }
+      });
+    }
+
+    // ============================================================
+    // Drawing primitives (unchanged)
+    // ============================================================
+
+    function drawBackground() {
+      const grad = ctx.createRadialGradient(
+        canvas.width * 0.5, canvas.height * 0.5, 0,
+        canvas.width * 0.5, canvas.height * 0.5, canvas.width * 0.7
+      );
+      grad.addColorStop(0, CONFIG.BG_COLOR_2);
+      grad.addColorStop(1, CONFIG.BG_COLOR_1);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawStone(x, y, radius, colour) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = colour;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawStoneGlow(x, y, glowRings) {
+      const alphas = [0.15, 0.10, 0.05];
+      glowRings.forEach((r, i) => {
+        ctx.save();
+        ctx.globalAlpha = alphas[i];
+        ctx.beginPath();
+        ctx.arc(x, y, scaled(r), 0, Math.PI * 2);
+        ctx.strokeStyle = CONFIG.COLOR_COUNTER;
+        ctx.lineWidth   = scaled(1);
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+
+    function drawImpactDot(x, y, alpha) {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.arc(x, y, scaled(4), 0, Math.PI * 2);
+      ctx.fillStyle = CONFIG.COLOR_COST_LABEL;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // ============================================================
+    // Layer 2 — Vignette
+    // ============================================================
+
+    // Build the cached vignette radial gradient — call on init and every resize
+    function buildVignetteGradient() {
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const diagonal = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
+      const outerRadius = diagonal * CONFIG.VIGNETTE_OUTER_RADIUS_FACTOR;
+
+      vignetteGradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, outerRadius);
+      vignetteGradient.addColorStop(0,                          'rgba(0,0,0,0)');
+      vignetteGradient.addColorStop(CONFIG.VIGNETTE_INNER_STOP, 'rgba(0,0,0,0)');
+      vignetteGradient.addColorStop(1.0, `rgba(0,0,0,${CONFIG.VIGNETTE_OUTER_ALPHA})`);
+    }
+
+    // Draw full-canvas vignette rectangle — corners are darkened, centre is transparent
+    function drawVignette() {
+      if (!vignetteGradient) return;
+      ctx.save();
+      ctx.fillStyle = vignetteGradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    }
+
+    // ============================================================
+    // Layer 2 — Narrator text system
+    // ============================================================
+
+    // Set narrator text — fades out current text first, then fades in new text
+    function setNarratorText(text) {
+      if (state.narratorCurrentText === text) return;
+      if (state.narratorAlpha < 0.05) {
+        state.narratorCurrentText = text;
+        state.narratorTargetAlpha = 1;
+        state.narratorPendingSet  = false;
+      } else {
+        state.narratorPendingText  = text;
+        state.narratorTargetAlpha  = 0;
+        state.narratorPendingSet   = true;
+      }
+    }
+
+    // Clear narrator text — fades out without replacement
+    function clearNarratorText() {
+      state.narratorTargetAlpha = 0;
+      state.narratorPendingSet  = false;
+    }
+
+    // Update narrator alpha per frame — smooth lerp toward target
+    function updateNarratorAlpha() {
+      const speed = state.narratorAlpha < state.narratorTargetAlpha
+        ? CONFIG.NARRATOR_FADE_IN_SPEED
+        : CONFIG.NARRATOR_FADE_OUT_SPEED;
+
+      state.narratorAlpha += (state.narratorTargetAlpha - state.narratorAlpha) * speed;
+      state.narratorAlpha  = clamp(state.narratorAlpha, 0, 1);
+
+      // Swap pending text once current text has faded out
+      if (state.narratorPendingSet && state.narratorAlpha < 0.04) {
+        state.narratorCurrentText = state.narratorPendingText;
+        state.narratorTargetAlpha = 1;
+        state.narratorPendingSet  = false;
+      }
+    }
+
+    // Draw narrator text in upper canvas zone — always above ring action
+    function drawNarratorText() {
+      if (state.narratorAlpha < 0.01 || !state.narratorCurrentText) return;
+      ctx.save();
+      ctx.globalAlpha  = state.narratorAlpha;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'top';
+      ctx.font         = `700 ${scaled(CONFIG.NARRATOR_FONT_SIZE)}px 'Playfair Display', serif`;
+      ctx.fillStyle    = CONFIG.NARRATOR_COLOR;
+      ctx.shadowBlur   = scaled(CONFIG.NARRATOR_SHADOW_BLUR);
+      ctx.shadowColor  = CONFIG.NARRATOR_SHADOW_COLOR;
+      ctx.fillText(
+        state.narratorCurrentText,
+        canvas.width / 2,
+        canvas.height * CONFIG.NARRATOR_Y_RATIO
+      );
+      ctx.shadowBlur  = 0;
+      ctx.shadowColor = 'transparent';
+      ctx.restore();
+    }
+
+    // ============================================================
+    // Layer 2 — Cinematic freeze beat
+    // ============================================================
+
+    // Begin the cinematic freeze — resets all freeze line states
+    function startCinematicFreeze(timestamp) {
+      state.cinematicFreeze = true;
+      state.freezeStartTime = timestamp;
+      state.freezeLines.forEach(line => {
+        line.alpha     = 0;
+        line.triggered = false;
+      });
+    }
+
+    // Update and draw the cinematic freeze overlay and timed text lines
+    function updateAndDrawCinematicFreeze(timestamp) {
+      if (!state.cinematicFreeze) return;
+
+      const freezeElapsed = timestamp - state.freezeStartTime;
+      const delays = [CONFIG.FREEZE_LINE1_DELAY, CONFIG.FREEZE_LINE2_DELAY, CONFIG.FREEZE_LINE3_DELAY];
+
+      // Fade in each freeze text line at its staggered delay
+      state.freezeLines.forEach((line, i) => {
+        const lineElapsed = freezeElapsed - delays[i];
+        if (lineElapsed < 0) return;
+        line.alpha = easeInOut(clamp(lineElapsed / CONFIG.FREEZE_TEXT_FADE_MS, 0, 1));
+      });
+
+      // Dimming overlay ramps up over 600ms at freeze start
+      const overlayAlpha = clamp(freezeElapsed / 600, 0, 0.35);
+      ctx.save();
+      ctx.fillStyle = `rgba(0,0,0,${overlayAlpha})`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+
+      // Draw the three freeze text lines in the centre zone
+      const centreX    = canvas.width / 2;
+      const line1Y     = canvas.height * 0.36;
+      const lineSpacing = scaled(CONFIG.FREEZE_LINE1_SIZE) * 1.5;
+
+      state.freezeLines.forEach((line, i) => {
+        if (line.alpha < 0.01) return;
+        ctx.save();
+        ctx.globalAlpha  = line.alpha;
+        ctx.textAlign    = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font         = `${line.style} ${scaled(line.size)}px 'Playfair Display', serif`;
+        ctx.fillStyle    = line.color;
+        if (i === 0 || i === 1) {
+          ctx.shadowBlur  = scaled(20);
+          ctx.shadowColor = i === 1 ? 'rgba(255,138,0,0.5)' : 'rgba(255,255,255,0.2)';
+        }
+        ctx.fillText(line.text, centreX, line1Y + (i * lineSpacing));
+        ctx.shadowBlur  = 0;
+        ctx.shadowColor = 'transparent';
+        ctx.restore();
+      });
+
+      // End freeze after FREEZE_DURATION
+      if (freezeElapsed >= CONFIG.FREEZE_DURATION) {
+        state.cinematicFreeze = false;
+        state.freezeStartTime = null;
+      }
+    }
+
+    // ============================================================
+    // Ring rendering system — Layer 1 drawGlowRing updated for L2
+    // ============================================================
+
+    // Three-pass glow ring — Gen 1 unchanged; Gen 2 and Gen 3 updated with L2 values
+    function drawGlowRing(ring) {
+      if (ring.currentAlpha <= 0 || ring.currentRadius <= 0) return;
+
+      const gen = ring.generation;
+      let baseLineWidth, glowBlur, glowColor, strokeColor;
+
+      if (gen === 1) {
+        // Gen 1 — UNCHANGED
+        baseLineWidth = scaled(CONFIG.RING_GEN1_LINE_WIDTH);
+        glowBlur      = CONFIG.RING_GEN1_GLOW_BLUR;
+        glowColor     = CONFIG.RING_GEN1_GLOW_COLOR;
+        strokeColor   = `rgba(255,138,0,${ring.currentAlpha})`;
+      } else if (gen === 2) {
+        // Gen 2 — Layer 2 corrected values for full visibility
+        baseLineWidth = scaled(CONFIG.RING_GEN2_LINE_WIDTH_L2);
+        glowBlur      = CONFIG.RING_GEN2_GLOW_BLUR_L2;
+        glowColor     = CONFIG.RING_GEN2_GLOW_COLOR_L2;
+        strokeColor   = `rgba(200,146,42,${ring.currentAlpha})`;
+      } else {
+        // Gen 3 — Layer 2 corrected values; faint ghost ring
+        baseLineWidth = scaled(CONFIG.RING_GEN3_LINE_WIDTH_L2);
+        glowBlur      = 0;
+        glowColor     = 'transparent';
+        strokeColor   = `rgba(255,255,255,${ring.currentAlpha})`;
+      }
+
+      // Pass 1: outer halo — all generations, gen-specific alpha multiplier
+      const haloMult = gen <= 2 ? 0.12 : 0.08;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(ring.x, ring.y, ring.currentRadius, 0, Math.PI * 2);
+      ctx.strokeStyle = strokeColor.replace(/[\d.]+\)$/, `${ring.currentAlpha * haloMult})`);
+      ctx.lineWidth   = baseLineWidth * 2.8;
+      ctx.globalAlpha = 1;
+      ctx.stroke();
+      ctx.restore();
+
+      // Pass 2: mid glow — all generations, gen-specific alpha multiplier
+      const midMult = gen <= 2 ? 0.30 : 0.20;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(ring.x, ring.y, ring.currentRadius, 0, Math.PI * 2);
+      ctx.strokeStyle = strokeColor.replace(/[\d.]+\)$/, `${ring.currentAlpha * midMult})`);
+      ctx.lineWidth   = baseLineWidth * 1.6;
+      ctx.globalAlpha = 1;
+      ctx.stroke();
+      ctx.restore();
+
+      // Pass 3: core ring with shadow glow (gen 1 and 2 only get shadowBlur)
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(ring.x, ring.y, ring.currentRadius, 0, Math.PI * 2);
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth   = baseLineWidth;
+      ctx.globalAlpha = 1;
+      if (gen <= 2) {
+        ctx.shadowBlur  = glowBlur;
+        ctx.shadowColor = glowColor;
+      }
+      ctx.stroke();
+      ctx.shadowBlur  = 0;
+      ctx.shadowColor = 'transparent';
+      ctx.restore();
+    }
+
+    // Draw all accumulated ghost traces beneath active rings
+    function drawGhostTraces() {
+      state.ghostTraces.forEach(trace => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(trace.x, trace.y, trace.radius, 0, Math.PI * 2);
+        if (trace.generation === 1) {
+          ctx.strokeStyle = `rgba(255,138,0,${CONFIG.GHOST_TRACE_ALPHA})`;
+        } else if (trace.generation === 2) {
+          ctx.strokeStyle = `rgba(200,146,42,${CONFIG.GHOST_TRACE_ALPHA})`;
+        } else {
+          ctx.strokeStyle = `rgba(255,255,255,${CONFIG.GHOST_TRACE_ALPHA * 0.6})`;
+        }
+        ctx.lineWidth   = scaled(CONFIG.GHOST_TRACE_LINE_WIDTH);
+        ctx.globalAlpha = 1;
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+
+    // Check whether a ring's expanding edge has reached any of its trigger points
+    function checkRingTriggers(ring, timestamp) {
+      if (!ring.triggerPoints || ring.triggerPoints.length === 0) return;
+
+      ring.triggerPoints.forEach(point => {
+        if (point.triggered) return;
+
+        const dx = point.x - ring.x;
+        const dy = point.y - ring.y;
+        const distanceToPoint = Math.sqrt(dx * dx + dy * dy);
+        const tolerance = scaled(CONFIG.RING_TRIGGER_TOLERANCE);
+
+        if (
+          ring.currentRadius >= distanceToPoint - tolerance &&
+          ring.currentRadius <= distanceToPoint + tolerance + (ring.expandDuration / 1000) * 2
+        ) {
+          point.triggered = true;
+
+          if (point.canvasRef) {
+            point.canvasRef.triggered          = true;
+            point.canvasRef.labelFadeStartTime = timestamp;
+          }
+
+          // Impact pulse — bright radial flash at collision point
+          state.pulses.push({
+            x:         point.x,
+            y:         point.y,
+            startTime: timestamp,
+            maxRadius: scaled(CONFIG.IMPACT_PULSE_MAX_RADIUS),
+            colour:    ring.generation === 1 ? '#ffffff' : '#F0C060',
+            active:    true
+          });
+
+          if (point.costValue && point.costValue > 0) {
+            startCounterAnimation(
+              state.counterDisplayValue,
+              state.counterDisplayValue + point.costValue,
+              1200,
+              timestamp
+            );
+          }
+
+          if (point.spawnChildRing && ring.generation < 3) {
+            spawnRing(
+              point.x,
+              point.y,
+              ring.generation + 1,
+              point.childTriggerPoints || [],
+              timestamp
+            );
+          }
+        }
+      });
+    }
+
+    // Update all rings and pulses — freeze-aware; gen-specific fade delay
+    function updateAndDrawRings(timestamp) {
+      // During freeze: draw rings at reduced alpha only, no position updates
+      if (state.cinematicFreeze) {
+        drawGhostTraces();
+        state.rings.forEach(ring => {
+          const frozenRing = { ...ring, currentAlpha: ring.currentAlpha * 0.15 };
+          drawGlowRing(frozenRing);
+        });
+        return;
+      }
+
+      drawGhostTraces();
+
+      state.rings = state.rings.filter(ring => {
+        if (!ring.active) return false;
+
+        const elapsed = timestamp - ring.startTime;
+
+        // Update radius — eased expansion
+        const expandT      = clamp(elapsed / ring.expandDuration, 0, 1);
+        ring.currentRadius = easeOut(expandT) * ring.maxRadius;
+
+        // Fade delay ratio is generation-specific (Layer 2 fix)
+        const fadeDelayRatio = ring.generation === 1
+          ? 0.60
+          : ring.generation === 2
+          ? CONFIG.RING_GEN2_FADE_DELAY_RATIO
+          : CONFIG.RING_GEN3_FADE_DELAY_RATIO;
+
+        const fadeStartElapsed = ring.expandDuration * fadeDelayRatio;
+        const fadeElapsed      = Math.max(0, elapsed - fadeStartElapsed);
+        const fadeT            = clamp(fadeElapsed / ring.fadeDuration, 0, 1);
+        ring.currentAlpha      = lerp(ring.startAlpha, 0, easeInOut(fadeT));
+
+        checkRingTriggers(ring, timestamp);
+
+        // Record ghost trace when ring first nears zero alpha
+        if (ring.currentAlpha <= 0.06 && !ring.ghostTraceCreated) {
+          state.ghostTraces.push({
+            x:          ring.x,
+            y:          ring.y,
+            radius:     ring.currentRadius,
+            generation: ring.generation
+          });
+          ring.ghostTraceCreated = true;
+        }
+
+        if (ring.currentAlpha > 0.01) {
+          drawGlowRing(ring);
+          return true;
+        }
+        return false;
+      });
+
+      // Update and draw impact pulses
+      state.pulses = state.pulses.filter(pulse => {
+        const elapsed = timestamp - pulse.startTime;
+        const t       = clamp(elapsed / CONFIG.IMPACT_PULSE_DURATION_MS, 0, 1);
+        const radius  = easeOut(t) * pulse.maxRadius;
+        const alpha   = 1 - t;
+
+        if (alpha > 0.01) {
+          ctx.save();
+          ctx.globalAlpha = alpha * 0.9;
+          ctx.fillStyle   = pulse.colour;
+          ctx.shadowBlur  = scaled(15);
+          ctx.shadowColor = pulse.colour;
+          ctx.beginPath();
+          ctx.arc(pulse.x, pulse.y, radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur  = 0;
+          ctx.shadowColor = 'transparent';
+          ctx.restore();
+          return true;
+        }
+        return false;
+      });
+    }
+
+    // Spawn a new ring into the pool — Layer 2 corrected maxRadius and alpha for gen 2/3
+    function spawnRing(x, y, generation, triggerPoints, timestamp) {
+      if (state.rings.length >= 24) {
+        console.warn('OTOS Ripple: ring pool limit reached, skipping spawn');
+        return;
+      }
+
+      let genConfig;
+      if (generation === 1) {
+        genConfig = {
+          maxR:   canvas.height * CONFIG.PRIMARY_RING_MAX_RADIUS_RATIO,
+          expand: CONFIG.RING_GEN1_EXPAND_MS,
+          fade:   CONFIG.RING_GEN1_FADE_MS,
+          alpha:  CONFIG.RING_GEN1_START_ALPHA
+        };
+      } else if (generation === 2) {
+        // Layer 2: increased maxRadius to ensure rings reach all trigger targets
+        genConfig = {
+          maxR:   canvas.height * 0.42,
+          expand: CONFIG.RING_GEN2_EXPAND_MS,
+          fade:   CONFIG.RING_GEN2_FADE_MS,
+          alpha:  CONFIG.RING_GEN2_START_ALPHA_L2
+        };
+      } else {
+        genConfig = {
+          maxR:   canvas.height * 0.28,
+          expand: CONFIG.RING_GEN3_EXPAND_MS,
+          fade:   CONFIG.RING_GEN3_FADE_MS,
+          alpha:  CONFIG.RING_GEN3_START_ALPHA_L2
+        };
+      }
+
+      state.rings.push({
+        id:                ringIdCounter++,
+        x,
+        y,
+        generation,
+        maxRadius:         genConfig.maxR,
+        startTime:         timestamp,
+        expandDuration:    genConfig.expand,
+        fadeDuration:      genConfig.fade,
+        startAlpha:        genConfig.alpha,
+        currentRadius:     0,
+        currentAlpha:      genConfig.alpha,
+        ghostTraceCreated: false,
+        triggerPoints:     triggerPoints.map(p => ({ ...p, triggered: false })),
+        active:            true
+      });
+    }
+
+    // ============================================================
+    // Act transition state machine
+    // ============================================================
+
+    function transitionToAct(nextAct, timestamp) {
+      if (state.transitioning) return;
+      state.transitioning       = true;
+      state.transitionStartTime = timestamp;
+      state.transitionTargetAct = nextAct;
+
+      // Clear ring pool on every act transition
+      state.rings        = [];
+      state.pulses       = [];
+      state.ghostTraces  = [];
+      ringIdCounter      = 0;
+
+      // Layer 2: clear narrator and freeze state on transition
+      clearNarratorText();
+      state.narratorSetForAct = false;
+      state.cinematicFreeze   = false;
+      state.freezeStartTime   = null;
+      state.freezeFired       = false;
+      state.freezeLines.forEach(line => { line.alpha = 0; line.triggered = false; });
+    }
+
+    function processTransition(timestamp) {
+      if (!state.transitioning) return;
+      const elapsed = timestamp - state.transitionStartTime;
+      const half    = CONFIG.TRANSITION_DURATION / 2;
+
+      if (elapsed < half) {
+        state.globalAlpha = lerp(1, 0, elapsed / half);
+      } else if (elapsed < CONFIG.TRANSITION_DURATION) {
+        if (state.currentAct !== state.transitionTargetAct) {
+          state.currentAct   = state.transitionTargetAct;
+          state.actStartTime = null;
+        }
+        state.globalAlpha = lerp(0, 1, (elapsed - half) / half);
+      } else {
+        if (state.currentAct !== state.transitionTargetAct) {
+          state.currentAct   = state.transitionTargetAct;
+          state.actStartTime = null;
+        }
+        state.globalAlpha  = 1;
+        state.transitioning = false;
+      }
+    }
+
+    // ============================================================
+    // ACT 1: One person. The first stone drops.
+    // ============================================================
+
+    function drawAct1Text(alpha) {
+      ctx.save();
+      ctx.globalAlpha  = alpha;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle    = CONFIG.COLOR_NAME_LABEL;
+      ctx.font         = `700 ${scaled(22)}px 'Playfair Display', serif`;
+      ctx.fillText('One person.', state.origin.x, state.origin.y - scaled(90));
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.font      = `${scaled(13)}px 'Inter', sans-serif`;
+      ctx.fillText('Undiagnosed ADHD. Active addiction.', state.origin.x, state.origin.y - scaled(65));
+      ctx.restore();
+    }
+
+    function runAct1(elapsed, timestamp) {
+      // Set narrator text once per act
+      if (!state.narratorSetForAct) {
+        state.narratorSetForAct = true;
+        setNarratorText('One person. Undiagnosed ADHD. Active addiction.');
+      }
+
+      if (!state.act1RingSpawned) {
+        state.act1RingSpawned = true;
+        spawnRing(state.origin.x, state.origin.y, 1, [], timestamp);
+      }
+
+      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_COUNTER);
+      drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
+
+      if (elapsed >= 1500 && !state.textAct1.visible) {
+        state.textAct1.visible   = true;
+        state.textAct1.startTime = timestamp;
+      }
+      if (state.textAct1.visible) {
+        drawAct1Text(state.textAct1.alpha);
+      }
+
+      if (elapsed >= CONFIG.ACT1_DURATION && !state.transitioning) {
+        initAct2();
+        transitionToAct(2, timestamp);
+      }
+    }
+
+    // ============================================================
+    // ACT 2: The system responds. Direct costs appear.
+    // ============================================================
+
+    function initAct2() {
+      state.act2Points_canvas = ACT2_POINTS.map(p => ({
+        ...p,
+        x:                  state.origin.x + Math.cos(p.angleRad) * scaled(p.radiusPx),
+        y:                  state.origin.y + Math.sin(p.angleRad) * scaled(p.radiusPx),
+        triggered:          false,
+        labelAlpha:         0,
+        labelFadeStartTime: null
+      }));
+      state.act2RingSpawned = false;
+    }
+
+    function drawAct2Label(point, alpha) {
+      ctx.save();
+      ctx.globalAlpha  = alpha;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle    = CONFIG.COLOR_NAME_LABEL;
+      ctx.font         = `${scaled(12)}px 'Inter', sans-serif`;
+      ctx.fillText(point.label, point.x, point.y - scaled(20));
+      ctx.fillStyle = CONFIG.COLOR_COST_LABEL;
+      ctx.font      = `italic ${scaled(14)}px 'Playfair Display', serif`;
+      ctx.fillText(point.sublabel, point.x, point.y - scaled(6));
+      ctx.restore();
+    }
+
+    function runAct2(elapsed, timestamp) {
+      // Set narrator text once per act
+      if (!state.narratorSetForAct) {
+        state.narratorSetForAct = true;
+        setNarratorText('The system responds.');
+      }
+
+      if (!state.act2RingSpawned) {
+        state.act2RingSpawned = true;
+
+        const act3Pre = ACT3_POINTS.map(p => {
+          const parent = p.parentIndex >= 0
+            ? state.act2Points_canvas[p.parentIndex]
+            : state.origin;
+          return {
+            x:           parent.x + Math.cos(p.offsetAngleRad) * scaled(p.offsetRadiusPx),
+            y:           parent.y + Math.sin(p.offsetAngleRad) * scaled(p.offsetRadiusPx),
+            costValue:   p.costValue,
+            name:        p.name,
+            parentIndex: p.parentIndex
+          };
+        });
+
+        const act4Pre = ACT4_POINTS.map(p => {
+          const parent3 = act3Pre.find(a => a.name === p.parentName);
+          return {
+            x:          parent3.x + Math.cos(p.offsetAngleRad) * scaled(p.offsetRadiusPx),
+            y:          parent3.y + Math.sin(p.offsetAngleRad) * scaled(p.offsetRadiusPx),
+            costValue:  0,
+            parentName: p.parentName
+          };
+        });
+
+        function makeGen3Triggers(personName) {
+          return act4Pre
+            .filter(p => p.parentName === personName)
+            .map(p => ({
+              x:                  p.x,
+              y:                  p.y,
+              costValue:          0,
+              triggered:          false,
+              spawnChildRing:     false,
+              childTriggerPoints: [],
+              canvasRef:          null
+            }));
+        }
+
+        function makeGen2Triggers(act2Idx) {
+          return act3Pre
+            .filter((p, i) => ACT3_POINTS[i].parentIndex === act2Idx)
+            .map(p => ({
+              x:                  p.x,
+              y:                  p.y,
+              costValue:          p.costValue,
+              triggered:          false,
+              spawnChildRing:     true,
+              childTriggerPoints: makeGen3Triggers(p.name),
+              canvasRef:          null
+            }));
+        }
+
+        const gen1TriggerPoints = state.act2Points_canvas.map((p, i) => ({
+          x:                  p.x,
+          y:                  p.y,
+          costValue:          p.costValue,
+          triggered:          false,
+          spawnChildRing:     true,
+          childTriggerPoints: makeGen2Triggers(i),
+          canvasRef:          p
+        }));
+
+        [4, 5].forEach(idx => {
+          const p = act3Pre[idx];
+          gen1TriggerPoints.push({
+            x:                  p.x,
+            y:                  p.y,
+            costValue:          p.costValue,
+            triggered:          false,
+            spawnChildRing:     true,
+            childTriggerPoints: [],
+            canvasRef:          null
+          });
+        });
+
+        spawnRing(state.origin.x, state.origin.y, 1, gen1TriggerPoints, timestamp);
+      }
+
+      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_COUNTER);
+      drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
+
+      // Draw labels for triggered Act 2 points — dimmed during cinematic freeze
+      state.act2Points_canvas.forEach(point => {
+        if (!point.triggered) return;
+        const labelAlpha = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : point.labelAlpha;
+        drawImpactDot(point.x, point.y, state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : 0.8);
+        const labelT    = clamp((timestamp - point.labelFadeStartTime) / CONFIG.TEXT_FADE_DURATION, 0, 1);
+        point.labelAlpha = easeInOut(labelT);
+        drawAct2Label(point, labelAlpha);
+      });
+
+      if (elapsed >= CONFIG.ACT2_DURATION && !state.transitioning) {
+        initAct3();
+        transitionToAct(3, timestamp);
+      }
+    }
+
+    // ============================================================
+    // ACT 3: The ripple reaches people.
+    // ============================================================
+
+    const ACT3_STAGGER_DELAYS = [0, 2000, 4000, 6000, 8000, 10000];
+
+    function initAct3() {
+      state.act3Points_canvas = ACT3_POINTS.map(p => {
+        const parent = p.parentIndex >= 0
+          ? state.act2Points_canvas[p.parentIndex]
+          : state.origin;
+        return {
+          ...p,
+          parentX:            parent.x,
+          parentY:            parent.y,
+          x:                  parent.x + Math.cos(p.offsetAngleRad) * scaled(p.offsetRadiusPx),
+          y:                  parent.y + Math.sin(p.offsetAngleRad) * scaled(p.offsetRadiusPx),
+          triggered:          false,
+          labelAlpha:         0,
+          labelFadeStartTime: null,
+          ringSpawned:        false
+        };
+      });
+
+      // Verify Gen 2 ring maxRadius covers all trigger distances — console warning if too small
+      state.act3Points_canvas.forEach(p => {
+        if (p.parentIndex >= 0) {
+          const parent = state.act2Points_canvas[p.parentIndex];
+          const dx = p.x - parent.x;
+          const dy = p.y - parent.y;
+          const requiredRadius = Math.sqrt(dx * dx + dy * dy) + scaled(20);
+          const gen2MaxR = canvas.height * 0.42;
+          if (gen2MaxR < requiredRadius) {
+            console.warn(`OTOS: Gen2 ring from point ${p.parentIndex} maxRadius ${gen2MaxR.toFixed(0)} < required ${requiredRadius.toFixed(0)}`);
+          }
+        }
+      });
+    }
+
+    function drawAct3Label(point, alpha) {
+      ctx.save();
+      ctx.globalAlpha  = alpha;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle    = CONFIG.COLOR_NAME_LABEL;
+      ctx.beginPath();
+      ctx.arc(point.x, point.y - scaled(28), scaled(5), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(point.x, point.y - scaled(23));
+      ctx.lineTo(point.x, point.y - scaled(13));
+      ctx.strokeStyle = CONFIG.COLOR_NAME_LABEL;
+      ctx.lineWidth   = scaled(1.5);
+      ctx.stroke();
+      ctx.fillStyle = CONFIG.COLOR_NAME_LABEL;
+      ctx.font      = `700 ${scaled(16)}px 'Playfair Display', serif`;
+      ctx.fillText(point.name, point.x, point.y - scaled(2));
+      ctx.fillStyle = CONFIG.COLOR_SUBTEXT;
+      ctx.font      = `${scaled(11)}px 'Inter', sans-serif`;
+      ctx.fillText(point.label, point.x, point.y + scaled(13));
+      ctx.fillStyle = CONFIG.COLOR_COST_LABEL;
+      ctx.font      = `italic ${scaled(13)}px 'Playfair Display', serif`;
+      ctx.fillText(point.cost, point.x, point.y + scaled(26));
+      ctx.restore();
+    }
+
+    function runAct3(elapsed, timestamp) {
+      if (!state.narratorSetForAct) {
+        state.narratorSetForAct = true;
+        setNarratorText('The ripple reaches the people around them.');
+      }
+
+      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_COUNTER);
+      drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
+
+      // Draw persistent Act 2 impact points — dimmed during freeze
+      state.act2Points_canvas.forEach(point => {
+        const dotA   = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : 0.6;
+        const labelA = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : 0.7;
+        drawImpactDot(point.x, point.y, dotA);
+        drawAct2Label(point, labelA);
+      });
+
+      // Staggered Gen 2 ring spawns
+      state.act3Points_canvas.forEach((point, i) => {
+        if (elapsed >= ACT3_STAGGER_DELAYS[i] && !point.ringSpawned) {
+          point.ringSpawned = true;
+
+          const act4TailTriggers = ACT4_POINTS
+            .filter(a4p => a4p.parentName === point.name)
+            .map(a4p => ({
+              x:                  point.x + Math.cos(a4p.offsetAngleRad) * scaled(a4p.offsetRadiusPx),
+              y:                  point.y + Math.sin(a4p.offsetAngleRad) * scaled(a4p.offsetRadiusPx),
+              costValue:          0,
+              triggered:          false,
+              spawnChildRing:     false,
+              childTriggerPoints: [],
+              canvasRef:          null
+            }));
+
+          spawnRing(point.parentX, point.parentY, 2, [{
+            x:                  point.x,
+            y:                  point.y,
+            costValue:          ACT3_POINTS[i].costValue,
+            triggered:          false,
+            spawnChildRing:     true,
+            childTriggerPoints: act4TailTriggers,
+            canvasRef:          point
+          }], timestamp);
+        }
+      });
+
+      // Draw triggered Act 3 person labels — dimmed during freeze
+      state.act3Points_canvas.forEach(point => {
+        if (!point.triggered) return;
+        const labelT    = clamp((timestamp - point.labelFadeStartTime) / CONFIG.TEXT_FADE_DURATION, 0, 1);
+        point.labelAlpha = easeInOut(labelT);
+        const renderAlpha = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : point.labelAlpha;
+        drawAct3Label(point, renderAlpha);
+      });
+
+      if (elapsed >= CONFIG.ACT3_DURATION && !state.transitioning) {
+        initAct4();
+        transitionToAct(4, timestamp);
+      }
+    }
+
+    // ============================================================
+    // ACT 4: The invisible tail. The real but untracked.
+    // ============================================================
+
+    const ACT4_STAGGER_DELAYS = [0, 3000, 6000];
+
+    function initAct4() {
+      state.act4Points_canvas = ACT4_POINTS.map(p => {
+        const parent = state.act3Points_canvas.find(a => a.name === p.parentName);
+        return {
+          ...p,
+          parentX:            parent.x,
+          parentY:            parent.y,
+          x:                  parent.x + Math.cos(p.offsetAngleRad) * scaled(p.offsetRadiusPx),
+          y:                  parent.y + Math.sin(p.offsetAngleRad) * scaled(p.offsetRadiusPx),
+          triggered:          false,
+          labelAlpha:         0,
+          labelFadeStartTime: null,
+          ringSpawned:        false
+        };
+      });
+      state.act4ClimaxVisible   = false;
+      state.act4ClimaxAlpha     = 0;
+      state.act4ClimaxStartTime = null;
+    }
+
+    function drawAct4Label(point, alpha) {
+      ctx.save();
+      ctx.globalAlpha  = alpha;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle    = CONFIG.COLOR_TINY;
+      ctx.font         = `${scaled(10)}px 'Inter', sans-serif`;
+      ctx.fillText(point.label, point.x, point.y - scaled(8));
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      ctx.font      = `${scaled(9)}px 'Inter', sans-serif`;
+      ctx.fillText(point.sublabel, point.x, point.y + scaled(5));
+      ctx.fillStyle = CONFIG.COLOR_COST_LABEL;
+      ctx.font      = `italic ${scaled(10)}px 'Playfair Display', serif`;
+      ctx.fillText(point.costLabel, point.x, point.y + scaled(18));
+      ctx.restore();
+    }
+
+    function drawAct4Climax(alpha) {
+      ctx.save();
+      ctx.globalAlpha  = alpha;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle    = CONFIG.COLOR_COST_LABEL;
+      ctx.font         = `700 ${scaled(32)}px 'Playfair Display', serif`;
+      ctx.fillText('£40,070 minimum.', canvas.width / 2, canvas.height * 0.82);
+      ctx.fillStyle = CONFIG.COLOR_SUBTEXT;
+      ctx.font      = `${scaled(13)}px 'Inter', sans-serif`;
+      ctx.fillText('Single year. Single person. One touch each service.', canvas.width / 2, canvas.height * 0.82 + scaled(44));
+      ctx.restore();
+    }
+
+    function runAct4(elapsed, timestamp) {
+      if (!state.narratorSetForAct) {
+        state.narratorSetForAct = true;
+        setNarratorText('And further still — to people no one is tracking.');
+      }
+
+      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_COUNTER);
+      drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
+
+      // Background labels — dimmed during freeze
+      const bgAlpha = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : 0.35;
+      state.act2Points_canvas.forEach(point => {
+        drawImpactDot(point.x, point.y, bgAlpha);
+        drawAct2Label(point, bgAlpha);
+      });
+      state.act3Points_canvas.forEach(point => {
+        if (point.triggered) drawAct3Label(point, bgAlpha);
+      });
+
+      // Staggered Gen 3 ring spawns
+      state.act4Points_canvas.forEach((point, i) => {
+        if (elapsed >= ACT4_STAGGER_DELAYS[i] && !point.ringSpawned) {
+          point.ringSpawned = true;
+          spawnRing(point.parentX, point.parentY, 3, [{
+            x:                  point.x,
+            y:                  point.y,
+            costValue:          0,
+            triggered:          false,
+            spawnChildRing:     false,
+            childTriggerPoints: [],
+            canvasRef:          point
+          }], timestamp);
+        }
+      });
+
+      // Draw triggered Act 4 tail labels — dimmed during freeze
+      state.act4Points_canvas.forEach(point => {
+        if (!point.triggered) return;
+        const labelT    = clamp((timestamp - point.labelFadeStartTime) / CONFIG.TEXT_FADE_DURATION, 0, 1);
+        point.labelAlpha = easeInOut(labelT);
+        const renderAlpha = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : point.labelAlpha;
+        drawAct4Label(point, renderAlpha);
+      });
+
+      const climaxTriggerMs = CONFIG.ACT4_DURATION - 6000;
+      if (elapsed >= climaxTriggerMs && !state.act4ClimaxVisible) {
+        state.act4ClimaxVisible   = true;
+        state.act4ClimaxStartTime = timestamp;
+      }
+      if (state.act4ClimaxVisible) {
+        const climaxT        = clamp((timestamp - state.act4ClimaxStartTime) / 800, 0, 1);
+        state.act4ClimaxAlpha = easeInOut(climaxT);
+        drawAct4Climax(state.act4ClimaxAlpha);
+        state.counterPulseAlpha = 0.85 + 0.15 * Math.sin(timestamp / 400);
+      }
+
+      if (elapsed >= CONFIG.ACT4_DURATION && !state.transitioning) {
+        state.counterPulseAlpha = 1;
+        initAct5();
+        transitionToAct(5, timestamp);
+      }
+    }
+
+    // ============================================================
+    // ACT 5: ADHD is inherited. The child stone drops. Freeze beat.
+    // ============================================================
+
+    function initAct5() {
+      state.childVisible        = false;
+      state.childAlpha          = 0;
+      state.childFadeStartTime  = null;
+      state.childStoneDropped   = false;
+      state.childTextVisible    = false;
+      state.childTextAlpha      = 0;
+      state.childTextStartTime  = null;
+      state.act5RingSpawned     = false;
+      state.freezeFired         = false;
+    }
+
+    function drawChildFigure(x, y, alpha) {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle   = CONFIG.COLOR_NAME_LABEL;
+      ctx.beginPath();
+      ctx.arc(x, y - scaled(14), scaled(4), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(x, y - scaled(10));
+      ctx.lineTo(x, y);
+      ctx.strokeStyle = CONFIG.COLOR_NAME_LABEL;
+      ctx.lineWidth   = scaled(1.5);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function runAct5(elapsed, timestamp) {
+      if (!state.narratorSetForAct) {
+        state.narratorSetForAct = true;
+        setNarratorText('ADHD is inherited. The cycle begins again.');
+      }
+
+      // Past elements — ghost alpha, dimmed further during freeze
+      const ghostAlpha = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : 0.08;
+      state.act2Points_canvas.forEach(point => drawImpactDot(point.x, point.y, ghostAlpha));
+      state.act3Points_canvas.forEach(point => {
+        if (point.triggered) drawAct3Label(point, ghostAlpha);
+      });
+
+      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_COUNTER);
+      drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
+
+      const childX = state.origin.x + scaled(CONFIG.CHILD_OFFSET_X);
+      const childY = state.origin.y + scaled(CONFIG.CHILD_OFFSET_Y);
+
+      if (!state.childVisible) {
+        state.childVisible       = true;
+        state.childFadeStartTime = timestamp;
+      }
+      state.childAlpha = easeInOut(clamp((timestamp - state.childFadeStartTime) / 800, 0, 1));
+      drawChildFigure(childX, childY, state.childAlpha);
+
+      // "ADHD is inherited." inline text near child figure
+      if (elapsed >= 2000 && !state.childTextVisible) {
+        state.childTextVisible   = true;
+        state.childTextStartTime = timestamp;
+      }
+      if (state.childTextVisible) {
+        state.childTextAlpha = easeInOut(clamp((timestamp - state.childTextStartTime) / CONFIG.TEXT_FADE_DURATION, 0, 1));
+        const textAlpha = state.cinematicFreeze
+          ? state.childTextAlpha * CONFIG.FREEZE_LABEL_DIM_ALPHA
+          : state.childTextAlpha;
+        ctx.save();
+        ctx.globalAlpha  = textAlpha;
+        ctx.textAlign    = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle    = CONFIG.COLOR_NAME_LABEL;
+        ctx.font         = `italic ${scaled(18)}px 'Playfair Display', serif`;
+        ctx.fillText('ADHD is inherited.', childX + scaled(14), childY - scaled(8));
+        ctx.restore();
+      }
+
+      // Child stone drops at 3500ms
+      if (elapsed >= 3500 && !state.childStoneDropped) {
+        state.childStoneDropped = true;
+        startCounterAnimation(
+          CONFIG.COUNTER_FLOOR,
+          CONFIG.COUNTER_FLOOR + CONFIG.COUNTER_CHILD_ADD,
+          6000,
+          timestamp
+        );
+      }
+
+      if (state.childStoneDropped && !state.act5RingSpawned) {
+        state.act5RingSpawned = true;
+        spawnRing(childX, childY, 2, [], timestamp);
+      }
+
+      if (state.childStoneDropped) {
+        drawStone(childX, childY, scaled(CONFIG.CHILD_STONE_RADIUS), CONFIG.RING_CHILD);
+      }
+
+      // Cinematic freeze beat at FREEZE_START_ELAPSED — replaces old textAct5Line1/2/3
+      if (elapsed >= CONFIG.FREEZE_START_ELAPSED && !state.cinematicFreeze && !state.freezeFired) {
+        state.freezeFired = true;
+        startCinematicFreeze(timestamp);
+      }
+
+      if (elapsed >= CONFIG.ACT5_DURATION && !state.transitioning) {
+        initAct6();
+        transitionToAct(6, timestamp);
+      }
+    }
+
+    // ============================================================
+    // ACT 6: OTOS enters. The cycle breaks.
+    // ============================================================
+
+    function initAct6() {
+      state.textAct6Line1 = { visible: false, alpha: 0, startTime: null, duration: CONFIG.TEXT_FADE_DURATION };
+      state.textAct6Line2 = { visible: false, alpha: 0, startTime: null, duration: CONFIG.TEXT_FADE_DURATION };
+      state.textAct6Line3 = { visible: false, alpha: 0, startTime: null, duration: CONFIG.TEXT_FADE_DURATION };
+      state.act6RingStartTime    = null;
+      state.act6FadeOutStartTime = null;
+    }
+
+    function runAct6(elapsed, timestamp) {
+      if (!state.narratorSetForAct) {
+        state.narratorSetForAct = true;
+        setNarratorText('OTOS enters before the first ring leaves the water.');
+      }
+
+      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_COUNTER);
+      drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
+
+      if (elapsed >= 1000 && !state.act6RingStartTime) {
+        state.act6RingStartTime = timestamp;
+      }
+      if (state.act6RingStartTime) {
+        const ringElapsed   = timestamp - state.act6RingStartTime;
+        const stopRadius    = scaled(CONFIG.ACT6_RING_STOP_RADIUS);
+        const currentRadius = Math.min(ringElapsed / 3000 * stopRadius, stopRadius);
+        const ringAlpha     = currentRadius >= stopRadius
+          ? 0.3 + 0.2 * Math.sin(timestamp / 600)
+          : CONFIG.RING_GEN1_START_ALPHA;
+        drawGlowRing({
+          x:             state.origin.x,
+          y:             state.origin.y,
+          generation:    1,
+          currentRadius: currentRadius,
+          currentAlpha:  ringAlpha,
+          startAlpha:    CONFIG.RING_GEN1_START_ALPHA
+        });
+      }
+
+      if (elapsed >= 2500 && !state.textAct6Line1.visible) {
+        state.textAct6Line1.visible   = true;
+        state.textAct6Line1.startTime = timestamp;
+      }
+      if (state.textAct6Line1.visible) {
+        ctx.save();
+        ctx.globalAlpha  = state.textAct6Line1.alpha;
+        ctx.textAlign    = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle    = CONFIG.COLOR_NAME_LABEL;
+        ctx.font         = `700 ${scaled(20)}px 'Playfair Display', serif`;
+        ctx.fillText('OTOS enters before the first ring leaves the water.', canvas.width / 2, canvas.height * 0.35);
+        ctx.restore();
+      }
+
+      if (elapsed >= 5000 && !state.textAct6Line2.visible) {
+        state.textAct6Line2.visible   = true;
+        state.textAct6Line2.startTime = timestamp;
+      }
+      if (state.textAct6Line2.visible) {
+        ctx.save();
+        ctx.globalAlpha  = state.textAct6Line2.alpha;
+        ctx.textAlign    = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle    = CONFIG.COLOR_COST_LABEL;
+        ctx.font         = `700 ${scaled(24)}px 'Playfair Display', serif`;
+        ctx.fillText('£40,070 per person per year. Prevented.', canvas.width / 2, canvas.height * 0.50);
+        ctx.restore();
+      }
+
+      if (elapsed >= 7000 && !state.textAct6Line3.visible) {
+        state.textAct6Line3.visible   = true;
+        state.textAct6Line3.startTime = timestamp;
+      }
+      if (state.textAct6Line3.visible) {
+        ctx.save();
+        ctx.globalAlpha  = state.textAct6Line3.alpha;
+        ctx.textAlign    = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle    = 'rgba(255,255,255,0.65)';
+        ctx.font         = `${scaled(14)}px 'Inter', sans-serif`;
+        ctx.fillText('OTOS is the only shot at breaking that cycle.', canvas.width / 2, canvas.height * 0.60);
+        ctx.restore();
+      }
+
+      const fadeOutTrigger = CONFIG.ACT6_DURATION - 1500;
+      if (elapsed >= fadeOutTrigger && !state.act6FadeOutStartTime) {
+        state.act6FadeOutStartTime = timestamp;
+      }
+      if (state.act6FadeOutStartTime) {
+        const fadeT       = clamp((timestamp - state.act6FadeOutStartTime) / 1500, 0, 1);
+        state.globalAlpha = lerp(1, 0, fadeT);
+      }
+
+      if (elapsed >= CONFIG.ACT6_DURATION) {
+        resetAllState();
+      }
+    }
+
+    // ============================================================
+    // Full state reset for clean loop
+    // ============================================================
+    function resetAllState() {
+      state.currentAct          = 1;
+      state.actStartTime        = null;
+      state.transitioning       = false;
+      state.transitionStartTime = null;
+      state.transitionTargetAct = 1;
+      state.globalAlpha         = 1;
+
+      state.rings        = [];
+      state.pulses       = [];
+      state.ghostTraces  = [];
+      ringIdCounter      = 0;
+
+      state.act1RingSpawned = false;
+      state.act2RingSpawned = false;
+      state.act5RingSpawned = false;
+
+      state.act2Points_canvas   = [];
+      state.act3Points_canvas   = [];
+      state.act4Points_canvas   = [];
+      state.act4ClimaxVisible   = false;
+      state.act4ClimaxAlpha     = 0;
+      state.act4ClimaxStartTime = null;
+
+      state.counterDisplayValue = 0;
+      state.counterAnimating    = false;
+      state.counterPulseAlpha   = 1;
+
+      state.textAct1      = { visible: false, alpha: 0, startTime: null, duration: CONFIG.TEXT_FADE_DURATION };
+      state.textAct6Line1 = { visible: false, alpha: 0, startTime: null, duration: CONFIG.TEXT_FADE_DURATION };
+      state.textAct6Line2 = { visible: false, alpha: 0, startTime: null, duration: CONFIG.TEXT_FADE_DURATION };
+      state.textAct6Line3 = { visible: false, alpha: 0, startTime: null, duration: CONFIG.TEXT_FADE_DURATION };
+
+      state.childVisible       = false;
+      state.childAlpha         = 0;
+      state.childFadeStartTime = null;
+      state.childStoneDropped  = false;
+      state.childTextVisible   = false;
+      state.childTextAlpha     = 0;
+      state.childTextStartTime = null;
+
+      state.act6RingStartTime    = null;
+      state.act6FadeOutStartTime = null;
+
+      // Layer 2 narrator reset
+      state.narratorCurrentText = '';
+      state.narratorPendingText = '';
+      state.narratorAlpha       = 0;
+      state.narratorTargetAlpha = 0;
+      state.narratorPendingSet  = false;
+      state.narratorSetForAct   = false;
+
+      // Layer 2 freeze reset
+      state.cinematicFreeze = false;
+      state.freezeStartTime = null;
+      state.freezeFired     = false;
+      state.freezeLines.forEach(line => { line.alpha = 0; line.triggered = false; });
+    }
+
+    // ============================================================
+    // Main animation loop — Layer 2 call order
+    // ============================================================
+    function animate(timestamp) {
+      if (!state.actStartTime) state.actStartTime = timestamp;
+
+      updateCounter(timestamp);
+      updateTextFades(timestamp);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBackground();
+      drawVignette();
+
+      updateNarratorAlpha();
+
+      processTransition(timestamp);
+
+      if (!state.actStartTime) state.actStartTime = timestamp;
+      const elapsed = timestamp - state.actStartTime;
+
+      updateAndDrawRings(timestamp);
+
+      switch (state.currentAct) {
+        case 1: runAct1(elapsed, timestamp); break;
+        case 2: runAct2(elapsed, timestamp); break;
+        case 3: runAct3(elapsed, timestamp); break;
+        case 4: runAct4(elapsed, timestamp); break;
+        case 5: runAct5(elapsed, timestamp); break;
+        case 6: runAct6(elapsed, timestamp); break;
+      }
+
+      // Cinematic freeze overlay and text — drawn after act content, before narrator
+      updateAndDrawCinematicFreeze(timestamp);
+
+      // Narrator text — always on top of rings and labels
+      drawNarratorText();
+
+      drawCounter();
+
+      // Black overlay for transition fades and Act 6 fade-out
+      if (state.globalAlpha < 1) {
+        ctx.save();
+        ctx.globalAlpha = 1 - state.globalAlpha;
+        ctx.fillStyle   = '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    // ============================================================
+    // Initialise canvas, vignette, and start the animation
+    // ============================================================
+    function init() {
+      resizeCanvas();  // also calls buildVignetteGradient()
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(init);
+    } else {
+      setTimeout(init, 500);
+    }
+  </script>
+</body>
+</html>

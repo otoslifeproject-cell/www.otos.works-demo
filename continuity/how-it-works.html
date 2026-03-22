@@ -7,75 +7,126 @@
 <meta name="description" content="Four steps. Anonymous, touchpoints-based, early warning, aggregate reporting. No clinical records.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="otos-shared.css">
 <style>
-:root{--bg-page:#f5f0e8;--bg-section-alt:#ede8df;--bg-dark:#1e150a;--bg-nav:rgba(245,240,232,0.90);--text-primary:#1a1410;--text-secondary:#7a6a58;--amber:#c17f24;--orange:#e8720c;--teal:#4a9e8e;--shadow-xl:0 32px 80px rgba(26,20,16,0.22),0 12px 28px rgba(26,20,16,0.12);--font-heading:'Playfair Display', Georgia, serif;--font-body:'Inter', -apple-system, sans-serif}
-*,*::before,*::after{box-sizing:border-box}html{font-size:16px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;height:100dvh;overflow:hidden}html,body{margin:0;overflow:hidden}
-body{background:var(--bg-page);color:var(--text-primary);font-family:var(--font-body);height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+:root{--bg-page:#f8f8f6;--bg-section-alt:#ede8df;--bg-dark:#1e150a;--text-primary:#1a1410;--text-secondary:#7a6a58;--amber:#c17f24;--orange:#e8720c;--teal:#4a9e8e;--shadow-xl:0 32px 80px rgba(26,20,16,0.18),0 12px 28px rgba(26,20,16,0.10);--font-heading:'Playfair Display', Georgia, serif;--font-body:'Inter', -apple-system, sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:16px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;height:100%;overflow:hidden}
+html,body{margin:0;height:100%;overflow:hidden}
+body{background:var(--bg-page);color:var(--text-primary);font-family:var(--font-body);display:flex;flex-direction:column}
 .site-nav{position:sticky;top:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(245,240,232,0.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(193,127,36,0.1);opacity:1!important;pointer-events:auto!important;box-shadow:0 1px 0 rgba(255,252,246,0.8),0 4px 16px rgba(26,20,16,0.06)}
-.nav-brand{display:flex;align-items:center}.navbar-logo{height:36px;width:auto}.nav-links{display:flex;gap:4px;align-items:center}
 .nav-logo{display:flex;align-items:center;text-decoration:none;flex-shrink:0}
 .nav-logo img{height:36px;width:auto;display:block}
 .text-gradient{background:linear-gradient(92deg,#1a1410 0%,#1a1410 35%,#7a4f1a 60%,#c17f24 80%,#d4a020 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-links{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
 .nav-links a{font-size:13px;font-weight:500;color:var(--text-secondary);text-decoration:none;padding:6px 14px;border-radius:20px}.nav-links a.active{color:var(--text-primary);font-weight:600}.nav-links a:hover{color:var(--text-primary);background:rgba(193,127,36,0.08)}
-/* Phase 2: Editorial Playfair page header */
-.page-intro{font-family:'Playfair Display', serif;font-size:clamp(1.6rem,3vw,2.6rem);font-weight:600;font-style:italic;line-height:1.2;color:#1a1410;text-align:center;max-width:780px;margin:0 auto;padding:3rem 2rem 2rem;letter-spacing:-0.01em}
-main{flex:1;padding-top:64px;overflow-y:auto}
-.journey-section{padding:16px 0 24px}
-.journey-stage{position:relative;max-width:1200px;margin:0 auto;min-height:300px;height:clamp(300px,55vh,520px);padding:0 40px}
-.journey-svg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
-/* Phase 3: Journey units — nth-child positioning */
+main{flex:1;min-height:0;overflow:hidden;padding-top:0;display:flex;flex-direction:column;width:100%}
+/* Full-bleed stage; glass intro overlaps top-left like homepage frosted panels */
+.journey-section{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;width:100%;padding:0 min(20px,2vw) 4px}
+/* Homepage-adjacent glass: frosted cream panel + kicker */
+.hiw-glass-intro{position:absolute;z-index:8;left:min(20px,2vw);top:6px;max-width:min(360px,32vw);padding:1rem 1.2rem 1.15rem;background:rgba(255,252,246,0.82);backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);border:1px solid rgba(193,127,36,0.24);border-radius:20px;box-shadow:0 20px 48px rgba(26,20,16,0.10),0 0 0 1px rgba(255,255,255,0.5) inset;pointer-events:none}
+.hiw-glass-intro *{pointer-events:auto}
+.hiw-kicker{display:block;font-family:var(--font-body);font-size:0.65rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--amber);opacity:0.92;margin-bottom:0.5rem}
+.hiw-glass-title{font-family:var(--font-heading);font-size:clamp(1.15rem,2.2vw,1.65rem);font-weight:700;font-style:italic;line-height:1.18;margin:0 0 0.5rem;letter-spacing:-0.02em}
+.hiw-glass-sub{font-family:var(--font-body);font-size:clamp(0.78rem,1.15vw,0.88rem);font-weight:300;font-style:italic;line-height:1.5;color:rgba(15,23,42,0.58);margin:0}
+/* Organic canvas — bubbles + connectors */
+.journey-canvas{position:relative;width:100%;flex:1;min-height:clamp(300px,46vh,520px);margin-top:4px;overflow:visible}
+.journey-svg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.95}
 .journey-unit{position:absolute;display:flex;flex-direction:column;align-items:center;z-index:2}
-.journey-stage > .journey-unit:nth-child(2){left:2%;flex-direction:column;top:0;bottom:auto}
-.journey-stage > .journey-unit:nth-child(3){left:26%;flex-direction:column-reverse;bottom:0;top:auto}
-.journey-stage > .journey-unit:nth-child(4){left:52%;flex-direction:column;top:0;bottom:auto}
-.journey-stage > .journey-unit:nth-child(5){left:74%;flex-direction:column-reverse;bottom:0;top:auto}
-/* Phase 3: Circle now contains text */
-.journey-circle{width:clamp(180px,22vw,260px);height:clamp(180px,22vw,260px);border-radius:50%;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(1rem,3vw,2rem);text-align:center;overflow:hidden;background:linear-gradient(145deg,rgba(255,252,246,0.90) 0%,rgba(245,237,220,0.72) 100%);backdrop-filter:blur(16px) saturate(130%);-webkit-backdrop-filter:blur(16px) saturate(130%);border:1.5px solid rgba(255,252,246,0.95);border-top:1.5px solid #fff}
-.journey-circle.teal{box-shadow:0 0 40px rgba(74,158,142,0.18),0 0 16px rgba(74,158,142,0.10),var(--shadow-xl);border-color:rgba(74,158,142,0.25)}
-.journey-circle.amber{box-shadow:0 0 40px rgba(232,114,12,0.20),0 0 16px rgba(232,114,12,0.12),var(--shadow-xl);border-color:rgba(232,114,12,0.28)}
-.circle-number{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--font-heading);font-size:5rem;font-weight:700;color:var(--text-primary);opacity:.08;pointer-events:none;user-select:none}
-.float-label{display:block;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--amber);margin-bottom:6px;position:relative;z-index:1}
-.float-title{font-family:var(--font-heading);font-size:clamp(0.8rem,1.4vw,1.0rem);font-weight:600;color:var(--text-primary);line-height:1.2;margin-bottom:6px;position:relative;z-index:1}
-.float-body{font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:8px;position:relative;z-index:1}
-.float-bullets{list-style:none;padding:0;margin:0;text-align:left;display:inline-block;position:relative;z-index:1}
-.float-bullets li{font-size:10px;color:var(--text-secondary);padding:2px 0 2px 12px;position:relative;line-height:1.4}
-.float-bullets li::before{content:'→';position:absolute;left:0;top:3px;color:var(--teal);font-size:9px}
-/* Phase 4: Quote — right-aligned, float right */
-.quote-section{padding:40px 48px;background:var(--bg-section-alt);position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-end}
-.site-quote{max-width:420px;margin-left:auto;text-align:right;position:relative;padding:16px 32px 16px 16px}
-.site-quote::before{content:'\201C';font-family:var(--font-heading);font-size:7rem;line-height:0.8;color:rgba(193,127,36,0.14);position:absolute;top:-8px;left:0}
-.site-quote p{font-family:var(--font-heading);font-style:italic;font-size:clamp(1.1rem,2vw,1.4rem);font-weight:600;color:var(--text-primary);line-height:1.50;margin:0 0 16px;position:relative;z-index:1}
-.site-quote cite{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);font-style:normal}
-.closing-line{font-family:var(--font-heading);font-size:1.2rem;color:var(--text-primary);text-align:center;max-width:760px;margin:16px auto 14px;line-height:1.35;width:100%}
-.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:980px;margin:0 auto;width:100%}
-.pill{background:#fff;color:var(--text-secondary);border:1px solid rgba(193,127,36,0.16);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:500}
-.pill.accent{color:var(--amber);border-color:rgba(193,127,36,0.35);background:rgba(193,127,36,0.08)}
-.bottom-nav{display:flex;justify-content:space-between;align-items:center;padding:0 48px;height:56px;background:rgba(245,240,232,0.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(193,127,36,0.10);box-shadow:0 -4px 20px rgba(26,20,16,0.05);margin-top:auto}
+/* Mockup-style scatter: lg bottom-left, md bottom-mid, sm top-mid, xl right */
+.journey-canvas > .journey-unit[data-step="1"]{left:1%;bottom:5%;top:auto;flex-direction:column}
+.journey-canvas > .journey-unit[data-step="2"]{left:27%;bottom:7%;top:auto;flex-direction:column-reverse}
+.journey-canvas > .journey-unit[data-step="3"]{left:50%;top:2%;bottom:auto;flex-direction:column;transform:translateX(-50%)}
+.journey-canvas > .journey-unit[data-step="4"]{left:auto;right:0.5%;top:14%;bottom:auto;flex-direction:column-reverse}
+/* Non-uniform bubble sizes */
+.journey-circle{border-radius:50%;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;background:linear-gradient(145deg,rgba(255,252,246,0.92) 0%,rgba(245,237,220,0.76) 100%);backdrop-filter:blur(16px) saturate(130%);-webkit-backdrop-filter:blur(16px) saturate(130%);border:1.5px solid rgba(255,252,246,0.95);border-top:1.5px solid #fff}
+.journey-circle--sm{width:clamp(138px,14vw,176px);height:clamp(138px,14vw,176px);padding:clamp(0.65rem,2vw,1rem)}
+.journey-circle--md{width:clamp(168px,17vw,214px);height:clamp(168px,17vw,214px);padding:clamp(0.75rem,2.2vw,1.2rem)}
+.journey-circle--lg{width:clamp(188px,19.5vw,248px);height:clamp(188px,19.5vw,248px);padding:clamp(0.85rem,2.5vw,1.45rem)}
+.journey-circle--xl{width:clamp(210px,22.5vw,286px);height:clamp(210px,22.5vw,286px);padding:clamp(1rem,2.8vw,1.65rem)}
+.journey-circle.teal{box-shadow:0 0 40px rgba(74,158,142,0.18),0 0 16px rgba(74,158,142,0.10),var(--shadow-xl);border-color:rgba(74,158,142,0.28)}
+.journey-circle.amber{box-shadow:0 0 44px rgba(232,114,12,0.22),0 0 18px rgba(232,114,12,0.12),var(--shadow-xl);border-color:rgba(232,114,12,0.32)}
+.circle-number{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--font-heading);font-weight:700;color:var(--text-primary);opacity:.08;pointer-events:none;user-select:none}
+.journey-circle--sm .circle-number{font-size:3.2rem}
+.journey-circle--md .circle-number{font-size:4rem}
+.journey-circle--lg .circle-number{font-size:4.6rem}
+.journey-circle--xl .circle-number{font-size:5.2rem}
+.float-label{display:block;font-size:8px;font-weight:700;letter-spacing:2.2px;text-transform:uppercase;color:var(--amber);margin-bottom:5px;position:relative;z-index:1}
+.journey-circle--lg .float-label,.journey-circle--xl .float-label{font-size:9px;letter-spacing:2.4px}
+.float-title{font-family:var(--font-heading);font-weight:600;color:var(--text-primary);line-height:1.18;margin-bottom:5px;position:relative;z-index:1}
+.journey-circle--sm .float-title{font-size:clamp(0.72rem,1.15vw,0.82rem)}
+.journey-circle--md .float-title{font-size:clamp(0.78rem,1.25vw,0.92rem)}
+.journey-circle--lg .float-title{font-size:clamp(0.85rem,1.4vw,1.02rem)}
+.journey-circle--xl .float-title{font-size:clamp(0.92rem,1.55vw,1.12rem)}
+.float-body{font-size:10px;color:var(--text-secondary);line-height:1.45;margin-bottom:6px;position:relative;z-index:1}
+.journey-circle--lg .float-body,.journey-circle--xl .float-body{font-size:11px;line-height:1.5}
+.journey-circle--xl .float-body{font-size:12px}
+.float-bullets{list-style:none;padding:0;margin:0;text-align:left;display:inline-block;position:relative;z-index:1;max-width:100%}
+.float-bullets li{font-size:9px;color:var(--text-secondary);padding:2px 0 2px 11px;position:relative;line-height:1.35}
+.journey-circle--lg .float-bullets li,.journey-circle--xl .float-bullets li{font-size:10px;padding-left:12px}
+.journey-circle--xl .float-bullets li{font-size:10.5px}
+.float-bullets li::before{content:'→';position:absolute;left:0;top:2px;color:var(--teal);font-size:8px}
+/* Top-right pill cluster — loose, not stacked on circles */
+.hiw-pills-cluster{position:absolute;z-index:5;right:0.5%;top:5%;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;max-width:min(420px,38%);pointer-events:none}
+.hiw-pills-cluster .pill{pointer-events:auto}
+.pill{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(255,252,248,0.72);border:1px solid rgba(200,146,42,0.28);border-radius:40px;padding:6px 13px;font-family:Inter,sans-serif;font-weight:400;font-size:11px;color:rgba(15,23,42,0.72);display:inline-block;margin:0;line-height:1.3}
+/* Bottom-left accent — mockup */
+.pills-float--accent-wrap{position:absolute;z-index:5;left:2%;bottom:2%;max-width:min(400px,88%);pointer-events:none}
+.pills-float--accent-wrap .pill{pointer-events:auto}
+.pill.accent{color:var(--amber);border-color:rgba(193,127,36,0.38);background:rgba(255,252,246,0.78);font-family:var(--font-heading);font-style:italic;font-size:clamp(11px,1.05vw,13px);font-weight:600;padding:8px 16px}
+/* Partner quote — bottom-right */
+.journey-float-quote{position:absolute;z-index:6;right:1%;bottom:3%;max-width:min(300px,28vw);margin:0;text-align:left;padding:10px 8px 8px 6px;background:rgba(255,252,246,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:16px;border:1px solid rgba(193,127,36,0.14)}
+.journey-float-quote::before{content:'\201C';font-family:var(--font-heading);font-size:3.25rem;line-height:0.6;color:rgba(193,127,36,0.11);position:absolute;top:2px;left:6px}
+.journey-float-quote p{font-family:var(--font-heading);font-style:italic;font-size:clamp(12px,1.1vw,15px);font-weight:600;line-height:1.38;margin:0 0 6px;position:relative;z-index:1;padding:0.25rem 0 0 0.15rem}
+.journey-float-quote cite{font-size:9px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--amber);font-style:normal}
+.bottom-nav{display:flex;justify-content:space-between;align-items:center;padding:0 48px;height:56px;background:rgba(245,240,232,0.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(193,127,36,0.10);box-shadow:0 -4px 20px rgba(26,20,16,0.05);margin-top:auto;flex-shrink:0}
 .bottom-nav a{font-size:13px;font-weight:600;letter-spacing:.4px;color:var(--text-secondary);text-decoration:none}.bottom-nav a:hover{color:var(--text-primary)}
-.site-footer{background:var(--bg-dark);padding:22px 48px;text-align:center;margin-top:auto;font-size:12px;color:rgba(240,235,227,0.40);line-height:1.6}
-@media (max-width:900px){.journey-stage{min-height:auto;display:flex;flex-direction:column;gap:40px;padding:24px}.journey-unit{position:relative;left:auto;bottom:auto;width:100%;max-width:280px;margin:0 auto;flex-direction:column}.journey-svg{display:none}.site-nav{padding:0 20px}.nav-links a{font-size:11.5px;margin-left:12px;padding:4px 8px}.bottom-nav{padding:0 24px}.quote-section{align-items:flex-start}.site-quote{margin-left:0;text-align:left;max-width:100%}}
-/* viewport no-scroll overrides */
+.site-footer{background:var(--bg-dark);padding:22px 48px;text-align:center;margin-top:auto;font-size:12px;color:rgba(240,235,227,0.40);line-height:1.6;flex-shrink:0}
+@media (max-width:900px){
+.hiw-glass-intro{position:relative;left:auto;top:auto;max-width:100%;margin:8px auto 12px;pointer-events:auto}
+.journey-canvas{min-height:auto;display:flex;flex-direction:column;align-items:center;gap:20px;padding-bottom:120px}
+.journey-svg{display:none}
+.journey-unit{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;transform:none!important}
+.journey-canvas > .journey-unit[data-step="3"]{transform:none!important}
+.hiw-pills-cluster{position:relative;right:auto;top:auto;max-width:100%;justify-content:center;margin-top:8px}
+.pills-float--accent-wrap{position:relative;left:auto;bottom:auto;margin-top:8px;text-align:center}
+.pills-float--accent-wrap .pill{max-width:100%}
+.journey-float-quote{position:relative;right:auto;bottom:auto;max-width:100%;margin-top:16px;text-align:center}
+.journey-float-quote::before{left:50%;transform:translateX(-50%)}
+.site-nav{padding:0 20px}.nav-links a{font-size:11.5px;padding:4px 8px}.bottom-nav{padding:0 24px}
+html,body{height:auto;overflow:auto}main{overflow:visible;min-height:auto}
+}
 img,video,svg{max-width:100%;height:auto}
-body{overflow:hidden}
 </style>
 </head>
 <body>
 <nav class="site-nav"><a href="index.html" class="nav-logo" aria-label="OTOS Home"><img src="brain.png" alt="OTOS" height="36" style="display:block;width:auto;"></a><div class="nav-links"><a href="index.html">Home</a><a href="how-it-works.html" class="active">How it works</a><a href="guided-demos.html">Guided demos</a><a href="controls.html">Controls</a><a href="reporting.html">Reporting</a><a href="founder-story-v2.html">Founder Journey</a><a href="references.html">References</a><a href="infrastructure-partners.html">Infrastructure</a></div></nav>
 <main>
-<!-- Phase 2: Editorial Playfair page header -->
-<p class="page-intro">One tap. One thread. You&rsquo;ll always know they made the next step.</p>
-<section class="journey-section"><div class="journey-stage">
-<svg class="journey-svg" viewBox="0 0 1120 520" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#4a9e8e" stop-opacity="0.55"/><stop offset="45%" stop-color="#c17f24" stop-opacity="0.35"/><stop offset="100%" stop-color="#e8720c" stop-opacity="0.60"/></linearGradient></defs><path d="M 140 160 C 260 160, 260 380, 430 380 C 600 380, 600 160, 760 160 C 890 160, 920 380, 1020 380" stroke="#c17f24" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.12"/><path d="M 140 160 C 260 160, 260 380, 430 380 C 600 380, 600 160, 760 160 C 890 160, 920 380, 1020 380" stroke="url(#rg)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M 140 160 C 260 160, 260 380, 430 380 C 600 380, 600 160, 760 160 C 890 160, 920 380, 1020 380" stroke="rgba(255,248,235,0.55)" stroke-width="1" fill="none" stroke-linecap="round"/></svg>
-<!-- Phase 3: Text content moved inside circles -->
-<div class="journey-unit" data-step="1"><div class="journey-circle teal"><span class="circle-number">1</span><span class="float-label">Anonymous by design</span><div class="float-title">Anonymous at first contact</div><p class="float-body">Staff taps Register touchpoint or scans QR. OTOS creates a secure, anonymous journey ID.</p><ul class="float-bullets"><li>No name</li><li>No date of birth</li><li>No diagnosis</li><li>No extra form</li></ul></div></div>
-<div class="journey-unit" data-step="2"><div class="journey-circle teal"><span class="circle-number">2</span><span class="float-label">Touchpoints, not records</span><div class="float-title">Touchpoints, not records</div><p class="float-body">Each provider notes a touchpoint against the same anonymous journey ID.</p><ul class="float-bullets"><li>Attended</li><li>Missed</li><li>Contacted</li><li>Referred</li><li>Stabilising</li></ul></div></div>
-<div class="journey-unit" data-step="3"><div class="journey-circle teal"><span class="circle-number">3</span><span class="float-label">Early warning</span><div class="float-title">Early warning, no extra work</div><p class="float-body">OTOS notices when the pattern changes. Your team gets an alert. You decide what to do.</p><ul class="float-bullets"><li>Team gets an alert</li><li>You decide what to do</li><li>No automated clinical decisions</li></ul></div></div>
-<div class="journey-unit" data-step="4"><div class="journey-circle amber"><span class="circle-number">4</span><span class="float-label">Reporting</span><div class="float-title">Reporting your manager will actually read</div><p class="float-body">See where journeys stall, where drop-off happens, where continuity is working.</p><ul class="float-bullets"><li>Aggregate anonymous signals</li><li>No individual patient data</li><li>No GDPR headache</li></ul></div></div>
-</div></section>
-<!-- Phase 4: Quote right-aligned, then pills -->
-<section class="quote-section"><blockquote class="site-quote"><p class="text-gradient">&ldquo;[Partner quote placeholder &mdash; to be confirmed]&rdquo;</p><cite>&mdash; Name, Role, Organisation</cite></blockquote><p class="closing-line">Nothing changes in how you work. Your clinical decisions stay yours &mdash; always.</p><div class="pills"><span class="pill">Touchpoints, not records</span><span class="pill">No system integration</span><span class="pill">No extra paperwork</span><span class="pill">No disruption</span><span class="pill accent">Recovery support for life &mdash; maintained through micro check-ins</span></div></section>
+<section class="journey-section" aria-labelledby="hiw-glass-heading">
+<aside class="hiw-glass-intro">
+<span class="hiw-kicker">How it works</span>
+<h1 class="hiw-glass-title text-gradient" id="hiw-glass-heading">One tap. One thread.<br>You&rsquo;ll always know they made the next step.</h1>
+<p class="hiw-glass-sub">Nothing changes in how you work. Your clinical decisions stay yours &mdash; always.</p>
+</aside>
+<div class="journey-canvas">
+<svg class="journey-svg" viewBox="0 0 1120 520" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#4a9e8e" stop-opacity="0.55"/><stop offset="45%" stop-color="#c17f24" stop-opacity="0.35"/><stop offset="100%" stop-color="#e8720c" stop-opacity="0.60"/></linearGradient></defs><path d="M 140 160 C 260 160, 260 380, 430 380 C 600 380, 600 160, 760 160 C 890 160, 920 380, 1020 380" stroke="#c17f24" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.10"/><path d="M 140 160 C 260 160, 260 380, 430 380 C 600 380, 600 160, 760 160 C 890 160, 920 380, 1020 380" stroke="url(#rg)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M 140 160 C 260 160, 260 380, 430 380 C 600 380, 600 160, 760 160 C 890 160, 920 380, 1020 380" stroke="rgba(255,248,235,0.55)" stroke-width="1" fill="none" stroke-linecap="round"/></svg>
+<div class="hiw-pills-cluster" aria-label="Continuity principles">
+<span class="pill">Touchpoints, not records</span>
+<span class="pill">No system integration</span>
+<span class="pill">No extra paperwork</span>
+<span class="pill">No disruption</span>
+</div>
+<div class="journey-unit" data-step="1"><div class="journey-circle journey-circle--lg teal"><span class="circle-number">1</span><span class="float-label">Anonymous by design</span><div class="float-title">Anonymous at first contact</div><p class="float-body">Staff taps Register touchpoint or scans QR. OTOS creates a secure, anonymous journey ID.</p><ul class="float-bullets"><li>No name</li><li>No date of birth</li><li>No diagnosis</li><li>No extra form</li></ul></div></div>
+<div class="journey-unit" data-step="2"><div class="journey-circle journey-circle--md teal"><span class="circle-number">2</span><span class="float-label">Touchpoints, not records</span><div class="float-title">Touchpoints, not records</div><p class="float-body">Each provider notes a touchpoint against the same anonymous journey ID.</p><ul class="float-bullets"><li>Attended</li><li>Missed</li><li>Contacted</li><li>Referred</li><li>Stabilising</li></ul></div></div>
+<div class="journey-unit" data-step="3"><div class="journey-circle journey-circle--sm teal"><span class="circle-number">3</span><span class="float-label">Early warning</span><div class="float-title">Early warning, no extra work</div><p class="float-body">OTOS notices when the pattern changes. Your team gets an alert. You decide what to do.</p><ul class="float-bullets"><li>Team gets an alert</li><li>You decide what to do</li><li>No automated clinical decisions</li></ul></div></div>
+<div class="journey-unit" data-step="4"><div class="journey-circle journey-circle--xl amber"><span class="circle-number">4</span><span class="float-label">Reporting</span><div class="float-title">Reporting your manager will actually read</div><p class="float-body">See where journeys stall, where drop-off happens, where continuity is working.</p><ul class="float-bullets"><li>Aggregate anonymous signals</li><li>No individual patient data</li><li>No GDPR headache</li></ul></div></div>
+<div class="pills-float--accent-wrap" aria-label="Recovery support">
+<span class="pill accent">Recovery support for life &mdash; maintained through micro check-ins</span>
+</div>
+<blockquote class="site-quote journey-float-quote"><p class="text-gradient">&ldquo;[Partner quote placeholder &mdash; to be confirmed]&rdquo;</p><cite>&mdash; Name, Role, Organisation</cite></blockquote>
+</div>
+</section>
 </main>
 <div class="bottom-nav"><a href="index.html">&larr; Previous</a><a href="guided-demos.html">Next: Guided demos &rarr;</a></div>
 <footer class="site-footer">© OTOS Digital Ltd. Company registered in England & Wales with Company No. 17084455. Phone +447466334143. Email info@otos.life.</footer>

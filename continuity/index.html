@@ -4,17 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OTOS Continuity™ Portal</title>
-<meta name="description" content="OTOS Continuity. You refer someone. Then what?">
+<meta name="description" content="OTOS Continuity. Continuity across care.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="otos-shared.css">
 <style>
 :root{
-  --bg-page:#f5f0e8;--bg-section-alt:#ede8df;--bg-dark:#1e150a;--bg-dark-mid:#2a1c0f;--bg-card:rgba(255,252,246,0.78);--bg-nav:rgba(245,240,232,0.90);
-  --text-primary:#1a1410;--text-secondary:#7a6a58;--text-light:#a8998a;--text-on-dark:#f0ebe3;
-  --amber:#c17f24;--amber-light:#d4953c;--teal:#4a9e8e;
-  --shadow-xl:0 32px 80px rgba(26,20,16,0.22),0 12px 28px rgba(26,20,16,0.12);
+  --bg-page:#f5f0e8;--bg-dark:#1e150a;
+  --text-primary:#1a1410;--text-on-dark:#f0ebe3;
+  --amber:#c17f24;--teal:#4a9e8e;
   --font-heading:'Playfair Display', Georgia, serif;--font-body:'Inter', -apple-system, sans-serif;
 }
 *, *::before, *::after { box-sizing: border-box; }
@@ -27,7 +26,7 @@ body {
   display: flex; flex-direction: column;
 }
 
-/* otos-shared.css uses [class*="hero"] { min-height: 80vh; height: auto; } — breaks this page's CTA and layout */
+/* Undo broad otos-shared hero min-heights on these classes */
 .home-hero,
 .home-hero__overlay,
 .home-hero__content,
@@ -45,207 +44,296 @@ body {
 .home-hero {
   position: relative; width: 100%; height: 100dvh !important;
   min-height: 0 !important;
-  background-image: url('images/Therapist reviewing OTOS app progress.png');
+  background-image: url('images/Focused on progress in the office.png');
   background-size: cover; background-position: center;
-  display: flex; align-items: center; justify-content: center;
   overflow: hidden !important;
   flex: 1;
   flex-shrink: 0;
 }
 .home-hero__overlay {
   position: absolute; inset: 0; z-index: 1;
-  background: linear-gradient(160deg,
-    rgba(10,8,6,0.62) 0%,
-    rgba(10,8,6,0.38) 45%,
-    rgba(10,8,6,0.70) 100%);
+  background: linear-gradient(115deg,
+    rgba(10,8,6,0.75) 0%,
+    rgba(10,8,6,0.42) 48%,
+    rgba(10,8,6,0.35) 100%);
 }
 .home-hero::after {
   content: '';
-  position: absolute; bottom: 0; left: 0; right: 0; height: 120px; z-index: 2;
-  background: linear-gradient(to top, rgba(10,8,6,0.75) 0%, transparent 100%);
+  position: absolute; bottom: 0; left: 0; right: 0; height: 100px; z-index: 2;
+  background: linear-gradient(to top, rgba(10,8,6,0.55) 0%, transparent 100%);
   pointer-events: none;
 }
 
+/* Left column: kicker → quote → headline → body → stats (editor default) */
 .home-hero__content {
-  position: relative; z-index: 3;
-  max-width: 680px; width: 100%;
-  padding: 0 200px 0 40px;
-  text-align: center;
-  display: flex; flex-direction: column; align-items: center;
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: min(680px, 92vw);
+  padding: clamp(3rem, 8vh, 5.5rem) clamp(20px, 4vw, 48px) clamp(2.5rem, 6vh, 4rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
   gap: clamp(8px, 1.5vh, 16px);
 }
 
 .hero-kicker {
   display: block;
-  font-family: var(--font-body); font-size: 0.68rem; font-weight: 700;
-  letter-spacing: 0.20em; text-transform: uppercase;
-  color: var(--amber); opacity: 0.90;
+  font-family: var(--font-body); font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--amber);
+  opacity: 0.95;
 }
 
 .home-hero__quote {
   font-family: var(--font-heading); font-style: italic;
-  font-size: clamp(0.88rem, 1.6vw, 1.1rem); font-weight: 400;
-  color: rgba(245,240,232,0.78); line-height: 1.55;
+  font-size: clamp(0.85rem, 1.45vw, 1.05rem); font-weight: 400;
+  color: rgba(245,240,232,0.88); line-height: 1.5;
   margin: 0; padding: 0; border: none; background: none;
+  white-space: pre-line;
 }
 
-.home-hero__content h2 {
+.home-hero__content .index-heading {
   font-family: var(--font-heading);
-  font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 700; line-height: 1.10; color: #f5f0e8;
+  font-size: clamp(1.45rem, 3.2vw, 2.65rem);
+  font-weight: 700; line-height: 1.12; color: #f5f0e8;
   margin: 0; background: none; -webkit-text-fill-color: unset;
+  white-space: pre-line;
 }
-.heading-italic-line { font-style: italic; color: var(--amber); -webkit-text-fill-color: var(--amber); }
+/* Gradient “colour work” (applied via inline styles from Content Manager) */
+.index-heading.otos-cw-on,
+.home-hero__quote.otos-cw-on {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.heading-italic-line { font-style: italic; color: #e8c27a; }
 
 .home-hero__body {
-  font-size: clamp(0.82rem, 1.3vw, 0.98rem); font-weight: 400;
-  color: rgba(245,240,232,0.80); line-height: 1.65;
-  max-width: 520px; margin: 0;
+  font-size: clamp(0.8rem, 1.2vw, 0.95rem); font-weight: 400;
+  color: rgba(245,240,232,0.84); line-height: 1.58;
+  max-width: 48ch; margin: 0;
+  white-space: pre-line;
 }
 
+/* CTA — centre-right of viewport */
 .home-hero__cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  align-self: center;
-  max-height: 260px;
-  min-height: 0 !important;
-  height: auto;
-  width: 180px;
-  max-width: 180px;
   position: absolute;
   top: 50%;
-  right: 32px;
+  right: clamp(16px, 3vw, 40px);
   transform: translateY(-50%);
-  overflow: hidden;
-  background: #f5f0e8;
+  z-index: 5;
+  background: rgba(245, 240, 232, 0.95);
   color: #1a1410;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
   font-weight: 600;
-  letter-spacing: 0.03em;
-  padding: 12px 28px;
+  letter-spacing: 0.04em;
+  padding: 14px 26px;
   border-radius: 100px;
   text-decoration: none;
-  margin-top: 0;
-  transition: background 0.2s ease, color 0.2s ease;
   text-align: center;
-  line-height: 1.25;
-  z-index: 5;
-  box-sizing: border-box;
+  line-height: 1.3;
+  max-width: min(200px, 42vw);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  white-space: pre-line;
 }
 .home-hero__cta:hover {
   background: #c17f24;
   color: #f5f0e8;
+  transform: translateY(-50%) translateY(-2px);
 }
 
+/* Stats: 3 across, fourth centred below (home page glass) */
 .hero-stats {
-  display: flex; gap: clamp(0.5rem, 1.5vw, 1.25rem);
-  justify-content: center; align-items: flex-start;
-  padding: clamp(0.65rem, 1.5vh, 1.1rem) clamp(1rem, 2.5vw, 1.5rem);
-  background: rgba(10, 8, 6, 0.52);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(8px, 1.2vw, 14px) clamp(10px, 2vw, 18px);
+  width: 100%;
+  max-width: 520px;
+  margin-top: clamp(6px, 1.2vh, 14px);
+  padding: clamp(0.75rem, 1.8vh, 1.1rem) clamp(1rem, 2vw, 1.35rem);
+  background: rgba(10, 8, 6, 0.55);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(193,127,36,0.25); border-radius: 16px;
-  width: auto; max-width: 520px;
-  flex-wrap: wrap;
+  border: 1px solid rgba(193,127,36,0.28); border-radius: 18px;
 }
-.hero-stat { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; flex: 0 0 auto; }
+.hero-stat {
+  display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+  text-align: center;
+}
+.hero-stat--row2 {
+  grid-column: 1 / -1;
+  justify-self: center;
+  min-width: min(200px, 70%);
+}
 .hero-stat__number {
   font-family: var(--font-heading);
-  font-size: clamp(1.35rem, 2.8vw, 2.1rem);
+  font-size: clamp(1.35rem, 2.6vw, 2rem);
   font-weight: 700; color: var(--amber); line-height: 1; letter-spacing: -0.03em;
 }
 .hero-stat__label {
-  font-size: clamp(10px, 1.1vw, 12px); font-weight: 600;
-  color: rgba(245,240,232,0.88); text-align: center;
-  text-transform: uppercase; letter-spacing: 0.06em; max-width: 100px; line-height: 1.3;
+  font-size: clamp(9px, 1.05vw, 11px); font-weight: 600;
+  color: rgba(245,240,232,0.9);
+  text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.35;
+  white-space: pre-line;
+  max-width: 11rem;
 }
 
 @media (prefers-reduced-motion: reduce) { .hero-stat__number { transition: none !important; } }
 
 @media (max-width: 900px) {
-  .home-hero__content { padding: 0 20px; gap: 10px; }
-  .home-hero__content h2 { font-size: 1.75rem; }
-  .hero-stats { gap: 0.5rem; padding: 0.6rem 0.85rem; max-width: 100%; }
+  .home-hero__content {
+    width: 100%;
+    justify-content: flex-end;
+    padding-bottom: clamp(5rem, 18vh, 7rem);
+    padding-top: clamp(2rem, 6vh, 3.5rem);
+  }
+  .home-hero__cta {
+    top: auto;
+    bottom: clamp(1rem, 4vh, 2rem);
+    right: 50%;
+    transform: translateX(50%);
+    max-width: 90%;
+  }
+  .home-hero__cta:hover {
+    transform: translateX(50%) translateY(-2px);
+  }
+  .hero-stats { max-width: 100%; }
 }
-@media (max-width: 480px) {
-  .hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+@media (max-width: 520px) {
+  .hero-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hero-stat--row2 {
+    grid-column: 1 / -1;
+  }
 }
 </style>
 </head>
 <body>
 <section class="home-hero"
   data-hero-image-key="otos-hero-main"
-  data-hero-image-default="images/Therapist reviewing OTOS app progress.png">
+  data-hero-image-default="images/Focused on progress in the office.png">
   <div class="home-hero__overlay"></div>
   <div class="home-hero__content">
-    <span class="hero-kicker">OTOS Continuity™</span>
-    <blockquote class="home-hero__quote"
-      data-hero-quote-key="otos-hero-quote">&ldquo;The failure is not in the care &mdash; it is in the space between it.&rdquo;</blockquote>
-    <h2 class="index-heading">You refer someone. <span class="heading-italic-line">Then what?</span></h2>
-    <p class="home-hero__body">OTOS Continuity™ shows what happens after a referral, handoff, or discharge &mdash; so nobody disappears quietly. One scan. One tap. Always knowing they made the next step.</p>
-    <div class="hero-stats" role="list" aria-label="Personal journey statistics">
-      <div class="hero-stat" role="listitem">
+    <span class="hero-kicker" data-cm-kicker>OTOS Continuity™</span>
+    <blockquote class="home-hero__quote" data-hero-quote-key="otos-hero-quote">&ldquo;The failure is not in the care &mdash; it&rsquo;s in the space between it.&rdquo;</blockquote>
+    <h2 class="index-heading">When ADHD is left waiting, addiction steps in.</h2>
+    <p class="home-hero__body">People with ADHD are not being held on waiting lists &mdash; they are being left exposed. Exposed to self-medicate. And in that gap, addiction often arrives before ADHD support does.</p>
+    <div class="hero-stats" role="list" aria-label="Journey statistics">
+      <div class="hero-stat" data-hero-stat="1" role="listitem">
         <span class="hero-stat__number" data-stat-value="30">30</span>
-        <span class="hero-stat__label">years self-medicating</span>
+        <span class="hero-stat__label">Years self-medicating</span>
       </div>
-      <div class="hero-stat" role="listitem">
+      <div class="hero-stat" data-hero-stat="2" role="listitem">
         <span class="hero-stat__number" data-stat-value="6">6</span>
-        <span class="hero-stat__label">years waiting</span>
+        <span class="hero-stat__label">Years waiting</span>
       </div>
-      <div class="hero-stat" role="listitem">
+      <div class="hero-stat" data-hero-stat="3" role="listitem">
         <span class="hero-stat__number" data-stat-value="11">11</span>
-        <span class="hero-stat__label">services used</span>
+        <span class="hero-stat__label">Services used</span>
       </div>
-      <div class="hero-stat" role="listitem">
+      <div class="hero-stat hero-stat--row2" data-hero-stat="4" role="listitem">
         <span class="hero-stat__number" data-stat-value="3">3</span>
-        <span class="hero-stat__label">days to change everything</span>
+        <span class="hero-stat__label">Days to change everything</span>
       </div>
     </div>
   </div>
-  <a href="how-it-works.html" class="home-hero__cta">See how it works →</a>
+  <a href="how-it-works.html" class="home-hero__cta" data-cm-cta>See how it works →</a>
 </section>
 
 <script defer src="otos-shared.js"></script>
 <script>
 (function(){
-  var initHeroContentManager = function() {
-    var hero  = document.querySelector('[data-hero-image-key="otos-hero-main"]');
-    var quote = document.querySelector('[data-hero-quote-key="otos-hero-quote"]');
-    if (hero) {
-      var savedImg = localStorage.getItem('otos-hero-main');
-      var def   = hero.dataset.heroImageDefault;
-      if (savedImg || def) hero.style.backgroundImage = 'url(\'' + (savedImg || def) + '\')';
-    }
-    if (quote) {
-      var savedQ = localStorage.getItem('otos-hero-quote');
-      if (savedQ) quote.textContent = savedQ;
-    }
+  var CW_GRAD = {
+    hero: 'linear-gradient(95deg, #f7f2ea 0%, #ebe3d6 32%, #dcc8a8 58%, #c4a574 78%, #9ab0a4 100%)',
+    softlight: 'linear-gradient(98deg, #fdf9f3 0%, #e8dfd2 35%, #d2c2a8 62%, #c9a86a 82%, #a8bdb4 100%)',
+    amber: 'linear-gradient(100deg, #e8d4b8 0%, #d4a862 45%, #c17f24 70%, #7a9e92 100%)'
   };
-  initHeroContentManager();
+
+  function clearGradientText(el) {
+    if (!el) return;
+    el.classList.remove('otos-cw-on');
+    el.style.background = 'none';
+    el.style.webkitBackgroundClip = '';
+    el.style.backgroundClip = '';
+    el.style.webkitTextFillColor = '';
+    el.style.color = '';
+  }
+
+  function applyGradientText(el, gradientCss) {
+    if (!el) return;
+    el.classList.add('otos-cw-on');
+    el.style.background = gradientCss;
+    el.style.webkitBackgroundClip = 'text';
+    el.style.backgroundClip = 'text';
+    el.style.webkitTextFillColor = 'transparent';
+    el.style.color = 'transparent';
+  }
 
   function applyOtosHomeContent() {
     var raw = localStorage.getItem('otos_home_content');
-    if (!raw) return;
-
-    var d;
-    try {
-      d = JSON.parse(raw);
-    } catch (e) { return; }
+    var d = null;
+    if (raw) {
+      try { d = JSON.parse(raw); } catch (e) { d = null; }
+    }
 
     var isMobile = window.innerWidth < 768;
-    var heading    = isMobile ? (d.heading_mobile || d.heading_desktop) : d.heading_desktop;
-    var subheading = isMobile ? (d.subheading_mobile || d.subheading_desktop) : d.subheading_desktop;
-    var colour     = d.text_colour || '#ffffff';
+    var heroEl = document.querySelector('[data-hero-image-key="otos-hero-main"]');
+    var quoteEl = document.querySelector('[data-hero-quote-key="otos-hero-quote"]');
+    var kickerEl = document.querySelector('[data-cm-kicker]');
+    var ctaEl = document.querySelector('[data-cm-cta]');
 
+    if (heroEl) {
+      var savedImg = d && d.image ? d.image : localStorage.getItem('otos-hero-main');
+      var def = heroEl.dataset.heroImageDefault;
+      if (savedImg || def) heroEl.style.backgroundImage = 'url(\'' + (savedImg || def).replace(/'/g, '%27') + '\')';
+    }
+
+    if (quoteEl) {
+      if (d && d.quote != null) {
+        quoteEl.textContent = d.quote;
+        quoteEl.style.whiteSpace = 'pre-line';
+      } else {
+        var legacyQ = localStorage.getItem('otos-hero-quote');
+        if (legacyQ != null && String(legacyQ).trim() !== '') {
+          quoteEl.textContent = legacyQ;
+          quoteEl.style.whiteSpace = 'pre-line';
+        }
+      }
+    }
+
+    if (kickerEl && d && d.kicker != null) {
+      kickerEl.textContent = d.kicker;
+      kickerEl.style.whiteSpace = 'pre-line';
+    }
+
+    var colour = (d && d.text_colour) ? d.text_colour : '#ffffff';
+    var hasHeroColourPrefs = d && (
+      d.apply_colourwork_headline ||
+      d.apply_colourwork_quote ||
+      (d.text_colour && /^#[0-9A-Fa-f]{6}$/.test(String(d.text_colour)))
+    );
+
+    var heading = d
+      ? (isMobile ? (d.heading_mobile != null ? d.heading_mobile : d.heading_desktop) : d.heading_desktop)
+      : null;
     var h1 = document.querySelector('.index-heading');
     if (h1 && heading != null && String(heading).trim() !== '') {
       h1.textContent = heading;
       h1.style.whiteSpace = 'pre-line';
-      h1.style.color = colour;
-      h1.style.webkitTextFillColor = colour;
     }
 
+    var subheading = d
+      ? (isMobile ? (d.subheading_mobile != null ? d.subheading_mobile : d.subheading_desktop) : d.subheading_desktop)
+      : null;
     var sub = document.querySelector('.home-hero__body');
     if (sub && subheading != null && String(subheading).trim() !== '') {
       sub.textContent = subheading;
@@ -253,36 +341,129 @@ body {
       sub.style.color = colour;
     }
 
-    var heroEl = document.querySelector('[data-hero-image-key="otos-hero-main"]');
-    if (heroEl && d.image) {
-      heroEl.style.backgroundImage = 'url(\'' + d.image + '\')';
-    }
-
-    if (h1 && d.headingSize) {
+    if (h1 && d && d.headingSize) {
       h1.style.fontSize = d.headingSize + 'px';
     }
-    if (sub && d.subSize) {
+    if (sub && d && d.subSize) {
       sub.style.fontSize = d.subSize + 'px';
     }
 
+    if (kickerEl && d && d.kickerSize != null && d.kickerSize !== '') {
+      kickerEl.style.fontSize = Number(d.kickerSize) + 'px';
+    }
+    if (quoteEl && d && d.quoteSize != null && d.quoteSize !== '') {
+      quoteEl.style.fontSize = Number(d.quoteSize) + 'px';
+    }
+    if (ctaEl && d && d.ctaSize != null && d.ctaSize !== '') {
+      ctaEl.style.fontSize = Number(d.ctaSize) + 'px';
+    }
+
+    var cwStyleKey = d && d.colourwork_style && CW_GRAD[d.colourwork_style] ? d.colourwork_style : 'hero';
+    var gradCss = CW_GRAD[cwStyleKey];
+
+    if (h1 && hasHeroColourPrefs) {
+      clearGradientText(h1);
+      if (d.apply_colourwork_headline && gradCss) {
+        applyGradientText(h1, gradCss);
+      } else {
+        h1.style.color = colour;
+        h1.style.webkitTextFillColor = '';
+      }
+    }
+
+    if (quoteEl && hasHeroColourPrefs) {
+      clearGradientText(quoteEl);
+      if (d.apply_colourwork_quote && gradCss) {
+        applyGradientText(quoteEl, gradCss);
+      } else {
+        quoteEl.style.color = colour;
+        quoteEl.style.webkitTextFillColor = '';
+      }
+    }
+
+    function setStat(idx, value, label) {
+      var wrap = document.querySelector('[data-hero-stat="' + idx + '"]');
+      if (!wrap) return;
+      var numEl = wrap.querySelector('.hero-stat__number');
+      var labEl = wrap.querySelector('.hero-stat__label');
+      if (numEl && value != null && String(value).trim() !== '') {
+        var v = String(value).trim();
+        if (/^\d+(\.\d+)?$/.test(v)) {
+          numEl.setAttribute('data-stat-value', v);
+          numEl.textContent = v;
+        } else {
+          numEl.removeAttribute('data-stat-value');
+          numEl.textContent = v;
+        }
+      }
+      if (labEl && label != null && String(label).trim() !== '') {
+        var lines = String(label).trim().split(/\r?\n/);
+        labEl.textContent = '';
+        lines.forEach(function (ln, i) {
+          if (i) labEl.appendChild(document.createElement('br'));
+          labEl.appendChild(document.createTextNode(ln));
+        });
+      }
+    }
+    if (d) {
+      for (var s = 1; s <= 4; s++) {
+        var key = 'stat' + s;
+        if (d[key] && typeof d[key] === 'object') {
+          setStat(s, d[key].value, d[key].label);
+        }
+      }
+    }
+
+    if (ctaEl && d) {
+      if (d.cta_text != null && String(d.cta_text).trim() !== '') {
+        ctaEl.textContent = d.cta_text;
+        ctaEl.style.whiteSpace = 'pre-line';
+      }
+      if (d.cta_href != null && String(d.cta_href).trim() !== '') {
+        ctaEl.setAttribute('href', d.cta_href.trim());
+      }
+    }
+
+    function applyBoxMax(el, w) {
+      if (!el) return;
+      var n = parseFloat(w);
+      if (!isFinite(n) || n < 72) el.style.maxWidth = '';
+      else el.style.maxWidth = Math.round(n) + 'px';
+    }
+    if (d) {
+      applyBoxMax(kickerEl, d.box_w_kicker);
+      applyBoxMax(quoteEl, d.box_w_quote);
+      applyBoxMax(h1, d.box_w_heading);
+      applyBoxMax(sub, d.box_w_body);
+    }
+
     var content = document.querySelector('.home-hero__content');
-    if (content && d.posDesktop && d.posMobile) {
-      var pos = isMobile ? d.posMobile : d.posDesktop;
+    if (content && d) {
+      var posDesk = d.posDesktop && typeof d.posDesktop === 'object' ? d.posDesktop : { x: 30, y: 54 };
+      var posMob = d.posMobile && typeof d.posMobile === 'object' ? d.posMobile : posDesk;
+      var pos = isMobile ? posMob : posDesk;
       var x = parseFloat(pos.x);
       var y = parseFloat(pos.y);
-      if (isFinite(x) && isFinite(y) && x >= 10 && x <= 90 && y >= 10 && y <= 90) {
+      if (isFinite(x) && isFinite(y) && x >= 5 && x <= 95 && y >= 5 && y <= 95) {
         if (window.innerWidth < 480) {
-          content.style.cssText = '';
+          content.style.position = '';
+          content.style.left = '';
+          content.style.top = '';
+          content.style.transform = '';
+          content.style.width = '';
+          content.style.textAlign = '';
+          content.style.alignItems = '';
         } else {
           content.style.position = 'absolute';
           content.style.left = x + '%';
           content.style.top = y + '%';
           content.style.transform = 'translate(-50%, -50%)';
-          content.style.padding = '0 200px 0 40px';
-          if (x < 35) {
+          content.style.width = 'max-content';
+          content.style.maxWidth = 'min(1080px, 94vw)';
+          if (x < 36) {
             content.style.textAlign = 'left';
             content.style.alignItems = 'flex-start';
-          } else if (x > 65) {
+          } else if (x > 64) {
             content.style.textAlign = 'right';
             content.style.alignItems = 'flex-end';
           } else {

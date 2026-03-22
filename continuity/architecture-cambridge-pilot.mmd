@@ -1,0 +1,40 @@
+%% OTOS Continuity™ — Cambridge Pilot (source of truth for Mermaid)
+%% Edit this file, then paste into continuity-full-scroll.html inside <pre class="mermaid" id="fs-architecture-mermaid-source">…</pre>
+%% Or open architecture-map.html for the detailed SVG equivalent.
+
+flowchart TB
+  subgraph GOV["Governance / Oversight — pilot-grade"]
+    g1["NHS Commissioners / ICS"]
+    g2["NHS national / Government policy"]
+  end
+
+  subgraph ACT["Actors"]
+    a1["Participant — tokenised"]
+    a2["Continuity support — ops"]
+    a3["Reviewer · Lead (view-only) · Admin"]
+  end
+
+  tl{{"Token link"}}
+
+  subgraph OTOS["OTOS Continuity™ — Phase 1 · web-first · low-integration · UK-hosted"]
+    ui["Surfaces: Participant web UI · Ops UI · Reviewer UI · Admin UI · Lead view"]
+    core["Core: Tokenised onboarding · Micro check-ins · Prompts · Touchpoints log · Receipts · Drift signals · Escalation · Reporting"]
+    store[("Pilot data store — tokenised, minimal payload")]
+    audit[("Audit log")]
+    ui --> core
+    core --> store
+    core --> audit
+  end
+
+  TP["Pilot touchpoints — Addenbrooke's · GPs · CPFT · HAY · JOY · IAPT · CGL/CRS · Aftercare · MIND · SUN · Arts & Minds · Peer · Exercise · SMART · BPHA · DWP · Employment · VCSE"]
+
+  OOS["Out of scope / post-pilot pricing — Nightingale · Castle Craig · HelpMeStop"]
+
+  subgraph SP["Safety pins — non-negotiables"]
+    direction LR
+    sp1["No NHS record write-back"] --- sp2["No diagnostic claims"] --- sp3["No prescribing claims"] --- sp4["Human-in-control escalation"] --- sp5["Auditable receipts always"] --- sp6["Low integration by design"]
+  end
+
+  ACT --> tl
+  tl --> OTOS
+  core <-.->|"TouchLog / Receipts"| TP

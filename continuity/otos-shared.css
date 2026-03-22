@@ -259,7 +259,8 @@ html, body {
   position: static;
 }
 
-.hero, .hero-section, [class*="hero"] {
+/* Do NOT use [class*="hero"] — it matches unrelated tokens (.text-gradient-hero, .fs-hero-quote, etc.) */
+.hero, .hero-section, .hero-block, .hiw-test-hero {
   position: relative;
   height: auto;
   min-height: 80vh;

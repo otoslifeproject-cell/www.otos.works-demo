@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTOS Continuity™ — One-page journey</title>
+<meta name="description" content="Scroll the full OTOS Continuity story in one vertical page — home, how it works, demos, infrastructure.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="otos-shared.css">
+<style>
+:root {
+  --bg-page: #f5f0e8;
+  --bg-flow: #e9e6e1;
+  --bg-section-alt: #ede8df;
+  --bg-dark: #1e150a;
+  --text-primary: #1a1410;
+  --text-secondary: #7a6a58;
+  --amber: #c17f24;
+  --orange: #e8720c;
+  --teal: #4a9e8e;
+  --magenta-accent: #b84d7a;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --glass: rgba(255, 252, 246, 0.82);
+  --glass-border: rgba(193, 127, 36, 0.22);
+  --shadow-plate: 0 12px 40px rgba(26, 20, 16, 0.12), 0 4px 12px rgba(26, 20, 16, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+html, body {
+  margin: 0;
+  overflow-x: hidden;
+}
+/* Full scroll page — not locked like index */
+body {
+  min-height: 100dvh;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  line-height: 1.65;
+}
+a { color: var(--amber); }
+
+.text-gradient {
+  background: linear-gradient(92deg, #1a1410 0%, #1a1410 30%, #7a4f1a 55%, #c17f24 78%, #4a9e8e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* —— Nav —— */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(16px, 3vw, 40px);
+  background: rgba(245, 240, 232, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(193, 127, 36, 0.1);
+  box-shadow: 0 1px 0 rgba(255, 252, 246, 0.8), 0 4px 16px rgba(26, 20, 16, 0.06);
+}
+.nav-logo { display: flex; align-items: center; text-decoration: none; }
+.nav-logo img { height: 36px; width: auto; display: block; }
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  align-items: center;
+  justify-content: flex-end;
+}
+.nav-links a {
+  font-size: clamp(10px, 1.8vw, 13px);
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 20px;
+}
+.nav-links a:hover { color: var(--text-primary); background: rgba(193, 127, 36, 0.08); }
+.nav-links a.nav-anchor--here { font-weight: 700; color: var(--text-primary); }
+
+/* —— Top panel (home story) — avoid class *hero* for shared.css —— */
+.op-top {
+  position: relative;
+  min-height: min(100dvh, 900px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2rem, 5vw, 4rem) 1.5rem 5rem;
+  background: #0a0806 center/cover no-repeat;
+  background-image: url('images/Therapist reviewing OTOS app progress.png');
+}
+.op-top__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg,
+    rgba(10, 8, 6, 0.72) 0%,
+    rgba(10, 8, 6, 0.42) 45%,
+    rgba(10, 8, 6, 0.78) 100%);
+  pointer-events: none;
+}
+.op-top__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 680px;
+  text-align: center;
+}
+.op-kicker {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.75rem;
+}
+.op-top blockquote {
+  margin: 0 0 1rem;
+  padding: 0;
+  border: none;
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: clamp(0.88rem, 1.8vw, 1.08rem);
+  font-weight: 400;
+  color: rgba(245, 240, 232, 0.78);
+  line-height: 1.55;
+}
+.op-top h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.85rem, 5vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: #f5f0e8;
+  margin: 0 0 1rem;
+}
+.op-top h1 em {
+  font-style: italic;
+  color: var(--amber);
+}
+.op-top__lede {
+  font-size: clamp(0.85rem, 1.5vw, 0.98rem);
+  color: rgba(245, 240, 232, 0.82);
+  max-width: 52ch;
+  margin: 0 auto 1.25rem;
+  line-height: 1.65;
+}
+.op-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(0.5rem, 2vw, 1rem);
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  margin: 0 auto;
+  max-width: 520px;
+  background: rgba(10, 8, 6, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(193, 127, 36, 0.25);
+  border-radius: 16px;
+}
+.op-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 72px;
+}
+.op-stat__n {
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 2.5vw, 1.85rem);
+  font-weight: 700;
+  color: var(--amber);
+  line-height: 1;
+}
+.op-stat__l {
+  font-size: clamp(9px, 1.5vw, 11px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(245, 240, 232, 0.88);
+  text-align: center;
+  max-width: 92px;
+  line-height: 1.25;
+  margin-top: 0.2rem;
+}
+
+/* —— Bouncing glass scroll cue —— */
+.op-scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem 1.75rem;
+  background: linear-gradient(180deg, rgba(10, 8, 6, 0.15) 0%, var(--bg-flow) 100%);
+}
+.op-scroll--cream {
+  background: linear-gradient(180deg, var(--bg-flow) 0%, var(--bg-page) 55%, var(--bg-section-alt) 100%);
+}
+.op-scroll--alt {
+  background: linear-gradient(180deg, var(--bg-section-alt) 0%, var(--bg-page) 100%);
+}
+.op-scroll a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 22px 14px;
+  border-radius: 999px;
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 28px rgba(26, 20, 16, 0.08);
+}
+.op-scroll a:hover { color: var(--amber); border-color: rgba(193, 127, 36, 0.4); }
+.op-scroll__chev {
+  width: 22px;
+  height: 22px;
+  border-right: 2px solid var(--amber);
+  border-bottom: 2px solid var(--amber);
+  transform: rotate(45deg);
+  margin-top: -4px;
+  animation: op-bounce 1.6s ease-in-out infinite;
+  opacity: 0.85;
+}
+@keyframes op-bounce {
+  0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.85; }
+  50% { transform: rotate(45deg) translateY(8px); opacity: 0.45; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .op-scroll__chev { animation: none; }
+}
+
+/* —— How it works: infographic canvas —— */
+.op-how {
+  position: relative;
+  background: var(--bg-flow);
+  padding: clamp(1.5rem, 3vw, 2.5rem) clamp(12px, 2vw, 24px) clamp(3rem, 5vw, 4rem);
+}
+.op-how__intro {
+  max-width: 640px;
+  margin: 0 auto 1.25rem;
+  text-align: center;
+  padding: 0 12px;
+}
+.op-how__intro .op-kicker { color: var(--amber); }
+.op-how__intro h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 3.2vw, 2.1rem);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.15;
+  margin: 0 0 0.5rem;
+}
+.op-how__intro p {
+  font-size: 0.92rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.op-flow {
+  position: relative;
+  max-width: 1180px;
+  margin: 0 auto;
+  min-height: 980px;
+}
+.op-flow__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+.op-flow__svg path.op-path-glow {
+  fill: none;
+  stroke: url(#opPathGrad);
+  stroke-width: 10;
+  stroke-linecap: round;
+  opacity: 0.14;
+}
+.op-flow__svg path.op-path-main {
+  fill: none;
+  stroke: url(#opPathGrad);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+}
+.op-flow__svg path.op-path-hi {
+  fill: none;
+  stroke: rgba(255, 252, 246, 0.45);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+
+/* Glass “plates” (steps) */
+.op-plate {
+  position: absolute;
+  z-index: 2;
+  width: clamp(200px, 22vw, 260px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: linear-gradient(145deg, rgba(255, 252, 246, 0.94) 0%, rgba(245, 237, 220, 0.88) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  box-shadow: var(--shadow-plate);
+  padding: clamp(0.85rem, 1.8vw, 1.15rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+.op-plate--teal { box-shadow: var(--shadow-plate), 0 0 36px rgba(74, 158, 142, 0.12); border-color: rgba(74, 158, 142, 0.22); }
+.op-plate--amber { box-shadow: var(--shadow-plate), 0 0 40px rgba(232, 114, 12, 0.14); border-color: rgba(232, 114, 12, 0.28); }
+.op-plate__num {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-heading);
+  font-size: clamp(3rem, 8vw, 4.5rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  opacity: 0.06;
+  pointer-events: none;
+}
+.op-plate__label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 4px;
+  position: relative;
+  z-index: 1;
+}
+.op-plate h3 {
+  font-family: var(--font-heading);
+  font-size: clamp(0.72rem, 1.25vw, 0.88rem);
+  font-weight: 700;
+  font-style: italic;
+  margin: 0 0 6px;
+  line-height: 1.2;
+  position: relative;
+  z-index: 1;
+}
+.op-plate__body {
+  font-size: clamp(9px, 1.15vw, 11px);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0 0 6px;
+  position: relative;
+  z-index: 1;
+}
+.op-plate ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+.op-plate li {
+  font-size: clamp(8px, 1.05vw, 10px);
+  color: var(--text-secondary);
+  padding: 2px 0 2px 11px;
+  position: relative;
+  line-height: 1.3;
+}
+.op-plate li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--teal);
+  font-size: 8px;
+}
+
+/* Step copy blocks beside plates (desktop) */
+.op-plate--1 { left: 2%; top: 2%; }
+.op-plate--2 { left: 38%; top: 18%; }
+.op-plate--3 { right: 8%; top: 38%; }
+.op-plate--4 { left: 18%; bottom: 4%; width: clamp(220px, 24vw, 280px); }
+
+/* Pills “donut” zone */
+.op-zone-pills {
+  position: absolute;
+  z-index: 3;
+  right: 2%;
+  top: 2%;
+  width: min(280px, 26vw);
+  padding: 1rem 1.1rem 1.2rem;
+  border-radius: 50%;
+  aspect-ratio: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-plate);
+}
+.op-zone-pills::before {
+  content: '';
+  position: absolute;
+  inset: 10%;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: rgba(193, 127, 36, 0.35);
+  border-right-color: rgba(74, 158, 142, 0.3);
+  pointer-events: none;
+}
+.op-pill {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255, 252, 248, 0.9);
+  border: 1px solid rgba(200, 146, 42, 0.28);
+  color: rgba(26, 20, 10, 0.78);
+  position: relative;
+  z-index: 1;
+}
+
+/* “Chart” bars zone */
+.op-zone-bars {
+  position: absolute;
+  z-index: 3;
+  right: 4%;
+  top: 42%;
+  width: min(200px, 22vw);
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-plate);
+}
+.op-zone-bars__title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.op-bar {
+  height: 6px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, rgba(74, 158, 142, 0.5), rgba(193, 127, 36, 0.55));
+}
+.op-bar:nth-child(2) { width: 95%; }
+.op-bar:nth-child(3) { width: 72%; }
+.op-bar:nth-child(4) { width: 88%; }
+.op-bar:nth-child(5) { width: 40%; }
+
+/* Quote zone (graph area) */
+.op-zone-quote {
+  position: absolute;
+  z-index: 3;
+  left: 2%;
+  bottom: 26%;
+  max-width: min(300px, 30vw);
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-plate);
+}
+.op-zone-quote p {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: clamp(11px, 1.2vw, 14px);
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0 0 8px;
+}
+.op-zone-quote cite {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber);
+  font-style: normal;
+}
+
+/* Path callouts (+) */
+.op-callout {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 140px;
+}
+.op-callout__dot {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--amber), var(--magenta-accent));
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(184, 77, 122, 0.25);
+}
+.op-callout span:last-child {
+  font-size: 10px;
+  line-height: 1.35;
+  color: var(--text-secondary);
+  padding-top: 2px;
+}
+.op-callout--a { left: 52%; top: 12%; }
+.op-callout--b { left: 62%; top: 58%; }
+.op-callout--c { left: 42%; top: 68%; }
+
+/* Accent pill bottom of flow */
+.op-flow-accent {
+  position: relative;
+  z-index: 4;
+  max-width: 560px;
+  margin: -1rem auto 0;
+  text-align: center;
+  padding: 0 16px;
+}
+.op-flow-accent span {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(12px, 1.4vw, 15px);
+  color: var(--amber);
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: rgba(255, 252, 246, 0.9);
+  border: 1px solid rgba(193, 127, 36, 0.38);
+  box-shadow: 0 6px 24px rgba(26, 20, 16, 0.06);
+}
+
+/* —— Demos strip —— */
+.op-demos {
+  background: var(--bg-section-alt);
+  padding: clamp(2rem, 4vw, 3.5rem) clamp(16px, 3vw, 40px);
+}
+.op-demos__intro {
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 2.8vw, 2.2rem);
+  font-weight: 600;
+  font-style: italic;
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 2rem;
+  line-height: 1.25;
+}
+.op-demos__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 3vw, 2rem);
+  max-width: 1060px;
+  margin: 0 auto;
+}
+.op-demo-card {
+  text-align: center;
+  padding: 1rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(193, 127, 36, 0.12);
+  box-shadow: 0 8px 28px rgba(26, 20, 16, 0.06);
+}
+.op-demo-card__img {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(255, 252, 246, 0.95);
+  box-shadow: 0 12px 40px rgba(26, 20, 16, 0.15);
+}
+.op-demo-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.88) sepia(0.06);
+}
+.op-demo-card__route {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 6px;
+}
+.op-demo-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  margin: 0 0 8px;
+}
+.op-demo-card p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0 0 12px;
+}
+.op-demo-card__strap {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-style: italic;
+  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+  line-height: 1.3;
+  margin: 0 0 6px;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+.op-demo-card__strap-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0 0 10px;
+}
+.op-demo-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+  margin: 0 0 12px;
+}
+.op-demo-pill {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255, 252, 246, 0.9);
+  border: 1px solid rgba(193, 127, 36, 0.22);
+  color: rgba(26, 20, 16, 0.75);
+}
+.op-demo-card a.more {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* —— Infrastructure —— */
+.op-infra {
+  background: var(--bg-page);
+  padding: clamp(2rem, 4vw, 3.5rem) clamp(16px, 3vw, 40px);
+  text-align: center;
+}
+.op-infra .page-kicker {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.75rem;
+}
+.op-infra h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 4vw, 2.75rem);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.12;
+  margin: 0 auto 1rem;
+  max-width: 18ch;
+}
+.op-infra__intro {
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  color: rgba(26, 20, 10, 0.72);
+  max-width: 52ch;
+  margin: 0 auto 1.5rem;
+}
+.op-infra__quote {
+  max-width: 520px;
+  margin: 0 auto 2rem;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: rgba(255, 252, 246, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(193, 127, 36, 0.15);
+}
+.op-infra__quote em {
+  font-family: var(--font-heading);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-style: italic;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.op-infra__quote-sub {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 10px 0 0;
+}
+.op-infra__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: left;
+}
+.op-infra-card {
+  padding: 1.15rem 1.25rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(193, 127, 36, 0.14);
+  box-shadow: 0 8px 28px rgba(26, 20, 16, 0.06);
+}
+.op-infra-card__phase {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+.op-infra-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  margin: 0 0 8px;
+}
+.op-infra-card p {
+  font-size: 0.88rem;
+  margin: 0;
+  color: rgba(26, 20, 10, 0.78);
+  line-height: 1.55;
+}
+.op-infra__full {
+  margin-top: 1.75rem;
+}
+.op-infra__full a {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* —— More links —— */
+.op-more {
+  background: var(--bg-dark);
+  color: rgba(240, 235, 227, 0.88);
+  padding: clamp(2rem, 4vw, 3rem) clamp(16px, 3vw, 40px);
+  text-align: center;
+}
+.op-more h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 700;
+  font-style: italic;
+  color: #f5f0e8;
+  margin: 0 0 1.25rem;
+}
+.op-more__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.op-more__chips a {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(245, 240, 232, 0.92);
+  background: rgba(255, 252, 246, 0.08);
+  border: 1px solid rgba(193, 127, 36, 0.35);
+  backdrop-filter: blur(10px);
+}
+.op-more__chips a:hover {
+  background: rgba(193, 127, 36, 0.25);
+  border-color: var(--amber);
+}
+
+.site-footer {
+  background: #120d08;
+  padding: 22px clamp(16px, 3vw, 48px);
+  text-align: center;
+  font-size: 12px;
+  color: rgba(240, 235, 227, 0.4);
+  line-height: 1.6;
+}
+
+/* —— Mobile: stack infographic —— */
+@media (max-width: 1024px) {
+  .op-flow { min-height: 0; padding-bottom: 2rem; }
+  .op-flow__svg { display: none; }
+  .op-plate,
+  .op-zone-pills,
+  .op-zone-bars,
+  .op-zone-quote,
+  .op-callout {
+    position: relative;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    aspect-ratio: auto;
+  }
+  .op-plate { border-radius: 20px; aspect-ratio: auto; min-height: 0; padding: 1.1rem 1.2rem; }
+  .op-plate__num { display: none; }
+  .op-zone-pills { border-radius: 20px; aspect-ratio: auto; min-height: 120px; }
+  .op-zone-pills::before { display: none; }
+  .op-zone-bars { margin-top: 1rem; }
+  .op-zone-quote { margin-top: 1rem; }
+  .op-callout { max-width: 100%; margin-top: 0.75rem; }
+  .op-flow-accent { margin-top: 1.5rem; }
+}
+
+@media (max-width: 900px) {
+  .op-demos__grid,
+  .op-infra__cards {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+}
+</style>
+</head>
+<body id="op-top">
+
+<nav class="site-nav" aria-label="Primary">
+  <a href="#op-top" class="nav-logo"><img src="brain.png" alt="OTOS" height="36" width="auto"></a>
+  <div class="nav-links">
+    <a class="nav-anchor--here" href="#op-top">Scroll site</a>
+    <a href="#op-how">How it works</a>
+    <a href="#op-demos">Demos</a>
+    <a href="#op-infra">Infrastructure</a>
+    <a href="#op-more">More</a>
+    <a href="index.html">Home (full)</a>
+    <a href="how-it-works.html">How (page)</a>
+    <a href="guided-demos.html">Demos (page)</a>
+    <a href="infrastructure-partners.html">Infra (page)</a>
+  </div>
+</nav>
+
+<section class="op-top" aria-labelledby="op-top-heading">
+  <div class="op-top__shade" aria-hidden="true"></div>
+  <div class="op-top__inner">
+    <span class="op-kicker">OTOS Continuity™</span>
+    <blockquote>&ldquo;The failure is not in the care &mdash; it is in the space between it.&rdquo;</blockquote>
+    <h1 id="op-top-heading">You refer someone. <em>Then what?</em></h1>
+    <p class="op-top__lede">OTOS Continuity™ shows what happens after a referral, handoff, or discharge &mdash; so nobody disappears quietly. One scan. One tap. Always knowing they made the next step.</p>
+    <div class="op-stats" role="list" aria-label="Personal journey statistics">
+      <div class="op-stat" role="listitem"><span class="op-stat__n">30</span><span class="op-stat__l">years self-medicating</span></div>
+      <div class="op-stat" role="listitem"><span class="op-stat__n">6</span><span class="op-stat__l">years waiting</span></div>
+      <div class="op-stat" role="listitem"><span class="op-stat__n">11</span><span class="op-stat__l">services used</span></div>
+      <div class="op-stat" role="listitem"><span class="op-stat__n">3</span><span class="op-stat__l">days to change everything</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="op-scroll">
+  <a href="#op-how" aria-label="Scroll to how it works">
+    <span>How it works</span>
+    <span class="op-scroll__chev" aria-hidden="true"></span>
+  </a>
+</div>
+
+<section class="op-how" id="op-how" aria-labelledby="op-how-heading">
+  <div class="op-how__intro">
+    <span class="op-kicker">How it works</span>
+    <h2 class="text-gradient" id="op-how-heading">One tap. One thread. You&rsquo;ll always know they made the next step.</h2>
+    <p>Nothing changes in how you work. Your clinical decisions stay yours &mdash; always.</p>
+  </div>
+
+  <div class="op-flow">
+    <svg class="op-flow__svg" viewBox="0 0 1100 900" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <defs>
+        <linearGradient id="opPathGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#e8720c"/>
+          <stop offset="45%" stop-color="#c17f24"/>
+          <stop offset="72%" stop-color="#b84d7a"/>
+          <stop offset="100%" stop-color="#4a9e8e"/>
+        </linearGradient>
+      </defs>
+      <!-- S-style journey -->
+      <path class="op-path-glow" d="M 80 120 C 240 80, 320 280, 480 320 S 720 200, 820 380 S 620 620, 900 720 S 1020 780, 980 840"/>
+      <path class="op-path-main" d="M 80 120 C 240 80, 320 280, 480 320 S 720 200, 820 380 S 620 620, 900 720 S 1020 780, 980 840"/>
+      <path class="op-path-hi" d="M 80 120 C 240 80, 320 280, 480 320 S 720 200, 820 380 S 620 620, 900 720 S 1020 780, 980 840"/>
+    </svg>
+
+    <article class="op-plate op-plate--1 op-plate--teal" aria-labelledby="op-s1">
+      <span class="op-plate__num" aria-hidden="true">1</span>
+      <span class="op-plate__label">Anonymous by design</span>
+      <h3 id="op-s1">Anonymous at first contact</h3>
+      <p class="op-plate__body">Staff taps Register touchpoint or scans QR. OTOS creates a secure, anonymous journey ID.</p>
+      <ul>
+        <li>No name</li>
+        <li>No date of birth</li>
+        <li>No diagnosis</li>
+        <li>No extra form</li>
+      </ul>
+    </article>
+
+    <article class="op-plate op-plate--2 op-plate--teal" aria-labelledby="op-s2">
+      <span class="op-plate__num" aria-hidden="true">2</span>
+      <span class="op-plate__label">Touchpoints, not records</span>
+      <h3 id="op-s2">Touchpoints, not records</h3>
+      <p class="op-plate__body">Each provider notes a touchpoint against the same anonymous journey ID.</p>
+      <ul>
+        <li>Attended</li>
+        <li>Missed</li>
+        <li>Contacted</li>
+        <li>Referred</li>
+        <li>Stabilising</li>
+      </ul>
+    </article>
+
+    <article class="op-plate op-plate--3 op-plate--teal" aria-labelledby="op-s3">
+      <span class="op-plate__num" aria-hidden="true">3</span>
+      <span class="op-plate__label">Early warning</span>
+      <h3 id="op-s3">Early warning, no extra work</h3>
+      <p class="op-plate__body">OTOS notices when the pattern changes. Your team gets an alert. You decide what to do.</p>
+      <ul>
+        <li>Team gets an alert</li>
+        <li>You decide what to do</li>
+        <li>No automated clinical decisions</li>
+      </ul>
+    </article>
+
+    <article class="op-plate op-plate--4 op-plate--amber" aria-labelledby="op-s4">
+      <span class="op-plate__num" aria-hidden="true">4</span>
+      <span class="op-plate__label">Reporting</span>
+      <h3 id="op-s4">Reporting your manager will actually read</h3>
+      <p class="op-plate__body">See where journeys stall, where drop-off happens, where continuity is working.</p>
+      <ul>
+        <li>Aggregate anonymous signals</li>
+        <li>No individual patient data</li>
+        <li>No GDPR headache</li>
+      </ul>
+    </article>
+
+    <div class="op-zone-pills" aria-label="Continuity principles">
+      <span class="op-pill">Touchpoints, not records</span>
+      <span class="op-pill">No system integration</span>
+      <span class="op-pill">No extra paperwork</span>
+      <span class="op-pill">No disruption</span>
+    </div>
+
+    <div class="op-zone-bars" aria-hidden="true">
+      <div class="op-zone-bars__title">Signal strength</div>
+      <div class="op-bar"></div>
+      <div class="op-bar"></div>
+      <div class="op-bar"></div>
+      <div class="op-bar"></div>
+    </div>
+
+    <div class="op-zone-quote">
+      <p class="text-gradient">&ldquo;[Partner quote placeholder &mdash; to be confirmed]&rdquo;</p>
+      <cite>&mdash; Name, Role, Organisation</cite>
+    </div>
+
+    <div class="op-callout op-callout--a">
+      <span class="op-callout__dot" aria-hidden="true">+</span>
+      <span>Anonymous journey ID &mdash; secure by design.</span>
+    </div>
+    <div class="op-callout op-callout--b">
+      <span class="op-callout__dot" aria-hidden="true">+</span>
+      <span>Touchpoints: attended, missed, contacted, referred, stabilising.</span>
+    </div>
+    <div class="op-callout op-callout--c">
+      <span class="op-callout__dot" aria-hidden="true">+</span>
+      <span>Alerts for your team &mdash; you decide the response.</span>
+    </div>
+  </div>
+
+  <div class="op-flow-accent" aria-label="Recovery support">
+    <span>Recovery support for life &mdash; maintained through micro check-ins</span>
+  </div>
+</section>
+
+<div class="op-scroll op-scroll--cream">
+  <a href="#op-demos" aria-label="Scroll to guided demos">
+    <span>Guided demos</span>
+    <span class="op-scroll__chev" aria-hidden="true"></span>
+  </a>
+</div>
+
+<section class="op-demos" id="op-demos">
+  <p class="op-demos__intro">Three routes. Three real scenarios. Each one shows what OTOS looks like in practice.</p>
+  <div class="op-demos__grid">
+    <article class="op-demo-card">
+      <div class="op-demo-card__img"><img src="images/NHS nurse assists patient with OTOS tool.png" alt="Ward nurse at Addenbrooke's"></div>
+      <div class="op-demo-card__route">Route A &mdash; Addenbrooke&rsquo;s discharge</div>
+      <p class="op-demo-card__strap">When someone is at their lowest &mdash; OTOS is already there.</p>
+      <p class="op-demo-card__strap-sub">Frontline staff log a touchpoint in seconds. The system does the rest.</p>
+      <h3>Helen, ward nurse</h3>
+      <p>A patient is being discharged from Addenbrooke's after a crisis admission. Helen uses OTOS to create a continuity thread before the patient leaves the ward.</p>
+      <div class="op-demo-pills" aria-label="Bedside demo highlights">
+        <span class="op-demo-pill">Seconds at the bedside</span>
+        <span class="op-demo-pill">Touchpoint logged</span>
+        <span class="op-demo-pill">Thread before discharge</span>
+        <span class="op-demo-pill">Keyworker notified</span>
+        <span class="op-demo-pill">No EPR write-back</span>
+      </div>
+      <a class="more" href="guided-demos.html">Open full demos page →</a>
+    </article>
+    <article class="op-demo-card">
+      <div class="op-demo-card__img"><img src="images/Woman showing OTOS app at community centre.png" alt="Community keyworker"></div>
+      <div class="op-demo-card__route">Route B &mdash; Community referral</div>
+      <h3>Marcus, community keyworker</h3>
+      <p>Marcus works at a drop-in community hub. Someone comes in who has been bouncing between services. He registers a touchpoint and the thread picks up where it left off.</p>
+      <a class="more" href="guided-demos.html">Open full demos page →</a>
+    </article>
+    <article class="op-demo-card">
+      <div class="op-demo-card__img"><img src="images/Therapist reviewing options on smartphone.png" alt="GP reviewing OTOS"></div>
+      <div class="op-demo-card__route">Route C &mdash; Primary care</div>
+      <h3>Dr Priya, GP</h3>
+      <p>Dr Priya has a patient she has referred twice to addiction services. She doesn't know if they attended. OTOS shows her the thread without showing her clinical records from other services.</p>
+      <a class="more" href="guided-demos.html">Open full demos page →</a>
+    </article>
+  </div>
+</section>
+
+<div class="op-scroll op-scroll--alt">
+  <a href="#op-infra" aria-label="Scroll to infrastructure">
+    <span>Infrastructure</span>
+    <span class="op-scroll__chev" aria-hidden="true"></span>
+  </a>
+</div>
+
+<section class="op-infra" id="op-infra">
+  <span class="page-kicker">Infrastructure Partners</span>
+  <h2>The infrastructure already exists.<br>OTOS connects it.</h2>
+  <p class="op-infra__intro">Three strategic relationships. Each one strengthening a different dimension of the OTOS proposition.</p>
+  <div class="op-infra__quote">
+    <p><em>&ldquo;Community is the continuity.&rdquo;</em></p>
+    <p class="op-infra__quote-sub">Co-produced with SUN Network and people with lived experience.</p>
+  </div>
+  <div class="op-infra__cards">
+    <div class="op-infra-card">
+      <div class="op-infra-card__phase">Phase 1 — Active</div>
+      <h3>SUN Network</h3>
+      <p>Co-production lead. Service user voice, participant-facing language design, and evaluation credibility. SUN's involvement is budgeted, structured, and produces a named deliverable in the evaluation report.</p>
+    </div>
+    <div class="op-infra-card">
+      <div class="op-infra-card__phase">L2 — Named strategic connection</div>
+      <h3>QbTest</h3>
+      <p>When a partner flags a suspected ADHD indicator, OTOS carries that signal to the referral route. NHS Right to Choose is already available — every service provider can use it. QbTest is the fast-track assessment tool at the end of that pathway.</p>
+    </div>
+    <div class="op-infra-card">
+      <div class="op-infra-card__phase">L3 — Named strategic connection</div>
+      <h3>Joy (JoyConnect)</h3>
+      <p>Joy gets people to the right front door. OTOS makes sure they follow through. A natural Phase 3 extension as OTOS expands into Neighbourhood Health and the 250 planned NHS community hubs across England.</p>
+    </div>
+  </div>
+  <p class="op-infra__full"><a href="infrastructure-partners.html">Full infrastructure partners page →</a></p>
+</section>
+
+<div class="op-scroll" style="background:linear-gradient(180deg,var(--bg-page) 0%,var(--bg-dark) 100%);">
+  <a href="#op-more" aria-label="Scroll to more links" style="color:rgba(26,20,10,0.75);">
+    <span>Rest of the site</span>
+    <span class="op-scroll__chev" aria-hidden="true"></span>
+  </a>
+</div>
+
+<section class="op-more" id="op-more">
+  <h2>Deep links</h2>
+  <div class="op-more__chips">
+    <a href="controls.html">Controls</a>
+    <a href="reporting.html">Reporting</a>
+    <a href="founder-story-v2.html">Founder Journey</a>
+    <a href="references.html">References</a>
+    <a href="how-it-works.html">How it works (dedicated page)</a>
+    <a href="index.html">Home (full-screen portal)</a>
+  </div>
+</section>
+
+<footer class="site-footer">© OTOS Digital Ltd. Company registered in England &amp; Wales with Company No. 17084455. Phone +447466334143. Email info@otos.life.</footer>
+
+<script defer src="otos-shared.js"></script>
+</body>
+</html>

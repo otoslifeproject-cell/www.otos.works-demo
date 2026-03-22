@@ -199,6 +199,47 @@ img, svg { max-width: 100%; height: auto; }
 
 .partner-card ul li:first-child { border-top: none; }
 
+.hub-expansion {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  max-width: 1100px;
+  margin: 0 auto clamp(2.5rem, 5vw, 3.5rem);
+  padding: 0 2rem;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(193,127,36,0.18);
+  box-shadow: 0 18px 48px rgba(26,20,16,0.08);
+}
+.hub-expansion__photo {
+  min-height: min(380px, 52vh);
+  background: #2a241c center / cover no-repeat;
+  background-image: url('images/Community%20collaboration%20at%20the%20NHS%20hub%20%20%20.png');
+  background-position: 48% 38%;
+}
+.hub-expansion__body {
+  padding: clamp(1.75rem, 3vw, 2.5rem);
+  background: linear-gradient(150deg, #faf7f2 0%, #f0ebe3 55%, #e8e2d8 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.hub-expansion__body .page-kicker { margin-bottom: 0.65rem; }
+.hub-expansion__body h3 {
+  font-size: clamp(1.3rem, 2.75vw, 1.9rem);
+  margin: 0 0 0.85rem;
+  background: linear-gradient(105deg, #4a4238 0%, #3d352e 30%, #6b5c4a 48%, #a08050 68%, #5c756c 92%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hub-expansion__body p { font-size: clamp(0.92rem, 1.5vw, 1.02rem); margin: 0 0 1rem; color: var(--text-secondary); }
+.hub-expansion__body p:last-child { margin-bottom: 0; font-size: 0.88rem; }
+@media (max-width: 900px) {
+  .hub-expansion { grid-template-columns: 1fr; }
+  .hub-expansion__photo { min-height: 260px; order: -1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .partner-card { transition: none; }
 }
@@ -479,6 +520,16 @@ img, svg { max-width: 100%; height: auto; }
   </div>
 
 </div>
+
+<section class="hub-expansion" aria-label="NHS community hubs and OTOS">
+  <div class="hub-expansion__photo" role="img" aria-label="NHS Community Hub: collaboration with OTOS on laptop; NHS hub signage visible"></div>
+  <div class="hub-expansion__body">
+    <span class="page-kicker">250 community hubs</span>
+    <h3>Where the front door meets follow-through.</h3>
+    <p>Under the 10 Year Health Plan, <strong style="color:var(--text-primary); font-weight:600;">250 NHS community hubs</strong> are planned across England &mdash; neighbourhood spaces ready to welcome people and connect them to the right support. Joy helps them through the door; <strong style="color:var(--text-primary); font-weight:600;">OTOS holds the thread</strong> so nobody drops off between hub, hospital, and VCSE.</p>
+    <p>Anonymous touchpoints first. Your clinical decisions stay yours. Phase 1 needs no Joy integration &mdash; this is the direction of travel.</p>
+  </div>
+</section>
 
 <section class="stats-section">
   <div class="stats-section__header">
