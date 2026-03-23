@@ -1,0 +1,6 @@
+# Netlify / Cloudflare Pages: avoid multi-hour stale HTML on the live scroll page
+/continuity/full-scroll2.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/continuity/content-manager.html
+  Cache-Control: public, max-age=0, must-revalidate
