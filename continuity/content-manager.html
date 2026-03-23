@@ -127,8 +127,11 @@
     .preview-resize {
       resize: horizontal;
       overflow: auto;
-      min-width: 140px;
+      /* Flex column + align-items:stretch was stretching boxes to the widest sibling,
+         fighting native horizontal resize (worst on the long body copy block). */
+      align-self: flex-start;
       max-width: 100%;
+      min-width: 140px;
       min-height: 32px;
       border: 1px dashed rgba(193,127,36,0.5);
       border-radius: 8px;
@@ -137,19 +140,21 @@
       margin-bottom: 8px;
       background: rgba(8,6,5,0.15);
     }
-    .preview-resize:last-of-type { margin-bottom: 0; }
+    /* .fs-stats follows the last resize box — :last-of-type never matched .preview-resize */
+    .preview-resize[data-preview-box="body"] { margin-bottom: 0; }
     .preview-resize .preview-p,
     .preview-resize .preview-h { margin: 0; max-width: none !important; }
-    /* Match live Full scroll / full-scroll2 hero stats (glass 2×3 grid) */
-    .preview-stats {
+    /* Hero stats preview: same class names + rules as full-scroll2.html .fs-stats / .fs-stat (scoped to preview only) */
+    .preview-outer .fs-stats {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-auto-rows: minmax(0, auto);
       gap: 0;
       width: 100%;
       max-width: min(520px, 100%);
-      margin-top: 12px;
+      margin: 12px auto 0;
       align-self: center;
+      padding: 0;
       border-radius: 22px;
       background: rgba(12, 10, 8, 0.55);
       backdrop-filter: blur(26px) saturate(155%);
@@ -161,17 +166,20 @@
         0 1px 0 rgba(255, 252, 246, 0.12) inset;
       overflow: hidden;
     }
-    .preview-stat {
-      position: relative;
+    .preview-outer .fs-stat.fs-stat--scroll2-hidden {
+      display: none !important;
+    }
+    .preview-outer .fs-stat {
       text-align: center;
-      padding: clamp(1rem, 2vw, 1.35rem) clamp(0.55rem, 1.4vw, 0.95rem);
+      padding: clamp(1.1rem, 2.2vw, 1.45rem) clamp(0.65rem, 1.5vw, 1rem);
       border-right: 1px solid rgba(255, 252, 246, 0.1);
       border-bottom: 1px solid rgba(255, 252, 246, 0.1);
+      position: relative;
       background: transparent;
     }
-    .preview-stat:nth-child(2n) { border-right: none; }
-    .preview-stat:nth-child(n + 5) { border-bottom: none; }
-    .preview-stat::before {
+    .preview-outer .fs-stat:nth-child(2n) { border-right: none; }
+    .preview-outer .fs-stat:nth-child(n + 5) { border-bottom: none; }
+    .preview-outer .fs-stat::before {
       content: '';
       position: absolute;
       top: 12px;
@@ -183,7 +191,8 @@
       background: linear-gradient(90deg, transparent, rgba(193, 127, 36, 0.65), transparent);
       opacity: 0.85;
     }
-    .preview-stat__eyebrow {
+    .preview-outer .fs-stat.fs-stat--cm .fs-stat__eyebrow { display: none; }
+    .preview-outer .fs-stat__eyebrow {
       display: block;
       font-size: 9px;
       font-weight: 700;
@@ -192,21 +201,19 @@
       color: rgba(245, 240, 232, 0.42);
       margin: 0.65rem 0 0.35rem;
     }
-    .preview-stat b {
+    .preview-outer .fs-stat b {
       display: block;
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.45rem, 3.2vw, 2.1rem);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.65rem, 3.8vw, 2.35rem);
       font-weight: 700;
       color: #c17f24;
       line-height: 1;
       letter-spacing: -0.03em;
       text-shadow: 0 2px 20px rgba(193, 127, 36, 0.2);
-      margin: 0;
-      text-transform: none;
     }
-    .preview-stat__label {
+    .preview-outer .fs-stat__label {
       display: block;
-      font-size: clamp(9px, 1.1vw, 11px);
+      font-size: clamp(9px, 1.15vw, 11px);
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.1em;
@@ -217,23 +224,15 @@
       margin-left: auto;
       margin-right: auto;
     }
-    .preview-stat.preview-stat--scroll2-hidden {
-      display: none !important;
-    }
     @media (max-width: 480px) {
-      .mode-mobile .preview-stats {
+      .preview-outer .fs-stats {
         grid-template-columns: 1fr;
       }
-      .mode-mobile .preview-stat { border-right: none !important; border-bottom: 1px solid rgba(255, 252, 246, 0.1); }
-      .mode-mobile .preview-stat:last-child { border-bottom: none; }
+      .preview-outer .fs-stat { border-right: none !important; border-bottom: 1px solid rgba(255, 252, 246, 0.1); }
+      .preview-outer .fs-stat:last-child { border-bottom: none; }
     }
 
-    /* Full scroll 2 editor: same hero stack as live (headline + body + stats only) — class on <html> from head script (no FOUC) */
-    html.cm-mode-scroll2 .cm-hide-on-scroll2 { display: none !important; }
-    html.cm-mode-scroll2 .preview-resize[data-preview-box="kicker"],
-    html.cm-mode-scroll2 .preview-resize[data-preview-box="quote"] {
-      display: none !important;
-    }
+    /* ?mode=scroll2: bookmark link in bar only — all hero fields stay visible (no cm-hide-on-scroll2 suppression) */
     .cm-show-on-scroll2 { display: none; }
     html.cm-mode-scroll2 .cm-show-on-scroll2 { display: block; }
     .bar .bar-link-scroll2 { display: none; }
@@ -409,7 +408,7 @@
       <div class="preview-resize" data-preview-box="body" title="Resize width for line breaks">
         <p class="preview-p" id="previewP" style="margin:0;">People with ADHD are not being held on waiting lists — they are being left exposed…</p>
       </div>
-      <div class="preview-stats" id="previewStats" aria-hidden="true"></div>
+      <div class="fs-stats" id="previewStats" role="list" aria-label="Preview: hero statistics"></div>
       <a class="preview-cta" id="previewCta" href="#">See how it works →</a>
     </div>
   </div>
@@ -418,11 +417,11 @@
 <div class="panel">
   <div class="panel-grid">
 
-    <div class="field cm-hide-on-scroll2" style="grid-column:1/-1; background:rgba(193,127,36,0.08); border:1px solid rgba(193,127,36,0.2); border-radius:14px; padding:16px 18px;">
-      <span style="font-size:10px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#e8c27a;">Hero — top quote</span>
-      <p style="margin:8px 0 14px;font-size:12px;color:#9a8b7a;line-height:1.55;">This is the <strong>gold italic</strong> line above the headline on Full scroll + portal. Edit below; use <strong>Return</strong> for manual line breaks. In the preview above, <strong>resize the dashed box</strong> to control how those lines wrap, then <strong>Save &amp; apply</strong>.</p>
+    <div class="field" style="grid-column:1/-1; background:rgba(193,127,36,0.08); border:1px solid rgba(193,127,36,0.2); border-radius:14px; padding:16px 18px;">
+      <span style="font-size:10px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#e8c27a;">Hero — kicker &amp; top quote</span>
+      <p style="margin:8px 0 14px;font-size:12px;color:#9a8b7a;line-height:1.55;">Kicker and opening quote render on <strong>Full scroll 2</strong> when filled. Use <strong>Return</strong> for line breaks; resize dashed boxes in the preview, then <strong>Save &amp; apply</strong>.</p>
     </div>
-    <div class="field cm-hide-on-scroll2" style="grid-column:1/-1;">
+    <div class="field" style="grid-column:1/-1;">
       <label for="fKicker">Kicker <span style="opacity:0.55;font-weight:500;">(line breaks OK)</span></label>
       <textarea id="fKicker" rows="2" placeholder="OTOS Continuity™"></textarea>
       <div class="size-row">
@@ -431,7 +430,7 @@
         <span class="size-val" id="kickerSizeVal">11px</span>
       </div>
     </div>
-    <div class="field cm-hide-on-scroll2" style="grid-column:1/-1;">
+    <div class="field" style="grid-column:1/-1;">
       <label for="fQuote">Top quote — same field as hero gold italic <span style="opacity:0.55;font-weight:500;">(Return for new lines)</span></label>
       <p style="margin:0 0 8px; font-size:11px; color:#6b5c4d; line-height:1.45;">This textarea drives the <strong>top quote</strong> on portal home and Full scroll. Resize its dashed box in the preview to set width.</p>
       <textarea id="fQuote" rows="4" placeholder="Top quote (hero)"></textarea>
@@ -490,9 +489,9 @@
 
     <div class="field" style="grid-column:1/-1;">
       <label style="font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#c17f24;">Colour work (Continuity gradients)</label>
-      <p style="margin:6px 0 0; font-size:12px; color:#7a6a58; line-height:1.5;">Tick to preview OTOS tonal gradients on the headline<span class="cm-hide-on-scroll2"> and/or quote</span>. Off = solid colour above for those lines.</p>
+      <p style="margin:6px 0 0; font-size:12px; color:#7a6a58; line-height:1.5;">Tick to preview OTOS tonal gradients on the headline and/or quote. Off = solid colour above for those lines.</p>
       <label class="cw-check"><input type="checkbox" id="cwHeadline"> Apply colour work to <strong>headline</strong></label>
-      <label class="cw-check cm-hide-on-scroll2"><input type="checkbox" id="cwQuote"> Apply colour work to <strong>opening quote</strong></label>
+      <label class="cw-check"><input type="checkbox" id="cwQuote"> Apply colour work to <strong>opening quote</strong></label>
       <label for="cwStyle" style="display:block; margin-top:12px; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#a8998a;">Gradient style</label>
       <select id="cwStyle" class="cw-select">
         <option value="hero">Hero mist — light cream / gold / teal (best on dark photos)</option>
@@ -709,6 +708,8 @@
     stat2: { value: "6", label: "Years waiting" },
     stat3: { value: "11", label: "Services used" },
     stat4: { value: "3", label: "Days to change everything" },
+    stat5: { value: "", label: "" },
+    stat6: { value: "", label: "" },
     cta_text: "See how it works \u2192",
     cta_href: "how-it-works.html",
     ctaSize: 14,
@@ -1004,21 +1005,46 @@
     setW('body', 'box_w_body');
   }
 
+  function slotEmptyStatPreview(idx) {
+    var vEl = document.getElementById('fS' + idx + 'v');
+    var lEl = document.getElementById('fS' + idx + 'l');
+    if (!vEl || !lEl) return true;
+    var v = String(vEl.value != null ? vEl.value : '').trim();
+    var lab = String(lEl.value != null ? lEl.value : '').trim();
+    if (idx < 5) return false;
+    if (v === '' && lab === '') return true;
+    if ((v === '' || v === '\u2014' || v === '-') && lab === '') return true;
+    return false;
+  }
+
   function updatePreviewStats() {
     if (!previewStats) return;
     previewStats.textContent = '';
-    for (var i = 1; i <= 4; i++) {
+    for (var i = 1; i <= 6; i++) {
       var v = document.getElementById('fS' + i + 'v').value.trim();
-      var lab = document.getElementById('fS' + i + 'l').value.trim() || '—';
+      var labRaw = document.getElementById('fS' + i + 'l').value.trim();
       var div = document.createElement('div');
-      div.className = 'preview-stat';
+      div.className = 'fs-stat fs-stat--cm';
+      div.setAttribute('role', 'listitem');
+      if (slotEmptyStatPreview(i)) div.classList.add('fs-stat--scroll2-hidden');
+      var eyebrow = document.createElement('span');
+      eyebrow.className = 'fs-stat__eyebrow';
+      eyebrow.textContent = 'Signal ' + (i < 10 ? '0' : '') + i;
+      div.appendChild(eyebrow);
       var b = document.createElement('b');
-      b.textContent = v || '—';
+      b.textContent = v || '\u2014';
       div.appendChild(b);
-      lab.split(/\n/).forEach(function (line, idx) {
-        if (idx) div.appendChild(document.createElement('br'));
-        div.appendChild(document.createTextNode(line));
-      });
+      var labSpan = document.createElement('span');
+      labSpan.className = 'fs-stat__label';
+      if (labRaw) {
+        labRaw.split(/\n/).forEach(function (line, idx) {
+          if (idx) labSpan.appendChild(document.createElement('br'));
+          labSpan.appendChild(document.createTextNode(line));
+        });
+      } else {
+        labSpan.innerHTML = 'Add in<br>editor';
+      }
+      div.appendChild(labSpan);
       previewStats.appendChild(div);
     }
   }
@@ -1257,13 +1283,8 @@
       var w = el.offsetWidth;
       return w >= 72 ? Math.round(w) : 0;
     }
-    if (CM_SCROLL2) {
-      data.box_w_kicker = saved.box_w_kicker != null ? saved.box_w_kicker : 0;
-      data.box_w_quote = saved.box_w_quote != null ? saved.box_w_quote : 0;
-    } else {
-      data.box_w_kicker = readPreviewBoxW('kicker');
-      data.box_w_quote = readPreviewBoxW('quote');
-    }
+    data.box_w_kicker = readPreviewBoxW('kicker');
+    data.box_w_quote = readPreviewBoxW('quote');
     data.box_w_heading = readPreviewBoxW('heading');
     data.box_w_body = readPreviewBoxW('body');
 

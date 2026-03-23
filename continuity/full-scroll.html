@@ -2864,10 +2864,12 @@ a { color: var(--amber); }
     function onScroll() {
       var slidePx = getSlidePx();
       var rect = root.getBoundingClientRect();
-      var idx = 0;
-      if (rect.top > NAV) idx = 0;
-      else if (rect.bottom < window.innerHeight) idx = n - 1;
-      else {
+      var idx;
+      /* See full-scroll2.html initPin — rect.bottom < innerHeight wrongly forced last slide
+         when the pin section fit above the viewport bottom (e.g. deep-link / short layout). */
+      if (rect.top > NAV) {
+        idx = 0;
+      } else {
         var scrolled = -(rect.top - NAV);
         idx = Math.min(n - 1, Math.max(0, Math.floor(scrolled / slidePx)));
       }
@@ -2891,6 +2893,8 @@ a { color: var(--amber); }
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', function () { setHeight(); onScroll(); });
+    window.addEventListener('load', function () { setHeight(); onScroll(); });
+    window.addEventListener('hashchange', function () { setHeight(); onScroll(); });
   }
   document.querySelectorAll('[data-fs-pin]').forEach(initPin);
 

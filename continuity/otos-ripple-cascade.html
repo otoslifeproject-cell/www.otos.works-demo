@@ -167,15 +167,11 @@
       COUNTER_VALUE_SIZE:      40,
       COUNTER_SUB_SIZE:        11,
 
-      // Act 6 — finale headline (centre, late; V14-safe, no overclaim)
-      ACT6_NARRATOR_CLEAR_MS:     3200,
+      // Act 6 — finale lines (drawn in hub mid block; sizes: HUB_MID_*)
       ACT6_FINALE_START_MS:       4400,
       ACT6_FINALE_FADE_MS:        1000,
       ACT6_FINALE_LINE1:          'OTOS Continuity™',
       ACT6_FINALE_LINE2:          'Touchpoints, not records. Human decisions always.',
-      ACT6_FINALE_LINE1_SIZE:     32,
-      ACT6_FINALE_LINE2_SIZE:     15,
-      ACT6_FINALE_LINE_GAP:       14,
       ACT6_OPEN_NARRATOR: 'Follow-through before the rings reach the edge — anonymous touchpoints, not clinical records.',
 
       // Cinematic freeze (Act 5 "It breeds" beat)
@@ -211,10 +207,10 @@
 
       // ── CPFT map frame (Cambridgeshire & Peterborough outline asset) ──
       CPFT_MAP_SRC: 'images/cpft-coverage-region.png',
-      CPFT_MAP_MAX_HEIGHT_RATIO: 0.5,
-      CPFT_MAP_CENTER_Y_RATIO:   0.4,
+      CPFT_MAP_MAX_HEIGHT_RATIO: 0.76,
+      CPFT_MAP_CENTER_Y_RATIO:   0.42,
       CPFT_OUTSIDE_DIM_ALPHA:    0.52,
-      CPFT_MAP_OVERLAY_ALPHA:    0.58,
+      CPFT_OUTLINE_DARK_THRESHOLD: 100,
       CPFT_NODE_GLOW_RADIUS:     5,
       // Normalised positions on map image (0–1, origin top-left of image)
       CPFT_ORIGIN_NX: 0.48,
@@ -233,11 +229,22 @@
 
       // Centre counter (dead screen centre — primary focal)
       COUNTER_CENTRE_LABEL_SIZE: 11,
-      COUNTER_CENTRE_VALUE_SIZE: 56,
+      COUNTER_CENTRE_VALUE_SIZE: 64,
       COUNTER_CENTRE_SUB_SIZE:   13,
       COUNTER_CENTRE_PANEL_PAD_X: 28,
       COUNTER_CENTRE_PANEL_PAD_Y: 22,
       COUNTER_CENTRE_RADIUS:      20,
+
+      // Single hub panel — money + narrative + detail lines (opaque; nothing draws over £)
+      HUB_PANEL_FILL:    'rgba(10, 8, 6, 0.96)',
+      HUB_PANEL_STROKE:  'rgba(193, 127, 36, 0.55)',
+      HUB_INNER_PAD_X:   26,
+      HUB_INNER_PAD_Y:   22,
+      HUB_SECTION_GAP:   14,
+      HUB_EXTRA_FONT_SIZE: 12,
+      HUB_MAX_EXTRA_LINES: 16,
+      HUB_MID_LINE1_SIZE: 30,
+      HUB_MID_LINE2_SIZE: 14,
 
       // Act 4 end — inward “bounce” rings (contracting, visual only)
       ACT4_INWARD_BURST_BEFORE_END_MS: 3200,
@@ -428,11 +435,12 @@
       act6RingStartTime: null,
       act6FadeOutStartTime: null,
       act6FinaleStartTime: null,
-      act6NarratorClearFired: false,
-
       // CPFT map + story beats
       cpftMapImage: null,
+      cpftOutlineCanvas: null,
       cpftMaskCanvas: null,
+      hubExtraLines: [],
+      hubMidBlock: null,
       cpftMapRect: null,
       cpftCentroidCanvas: null,
       act4InwardBurstFired: false,
@@ -575,12 +583,39 @@
       return mc;
     }
 
+    function buildCpftOutlineOnly(img) {
+      const w = img.naturalWidth;
+      const h = img.naturalHeight;
+      const c = document.createElement('canvas');
+      c.width = w;
+      c.height = h;
+      const cctx = c.getContext('2d');
+      cctx.drawImage(img, 0, 0);
+      const id = cctx.getImageData(0, 0, w, h);
+      const d = id.data;
+      const th = CONFIG.CPFT_OUTLINE_DARK_THRESHOLD;
+      for (let i = 0; i < d.length; i += 4) {
+        const lum = (d[i] + d[i + 1] + d[i + 2]) / 3;
+        if (lum > th) {
+          d[i + 3] = 0;
+        } else {
+          d[i]     = 248;
+          d[i + 1] = 242;
+          d[i + 2] = 232;
+          d[i + 3] = 255;
+        }
+      }
+      cctx.putImageData(id, 0, 0);
+      return c;
+    }
+
     function loadCpftMap() {
       const im = new Image();
       im.crossOrigin = 'anonymous';
       im.onload = () => {
         state.cpftMapImage = im;
         state.cpftMaskCanvas = buildCpftInteriorMask(im);
+        state.cpftOutlineCanvas = buildCpftOutlineOnly(im);
         layoutCPFTMap();
         if (state.act2Points_canvas.length > 0) reinitAct2Coords();
         if (state.act3Points_canvas.length > 0) reinitAct3Coords();
@@ -626,13 +661,17 @@
       ctx.restore();
     }
 
-    function drawCpftMapOverlay() {
+    function drawCpftOutlineOnly() {
       const r = state.cpftMapRect;
-      const img = state.cpftMapImage;
-      if (!r || !img) return;
+      const oc = state.cpftOutlineCanvas;
+      if (!r || !oc) return;
       ctx.save();
-      ctx.globalAlpha = CONFIG.CPFT_MAP_OVERLAY_ALPHA;
-      ctx.drawImage(img, r.x, r.y, r.w, r.h);
+      ctx.shadowColor = 'rgba(245,240,232,0.45)';
+      ctx.shadowBlur  = scaled(3.5);
+      ctx.drawImage(oc, r.x, r.y, r.w, r.h);
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 0.92;
+      ctx.drawImage(oc, r.x, r.y, r.w, r.h);
       ctx.restore();
     }
 
@@ -747,15 +786,48 @@
       }
     }
 
-    function drawCounter(timestamp) {
+    function wrapHubTextToLines(text, maxW, fontStr) {
+      ctx.font = fontStr;
+      const words = String(text).split(/\s+/).filter(Boolean);
+      const lines = [];
+      let line = '';
+      words.forEach(word => {
+        const test = line ? `${line} ${word}` : word;
+        if (ctx.measureText(test).width > maxW && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = test;
+        }
+      });
+      if (line) lines.push(line);
+      return lines;
+    }
+
+    function maxLineWidth(lines, fontStr) {
+      ctx.font = fontStr;
+      let w = 0;
+      lines.forEach(l => { w = Math.max(w, ctx.measureText(l).width); });
+      return w;
+    }
+
+    function drawHubPanel(timestamp) {
       if (state.currentAct < 1) return;
       if (state.counterDisplayValue < 1 && !state.act1CounterKickoff && !state.act5ChaosStartTime && !state.act5QuestionPhase) return;
 
-      const padX = scaled(CONFIG.COUNTER_CENTRE_PANEL_PAD_X);
-      const padY = scaled(CONFIG.COUNTER_CENTRE_PANEL_PAD_Y);
-      const rad  = scaled(CONFIG.COUNTER_CENTRE_RADIUS);
-      const cx     = canvas.width / 2;
-      const cy     = canvas.height / 2;
+      const r = state.cpftMapRect;
+      const hubCx = r ? r.x + r.w / 2 : canvas.width / 2;
+      const maxPanelW = Math.min(
+        scaled(580),
+        r ? r.w * 0.9 : canvas.width * 0.92,
+        canvas.width - scaled(20)
+      );
+      const innerPadX = scaled(CONFIG.HUB_INNER_PAD_X);
+      const innerPadY = scaled(CONFIG.HUB_INNER_PAD_Y);
+      const textMaxW  = maxPanelW - innerPadX * 2;
+      const rad       = scaled(CONFIG.COUNTER_CENTRE_RADIUS);
+      const gap       = scaled(CONFIG.HUB_SECTION_GAP);
+      const ga        = state.globalAlpha * state.counterPulseAlpha;
 
       let valueStr;
       let chaosSpin = false;
@@ -779,45 +851,101 @@
         valueStr = '£' + Math.round(Math.max(0, state.counterDisplayValue)).toLocaleString('en-GB');
       }
 
-      ctx.save();
-      ctx.font = `600 ${scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE)}px 'Playfair Display', serif`;
-      const valueW = ctx.measureText(valueStr).width;
-
-      ctx.font = `600 ${scaled(CONFIG.COUNTER_CENTRE_LABEL_SIZE)}px 'Inter', sans-serif`;
       const labelStr = 'ANNUAL SYSTEM COST';
-      const labelW = ctx.measureText(labelStr).width;
-
-      ctx.font = `300 ${scaled(CONFIG.COUNTER_CENTRE_SUB_SIZE)}px 'Inter', sans-serif`;
       const subStr = state.act5QuestionPhase
         ? 'Indicative only — the true total is unknown.'
         : 'per person · per year · indicative minimum';
+
+      ctx.save();
+      ctx.font = `600 ${scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE)}px 'Playfair Display', serif`;
+      const valueW = ctx.measureText(valueStr).width;
+      ctx.font = `600 ${scaled(CONFIG.COUNTER_CENTRE_LABEL_SIZE)}px 'Inter', sans-serif`;
+      const labelW = ctx.measureText(labelStr).width;
+      ctx.font = `300 ${scaled(CONFIG.COUNTER_CENTRE_SUB_SIZE)}px 'Inter', sans-serif`;
       const subW = ctx.measureText(subStr).width;
 
-      const innerW = Math.min(Math.max(valueW, labelW, subW) + padX * 2, canvas.width - scaled(24));
-      const innerH =
-        padY * 2 +
+      let narrLines = [];
+      if (state.narratorCurrentText && state.narratorAlpha > 0.02) {
+        const na = state.cinematicFreeze ? state.narratorAlpha * CONFIG.FREEZE_LABEL_DIM_ALPHA : state.narratorAlpha;
+        if (na > 0.02) {
+          narrLines = wrapHubTextToLines(
+            state.narratorCurrentText,
+            textMaxW,
+            `${CONFIG.NARRATOR_FONT_WEIGHT} ${scaled(CONFIG.NARRATOR_FONT_SIZE)}px 'Inter', sans-serif`
+          );
+        }
+      }
+
+      const mid = state.hubMidBlock;
+      const midAlpha = mid && typeof mid.alpha === 'number' ? clamp(mid.alpha, 0, 1) : 0;
+      const mid1Font = `700 ${scaled(CONFIG.HUB_MID_LINE1_SIZE)}px 'Playfair Display', serif`;
+      const mid2Font = `400 ${scaled(CONFIG.HUB_MID_LINE2_SIZE)}px 'Inter', sans-serif`;
+      let mid1Lines = [];
+      let mid2Lines = [];
+      if (mid && midAlpha > 0.02 && mid.line1) {
+        mid1Lines = wrapHubTextToLines(mid.line1, textMaxW, mid1Font);
+      }
+      if (mid && midAlpha > 0.02 && mid.line2) {
+        mid2Lines = wrapHubTextToLines(mid.line2, textMaxW, mid2Font);
+      }
+
+      const extraFont = `400 ${scaled(CONFIG.HUB_EXTRA_FONT_SIZE)}px 'Inter', sans-serif`;
+      let extraLines = [];
+      (state.hubExtraLines || []).slice(0, CONFIG.HUB_MAX_EXTRA_LINES).forEach(ex => {
+        wrapHubTextToLines(ex, textMaxW, extraFont).forEach(l => extraLines.push(l));
+      });
+
+      const lhN  = scaled(CONFIG.NARRATOR_FONT_SIZE) * CONFIG.NARRATOR_LINE_HEIGHT_EM;
+      const lhE  = scaled(CONFIG.HUB_EXTRA_FONT_SIZE) * 1.35;
+      const lhM1 = scaled(CONFIG.HUB_MID_LINE1_SIZE) * 1.15;
+      const lhM2 = scaled(CONFIG.HUB_MID_LINE2_SIZE) * 1.35;
+
+      const counterBlockH =
         scaled(CONFIG.COUNTER_CENTRE_LABEL_SIZE + 8) +
-        scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE) +
-        scaled(8) +
+        scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE + 8) +
         scaled(CONFIG.COUNTER_CENTRE_SUB_SIZE);
+      const narrH = narrLines.length ? gap + narrLines.length * lhN : 0;
+      const midH =
+        mid1Lines.length || mid2Lines.length
+          ? gap + mid1Lines.length * lhM1 + (mid2Lines.length ? scaled(6) + mid2Lines.length * lhM2 : 0)
+          : 0;
+      const extraH = extraLines.length ? gap + extraLines.length * lhE : 0;
+      const hasLower = narrLines.length || midH > 0 || extraLines.length;
+      const dividerH = hasLower ? scaled(10) : 0;
 
-      const panelX = cx - innerW / 2;
-      const panelY = cy - innerH / 2;
+      const contentW = Math.max(
+        valueW,
+        labelW,
+        subW,
+        maxLineWidth(narrLines, `${CONFIG.NARRATOR_FONT_WEIGHT} ${scaled(CONFIG.NARRATOR_FONT_SIZE)}px 'Inter', sans-serif`),
+        maxLineWidth(mid1Lines, mid1Font),
+        maxLineWidth(mid2Lines, mid2Font),
+        maxLineWidth(extraLines, extraFont)
+      );
+      const panelW = Math.min(maxPanelW, contentW + innerPadX * 2);
+      const panelH = innerPadY * 2 + counterBlockH + dividerH + narrH + midH + extraH;
 
-      pathRoundRect(ctx, panelX, panelY, innerW, innerH, rad);
-      ctx.fillStyle   = CONFIG.COUNTER_PANEL_FILL;
+      const anchorY = r ? r.y + r.h * 0.44 : canvas.height * 0.5;
+      let panelTop = anchorY - panelH / 2;
+      let panelX = hubCx - panelW / 2;
+      panelTop = clamp(panelTop, scaled(10), canvas.height - panelH - scaled(10));
+      panelX = clamp(panelX, scaled(8), canvas.width - panelW - scaled(8));
+
+      pathRoundRect(ctx, panelX, panelTop, panelW, panelH, rad);
+      ctx.fillStyle = CONFIG.HUB_PANEL_FILL;
       ctx.fill();
-      ctx.strokeStyle = CONFIG.COUNTER_PANEL_STROKE;
+      ctx.strokeStyle = CONFIG.HUB_PANEL_STROKE;
       ctx.lineWidth   = scaled(CONFIG.COUNTER_PANEL_STROKE_WIDTH);
       ctx.stroke();
 
-      ctx.textAlign    = 'center';
-      ctx.textBaseline = 'top';
-      let ty = panelY + padY;
+      const cx = panelX + panelW / 2;
+      let ty = panelTop + innerPadY;
 
-      ctx.globalAlpha  = 0.92 * state.counterPulseAlpha;
-      ctx.fillStyle    = CONFIG.COLOR_SUBTEXT;
-      ctx.font         = `600 ${scaled(CONFIG.COUNTER_CENTRE_LABEL_SIZE)}px 'Inter', sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.globalAlpha = 0.95 * ga;
+      ctx.fillStyle   = CONFIG.COLOR_SUBTEXT;
+      ctx.font        = `600 ${scaled(CONFIG.COUNTER_CENTRE_LABEL_SIZE)}px 'Inter', sans-serif`;
       ctx.fillText(labelStr, cx, ty);
       ty += scaled(CONFIG.COUNTER_CENTRE_LABEL_SIZE + 8);
 
@@ -828,9 +956,9 @@
         ctx.rotate(Math.sin(dt * 0.014) * 0.09);
         ctx.translate(-cx, -midY);
       }
-      ctx.globalAlpha  = state.counterPulseAlpha;
-      ctx.fillStyle    = state.act5QuestionPhase ? CONFIG.COLOR_COUNTER_ACCENT : CONFIG.COLOR_COUNTER;
-      ctx.font         = `600 ${scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE)}px 'Playfair Display', serif`;
+      ctx.globalAlpha = ga;
+      ctx.fillStyle   = state.act5QuestionPhase ? CONFIG.COLOR_COUNTER_ACCENT : CONFIG.COLOR_COUNTER;
+      ctx.font        = `600 ${scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE)}px 'Playfair Display', serif`;
       ctx.fillText(valueStr, cx, ty);
       if (chaosSpin) {
         const dt = timestamp - state.act5ChaosStartTime;
@@ -841,10 +969,58 @@
       }
       ty += scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE + 8);
 
-      ctx.globalAlpha  = 0.88 * state.counterPulseAlpha;
-      ctx.fillStyle    = CONFIG.COLOR_TINY;
-      ctx.font         = `300 ${scaled(CONFIG.COUNTER_CENTRE_SUB_SIZE)}px 'Inter', sans-serif`;
+      ctx.globalAlpha = 0.9 * ga;
+      ctx.fillStyle   = CONFIG.COLOR_TINY;
+      ctx.font        = `300 ${scaled(CONFIG.COUNTER_CENTRE_SUB_SIZE)}px 'Inter', sans-serif`;
       ctx.fillText(subStr, cx, ty);
+      ty += scaled(CONFIG.COUNTER_CENTRE_SUB_SIZE + (dividerH ? gap * 0.5 : 0));
+
+      if (hasLower) {
+        ctx.globalAlpha = 0.95 * ga;
+        ctx.strokeStyle = 'rgba(245,240,232,0.18)';
+        ctx.lineWidth   = scaled(1);
+        ctx.beginPath();
+        ctx.moveTo(panelX + innerPadX, ty);
+        ctx.lineTo(panelX + panelW - innerPadX, ty);
+        ctx.stroke();
+        ty += scaled(10);
+      }
+
+      const nAlpha = state.cinematicFreeze
+        ? state.narratorAlpha * CONFIG.FREEZE_LABEL_DIM_ALPHA
+        : state.narratorAlpha;
+      ctx.globalAlpha = clamp(nAlpha, 0, 1) * ga;
+      ctx.fillStyle   = CONFIG.NARRATOR_COLOR;
+      ctx.font        = `${CONFIG.NARRATOR_FONT_WEIGHT} ${scaled(CONFIG.NARRATOR_FONT_SIZE)}px 'Inter', sans-serif`;
+      narrLines.forEach(ln => {
+        ctx.fillText(ln, cx, ty);
+        ty += lhN;
+      });
+
+      if (mid1Lines.length || mid2Lines.length) {
+        ctx.globalAlpha = midAlpha * ga;
+        ctx.fillStyle   = CONFIG.COLOR_COUNTER_ACCENT;
+        ctx.font        = mid1Font;
+        mid1Lines.forEach(ln => {
+          ctx.fillText(ln, cx, ty);
+          ty += lhM1;
+        });
+        ctx.fillStyle = CONFIG.COLOR_SUBTEXT;
+        ctx.font      = mid2Font;
+        if (mid2Lines.length) ty += scaled(4);
+        mid2Lines.forEach(ln => {
+          ctx.fillText(ln, cx, ty);
+          ty += lhM2;
+        });
+      }
+
+      ctx.globalAlpha = 0.92 * ga;
+      ctx.fillStyle   = CONFIG.COLOR_COST_LABEL;
+      ctx.font        = extraFont;
+      extraLines.forEach(ln => {
+        ctx.fillText(ln, cx, ty);
+        ty += lhE;
+      });
 
       ctx.restore();
     }
@@ -900,16 +1076,6 @@
         ctx.stroke();
         ctx.restore();
       });
-    }
-
-    function drawImpactDot(x, y, alpha) {
-      ctx.save();
-      ctx.globalAlpha = alpha;
-      ctx.beginPath();
-      ctx.arc(x, y, scaled(4), 0, Math.PI * 2);
-      ctx.fillStyle = CONFIG.COLOR_COST_LABEL;
-      ctx.fill();
-      ctx.restore();
     }
 
     // ============================================================
@@ -979,88 +1145,7 @@
       }
     }
 
-    // Narrator — lower band (supporting layer; Inter for body tone like full-scroll)
-    function drawNarratorText() {
-      if (state.narratorAlpha < 0.01 || !state.narratorCurrentText) return;
-      const maxW  = canvas.width * CONFIG.NARRATOR_MAX_WIDTH_RATIO;
-      const fontPx = scaled(CONFIG.NARRATOR_FONT_SIZE);
-      const lh    = fontPx * CONFIG.NARRATOR_LINE_HEIGHT_EM;
-
-      ctx.save();
-      let alpha = state.narratorAlpha;
-      if (state.cinematicFreeze) alpha *= CONFIG.FREEZE_LABEL_DIM_ALPHA;
-      ctx.globalAlpha = alpha;
-      ctx.textAlign   = 'center';
-      ctx.textBaseline = 'top';
-      ctx.font = `${CONFIG.NARRATOR_FONT_WEIGHT} ${fontPx}px 'Inter', sans-serif`;
-      ctx.fillStyle   = CONFIG.NARRATOR_COLOR;
-      ctx.shadowBlur  = scaled(CONFIG.NARRATOR_SHADOW_BLUR);
-      ctx.shadowColor = CONFIG.NARRATOR_SHADOW_COLOR;
-
-      const words = state.narratorCurrentText.split(/\s+/).filter(Boolean);
-      const lines = [];
-      let line = '';
-      words.forEach(word => {
-        const test = line ? `${line} ${word}` : word;
-        if (ctx.measureText(test).width > maxW && line) {
-          lines.push(line);
-          line = word;
-        } else {
-          line = test;
-        }
-      });
-      if (line) lines.push(line);
-
-      const totalH = lines.length * lh;
-      const r = state.cpftMapRect;
-      let startY;
-      if (r) {
-        startY = r.y + r.h + scaled(CONFIG.NARRATOR_MAP_GAP);
-      } else {
-        const bottomPad = canvas.height * CONFIG.NARRATOR_FROM_BOTTOM_RATIO;
-        startY = canvas.height - bottomPad - totalH;
-      }
-      if (startY + totalH > canvas.height - scaled(8)) {
-        startY = Math.max(scaled(12), canvas.height - totalH - scaled(12));
-      }
-
-      lines.forEach((ln, i) => {
-        ctx.fillText(ln, canvas.width / 2, startY + i * lh);
-      });
-      ctx.shadowBlur  = 0;
-      ctx.shadowColor = 'transparent';
-      ctx.restore();
-    }
-
-    // Act 6 — closing headline lock-up (centre, late; after bottom narrative clears)
-    function drawAct6Finale(timestamp) {
-      if (state.currentAct !== 6 || !state.act6FinaleStartTime) return;
-      const t = clamp((timestamp - state.act6FinaleStartTime) / CONFIG.ACT6_FINALE_FADE_MS, 0, 1);
-      const a = easeInOut(t) * state.globalAlpha;
-      if (a < 0.01) return;
-
-      const cx = canvas.width / 2;
-      const cy = canvas.height * 0.22;
-      const gap = scaled(CONFIG.ACT6_FINALE_LINE_GAP);
-
-      ctx.save();
-      ctx.globalAlpha = a;
-      ctx.textAlign   = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle   = 'rgba(245,240,232,0.97)';
-      ctx.shadowBlur  = scaled(20);
-      ctx.shadowColor = 'rgba(30,21,10,0.55)';
-      ctx.font = `700 ${scaled(CONFIG.ACT6_FINALE_LINE1_SIZE)}px 'Playfair Display', serif`;
-      ctx.fillText(CONFIG.ACT6_FINALE_LINE1, cx, cy - gap * 0.55);
-      ctx.shadowBlur  = scaled(12);
-      ctx.shadowColor = 'rgba(30,21,10,0.4)';
-      ctx.fillStyle   = CONFIG.COLOR_SUBTEXT;
-      ctx.font = `400 ${scaled(CONFIG.ACT6_FINALE_LINE2_SIZE)}px 'Inter', sans-serif`;
-      ctx.fillText(CONFIG.ACT6_FINALE_LINE2, cx, cy + gap * 0.95);
-      ctx.shadowBlur  = 0;
-      ctx.shadowColor = 'transparent';
-      ctx.restore();
-    }
+    // Narrator + detail copy render inside drawHubPanel (single opaque stack under £).
 
     // ============================================================
     // Layer 2 — Cinematic freeze beat
@@ -1575,6 +1660,8 @@
       state.layer3SpawnBaseTime = null;
       state.layer3Origins = null;
       state.layer3DeferDrawOneFrame = false;
+      state.hubExtraLines = [];
+      state.hubMidBlock   = null;
     }
 
     function processTransition(timestamp) {
@@ -1604,20 +1691,6 @@
     // ACT 1: One person. The first stone drops.
     // ============================================================
 
-    function drawAct1Text(alpha) {
-      ctx.save();
-      ctx.globalAlpha  = alpha;
-      ctx.textAlign    = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle    = CONFIG.COLOR_NAME_LABEL;
-      ctx.font         = `700 ${scaled(22)}px 'Playfair Display', serif`;
-      ctx.fillText('One person.', state.origin.x, state.origin.y - scaled(90));
-      ctx.fillStyle = 'rgba(255,255,255,0.6)';
-      ctx.font      = `${scaled(13)}px 'Inter', sans-serif`;
-      ctx.fillText('Undiagnosed ADHD. Active addiction.', state.origin.x, state.origin.y - scaled(65));
-      ctx.restore();
-    }
-
     function runAct1(elapsed, timestamp) {
       // Set narrator text once per act
       if (!state.narratorSetForAct) {
@@ -1637,14 +1710,6 @@
 
       drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_STONE_ACCENT);
       drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
-
-      if (elapsed >= 1500 && !state.textAct1.visible) {
-        state.textAct1.visible   = true;
-        state.textAct1.startTime = timestamp;
-      }
-      if (state.textAct1.visible) {
-        drawAct1Text(state.textAct1.alpha);
-      }
 
       if (elapsed >= CONFIG.ACT1_DURATION && !state.transitioning) {
         initAct2();
@@ -1668,25 +1733,14 @@
       state.act2RingSpawned = false;
     }
 
-    function drawAct2Label(point, alpha) {
-      ctx.save();
-      ctx.globalAlpha  = alpha;
-      ctx.textAlign    = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle    = CONFIG.COLOR_NAME_LABEL;
-      ctx.font         = `${scaled(12)}px 'Inter', sans-serif`;
-      ctx.fillText(point.label, point.x, point.y - scaled(20));
-      ctx.fillStyle = CONFIG.COLOR_COST_LABEL;
-      ctx.font      = `italic ${scaled(14)}px 'Playfair Display', serif`;
-      ctx.fillText(point.sublabel, point.x, point.y - scaled(6));
-      ctx.restore();
-    }
-
     function runAct2(elapsed, timestamp) {
       // Set narrator text once per act
       if (!state.narratorSetForAct) {
         state.narratorSetForAct = true;
         setNarratorText('The system responds.');
+        state.hubExtraLines = ACT2_POINTS.map(
+          p => `${p.label} — ${p.sublabel}`
+        );
       }
 
       if (!state.act2RingSpawned) {
@@ -1772,14 +1826,10 @@
       drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_STONE_ACCENT);
       drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
 
-      // Draw labels for triggered Act 2 points — dimmed during cinematic freeze
       state.act2Points_canvas.forEach(point => {
         if (!point.triggered) return;
-        const labelAlpha = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : point.labelAlpha;
-        drawImpactDot(point.x, point.y, state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : 0.8);
-        const labelT    = clamp((timestamp - point.labelFadeStartTime) / CONFIG.TEXT_FADE_DURATION, 0, 1);
+        const labelT = clamp((timestamp - point.labelFadeStartTime) / CONFIG.TEXT_FADE_DURATION, 0, 1);
         point.labelAlpha = easeInOut(labelT);
-        drawAct2Label(point, labelAlpha);
       });
 
       if (elapsed >= CONFIG.ACT2_DURATION && !state.transitioning) {
@@ -1827,49 +1877,17 @@
       });
     }
 
-    function drawAct3Label(point, alpha) {
-      ctx.save();
-      ctx.globalAlpha  = alpha;
-      ctx.textAlign    = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle    = CONFIG.COLOR_NAME_LABEL;
-      ctx.beginPath();
-      ctx.arc(point.x, point.y - scaled(28), scaled(5), 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(point.x, point.y - scaled(23));
-      ctx.lineTo(point.x, point.y - scaled(13));
-      ctx.strokeStyle = CONFIG.COLOR_NAME_LABEL;
-      ctx.lineWidth   = scaled(1.5);
-      ctx.stroke();
-      ctx.fillStyle = CONFIG.COLOR_NAME_LABEL;
-      ctx.font      = `700 ${scaled(16)}px 'Playfair Display', serif`;
-      ctx.fillText(point.name, point.x, point.y - scaled(2));
-      ctx.fillStyle = CONFIG.COLOR_SUBTEXT;
-      ctx.font      = `${scaled(11)}px 'Inter', sans-serif`;
-      ctx.fillText(point.label, point.x, point.y + scaled(13));
-      ctx.fillStyle = CONFIG.COLOR_COST_LABEL;
-      ctx.font      = `italic ${scaled(13)}px 'Playfair Display', serif`;
-      ctx.fillText(point.cost, point.x, point.y + scaled(26));
-      ctx.restore();
-    }
-
     function runAct3(elapsed, timestamp) {
       if (!state.narratorSetForAct) {
         state.narratorSetForAct = true;
         setNarratorText('The ripple reaches the people around them.');
+        state.hubExtraLines = ACT3_POINTS.map(
+          p => `${p.name}: ${p.label} · ${p.cost}`
+        );
       }
 
       drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_STONE_ACCENT);
       drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
-
-      // Draw persistent Act 2 impact points — dimmed during freeze
-      state.act2Points_canvas.forEach(point => {
-        const dotA   = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : 0.6;
-        const labelA = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : 0.7;
-        drawImpactDot(point.x, point.y, dotA);
-        drawAct2Label(point, labelA);
-      });
 
       // Staggered Gen 2 ring spawns
       state.act3Points_canvas.forEach((point, i) => {
@@ -1900,13 +1918,10 @@
         }
       });
 
-      // Draw triggered Act 3 person labels — dimmed during freeze
       state.act3Points_canvas.forEach(point => {
         if (!point.triggered) return;
-        const labelT    = clamp((timestamp - point.labelFadeStartTime) / CONFIG.TEXT_FADE_DURATION, 0, 1);
+        const labelT = clamp((timestamp - point.labelFadeStartTime) / CONFIG.TEXT_FADE_DURATION, 0, 1);
         point.labelAlpha = easeInOut(labelT);
-        const renderAlpha = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : point.labelAlpha;
-        drawAct3Label(point, renderAlpha);
       });
 
       if (elapsed >= CONFIG.ACT3_DURATION && !state.transitioning) {
@@ -1942,56 +1957,17 @@
       state.act4ClimaxStartTime = null;
     }
 
-    function drawAct4Label(point, alpha) {
-      ctx.save();
-      ctx.globalAlpha  = alpha;
-      ctx.textAlign    = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle    = CONFIG.COLOR_TINY;
-      ctx.font         = `${scaled(10)}px 'Inter', sans-serif`;
-      ctx.fillText(point.label, point.x, point.y - scaled(8));
-      ctx.fillStyle = 'rgba(255,255,255,0.25)';
-      ctx.font      = `${scaled(9)}px 'Inter', sans-serif`;
-      ctx.fillText(point.sublabel, point.x, point.y + scaled(5));
-      ctx.fillStyle = CONFIG.COLOR_COST_LABEL;
-      ctx.font      = `italic ${scaled(10)}px 'Playfair Display', serif`;
-      ctx.fillText(point.costLabel, point.x, point.y + scaled(18));
-      ctx.restore();
-    }
-
-    function drawAct4Climax(alpha) {
-      ctx.save();
-      ctx.globalAlpha  = alpha;
-      ctx.textAlign    = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle    = CONFIG.COLOR_COST_LABEL;
-      ctx.font         = `700 ${scaled(32)}px 'Playfair Display', serif`;
-      // Slightly above lower narrator band (narrative sits bottom ~8–10%)
-      ctx.fillText('£40,070 minimum.', canvas.width / 2, canvas.height * 0.74);
-      ctx.fillStyle = CONFIG.COLOR_SUBTEXT;
-      ctx.font      = `${scaled(13)}px 'Inter', sans-serif`;
-      ctx.fillText('Single year. Single person. One touch each service.', canvas.width / 2, canvas.height * 0.74 + scaled(44));
-      ctx.restore();
-    }
-
     function runAct4(elapsed, timestamp) {
       if (!state.narratorSetForAct) {
         state.narratorSetForAct = true;
         setNarratorText('And further still — to people no one is tracking.');
+        state.hubExtraLines = ACT4_POINTS.map(
+          p => `${p.label} — ${p.sublabel} (${p.costLabel})`
+        );
       }
 
       drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_STONE_ACCENT);
       drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
-
-      // Background labels — dimmed during freeze
-      const bgAlpha = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : 0.35;
-      state.act2Points_canvas.forEach(point => {
-        drawImpactDot(point.x, point.y, bgAlpha);
-        drawAct2Label(point, bgAlpha);
-      });
-      state.act3Points_canvas.forEach(point => {
-        if (point.triggered) drawAct3Label(point, bgAlpha);
-      });
 
       // Staggered Gen 3 ring spawns
       state.act4Points_canvas.forEach((point, i) => {
@@ -2009,13 +1985,10 @@
         }
       });
 
-      // Draw triggered Act 4 tail labels — dimmed during freeze
       state.act4Points_canvas.forEach(point => {
         if (!point.triggered) return;
-        const labelT    = clamp((timestamp - point.labelFadeStartTime) / CONFIG.TEXT_FADE_DURATION, 0, 1);
+        const labelT = clamp((timestamp - point.labelFadeStartTime) / CONFIG.TEXT_FADE_DURATION, 0, 1);
         point.labelAlpha = easeInOut(labelT);
-        const renderAlpha = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : point.labelAlpha;
-        drawAct4Label(point, renderAlpha);
       });
 
       const climaxTriggerMs = CONFIG.ACT4_DURATION - 6000;
@@ -2024,9 +1997,13 @@
         state.act4ClimaxStartTime = timestamp;
       }
       if (state.act4ClimaxVisible) {
-        const climaxT        = clamp((timestamp - state.act4ClimaxStartTime) / 800, 0, 1);
+        const climaxT = clamp((timestamp - state.act4ClimaxStartTime) / 800, 0, 1);
         state.act4ClimaxAlpha = easeInOut(climaxT);
-        drawAct4Climax(state.act4ClimaxAlpha);
+        state.hubMidBlock = {
+          line1: '£40,070 minimum.',
+          line2: 'Single year. Single person. One touch each service.',
+          alpha: state.act4ClimaxAlpha
+        };
         state.counterPulseAlpha = 0.85 + 0.15 * Math.sin(timestamp / 400);
       }
 
@@ -2088,14 +2065,9 @@
       if (!state.narratorSetForAct) {
         state.narratorSetForAct = true;
         setNarratorText('ADHD is inherited. The cycle begins again.');
+        state.hubExtraLines = [];
+        state.hubMidBlock   = null;
       }
-
-      // Past elements — ghost alpha, dimmed further during freeze
-      const ghostAlpha = state.cinematicFreeze ? CONFIG.FREEZE_LABEL_DIM_ALPHA : 0.08;
-      state.act2Points_canvas.forEach(point => drawImpactDot(point.x, point.y, ghostAlpha));
-      state.act3Points_canvas.forEach(point => {
-        if (point.triggered) drawAct3Label(point, ghostAlpha);
-      });
 
       drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_STONE_ACCENT);
       drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
@@ -2109,26 +2081,6 @@
       }
       state.childAlpha = easeInOut(clamp((timestamp - state.childFadeStartTime) / 800, 0, 1));
       drawChildFigure(childX, childY, state.childAlpha);
-
-      // "ADHD is inherited." inline text near child figure
-      if (elapsed >= 2000 && !state.childTextVisible) {
-        state.childTextVisible   = true;
-        state.childTextStartTime = timestamp;
-      }
-      if (state.childTextVisible) {
-        state.childTextAlpha = easeInOut(clamp((timestamp - state.childTextStartTime) / CONFIG.TEXT_FADE_DURATION, 0, 1));
-        const textAlpha = state.cinematicFreeze
-          ? state.childTextAlpha * CONFIG.FREEZE_LABEL_DIM_ALPHA
-          : state.childTextAlpha;
-        ctx.save();
-        ctx.globalAlpha  = textAlpha;
-        ctx.textAlign    = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle    = CONFIG.COLOR_NAME_LABEL;
-        ctx.font         = `italic ${scaled(18)}px 'Playfair Display', serif`;
-        ctx.fillText('ADHD is inherited.', childX + scaled(14), childY - scaled(8));
-        ctx.restore();
-      }
 
       // Child stone drops at 3500ms
       if (elapsed >= 3500 && !state.childStoneDropped) {
@@ -2193,21 +2145,26 @@
       state.act6RingStartTime    = null;
       state.act6FadeOutStartTime = null;
       state.act6FinaleStartTime  = null;
-      state.act6NarratorClearFired = false;
     }
 
     function runAct6(elapsed, timestamp) {
       if (!state.narratorSetForAct) {
         state.narratorSetForAct = true;
         setNarratorText(CONFIG.ACT6_OPEN_NARRATOR);
+        state.hubExtraLines = [];
+        state.hubMidBlock   = null;
       }
 
-      if (elapsed >= CONFIG.ACT6_NARRATOR_CLEAR_MS && !state.act6NarratorClearFired) {
-        state.act6NarratorClearFired = true;
-        clearNarratorText();
-      }
       if (elapsed >= CONFIG.ACT6_FINALE_START_MS && !state.act6FinaleStartTime) {
         state.act6FinaleStartTime = timestamp;
+      }
+      if (state.act6FinaleStartTime) {
+        const ft = clamp((timestamp - state.act6FinaleStartTime) / CONFIG.ACT6_FINALE_FADE_MS, 0, 1);
+        state.hubMidBlock = {
+          line1: CONFIG.ACT6_FINALE_LINE1,
+          line2: CONFIG.ACT6_FINALE_LINE2,
+          alpha: easeInOut(ft)
+        };
       }
 
       drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_STONE_ACCENT);
@@ -2300,7 +2257,9 @@
       state.act6RingStartTime    = null;
       state.act6FadeOutStartTime = null;
       state.act6FinaleStartTime  = null;
-      state.act6NarratorClearFired = false;
+
+      state.hubExtraLines = [];
+      state.hubMidBlock   = null;
 
       // Layer 2 narrator reset
       state.narratorCurrentText = '';
@@ -2345,7 +2304,7 @@
       updateAndDrawRings(timestamp);
 
       drawCpftOutsideDim();
-      drawCpftMapOverlay();
+      drawCpftOutlineOnly();
 
       switch (state.currentAct) {
         case 1: runAct1(elapsed, timestamp); break;
@@ -2367,14 +2326,8 @@
         drawLayer3Phase1Origins(timestamp);
       }
 
-      // Narrative band — below CPFT frame when map loaded
-      drawNarratorText();
-
-      // Act 6 — headline above centre counter
-      drawAct6Finale(timestamp);
-
-      // Cost ticker — dead centre, last draw for maximum salience
-      drawCounter(timestamp);
+      // Opaque hub: £ + narrator + consolidated detail — drawn last so nothing sits on top
+      drawHubPanel(timestamp);
 
       // Black overlay for transition fades and Act 6 fade-out
       if (state.globalAlpha < 1) {
