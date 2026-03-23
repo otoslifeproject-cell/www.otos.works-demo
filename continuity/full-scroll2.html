@@ -7,12 +7,12 @@
 <meta name="description" content="OTOS Continuity™ — single-page pilot narrative: how it works, demos, infrastructure, reporting, and references.">
 <meta name="theme-color" content="#0a0806">
 <!-- Deploy / cache check: if this rev doesn’t match GitHub, the host is serving a stale file -->
-<meta name="otos-scroll2-rev" content="20260319-live-7">
+<meta name="otos-scroll2-rev" content="20260319-live-8">
 <meta http-equiv="Cache-Control" content="max-age=0, must-revalidate">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="otos-shared.css?v=20260319-live-7">
+<link rel="stylesheet" href="otos-shared.css?v=20260319-live-8">
 <style>
 /* full-scroll2.html — OTOS Continuity single-page; long-form (no fixed top nav). How-it-works is a static section (#fs-how). */
 :root {
@@ -2618,16 +2618,16 @@ a { color: var(--amber); }
       </div>
       <div class="fs-stat" role="listitem" data-fs-hero-stat="5" aria-label="Statistic 5">
         <span class="fs-stat__eyebrow">Signal 05</span>
-        <b>&mdash;</b>
+        <b>-</b>
         <span class="fs-stat__label">Add in editor</span>
       </div>
       <div class="fs-stat" role="listitem" data-fs-hero-stat="6" aria-label="Statistic 6">
         <span class="fs-stat__eyebrow">Signal 06</span>
-        <b>&mdash;</b>
+        <b>-</b>
         <span class="fs-stat__label">Add in editor</span>
       </div>
     </div>
-    <a href="#fs-how" class="fs-hero-cta is-visible" data-fs-cm-cta>See how it works →</a>
+    <a href="#fs-how" class="fs-hero-cta is-visible" data-fs-cm-cta>See how it works -&gt;</a>
   </div>
 </section>
 
@@ -3134,7 +3134,7 @@ a { color: var(--amber); }
     stat4: { value: '3', label: 'Days to change everything' },
     stat5: { value: '', label: '' },
     stat6: { value: '', label: '' },
-    cta_text: 'See how it works \u2192',
+    cta_text: 'See how it works ->',
     cta_href: 'full-scroll2.html#fs-how',
     ctaSize: 14,
     kickerSize: 11,
@@ -3380,7 +3380,7 @@ a { color: var(--amber); }
         if (value != null && String(value).trim() !== '') {
           numEl.textContent = String(value).trim();
         } else {
-          numEl.textContent = '\u2014';
+          numEl.textContent = '-';
         }
       }
       if (labEl) {
@@ -3423,7 +3423,7 @@ a { color: var(--amber); }
         ctaEl.textContent = d.cta_text;
         ctaEl.style.whiteSpace = 'pre-line';
       } else {
-        ctaEl.textContent = 'See how it works →';
+        ctaEl.textContent = 'See how it works ->';
       }
       var href = (d && d.cta_href && String(d.cta_href).trim()) || '#fs-how';
       if (/how-it-works/i.test(href)) href = '#fs-how';

@@ -425,7 +425,7 @@
         <p class="preview-p" id="previewP" style="margin:0;">People with ADHD are not being held on waiting lists — they are being left exposed…</p>
       </div>
       <div class="fs-stats" id="previewStats" role="list" aria-label="Preview: hero statistics"></div>
-      <a class="preview-cta" id="previewCta" href="#">See how it works →</a>
+      <a class="preview-cta" id="previewCta" href="#">See how it works -&gt;</a>
     </div>
   </div>
 </div>
@@ -731,7 +731,7 @@
     stat4: { value: "3", label: "Days to change everything" },
     stat5: { value: "", label: "" },
     stat6: { value: "", label: "" },
-    cta_text: "See how it works \u2192",
+    cta_text: "See how it works ->",
     cta_href: "full-scroll2.html#fs-how",
     ctaSize: 14,
     kickerSize: 11,
@@ -1066,7 +1066,7 @@
       eyebrow.textContent = 'Signal ' + (i < 10 ? '0' : '') + i;
       div.appendChild(eyebrow);
       var b = document.createElement('b');
-      b.textContent = v || '\u2014';
+      b.textContent = v || '-';
       div.appendChild(b);
       var labSpan = document.createElement('span');
       labSpan.className = 'fs-stat__label';
@@ -1086,7 +1086,7 @@
   function updatePreviewCta() {
     if (!previewCta) return;
     var t = document.getElementById('fCta').value.trim();
-    previewCta.textContent = t || 'See how it works →';
+    previewCta.textContent = t || 'See how it works ->';
     var href = document.getElementById('fCtaHref').value.trim() || '#fs-how';
     previewCta.setAttribute('href', href);
     previewCta.style.fontSize = (parseFloat(document.getElementById('fCtaSize').value) || 14) + 'px';
