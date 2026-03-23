@@ -159,6 +159,25 @@
       FREEZE_LINE1_SIZE:     34,
       FREEZE_LINE2_SIZE:     42,
       FREEZE_LINE3_SIZE:     16,
+
+      // ============================================================
+      // Layer 3 Phase 1 — secondary ripple origins (after freeze)
+      // Freeze ends at freezeStart + FREEZE_DURATION (see FREEZE_* above).
+      // ============================================================
+      LAYER3_ORIGIN_COUNT:       3,
+      LAYER3_SPAWN_DELAY_MS:     800,
+      LAYER3_ORIGIN_FADE_IN_MS:  400,
+      LAYER3_BIRTH_PULSE_RADIUS: 12,
+      LAYER3_BIRTH_PULSE_ALPHA:  0.6,
+      LAYER3_BIRTH_PULSE_LINE_WIDTH: 1.2,
+      LAYER3_BIRTH_PULSE_STROKE: 'rgba(255, 180, 80, 0.9)',
+      LAYER3_ORIGIN_DOT_RADIUS:  6,
+      LAYER3_ORIGIN_A_X: 0.28,
+      LAYER3_ORIGIN_A_Y: 0.38,
+      LAYER3_ORIGIN_B_X: 0.71,
+      LAYER3_ORIGIN_B_Y: 0.62,
+      LAYER3_ORIGIN_C_X: 0.19,
+      LAYER3_ORIGIN_C_Y: 0.67,
     };
 
     // ============================================================
@@ -404,6 +423,11 @@
         { text: 'Ignore it now, and the waveform doubles.', alpha: 0, triggered: false,
           size: CONFIG.FREEZE_LINE3_SIZE, color: 'rgba(255,255,255,0.65)', style: '400' }
       ],
+
+      // Layer 3 Phase 1 — cascade origins (Act 5 only, post-freeze)
+      layer3SpawnBaseTime: null,
+      layer3Origins: null,
+      layer3DeferDrawOneFrame: false,
     };
 
     // ============================================================
@@ -418,6 +442,7 @@
       buildVignetteGradient();
       if (state.act2Points_canvas.length > 0) reinitAct2Coords();
       if (state.act3Points_canvas.length > 0) reinitAct3Coords();
+      rebuildLayer3OriginCanvasCoords();
       if (state.act4Points_canvas.length > 0) reinitAct4Coords();
     }
 
@@ -715,12 +740,113 @@
         ctx.restore();
       });
 
-      // End freeze after FREEZE_DURATION
+      // End freeze after FREEZE_DURATION — Layer 3 schedule (origins draw next frame; avoids painting over freeze)
       if (freezeElapsed >= CONFIG.FREEZE_DURATION) {
+        if (state.currentAct === 5 && state.layer3SpawnBaseTime === null && state.freezeStartTime !== null) {
+          state.layer3SpawnBaseTime = state.freezeStartTime + CONFIG.FREEZE_DURATION;
+          state.layer3DeferDrawOneFrame = true;
+        }
         state.cinematicFreeze = false;
         state.freezeStartTime = null;
       }
     }
+
+    // ============================================================
+    // Layer 3 Phase 1 — secondary origins (spawn post-freeze, Act 5)
+    // ============================================================
+
+    function rebuildLayer3OriginCanvasCoords() {
+      if (!state.layer3Origins) return;
+      state.layer3Origins.forEach(o => {
+        o.x = canvas.width * o.xRatio;
+        o.y = canvas.height * o.yRatio;
+      });
+    }
+
+    function ensureLayer3Phase1Origins() {
+      if (state.layer3Origins) return;
+      const specs = [
+        { xRatio: CONFIG.LAYER3_ORIGIN_A_X, yRatio: CONFIG.LAYER3_ORIGIN_A_Y },
+        { xRatio: CONFIG.LAYER3_ORIGIN_B_X, yRatio: CONFIG.LAYER3_ORIGIN_B_Y },
+        { xRatio: CONFIG.LAYER3_ORIGIN_C_X, yRatio: CONFIG.LAYER3_ORIGIN_C_Y }
+      ];
+      state.layer3Origins = [];
+      const n = Math.min(CONFIG.LAYER3_ORIGIN_COUNT, specs.length);
+      for (let i = 0; i < n; i++) {
+        state.layer3Origins.push({
+          xRatio: specs[i].xRatio,
+          yRatio: specs[i].yRatio,
+          x: 0,
+          y: 0,
+          fadeStartTime: null,
+          birthPulseStartTime: null,
+          birthPulseDone: false
+        });
+      }
+      rebuildLayer3OriginCanvasCoords();
+    }
+
+    function updateLayer3Phase1Origins(timestamp) {
+      if (state.currentAct !== 5 || state.layer3SpawnBaseTime === null) return;
+      ensureLayer3Phase1Origins();
+      state.layer3Origins.forEach((origin, index) => {
+        const spawnAt = state.layer3SpawnBaseTime + index * CONFIG.LAYER3_SPAWN_DELAY_MS;
+        if (timestamp < spawnAt) return;
+        if (origin.fadeStartTime === null) {
+          origin.fadeStartTime = spawnAt;
+        }
+        const ft = timestamp - origin.fadeStartTime;
+        const t = clamp(ft / CONFIG.LAYER3_ORIGIN_FADE_IN_MS, 0, 1);
+        if (t >= 1 && !origin.birthPulseDone) {
+          origin.birthPulseStartTime = timestamp;
+          origin.birthPulseDone = true;
+        }
+      });
+    }
+
+    function drawLayer3Phase1Origins(timestamp) {
+      if (state.currentAct !== 5 || state.layer3SpawnBaseTime === null) return;
+      if (state.layer3DeferDrawOneFrame) {
+        state.layer3DeferDrawOneFrame = false;
+        return;
+      }
+      if (!state.layer3Origins) return;
+      state.layer3Origins.forEach((origin, index) => {
+        const spawnAt = state.layer3SpawnBaseTime + index * CONFIG.LAYER3_SPAWN_DELAY_MS;
+        if (timestamp < spawnAt || origin.fadeStartTime === null) return;
+
+        const ft = timestamp - origin.fadeStartTime;
+        const t = clamp(ft / CONFIG.LAYER3_ORIGIN_FADE_IN_MS, 0, 1);
+        const easeT = easeOut(t);
+
+        ctx.save();
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = easeT;
+        ctx.fillStyle = CONFIG.COLOR_COUNTER;
+        ctx.beginPath();
+        ctx.arc(origin.x, origin.y, scaled(CONFIG.LAYER3_ORIGIN_DOT_RADIUS) * easeT, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        if (origin.birthPulseStartTime !== null) {
+          const pt = clamp((timestamp - origin.birthPulseStartTime) / CONFIG.IMPACT_PULSE_DURATION_MS, 0, 1);
+          const pulseEase = easeOut(pt);
+          const pr = pulseEase * scaled(CONFIG.LAYER3_BIRTH_PULSE_RADIUS);
+          const pa = CONFIG.LAYER3_BIRTH_PULSE_ALPHA * (1 - pt);
+          if (pa > 0.01 && pr > 0.5) {
+            ctx.save();
+            ctx.globalAlpha = pa;
+            ctx.strokeStyle = CONFIG.LAYER3_BIRTH_PULSE_STROKE;
+            ctx.lineWidth = scaled(CONFIG.LAYER3_BIRTH_PULSE_LINE_WIDTH);
+            ctx.beginPath();
+            ctx.arc(origin.x, origin.y, pr, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      });
+    }
+
 
     // ============================================================
     // Ring rendering system — Layer 1 drawGlowRing updated for L2
@@ -1020,6 +1146,9 @@
       state.freezeStartTime   = null;
       state.freezeFired       = false;
       state.freezeLines.forEach(line => { line.alpha = 0; line.triggered = false; });
+      state.layer3SpawnBaseTime = null;
+      state.layer3Origins = null;
+      state.layer3DeferDrawOneFrame = false;
     }
 
     function processTransition(timestamp) {
@@ -1489,6 +1618,8 @@
       state.childTextStartTime  = null;
       state.act5RingSpawned     = false;
       state.freezeFired         = false;
+      state.layer3SpawnBaseTime = null;
+      state.layer3Origins = null;
     }
 
     function drawChildFigure(x, y, alpha) {
@@ -1740,6 +1871,11 @@
       state.narratorPendingSet  = false;
       state.narratorSetForAct   = false;
 
+      // Layer 3 Phase 1 reset
+      state.layer3SpawnBaseTime = null;
+      state.layer3Origins = null;
+      state.layer3DeferDrawOneFrame = false;
+
       // Layer 2 freeze reset
       state.cinematicFreeze = false;
       state.freezeStartTime = null;
@@ -1780,6 +1916,12 @@
 
       // Cinematic freeze overlay and text — drawn after act content, before narrator
       updateAndDrawCinematicFreeze(timestamp);
+
+      // Layer 3 Phase 1 — update every frame; first paint deferred one frame after freeze so dots are not drawn over the freeze overlay
+      if (state.currentAct === 5) {
+        updateLayer3Phase1Origins(timestamp);
+        drawLayer3Phase1Origins(timestamp);
+      }
 
       // Narrator text — always on top of rings and labels
       drawNarratorText();

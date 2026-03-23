@@ -35,6 +35,14 @@
       transition: background 0.15s, transform 0.1s; white-space: nowrap;
     }
     .btn-save-top:hover { background: #d4953c; transform: translateY(-1px); }
+    .btn-reset-pos {
+      background: transparent; border: 1px solid rgba(193,127,36,0.45);
+      color: #e8c27a; font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+      padding: 7px 14px; border-radius: 999px; cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-reset-pos:hover { border-color: #c17f24; color: #f5f0e8; background: rgba(193,127,36,0.12); }
     .toast { font-size: 12px; font-weight: 600; color: #4a9e8e; opacity: 0; transition: opacity 0.3s; white-space: nowrap; }
     .toast.on { opacity: 1; }
 
@@ -301,7 +309,8 @@
     <button class="view-btn" id="btnMobile" type="button" title="Mobile preview frame">Mobile</button>
     <span class="toast" id="toast">✓ Saved</span>
     <a class="btn-view" href="index.html" target="otos-home">Portal home ↗</a>
-    <a class="btn-view" href="continuity-full-scroll.html" target="_blank">Full scroll ↗</a>
+    <a class="btn-view" href="full-scroll.html" target="_blank">Full scroll ↗</a>
+    <button class="btn-reset-pos" id="btnResetPos" type="button" title="Restore default hero position if the drag handle is off-screen">Reset position</button>
     <button class="btn-save-top" id="btnSave" type="button">Save &amp; apply</button>
   </div>
 </div>
@@ -654,6 +663,34 @@
     if (!saved.posMobile) saved.posMobile = { x: 50, y: 55 };
   } catch (e) {}
 
+  /* Preview uses translate(-50%,-50%) + overflow:hidden — very small y clips the drag handle off the top */
+  var POS_MIN_X = 8;
+  var POS_MAX_X = 92;
+  var POS_MIN_Y = 22;
+  var POS_MAX_Y = 88;
+  function clampHeroPos(p) {
+    var x = typeof p.x === 'number' ? p.x : parseFloat(p.x);
+    var y = typeof p.y === 'number' ? p.y : parseFloat(p.y);
+    if (!isFinite(x)) x = DEFAULTS.posDesktop.x;
+    if (!isFinite(y)) y = DEFAULTS.posDesktop.y;
+    return {
+      x: Math.round(Math.max(POS_MIN_X, Math.min(POS_MAX_X, x)) * 10) / 10,
+      y: Math.round(Math.max(POS_MIN_Y, Math.min(POS_MAX_Y, y)) * 10) / 10
+    };
+  }
+
+  var _pdRaw = clampHeroPos(saved.posDesktop);
+  var _pmRaw = clampHeroPos(saved.posMobile);
+  if (_pdRaw.x !== saved.posDesktop.x || _pdRaw.y !== saved.posDesktop.y ||
+      _pmRaw.x !== saved.posMobile.x || _pmRaw.y !== saved.posMobile.y) {
+    try {
+      var fix = Object.assign({}, saved, { posDesktop: _pdRaw, posMobile: _pmRaw });
+      localStorage.setItem('otos_home_content', JSON.stringify(fix));
+      saved.posDesktop = _pdRaw;
+      saved.posMobile = _pmRaw;
+    } catch (eFix) {}
+  }
+
   let viewMode = 'desktop';
   let posDesktop = { x: saved.posDesktop.x, y: saved.posDesktop.y };
   let posMobile  = { x: saved.posMobile.x,  y: saved.posMobile.y  };
@@ -846,7 +883,7 @@
     dragContent.style.left = p.x + '%';
     dragContent.style.top = p.y + '%';
     dragContent.style.transform = 'translate(-50%, -50%)';
-    /* Match continuity-full-scroll applyFsHomeFromStore thresholds */
+    /* Match full-scroll.html applyFsHomeFromStore thresholds */
     if (p.x < 36) {
       dragContent.style.textAlign = 'left';
       dragContent.style.alignItems = 'stretch';
@@ -1024,8 +1061,8 @@
     var rect = previewWrap.getBoundingClientRect();
     var dx = (c.x - startMouseX) / rect.width * 100;
     var dy = (c.y - startMouseY) / rect.height * 100;
-    var nx = Math.max(5, Math.min(95, startPosX + dx));
-    var ny = Math.max(5, Math.min(95, startPosY + dy));
+    var nx = Math.max(POS_MIN_X, Math.min(POS_MAX_X, startPosX + dx));
+    var ny = Math.max(POS_MIN_Y, Math.min(POS_MAX_Y, startPosY + dy));
     setCurrentPos(nx, ny);
     applyPos();
     e.preventDefault();
@@ -1043,6 +1080,35 @@
 
   window.addEventListener('mouseup', dragEnd);
   window.addEventListener('touchend', dragEnd);
+
+  document.getElementById('btnResetPos').addEventListener('click', function () {
+    posDesktop = { x: DEFAULTS.posDesktop.x, y: DEFAULTS.posDesktop.y };
+    posMobile = { x: DEFAULTS.posMobile.x, y: DEFAULTS.posMobile.y };
+    applyPos();
+    try {
+      var raw = localStorage.getItem('otos_home_content');
+      var data = raw ? JSON.parse(raw) : {};
+      data = Object.assign({}, DEFAULTS, data, {
+        posDesktop: { x: posDesktop.x, y: posDesktop.y },
+        posMobile: { x: posMobile.x, y: posMobile.y }
+      });
+      localStorage.setItem('otos_home_content', JSON.stringify(data));
+      saved = Object.assign({}, saved, { posDesktop: posDesktop, posMobile: posMobile });
+      localStorage.setItem(LEGACY_KEY, JSON.stringify({
+        image: data.image || saved.image,
+        heading: data.heading_desktop != null ? data.heading_desktop : saved.heading_desktop,
+        subheading: data.subheading_desktop != null ? data.subheading_desktop : saved.subheading_desktop,
+        headingSize: data.headingSize || saved.headingSize,
+        subSize: data.subSize || saved.subSize,
+        posDesktop: posDesktop,
+        posMobile: posMobile
+      }));
+    } catch (eR) {}
+    var toast = document.getElementById('toast');
+    toast.textContent = '✓ Position reset';
+    toast.classList.add('on');
+    setTimeout(function () { toast.textContent = '✓ Saved'; toast.classList.remove('on'); }, 2200);
+  });
 
   function collectDockSection(prefix, sectionId) {
     var label = document.getElementById('dock_' + prefix + '_label').value.trim();
