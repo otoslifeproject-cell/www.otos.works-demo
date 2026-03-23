@@ -401,7 +401,7 @@
     <a class="btn-view" href="index.html" target="otos-home">Portal home ↗</a>
     <a class="btn-view" href="full-scroll2.html" target="_blank">Full scroll (live) ↗</a>
     <a class="btn-view bar-link-scroll2" href="content-manager.html?mode=scroll2" title="Bookmark this URL for the Scroll 2 layout">CM (scroll 2) ↗</a>
-    <button class="btn-reset-pos" id="btnResetPos" type="button" title="Restore default hero position if the drag handle is off-screen">Reset position</button>
+    <button class="btn-reset-pos" id="btnResetPos" type="button" title="Reset hero position for the current preview only (Desktop or Mobile). The other breakpoint is left unchanged.">Reset position</button>
     <button class="btn-save-top" id="btnSave" type="button">Save &amp; apply</button>
   </div>
 </div>
@@ -973,14 +973,27 @@
     updatePreviewCta();
   }
 
+  function cmPreviewInnerWidth() {
+    var w = previewWrap && previewWrap.offsetWidth;
+    return w && w >= 72 ? w : 360;
+  }
+
   function updateSizes() {
     const hs = parseFloat(fHeadingSize.value) || 40;
     const ss = parseFloat(fSubSize.value) || 15;
     const ks = parseFloat(fKickerSize.value) || 11;
     const qs = parseFloat(fQuoteSize.value) || 14;
     const qps = parseFloat(document.getElementById('fQuotePhotoSize').value) || 18;
-    previewH.style.fontSize = hs + 'px';
-    previewP.style.fontSize = ss + 'px';
+    /* Mobile preview: cap headline/body so it matches live narrow viewports */
+    var pw = cmPreviewInnerWidth();
+    var previewHs = viewMode === 'mobile'
+      ? Math.max(22, Math.min(hs, Math.round(pw * 0.088)))
+      : hs;
+    var previewSs = viewMode === 'mobile'
+      ? Math.max(13, Math.min(ss, Math.round(pw * 0.038 + 5)))
+      : ss;
+    previewH.style.fontSize = previewHs + 'px';
+    previewP.style.fontSize = previewSs + 'px';
     previewK.style.fontSize = ks + 'px';
     previewQ.style.fontSize = qs + 'px';
     document.getElementById('headingSizeVal').textContent = hs + 'px';
@@ -1145,6 +1158,7 @@
     document.getElementById('btnMobile').classList.remove('active');
     previewOuter.className = 'preview-outer mode-desktop';
     applyPos();
+    updateSizes();
     updateText();
   });
   document.getElementById('btnMobile').addEventListener('click', function () {
@@ -1153,7 +1167,10 @@
     document.getElementById('btnDesktop').classList.remove('active');
     previewOuter.className = 'preview-outer mode-mobile';
     applyPos();
-    updateText();
+    requestAnimationFrame(function () {
+      updateSizes();
+      updateText();
+    });
   });
 
   function buildGrid(id, paths) {
@@ -1238,8 +1255,12 @@
   window.addEventListener('touchend', dragEnd);
 
   document.getElementById('btnResetPos').addEventListener('click', function () {
-    posDesktop = { x: DEFAULTS.posDesktop.x, y: DEFAULTS.posDesktop.y };
-    posMobile = { x: DEFAULTS.posMobile.x, y: DEFAULTS.posMobile.y };
+    /* Only reset the breakpoint you’re previewing — do not wipe the other (fixes “mobile reset moved desktop”). */
+    if (viewMode === 'mobile') {
+      posMobile = { x: DEFAULTS.posMobile.x, y: DEFAULTS.posMobile.y };
+    } else {
+      posDesktop = { x: DEFAULTS.posDesktop.x, y: DEFAULTS.posDesktop.y };
+    }
     applyPos();
     try {
       var raw = localStorage.getItem('otos_home_content');
@@ -1261,7 +1282,7 @@
       }));
     } catch (eR) {}
     var toast = document.getElementById('toast');
-    toast.textContent = '✓ Position reset';
+    toast.textContent = viewMode === 'mobile' ? '✓ Mobile position reset' : '✓ Desktop position reset';
     toast.classList.add('on');
     setTimeout(function () { toast.textContent = '✓ Saved'; toast.classList.remove('on'); }, 2200);
   });
