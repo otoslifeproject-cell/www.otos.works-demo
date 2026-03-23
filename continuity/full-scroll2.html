@@ -7,12 +7,12 @@
 <meta name="description" content="OTOS Continuity™ — single-page pilot narrative: how it works, demos, infrastructure, reporting, and references.">
 <meta name="theme-color" content="#0a0806">
 <!-- Deploy / cache check: if this rev doesn’t match GitHub, the host is serving a stale file -->
-<meta name="otos-scroll2-rev" content="20260319-live-8">
+<meta name="otos-scroll2-rev" content="20260319-live-9">
 <meta http-equiv="Cache-Control" content="max-age=0, must-revalidate">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="otos-shared.css?v=20260319-live-8">
+<link rel="stylesheet" href="otos-shared.css?v=20260319-live-9">
 <style>
 /* full-scroll2.html — OTOS Continuity single-page; long-form (no fixed top nav). How-it-works is a static section (#fs-how). */
 :root {
@@ -1310,6 +1310,13 @@ a { color: var(--amber); }
     background-position: 50% 22%;
     /* Safe area: notches / home indicator */
     padding-bottom: max(clamp(1rem, 3vh, 1.75rem), calc(env(safe-area-inset-bottom, 0px) + 6px));
+  }
+  /* Corner “Home” label + CM kicker both sit top-left — move label right on narrow viewports */
+  .fs-hero-band .fs-sec-label {
+    left: auto;
+    right: clamp(14px, 4vw, 22px);
+    top: max(12px, env(safe-area-inset-top, 0px));
+    text-align: right;
   }
   .fs-hero-band .fs-inner {
     text-align: left;
