@@ -68,7 +68,8 @@
   --fs-section-minh-image: 560px;
   --fs-split-copy-pad: 72px 48px 72px 40px;
   --fs-cream-solid: #faf7f2;
-  --fs-overlay-gradient: linear-gradient(to right, rgba(10, 8, 6, 0.82) 0%, rgba(10, 8, 6, 0.4) 60%, rgba(10, 8, 6, 0.1) 100%);
+  /* Light wash — photos stay bright; text uses strapline gradients / light colours */
+  --fs-overlay-gradient: linear-gradient(to right, rgba(10, 8, 6, 0.28) 0%, rgba(10, 8, 6, 0.12) 55%, rgba(10, 8, 6, 0.03) 100%);
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 12px; font-size: 16px; -webkit-font-smoothing: antialiased; background: var(--bg-page); }
@@ -196,10 +197,312 @@ a { color: var(--amber); }
 .fs-how-card p {
   font-family: var(--font-b);
   font-size: 15px;
-  font-weight: 300;
-  line-height: 1.55;
-  color: rgba(44, 26, 14, 0.7);
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(44, 26, 14, 0.72);
   margin: 0;
+}
+/* How it works — editorial premium (warm depth, gradient type, numbered rhythm) */
+.fs-how-static--premium {
+  background:
+    radial-gradient(120% 80% at 0% 0%, rgba(193, 127, 36, 0.07) 0%, transparent 55%),
+    radial-gradient(90% 70% at 100% 20%, rgba(74, 158, 142, 0.06) 0%, transparent 50%),
+    linear-gradient(180deg, #fdfbf7 0%, #f5efe6 38%, #faf7f2 100%);
+  border-top: 1px solid rgba(193, 127, 36, 0.12);
+  border-bottom: 1px solid rgba(193, 127, 36, 0.1);
+}
+.fs-how-static--premium .fs-how-static__h2 {
+  background: linear-gradient(105deg, #3d3228 0%, #5c4a3a 28%, #8a6a42 52%, #4a6b5f 92%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  max-width: min(720px, 100%);
+}
+.fs-how-static--premium .fs-how-static__sub {
+  color: rgba(74, 58, 48, 0.72);
+  font-weight: 500;
+}
+.fs-how-card--premium {
+  position: relative;
+  border-radius: 14px;
+  padding: clamp(26px, 4vw, 36px) clamp(24px, 3vw, 34px) clamp(26px, 4vw, 36px) clamp(28px, 3.5vw, 38px);
+  background: rgba(255, 252, 248, 0.72);
+  border: 1px solid rgba(193, 127, 36, 0.2);
+  box-shadow: 0 12px 40px rgba(26, 20, 16, 0.06);
+  border-left: 3px solid rgba(193, 127, 36, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.fs-how-card__step {
+  display: block;
+  font-family: var(--font-b);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(193, 127, 36, 0.9);
+  margin-bottom: 10px;
+}
+.fs-how-card--premium h3 {
+  font-family: var(--font-h);
+  font-size: clamp(1.05rem, 2.1vw, 1.22rem);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.25;
+  margin: 0 0 14px;
+  background: linear-gradient(102deg, #3a332c 0%, #5c4d3e 38%, #7a5c38 68%, #4d635c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* —— How it works: diagram + glass timeline (replaces flat 2×2 cards) —— */
+.fs-how-layout {
+  max-width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 0 clamp(12px, 3vw, 8px);
+  box-sizing: border-box;
+}
+.fs-how-layout__intro {
+  text-align: center;
+  padding-top: calc(var(--fs-label-size) + var(--fs-heading-mt) + 8px);
+  max-width: min(48rem, 100%);
+  margin: 0 auto clamp(0.25rem, 2vw, 0.5rem);
+}
+.fs-how-layout__intro .fs-how-static__h2 {
+  margin-left: auto;
+  margin-right: auto;
+}
+.fs-how-layout__intro .fs-how-static__sub {
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: clamp(1rem, 1.35vw, 1.12rem);
+  line-height: 1.55;
+  color: rgba(58, 48, 38, 0.78);
+}
+.fs-how-layout__grid {
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 2.75rem);
+  margin-top: clamp(1.75rem, 4vw, 2.5rem);
+  align-items: start;
+}
+@media (min-width: 1024px) {
+  .fs-how-layout__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 34%);
+    gap: clamp(1.5rem, 3vw, 2.25rem);
+  }
+}
+.fs-how-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+.fs-how-step {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: clamp(0.85rem, 2.5vw, 1.35rem);
+  align-items: stretch;
+  margin: 0 0 clamp(1.1rem, 2.8vw, 1.5rem);
+}
+.fs-how-step:last-child {
+  margin-bottom: 0;
+}
+.fs-how-step__rail {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 4px;
+}
+.fs-how-step__rail::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 58px;
+  bottom: calc(-1 * clamp(1.1rem, 2.8vw, 1.5rem));
+  width: 3px;
+  margin-left: -1.5px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(193, 127, 36, 0.55) 0%, rgba(74, 158, 142, 0.4) 100%);
+  opacity: 0.75;
+  pointer-events: none;
+}
+.fs-how-step:last-child .fs-how-step__rail::after {
+  display: none;
+}
+.fs-how-step__num {
+  position: relative;
+  z-index: 1;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: linear-gradient(165deg, rgba(255, 252, 248, 0.95) 0%, rgba(252, 246, 236, 0.82) 100%);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 32px rgba(26, 20, 16, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+.fs-how-step__num-inner {
+  font-family: var(--font-h);
+  font-size: clamp(1.35rem, 2.4vw, 1.65rem);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1;
+  background: linear-gradient(105deg, #3d3228 0%, #8a6a42 48%, #4a6b5f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  display: block;
+}
+.fs-how-step__panel {
+  padding: clamp(1.15rem, 2.8vw, 1.5rem) clamp(1.2rem, 3vw, 1.65rem);
+  border-radius: 20px;
+  background: rgba(255, 252, 248, 0.38);
+  backdrop-filter: blur(22px) saturate(145%);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow:
+    0 16px 48px rgba(26, 20, 16, 0.08),
+    0 0 0 1px rgba(193, 127, 36, 0.1) inset,
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+.fs-how-step__tag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.45rem;
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(193, 127, 36, 0.1);
+  border: 1px solid rgba(193, 127, 36, 0.22);
+}
+.fs-how-step__title {
+  font-family: var(--font-h);
+  font-size: clamp(1.18rem, 2.35vw, 1.48rem);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.2;
+  margin: 0 0 0.55rem;
+  background: linear-gradient(102deg, #3a332c 0%, #5c4d3e 35%, #7a5c38 62%, #4d635c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+.fs-how-step__body {
+  font-size: clamp(0.94rem, 1.25vw, 1.06rem);
+  line-height: 1.62;
+  color: rgba(44, 36, 28, 0.86);
+  margin: 0;
+}
+.fs-how-step__body strong {
+  color: rgba(36, 28, 20, 0.95);
+  font-weight: 600;
+}
+.fs-how-visual {
+  margin: 0;
+  text-align: center;
+}
+@media (min-width: 1024px) {
+  .fs-how-visual {
+    position: sticky;
+    top: 1.25rem;
+  }
+}
+.fs-how-visual__frame {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(193, 127, 36, 0.22);
+  box-shadow: 0 20px 56px rgba(26, 20, 16, 0.11), 0 0 0 1px rgba(255, 252, 248, 0.5) inset;
+  background: linear-gradient(165deg, rgba(255, 252, 248, 0.9), rgba(248, 241, 230, 0.95));
+}
+.fs-how-visual__frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+  vertical-align: middle;
+}
+.fs-how-visual figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: rgba(90, 78, 64, 0.78);
+  text-align: left;
+  padding: 0 0.15rem;
+}
+.fs-how-foot {
+  margin: clamp(1.75rem, 4vw, 2.5rem) auto 0;
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.25rem;
+  justify-content: center;
+  align-items: center;
+}
+.fs-how-foot a {
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+  color: var(--amber);
+  border-bottom: 1px solid rgba(193, 127, 36, 0.35);
+  padding-bottom: 2px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.fs-how-foot a:hover,
+.fs-how-foot a:focus-visible {
+  color: #a86a1a;
+  border-bottom-color: rgba(193, 127, 36, 0.55);
+}
+@media (max-width: 520px) {
+  .fs-how-step {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+  .fs-how-step__num {
+    width: 46px;
+    height: 46px;
+    font-size: 1.25rem;
+  }
+  .fs-how-step__rail::after {
+    top: 50px;
+  }
+}
+
+/* Statement beats — more air + hero-scale quotes (no “tiny black” dead zones) */
+.fs-band--statement {
+  padding: clamp(3rem, 7.5vw, 5.5rem) clamp(20px, 4vw, 48px);
+}
+.fs-demos-section + .fs-band--statement {
+  padding-top: clamp(2.25rem, 5vw, 3.5rem);
+}
+.fs-statement--pullquote .fs-statement__line:not(.fs-statement__line--sub):not(.fs-statement__line--cite) {
+  font-size: clamp(1.65rem, 4.2vw, 3rem);
+  line-height: 1.22;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.fs-statement--pullquote .fs-statement__line--sub {
+  font-size: clamp(1rem, 1.85vw, 1.2rem);
+  font-weight: 500;
+  font-style: italic;
+  color: rgba(74, 58, 48, 0.72);
+  max-width: 52ch;
+  margin-top: 0.5rem;
+}
+.fs-main > .fs-split {
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
 }
 
 /* —— Brain: 3 depth layers + parallax + scroll / motion peek —— */
@@ -468,11 +771,7 @@ a { color: var(--amber); }
 .fs-statement--on-photo .fs-statement__line--cite {
   color: rgba(232, 194, 122, 0.95);
 }
-.fs-band--statement { padding: clamp(1.25rem, 3.2vw, 2rem) clamp(16px, 3vw, 40px); }
-/* Tighter handoff after stacked demos (removes “dead air” before strapline) */
-.fs-demos-section + .fs-band--statement {
-  padding-top: clamp(0.85rem, 2.2vw, 1.35rem);
-}
+/* .fs-band--statement padding — see “Statement beats” block under How it works premium */
 /* Hero: two-line glide for opening quote */
 .fs-hero-quote.fs-statement {
   margin: 0 auto clamp(1.25rem, 3vh, 2rem);
@@ -977,7 +1276,7 @@ a { color: var(--amber); }
   max-width: min(34rem, 92vw);
 }
 .fs-hero-band .fs-shade {
-  background: linear-gradient(165deg, rgba(8,6,5,0.45) 0%, rgba(10,8,6,0.35) 38%, rgba(12,10,8,0.55) 70%, rgba(6,5,4,0.78) 100%);
+  background: linear-gradient(165deg, rgba(8,6,5,0.16) 0%, rgba(10,8,6,0.1) 38%, rgba(12,10,8,0.2) 70%, rgba(6,5,4,0.32) 100%);
 }
 .fs-band--image .fs-shade {
   position: absolute; inset: 0;
@@ -1574,7 +1873,7 @@ a { color: var(--amber); }
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(44, 26, 14, 0.55);
+  background: rgba(44, 26, 14, 0.14);
   mix-blend-mode: multiply;
   pointer-events: none;
   z-index: 1;
@@ -1588,7 +1887,7 @@ a { color: var(--amber); }
   display: block;
   position: relative;
   z-index: 0;
-  filter: sepia(0.3) brightness(0.85);
+  filter: sepia(0.12) brightness(1.04) saturate(1.02);
 }
 .fs-demo-split__stats {
   position: absolute;
@@ -1599,7 +1898,7 @@ a { color: var(--amber); }
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  background: linear-gradient(180deg, transparent 0%, rgba(6, 5, 4, 0.2) 35%, rgba(8, 6, 5, 0.88) 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(6, 5, 4, 0.06) 40%, rgba(8, 6, 5, 0.42) 100%);
   pointer-events: none;
   z-index: 2;
 }
@@ -1607,7 +1906,7 @@ a { color: var(--amber); }
   text-align: center;
   padding: 10px 6px 8px;
   border-radius: 14px;
-  background: rgba(12, 10, 8, 0.52);
+  background: rgba(12, 10, 8, 0.28);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   border: 1px solid rgba(245, 240, 232, 0.14);
@@ -1660,26 +1959,74 @@ a { color: var(--amber); }
 .fs-demo-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
+  gap: 8px;
   justify-content: flex-start;
   margin: 0 0 14px;
 }
+/* Chip + brain + gradient label (matches partner / OTOS tonal type) */
 .fs-demo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.04em;
-  padding: 6px 12px;
+  padding: 7px 13px 7px 10px;
   border-radius: 999px;
-  background: rgba(255, 252, 248, 0.92);
-  border: 1px solid rgba(200, 146, 42, 0.28);
-  color: rgba(26, 20, 16, 0.78);
+  background: linear-gradient(165deg, rgba(255, 252, 248, 0.98) 0%, rgba(252, 246, 236, 0.96) 100%);
+  border: 1px solid rgba(200, 146, 42, 0.32);
+  box-shadow: 0 2px 14px rgba(26, 20, 16, 0.05), 0 0 0 1px rgba(255, 252, 248, 0.85) inset;
+}
+.fs-demo-pill::before {
+  content: '';
+  flex-shrink: 0;
+  width: 14px;
+  height: 17px;
+  background: url('brain.png') center / contain no-repeat;
+  opacity: 0.26;
+  filter: sepia(0.48) saturate(1.12);
 }
 .fs-route { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); text-align: left; margin-bottom: 8px; }
 .fs-demos-stack .fs-demo-split__copy h3 { font-family: var(--font-h); text-align: left; margin: 0 0 8px; font-size: clamp(1.15rem, 2vw, 1.35rem); }
-.fs-demos-stack .fs-demo-split__copy ul { list-style: none; padding: 0; margin: 0; font-size: clamp(12px, 1.25vw, 13px); color: var(--muted); }
-.fs-demos-stack .fs-demo-split__copy li { padding: 6px 0 6px 18px; position: relative; border-top: 1px solid rgba(193,127,36,0.1); }
-.fs-demos-stack .fs-demo-split__copy li:first-child { border-top: none; }
-.fs-demos-stack .fs-demo-split__copy li::before { content: '→'; position: absolute; left: 0; color: var(--teal); font-size: 10px; top: 8px; }
+.fs-demos-stack .fs-demo-split__copy ul.fs-demo-points {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: clamp(13px, 1.35vw, 14px);
+}
+.fs-demos-stack .fs-demo-split__copy ul.fs-demo-points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 8px 0;
+  border-top: 1px solid rgba(193, 127, 36, 0.08);
+  line-height: 1.55;
+}
+.fs-demos-stack .fs-demo-split__copy ul.fs-demo-points li > .text-gradient-soft {
+  flex: 1;
+  min-width: 0;
+}
+.fs-demos-stack .fs-demo-split__copy ul.fs-demo-points li:first-child {
+  border-top: none;
+  padding-top: 2px;
+}
+.fs-demos-stack .fs-demo-split__copy ul.fs-demo-points li::before {
+  content: '';
+  flex-shrink: 0;
+  width: 22px;
+  height: 26px;
+  margin-top: 1px;
+  background: url('brain.png') center / contain no-repeat;
+  opacity: 0.22;
+  filter: sepia(0.45) saturate(1.15);
+}
+@supports not (-webkit-background-clip: text) {
+  .fs-demos-stack .fs-demo-split__copy ul.fs-demo-points li > .text-gradient-soft {
+    background: none !important;
+    -webkit-text-fill-color: unset !important;
+    color: rgba(44, 36, 28, 0.9) !important;
+  }
+}
 @media (max-width: 900px) {
   .fs-demo-split {
     grid-template-columns: 1fr;
@@ -1733,13 +2080,13 @@ a { color: var(--amber); }
   height: 200px;
   background: #2a241c center / cover no-repeat;
   flex-shrink: 0;
-  filter: sepia(0.3) brightness(0.88);
+  filter: sepia(0.12) brightness(1.02) saturate(1.02);
 }
 .fs-control-card__img::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(44, 26, 14, 0.5);
+  background: rgba(44, 26, 14, 0.16);
   mix-blend-mode: multiply;
   pointer-events: none;
 }
@@ -1755,29 +2102,131 @@ a { color: var(--amber); }
 .fs-control-card li:first-child { border-top: none; }
 .fs-control-card li::before { content: '→'; position: absolute; left: 0; color: var(--teal); font-size: 9px; top: 5px; }
 
-/* Partners */
+/* Partners — editorial cards + SUN visual */
+.fs-partner-showcase {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+.fs-partner-sun-figure {
+  margin: clamp(1rem, 3vw, 1.75rem) 0 clamp(1.5rem, 4vw, 2.5rem);
+  text-align: center;
+}
+.fs-partner-sun-frame {
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(193, 127, 36, 0.22);
+  box-shadow:
+    0 22px 56px rgba(26, 20, 16, 0.1),
+    0 0 0 1px rgba(255, 252, 248, 0.65) inset;
+  background: linear-gradient(155deg, rgba(255, 252, 248, 0.95) 0%, rgba(248, 241, 230, 0.9) 50%, rgba(255, 255, 255, 0.88) 100%);
+}
+.fs-partner-sun-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+  vertical-align: middle;
+}
+.fs-partner-sun-figure figcaption {
+  margin-top: 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(90, 78, 64, 0.72);
+}
 .fs-partner-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
+  gap: clamp(1.25rem, 2.8vw, 1.85rem);
   max-width: 1100px;
   margin: 0 auto;
 }
 @media (max-width: 900px) { .fs-partner-grid { grid-template-columns: 1fr; } }
 .fs-partner {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(193, 127, 36, 0.14);
-  border-radius: 20px;
-  padding: 1.35rem 1.5rem;
-  box-shadow: 0 8px 32px rgba(26, 20, 16, 0.07);
+  position: relative;
+  background: linear-gradient(168deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 252, 248, 0.88) 48%, rgba(252, 248, 242, 0.9) 100%);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(193, 127, 36, 0.16);
+  border-radius: 22px;
+  padding: clamp(1.55rem, 2.8vw, 2.15rem) clamp(1.45rem, 2.6vw, 1.95rem);
+  box-shadow:
+    0 12px 40px rgba(26, 20, 16, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.85) inset;
+  overflow: hidden;
 }
-.fs-phase { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); margin-bottom: 8px; }
-.fs-partner h3 { font-family: var(--font-h); margin: 0 0 10px; font-size: 1.25rem; }
-.fs-partner p { font-size: 0.9rem; margin: 0 0 10px; color: rgba(26,20,10,0.78); }
-.fs-partner ul { list-style: none; padding: 0; margin: 0; font-size: 0.85rem; }
-.fs-partner li { padding: 0.35rem 0; border-top: 1px solid rgba(193,127,36,0.1); color: rgba(26,20,10,0.75); }
-.fs-partner li:first-child { border-top: none; }
+.fs-partner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 22px 22px 0 0;
+  background: linear-gradient(90deg, rgba(193, 127, 36, 0.85) 0%, rgba(193, 127, 36, 0.35) 42%, rgba(124, 158, 148, 0.25) 100%);
+  pointer-events: none;
+}
+.fs-phase {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.85rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(193, 127, 36, 0.09);
+  border: 1px solid rgba(193, 127, 36, 0.2);
+}
+.fs-partner h3 {
+  font-family: var(--font-h);
+  font-style: italic;
+  font-weight: 700;
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.32rem, 2.3vw, 1.68rem);
+  line-height: 1.18;
+}
+.fs-partner p {
+  font-size: clamp(0.94rem, 1.15vw, 1.02rem);
+  line-height: 1.58;
+  margin: 0 0 1.1rem;
+  color: rgba(26, 20, 10, 0.78);
+}
+.fs-partner ul {
+  list-style: none;
+  padding: 0.35rem 0 0;
+  margin: 0;
+  border-top: 1px solid rgba(193, 127, 36, 0.1);
+}
+.fs-partner li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.65rem 0;
+  border-top: 1px solid rgba(193, 127, 36, 0.07);
+  font-size: clamp(0.9rem, 1.05vw, 0.97rem);
+  line-height: 1.5;
+  color: rgba(26, 20, 10, 0.82);
+}
+.fs-partner li:first-child {
+  border-top: none;
+  padding-top: 0.85rem;
+}
+.fs-partner li::before {
+  content: '';
+  flex: 0 0 26px;
+  width: 26px;
+  height: 30px;
+  margin-top: 0.1rem;
+  background: url('brain.png') center / contain no-repeat;
+  opacity: 0.2;
+  filter: sepia(0.45) saturate(1.15);
+}
+.fs-partner li:first-child::before {
+  margin-top: 0.05rem;
+}
 
 /* Stats dark */
 .fs-stats-dark { text-align: center; padding: clamp(1.75rem, 4vw, 2.85rem) 1.5rem; }
@@ -2013,9 +2462,6 @@ a { color: var(--amber); }
 }
 .fs-report-intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 900px; margin: 0 auto 16px; padding: 8px 8px 0; }
 @media (max-width: 720px) { .fs-report-intro-grid { grid-template-columns: 1fr; } }
-.fs-partners-intro { text-align: center; max-width: 1100px; margin: 0 auto 1.5rem; padding: 0 1rem; }
-.fs-partners-intro .lbl { display: block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--amber); margin: 0 0 0.75rem; }
-.fs-partners-intro h2 { font-family: var(--font-h); font-size: clamp(1.5rem, 3vw, 2.1rem); margin: 0; font-weight: 700; font-style: italic; }
 .fs-quote--left cite { display: block; font-family: var(--font-b); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--amber); font-style: normal; margin-top: 8px; }
 
 /* —— No scroll-driven text motion (static copy; avoids gradient/clip “blue box” glitches during transitions) —— */
@@ -2115,30 +2561,68 @@ a { color: var(--amber); }
   </div>
 </section>
 
-<!-- HOW IT WORKS — static (no scroll-pin; presentation-safe) -->
-<section id="fs-how" class="fs-sec-tpl-cream fs-how-static" aria-labelledby="fs-how-heading">
+<!-- HOW IT WORKS — diagram timeline + product visual (static; presentation-safe) -->
+<section id="fs-how" class="fs-sec-tpl-cream fs-how-static fs-how-static--premium" aria-labelledby="fs-how-heading">
   <span class="fs-sec-label fs-sec-label--light">How it works</span>
-  <div class="fs-sec-tpl-cream__stack fs-sec-tpl-cream__stack--left">
-    <h2 id="fs-how-heading" class="fs-how-static__h2">The shape of a pathway &mdash; so you can see where it bends and where it breaks.</h2>
-    <p class="fs-how-static__sub">Low integration. Low disruption. High clarity.</p>
-    <div class="fs-how-grid">
-      <article class="fs-how-card">
-        <h3>A signal is detected</h3>
-        <p>A tokenised touchpoint triggers a continuity alert. No name. No record.</p>
-      </article>
-      <article class="fs-how-card">
-        <h3>The partner team reviews</h3>
-        <p>OTOS surfaces the signal. The team decides what happens next. Always.</p>
-      </article>
-      <article class="fs-how-card">
-        <h3>The handoff is tracked</h3>
-        <p>Whether the connection lands is now visible. For the first time.</p>
-      </article>
-      <article class="fs-how-card">
-        <h3>The thread holds</h3>
-        <p>Every touchpoint adds to a picture of continuity &mdash; or confirms a gap.</p>
-      </article>
+  <div class="fs-how-layout">
+    <header class="fs-how-layout__intro">
+      <h2 id="fs-how-heading" class="fs-how-static__h2">How OTOS works &mdash; in four steps anyone can follow.</h2>
+      <p class="fs-how-static__sub">It&rsquo;s not a new clinical system. OTOS sits <strong>lightly on top</strong> of what you already run: <strong>anonymous touchpoints</strong>, <strong>human decisions only</strong>, and <strong>one journey thread</strong> so teams can see whether support actually <em>connects</em> &mdash; not just whether it was referred.</p>
+    </header>
+    <div class="fs-how-layout__grid">
+      <ol class="fs-how-steps">
+        <li class="fs-how-step">
+          <div class="fs-how-step__rail">
+            <div class="fs-how-step__num" aria-hidden="true"><span class="fs-how-step__num-inner">1</span></div>
+          </div>
+          <div class="fs-how-step__panel">
+            <span class="fs-how-step__tag">Touchpoint</span>
+            <h3 class="fs-how-step__title">Logged in seconds &mdash; no EPR write-back</h3>
+            <p class="fs-how-step__body">At the bedside, in the hub, or at the front door: staff open OTOS and record <strong>that a contact happened</strong> (when, where, what kind). The person can stay <strong>anonymous</strong>. OTOS keeps a <strong>tokenised signal</strong> &mdash; not a duplicate clinical record. <strong>Nothing writes back</strong> to your EPR.</p>
+          </div>
+        </li>
+        <li class="fs-how-step">
+          <div class="fs-how-step__rail">
+            <div class="fs-how-step__num" aria-hidden="true"><span class="fs-how-step__num-inner">2</span></div>
+          </div>
+          <div class="fs-how-step__panel">
+            <span class="fs-how-step__tag">Human review</span>
+            <h3 class="fs-how-step__title">The right team sees the signal</h3>
+            <p class="fs-how-step__body">That touchpoint <strong>surfaces in the partner workflow</strong> that needs to act (ward, VCSE, primary care &mdash; configured in the pilot). OTOS does <strong>not</strong> auto-discharge, auto-refer, or decide care. <strong>People choose</strong> outreach, referral, or no further action.</p>
+          </div>
+        </li>
+        <li class="fs-how-step">
+          <div class="fs-how-step__rail">
+            <div class="fs-how-step__num" aria-hidden="true"><span class="fs-how-step__num-inner">3</span></div>
+          </div>
+          <div class="fs-how-step__panel">
+            <span class="fs-how-step__tag">Follow-through</span>
+            <h3 class="fs-how-step__title">See whether the handoff actually landed</h3>
+            <p class="fs-how-step__body">When a referral or handoff is made, OTOS tracks <strong>whether the next step happened</strong> &mdash; as <strong>signals</strong> (e.g. attended, callback made), not by exposing another service&rsquo;s notes. You can answer: <em>did continuity hold, or did we lose them in the gap?</em></p>
+          </div>
+        </li>
+        <li class="fs-how-step">
+          <div class="fs-how-step__rail">
+            <div class="fs-how-step__num" aria-hidden="true"><span class="fs-how-step__num-inner">4</span></div>
+          </div>
+          <div class="fs-how-step__panel">
+            <span class="fs-how-step__tag">One thread</span>
+            <h3 class="fs-how-step__title">Every step stitches onto the same journey</h3>
+            <p class="fs-how-step__body">Approved touchpoints <strong>add to one thread over time</strong>. Reporting shows the <strong>shape of the pathway</strong> &mdash; where people flow, where they stall, where drop-off repeats. Same pilot stance: <strong>low integration</strong> into existing systems, <strong>high clarity</strong> for governance and improvement.</p>
+          </div>
+        </li>
+      </ol>
+      <figure class="fs-how-visual">
+        <div class="fs-how-visual__frame">
+          <img src="images/sun-dashboard-devices.png" width="1536" height="1024" loading="lazy" decoding="async" alt="OTOS dashboards on phone, tablet, and desktop: the continuity signals teams see in the pilot." />
+        </div>
+        <figcaption><strong>Pilot reality, not a slide.</strong> Co-produced with SUN Network &mdash; the same thread and reporting ideas you&rsquo;ll walk through in the demo routes below.</figcaption>
+      </figure>
     </div>
+    <footer class="fs-how-foot">
+      <a href="#fs-demos">Three demo routes with real scenarios &amp; photos &rarr;</a>
+      <a href="wireframes/flow-overview.html">Step-by-step wireframes (every screen) &rarr;</a>
+    </footer>
   </div>
 </section>
 
@@ -2183,18 +2667,18 @@ a { color: var(--amber); }
         <h3>Helen, ward nurse</h3>
         <p style="color:var(--muted); font-size:clamp(13px,1.35vw,14px); line-height:1.6; margin:0 0 1rem;">A patient is being discharged from Addenbrooke&rsquo;s after a crisis admission. Helen uses OTOS to create a continuity thread before the patient leaves the ward.</p>
         <div class="fs-demo-pills" aria-label="Bedside demo highlights">
-          <span class="fs-demo-pill">Seconds at the bedside</span>
-          <span class="fs-demo-pill">Touchpoint logged</span>
-          <span class="fs-demo-pill">Thread before discharge</span>
-          <span class="fs-demo-pill">Community keyworker notified</span>
-          <span class="fs-demo-pill">No EPR write-back</span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Seconds at the bedside</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Touchpoint logged</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Thread before discharge</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Community keyworker notified</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">No EPR write-back</span></span>
         </div>
-        <ul>
-          <li>One tap at the bedside</li>
-          <li>Journey thread created before discharge</li>
-          <li>Community keyworker notified</li>
-          <li>No EPR write-back</li>
-          <li>No extra paperwork</li>
+        <ul class="fs-demo-points">
+          <li><span class="text-gradient-soft">One tap at the bedside</span></li>
+          <li><span class="text-gradient-soft">Journey thread created before discharge</span></li>
+          <li><span class="text-gradient-soft">Community keyworker notified</span></li>
+          <li><span class="text-gradient-soft">No EPR write-back</span></li>
+          <li><span class="text-gradient-soft">No extra paperwork</span></li>
         </ul>
         <a class="fs-demo-wf" href="wireframes/flow-overview.html#flow-helen">See step-by-step →</a>
       </div>
@@ -2215,18 +2699,18 @@ a { color: var(--amber); }
         <h3>Marcus, community keyworker</h3>
         <p style="color:var(--muted); font-size:clamp(13px,1.35vw,14px); line-height:1.6; margin:0 0 1rem;">Marcus works at a drop-in community hub. Someone comes in who has been bouncing between services. He registers a touchpoint and the thread picks up where it left off.</p>
         <div class="fs-demo-pills" aria-label="Community hub demo highlights">
-          <span class="fs-demo-pill">Token continuity</span>
-          <span class="fs-demo-pill">No name required</span>
-          <span class="fs-demo-pill">10-second touchpoint</span>
-          <span class="fs-demo-pill">Pattern visible to manager</span>
-          <span class="fs-demo-pill">Same workflow for Marcus</span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Token continuity</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">No name required</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">10-second touchpoint</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Pattern visible to manager</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Same workflow for Marcus</span></span>
         </div>
-        <ul>
-          <li>Existing thread found by token</li>
-          <li>No name required</li>
-          <li>Touchpoint logged in 10 seconds</li>
-          <li>Service manager alerted to pattern</li>
-          <li>Nothing changes in Marcus&rsquo;s workflow</li>
+        <ul class="fs-demo-points">
+          <li><span class="text-gradient-soft">Existing thread found by token</span></li>
+          <li><span class="text-gradient-soft">No name required</span></li>
+          <li><span class="text-gradient-soft">Touchpoint logged in 10 seconds</span></li>
+          <li><span class="text-gradient-soft">Service manager alerted to pattern</span></li>
+          <li><span class="text-gradient-soft">Nothing changes in Marcus&rsquo;s workflow</span></li>
         </ul>
         <a class="fs-demo-wf" href="wireframes/flow-overview.html#flow-coordinator">See step-by-step →</a>
       </div>
@@ -2247,29 +2731,22 @@ a { color: var(--amber); }
         <h3>Dr Priya, GP</h3>
         <p style="color:var(--muted); font-size:clamp(13px,1.35vw,14px); line-height:1.6; margin:0 0 1rem;">Dr Priya has a patient she has referred twice to addiction services. She doesn&rsquo;t know if they attended. OTOS shows her the thread without showing her clinical records from other services.</p>
         <div class="fs-demo-pills" aria-label="Primary care demo highlights">
-          <span class="fs-demo-pill">Anonymous signal only</span>
-          <span class="fs-demo-pill">No cross-service records</span>
-          <span class="fs-demo-pill">Follow-through visible</span>
-          <span class="fs-demo-pill">Referral pattern clear</span>
-          <span class="fs-demo-pill">Decisions stay clinical</span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Anonymous signal only</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">No cross-service records</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Follow-through visible</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Referral pattern clear</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Decisions stay clinical</span></span>
         </div>
-        <ul>
-          <li>Anonymous signal only</li>
-          <li>No cross-service records</li>
-          <li>Follow-through visible</li>
-          <li>Referral confirmed</li>
-          <li>Clinical decisions stay with the team</li>
+        <ul class="fs-demo-points">
+          <li><span class="text-gradient-soft">Anonymous signal only</span></li>
+          <li><span class="text-gradient-soft">No cross-service records</span></li>
+          <li><span class="text-gradient-soft">Follow-through visible</span></li>
+          <li><span class="text-gradient-soft">Referral confirmed</span></li>
+          <li><span class="text-gradient-soft">Clinical decisions stay with the team</span></li>
         </ul>
         <a class="fs-demo-wf" href="wireframes/flow-overview.html#flow-commissioner">See step-by-step →</a>
       </div>
     </article>
-  </div>
-</section>
-
-<section class="fs-band fs-band--mid fs-band--statement" aria-label="Transition">
-  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--fade" data-fs-statement>
-    <p class="fs-statement__line text-gradient-soft">Real wards. Real hubs. Real GP practices.</p>
-    <p class="fs-statement__line fs-statement__line--sub">Same thread. Same anonymous signal. Nothing extra on the clipboard.</p>
   </div>
 </section>
 
@@ -2282,7 +2759,7 @@ a { color: var(--amber); }
       <h2 class="fs-strapline-xl text-gradient-soft">No wrong door. No dead end.</h2>
       <p class="fs-strapline-sub">Whoever they meet first can register the thread in seconds &mdash; name optional, continuity not.</p>
     </div>
-    <div class="fs-statement fs-statement--left fs-statement--wide fs-statement--fade" data-fs-statement style="margin-top:1.75rem;">
+    <div class="fs-statement fs-statement--left fs-statement--wide fs-statement--fade fs-statement--pullquote" data-fs-statement style="margin-top:1.75rem;">
       <p class="fs-statement__line text-gradient-soft">The support existed. None of it was connected.</p>
       <p class="fs-statement__line fs-statement__line--cite">Continuity framing</p>
     </div>
@@ -2296,22 +2773,21 @@ a { color: var(--amber); }
   <div class="fs-center">
     <span class="fs-kicker">Infrastructure Partners</span>
     <div class="fs-reveal" data-fs-reveal>
-      <h2 class="fs-h2">The infrastructure already exists.<br>OTOS connects it.</h2>
+      <h2 class="fs-h2 text-gradient-soft">The infrastructure already exists.<br>OTOS connects it.</h2>
       <p style="color:var(--muted); font-size:clamp(1rem,1.8vw,1.12rem); max-width:56ch; margin:0.75rem auto 0;">Three strategic relationships. Each one strengthening a different dimension of the OTOS proposition.</p>
     </div>
   </div>
-  <div class="fs-partners-intro">
-    <span class="lbl">Strategic connections</span>
-    <div class="fs-reveal" data-fs-reveal><h2>Not operating alone.</h2></div>
-  </div>
-  <div class="fs-center" style="margin-bottom:2rem;">
-    <p style="font-family:var(--font-h); font-style:italic; font-size:clamp(1.1rem,2vw,1.35rem); font-weight:600; margin:0;">&ldquo;Community is the continuity.&rdquo;</p>
-    <p style="color:var(--muted); font-size:0.85rem; margin:0.5rem 0 0;">Co-produced with SUN Network and people with lived experience.</p>
-  </div>
+  <div class="fs-partner-showcase">
+  <figure class="fs-partner-sun-figure">
+    <div class="fs-partner-sun-frame">
+      <img src="images/sun-dashboard-devices.png" width="1536" height="1024" loading="lazy" decoding="async" alt="SUN Network co-produced OTOS dashboards on phone, tablet, and desktop screens." />
+    </div>
+    <figcaption>SUN Network &mdash; co-produced dashboards (lived experience in the design)</figcaption>
+  </figure>
   <div class="fs-partner-grid">
     <div class="fs-partner">
       <div class="fs-phase">Phase 1 — Active</div>
-      <h3>SUN Network</h3>
+      <h3 class="text-gradient-soft">SUN Network</h3>
       <p>Co-production lead. Service user voice, participant-facing language design, and evaluation credibility. SUN's involvement is budgeted, structured, and produces a named deliverable in the evaluation report.</p>
       <ul>
         <li>Independent service user representation</li>
@@ -2322,7 +2798,7 @@ a { color: var(--amber); }
     </div>
     <div class="fs-partner">
       <div class="fs-phase">L2 — Named strategic connection</div>
-      <h3>QbTest</h3>
+      <h3 class="text-gradient-soft">QbTest</h3>
       <p>When a partner flags a suspected ADHD indicator, OTOS carries that signal to the referral route. NHS Right to Choose is already available — every service provider can use it. QbTest is the fast-track assessment tool at the end of that pathway.</p>
       <ul>
         <li>Partner flags indicator — OTOS carries the signal</li>
@@ -2333,7 +2809,7 @@ a { color: var(--amber); }
     </div>
     <div class="fs-partner">
       <div class="fs-phase">L3 — Named strategic connection</div>
-      <h3>Joy (JoyConnect)</h3>
+      <h3 class="text-gradient-soft">Joy (JoyConnect)</h3>
       <p>Joy gets people to the right front door. OTOS makes sure they follow through. A natural Phase 3 extension as OTOS expands into Neighbourhood Health and the 250 planned NHS community hubs across England.</p>
       <ul>
         <li>Joy: GP-level signposting, primary care workflow</li>
@@ -2342,6 +2818,7 @@ a { color: var(--amber); }
         <li>Phase 1 requires no Joy integration</li>
       </ul>
     </div>
+  </div>
   </div>
 
   <div class="fs-split fs-split--hubs" style="margin-top:clamp(1.25rem,3vw,2.25rem); border-radius:22px; overflow:hidden; border:1px solid rgba(193,127,36,0.18); box-shadow:0 18px 48px rgba(26,20,16,0.08);">
@@ -2361,7 +2838,7 @@ a { color: var(--amber); }
 
 <section class="fs-band fs-band--mid fs-band--statement" aria-label="Community continuity">
   <span class="fs-brain-inline fs-brain-inline--bl" aria-hidden="true"></span>
-  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--mix" data-fs-statement>
+  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--mix fs-statement--pullquote" data-fs-statement>
     <p class="fs-statement__line text-gradient-soft">&ldquo;Community is the continuity.&rdquo;</p>
     <p class="fs-statement__line fs-statement__line--sub">Co-produced with SUN Network and people with lived experience.</p>
   </div>
@@ -2405,7 +2882,7 @@ a { color: var(--amber); }
 </section>
 
 <section class="fs-band fs-band--alt fs-band--statement" aria-label="Architecture strapline">
-  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--mix" data-fs-statement>
+  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--mix fs-statement--pullquote" data-fs-statement>
     <p class="fs-statement__line text-gradient-soft">The silent layer that connects every service.</p>
     <p class="fs-statement__line fs-statement__line--sub">No write-back. No diagnostic theatre. Human control, always.</p>
   </div>
@@ -2475,7 +2952,7 @@ a { color: var(--amber); }
       </div>
     </div>
   </div>
-  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--fade" data-fs-statement style="margin:2rem auto 0;">
+  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--fade fs-statement--pullquote" data-fs-statement style="margin:2rem auto 0;">
     <p class="fs-statement__line text-gradient-soft">Low integration. Low disruption. High clarity.</p>
     <p class="fs-statement__line fs-statement__line--sub">Governance you can stand in front of on day one.</p>
   </div>
@@ -2511,7 +2988,7 @@ a { color: var(--amber); }
 </section>
 
 <section class="fs-band fs-band--cream fs-band--statement" aria-label="Connection and continuity">
-  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--mix" data-fs-statement>
+  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--mix fs-statement--pullquote" data-fs-statement>
     <p class="fs-statement__line text-gradient-soft">The opposite of addiction is connection. But connection needs continuity.</p>
     <p class="fs-statement__line fs-statement__line--sub">Framing line &mdash; not a clinical claim.</p>
   </div>
