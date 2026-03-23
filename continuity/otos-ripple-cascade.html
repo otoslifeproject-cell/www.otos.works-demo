@@ -31,8 +31,8 @@
   <canvas id="rippleCanvas"></canvas>
   <script>
     // ============================================================
-    // OTOS RIPPLE CASCADE — Canonical briefing animation (full-scroll design alignment)
-    // UI hierarchy: cost ticker (top-right) → narrative band (bottom) → Act 6 finale headline (centre)
+    // OTOS RIPPLE CASCADE — CPFT map frame + centre cost + narrative below frame
+    // Rings bleed outside region (dimmed); nodes emphasised; inward burst → freeze/breeding → chaos → ???
     // OTOS Digital Ltd — All values sourced from OTOS Evidence Ledger V1.1
     // ============================================================
 
@@ -49,7 +49,7 @@
       ACT2_DURATION: 14000,
       ACT3_DURATION: 20000,
       ACT4_DURATION: 14000,
-      ACT5_DURATION: 16000,
+      ACT5_DURATION: 26000,
       ACT6_DURATION: 10000,
       TRANSITION_DURATION: 800,
       TEXT_FADE_DURATION: 600,
@@ -141,8 +141,9 @@
       VIGNETTE_OUTER_ALPHA:        0.60,
       VIGNETTE_OUTER_RADIUS_FACTOR: 0.55,
 
-      // Narrator — lower band (supporting layer; does not compete with ticker)
-      NARRATOR_FROM_BOTTOM_RATIO: 0.10,
+      // Narrator — below CPFT map frame (fallback ratio if map not ready)
+      NARRATOR_MAP_GAP: 20,
+      NARRATOR_FROM_BOTTOM_RATIO: 0.08,
       NARRATOR_FONT_SIZE:      22,
       NARRATOR_FONT_WEIGHT:    500,
       NARRATOR_MAX_WIDTH_RATIO: 0.78,
@@ -201,12 +202,53 @@
       LAYER3_BIRTH_PULSE_LINE_WIDTH: 1.2,
       LAYER3_BIRTH_PULSE_STROKE: 'rgba(255, 180, 80, 0.9)',
       LAYER3_ORIGIN_DOT_RADIUS:  6,
-      LAYER3_ORIGIN_A_X: 0.28,
-      LAYER3_ORIGIN_A_Y: 0.38,
-      LAYER3_ORIGIN_B_X: 0.71,
-      LAYER3_ORIGIN_B_Y: 0.62,
-      LAYER3_ORIGIN_C_X: 0.19,
-      LAYER3_ORIGIN_C_Y: 0.67,
+      LAYER3_ORIGIN_A_NX: 0.22,
+      LAYER3_ORIGIN_A_NY: 0.32,
+      LAYER3_ORIGIN_B_NX: 0.72,
+      LAYER3_ORIGIN_B_NY: 0.55,
+      LAYER3_ORIGIN_C_NX: 0.5,
+      LAYER3_ORIGIN_C_NY: 0.72,
+
+      // ── CPFT map frame (Cambridgeshire & Peterborough outline asset) ──
+      CPFT_MAP_SRC: 'images/cpft-coverage-region.png',
+      CPFT_MAP_MAX_HEIGHT_RATIO: 0.5,
+      CPFT_MAP_CENTER_Y_RATIO:   0.4,
+      CPFT_OUTSIDE_DIM_ALPHA:    0.52,
+      CPFT_MAP_OVERLAY_ALPHA:    0.58,
+      CPFT_NODE_GLOW_RADIUS:     5,
+      // Normalised positions on map image (0–1, origin top-left of image)
+      CPFT_ORIGIN_NX: 0.48,
+      CPFT_ORIGIN_NY: 0.4,
+      CPFT_NODES: [
+        { nx: 0.14, ny: 0.12, label: 'Peterborough' },
+        { nx: 0.86, ny: 0.1,  label: 'Wisbech' },
+        { nx: 0.58, ny: 0.18, label: 'March' },
+        { nx: 0.48, ny: 0.4,  label: 'Chatteris' },
+        { nx: 0.74, ny: 0.42, label: 'Ely' },
+        { nx: 0.26, ny: 0.42, label: 'Huntingdon' },
+        { nx: 0.44, ny: 0.66, label: 'St Ives' },
+        { nx: 0.16, ny: 0.74, label: 'St Neots' },
+        { nx: 0.58, ny: 0.82, label: 'Cambridge' }
+      ],
+
+      // Centre counter (dead screen centre — primary focal)
+      COUNTER_CENTRE_LABEL_SIZE: 11,
+      COUNTER_CENTRE_VALUE_SIZE: 56,
+      COUNTER_CENTRE_SUB_SIZE:   13,
+      COUNTER_CENTRE_PANEL_PAD_X: 28,
+      COUNTER_CENTRE_PANEL_PAD_Y: 22,
+      COUNTER_CENTRE_RADIUS:      20,
+
+      // Act 4 end — inward “bounce” rings (contracting, visual only)
+      ACT4_INWARD_BURST_BEFORE_END_MS: 3200,
+      ACT4_INWARD_RING_COUNT: 5,
+      ACT4_INWARD_RING_DURATION_MS: 3200,
+      ACT4_INWARD_MAX_RADIUS_RATIO: 0.95,
+
+      // Act 5 — post-freeze chaos counter + ???
+      ACT5_CHAOS_SPIRAL_MS:     4500,
+      ACT5_CHAOS_HOLD_QUESTION_MS: 2800,
+      ACT5_FINAL_NARRATOR: 'Who knows the true end cost — and impact — of this deadly combination?',
     };
 
     // ============================================================
@@ -388,11 +430,23 @@
       act6FinaleStartTime: null,
       act6NarratorClearFired: false,
 
+      // CPFT map + story beats
+      cpftMapImage: null,
+      cpftMaskCanvas: null,
+      cpftMapRect: null,
+      cpftCentroidCanvas: null,
+      act4InwardBurstFired: false,
+      act5ChaosStartTime: null,
+      act5ExplosiveFired: false,
+      act5QuestionPhase: false,
+      act5FinalNarratorDone: false,
+
       // Ring pool
       rings: [],
       pulses: [],
       ghostTraces: [],
 
+      act1CounterKickoff: false,
       // Per-act ring spawn flags
       act1RingSpawned: false,
       act2RingSpawned: false,
@@ -449,7 +503,7 @@
       freezeLines: [
         { text: "The cost doesn't decline.", alpha: 0, triggered: false,
           size: CONFIG.FREEZE_LINE1_SIZE, color: '#ffffff',   style: '700' },
-        { text: 'It breeds.',               alpha: 0, triggered: false,
+        { text: "But there's breeding going on.", alpha: 0, triggered: false,
           size: CONFIG.FREEZE_LINE2_SIZE, color: '#ff8a00', style: '700 italic' },
         { text: 'Ignore it now, and the waveform doubles.', alpha: 0, triggered: false,
           size: CONFIG.FREEZE_LINE3_SIZE, color: 'rgba(255,255,255,0.65)', style: '400' }
@@ -462,14 +516,163 @@
     };
 
     // ============================================================
+    // CPFT coverage map — frame, interior mask, node layout
+    // ============================================================
+
+    function buildCpftInteriorMask(img) {
+      const w = img.naturalWidth;
+      const h = img.naturalHeight;
+      const oc = document.createElement('canvas');
+      oc.width = w;
+      oc.height = h;
+      const ox = oc.getContext('2d');
+      ox.drawImage(img, 0, 0);
+      const { data } = ox.getImageData(0, 0, w, h);
+
+      function lightAt(px, py) {
+        if (px < 0 || py < 0 || px >= w || py >= h) return false;
+        const i = (py * w + px) * 4;
+        return data[i] > 210 && data[i + 1] > 210 && data[i + 2] > 210;
+      }
+
+      let sx = Math.floor(w / 2);
+      let sy = Math.floor(h / 2);
+      if (!lightAt(sx, sy)) {
+        let found = false;
+        for (let py = 0; py < h && !found; py += 4) {
+          for (let px = 0; px < w && !found; px += 4) {
+            if (lightAt(px, py)) { sx = px; sy = py; found = true; }
+          }
+        }
+        if (!found) return null;
+      }
+
+      const filled = new Uint8Array(w * h);
+      const stack = [[sx, sy]];
+      while (stack.length) {
+        const [x, y] = stack.pop();
+        const idx = y * w + x;
+        if (x < 0 || y < 0 || x >= w || y >= h || filled[idx]) continue;
+        if (!lightAt(x, y)) continue;
+        filled[idx] = 1;
+        stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+      }
+
+      const mc = document.createElement('canvas');
+      mc.width = w;
+      mc.height = h;
+      const mx = mc.getContext('2d');
+      const imgData = mx.createImageData(w, h);
+      for (let i = 0; i < filled.length; i++) {
+        if (!filled[i]) continue;
+        const p = i * 4;
+        imgData.data[p] = 255;
+        imgData.data[p + 1] = 255;
+        imgData.data[p + 2] = 255;
+        imgData.data[p + 3] = 255;
+      }
+      mx.putImageData(imgData, 0, 0);
+      return mc;
+    }
+
+    function loadCpftMap() {
+      const im = new Image();
+      im.crossOrigin = 'anonymous';
+      im.onload = () => {
+        state.cpftMapImage = im;
+        state.cpftMaskCanvas = buildCpftInteriorMask(im);
+        layoutCPFTMap();
+        if (state.act2Points_canvas.length > 0) reinitAct2Coords();
+        if (state.act3Points_canvas.length > 0) reinitAct3Coords();
+        rebuildLayer3OriginCanvasCoords();
+        if (state.act4Points_canvas.length > 0) reinitAct4Coords();
+      };
+      im.src = CONFIG.CPFT_MAP_SRC;
+    }
+
+    function layoutCPFTMap() {
+      const img = state.cpftMapImage;
+      if (!img || !img.naturalWidth) return;
+      const maxH = canvas.height * CONFIG.CPFT_MAP_MAX_HEIGHT_RATIO;
+      const aspect = img.naturalWidth / img.naturalHeight;
+      const mh = maxH;
+      const mw = mh * aspect;
+      const x = (canvas.width - mw) / 2;
+      const cy = canvas.height * CONFIG.CPFT_MAP_CENTER_Y_RATIO;
+      const y = cy - mh / 2;
+      state.cpftMapRect = { x, y, w: mw, h: mh };
+      state.origin.x = x + CONFIG.CPFT_ORIGIN_NX * mw;
+      state.origin.y = y + CONFIG.CPFT_ORIGIN_NY * mh;
+      state.cpftCentroidCanvas = { x: state.origin.x, y: state.origin.y };
+    }
+
+    function mapNormToCanvas(nx, ny) {
+      const r = state.cpftMapRect;
+      if (!r) {
+        return { x: canvas.width * CONFIG.ORIGIN_X_RATIO, y: canvas.height * CONFIG.ORIGIN_Y_RATIO };
+      }
+      return { x: r.x + nx * r.w, y: r.y + ny * r.h };
+    }
+
+    function drawCpftOutsideDim() {
+      const r = state.cpftMapRect;
+      const mask = state.cpftMaskCanvas;
+      if (!r || !mask) return;
+      ctx.save();
+      ctx.fillStyle = `rgba(8, 6, 4, ${CONFIG.CPFT_OUTSIDE_DIM_ALPHA})`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.drawImage(mask, r.x, r.y, r.w, r.h);
+      ctx.restore();
+    }
+
+    function drawCpftMapOverlay() {
+      const r = state.cpftMapRect;
+      const img = state.cpftMapImage;
+      if (!r || !img) return;
+      ctx.save();
+      ctx.globalAlpha = CONFIG.CPFT_MAP_OVERLAY_ALPHA;
+      ctx.drawImage(img, r.x, r.y, r.w, r.h);
+      ctx.restore();
+    }
+
+    function drawCpftNodeEmphasis() {
+      const r = state.cpftMapRect;
+      if (!r) return;
+      const pr = scaled(CONFIG.CPFT_NODE_GLOW_RADIUS);
+      CONFIG.CPFT_NODES.forEach(n => {
+        const px = r.x + n.nx * r.w;
+        const py = r.y + n.ny * r.h;
+        ctx.save();
+        ctx.globalAlpha = 0.55;
+        ctx.beginPath();
+        ctx.arc(px, py, pr * 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(232, 114, 12, 0.35)';
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.beginPath();
+        ctx.arc(px, py, pr, 0, Math.PI * 2);
+        ctx.fillStyle = '#c62828';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,252,246,0.85)';
+        ctx.lineWidth = scaled(1);
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+
+    // ============================================================
     // Canvas resize — recalculate scaleFactor, origin, vignette
     // ============================================================
     function resizeCanvas() {
       canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
       scaleFactor = Math.min(canvas.width / 1280, canvas.height / 800);
-      state.origin.x = canvas.width  * CONFIG.ORIGIN_X_RATIO;
-      state.origin.y = canvas.height * CONFIG.ORIGIN_Y_RATIO;
+      layoutCPFTMap();
+      if (!state.cpftMapRect) {
+        state.origin.x = canvas.width  * CONFIG.ORIGIN_X_RATIO;
+        state.origin.y = canvas.height * CONFIG.ORIGIN_Y_RATIO;
+      }
       buildVignetteGradient();
       if (state.act2Points_canvas.length > 0) reinitAct2Coords();
       if (state.act3Points_canvas.length > 0) reinitAct3Coords();
@@ -544,69 +747,104 @@
       }
     }
 
-    function drawCounter() {
-      if (state.counterDisplayValue < 1) return;
-      const mx   = scaled(CONFIG.COUNTER_MARGIN_X);
-      const my   = scaled(CONFIG.COUNTER_MARGIN_Y);
-      const padX = scaled(CONFIG.COUNTER_PANEL_PAD_X);
-      const padY = scaled(CONFIG.COUNTER_PANEL_PAD_Y);
-      const rad  = scaled(CONFIG.COUNTER_PANEL_RADIUS);
+    function drawCounter(timestamp) {
+      if (state.currentAct < 1) return;
+      if (state.counterDisplayValue < 1 && !state.act1CounterKickoff && !state.act5ChaosStartTime && !state.act5QuestionPhase) return;
+
+      const padX = scaled(CONFIG.COUNTER_CENTRE_PANEL_PAD_X);
+      const padY = scaled(CONFIG.COUNTER_CENTRE_PANEL_PAD_Y);
+      const rad  = scaled(CONFIG.COUNTER_CENTRE_RADIUS);
+      const cx     = canvas.width / 2;
+      const cy     = canvas.height / 2;
+
+      let valueStr;
+      let chaosSpin = false;
+      if (state.act5QuestionPhase) {
+        valueStr = '???';
+      } else if (state.act5ChaosStartTime !== null) {
+        const dt = timestamp - state.act5ChaosStartTime;
+        if (dt >= CONFIG.ACT5_CHAOS_SPIRAL_MS) {
+          valueStr = '£' + Math.round(state.counterDisplayValue).toLocaleString('en-GB');
+        } else {
+          chaosSpin = true;
+          const spiral = dt * 2.8;
+          const v =
+            195000 +
+            Math.sin(spiral * 0.034) * 380000 +
+            (dt / CONFIG.ACT5_CHAOS_SPIRAL_MS) * 910000 +
+            Math.cos(spiral * 0.071) * 165000;
+          valueStr = '£' + Math.max(0, Math.floor(v)).toLocaleString('en-GB');
+        }
+      } else {
+        valueStr = '£' + Math.round(Math.max(0, state.counterDisplayValue)).toLocaleString('en-GB');
+      }
 
       ctx.save();
-      ctx.font = `600 ${scaled(CONFIG.COUNTER_VALUE_SIZE)}px 'Playfair Display', serif`;
-      const valueStr = '£' + Math.round(state.counterDisplayValue).toLocaleString('en-GB');
+      ctx.font = `600 ${scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE)}px 'Playfair Display', serif`;
       const valueW = ctx.measureText(valueStr).width;
 
-      ctx.font = `600 ${scaled(CONFIG.COUNTER_LABEL_SIZE)}px 'Inter', sans-serif`;
+      ctx.font = `600 ${scaled(CONFIG.COUNTER_CENTRE_LABEL_SIZE)}px 'Inter', sans-serif`;
       const labelStr = 'ANNUAL SYSTEM COST';
       const labelW = ctx.measureText(labelStr).width;
 
-      ctx.font = `300 ${scaled(CONFIG.COUNTER_SUB_SIZE)}px 'Inter', sans-serif`;
-      const subStr = 'per person · per year · indicative minimum';
+      ctx.font = `300 ${scaled(CONFIG.COUNTER_CENTRE_SUB_SIZE)}px 'Inter', sans-serif`;
+      const subStr = state.act5QuestionPhase
+        ? 'Indicative only — the true total is unknown.'
+        : 'per person · per year · indicative minimum';
       const subW = ctx.measureText(subStr).width;
 
-      const innerW = Math.min(
-        Math.max(valueW, labelW, subW) + padX * 2,
-        canvas.width - mx * 2
-      );
+      const innerW = Math.min(Math.max(valueW, labelW, subW) + padX * 2, canvas.width - scaled(24));
       const innerH =
         padY * 2 +
-        scaled(CONFIG.COUNTER_LABEL_SIZE + 6) +
-        scaled(CONFIG.COUNTER_VALUE_SIZE) +
-        scaled(6) +
-        scaled(CONFIG.COUNTER_SUB_SIZE);
+        scaled(CONFIG.COUNTER_CENTRE_LABEL_SIZE + 8) +
+        scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE) +
+        scaled(8) +
+        scaled(CONFIG.COUNTER_CENTRE_SUB_SIZE);
 
-      let panelX = canvas.width - mx - innerW;
-      if (panelX < mx) panelX = mx;
+      const panelX = cx - innerW / 2;
+      const panelY = cy - innerH / 2;
 
-      pathRoundRect(ctx, panelX, my, innerW, innerH, rad);
+      pathRoundRect(ctx, panelX, panelY, innerW, innerH, rad);
       ctx.fillStyle   = CONFIG.COUNTER_PANEL_FILL;
       ctx.fill();
       ctx.strokeStyle = CONFIG.COUNTER_PANEL_STROKE;
       ctx.lineWidth   = scaled(CONFIG.COUNTER_PANEL_STROKE_WIDTH);
       ctx.stroke();
 
-      const textRight = panelX + innerW - padX;
-      let ty = my + padY;
-
-      ctx.textAlign    = 'right';
+      ctx.textAlign    = 'center';
       ctx.textBaseline = 'top';
+      let ty = panelY + padY;
+
       ctx.globalAlpha  = 0.92 * state.counterPulseAlpha;
       ctx.fillStyle    = CONFIG.COLOR_SUBTEXT;
-      ctx.font         = `600 ${scaled(CONFIG.COUNTER_LABEL_SIZE)}px 'Inter', sans-serif`;
-      ctx.fillText(labelStr, textRight, ty);
-      ty += scaled(CONFIG.COUNTER_LABEL_SIZE + 6);
+      ctx.font         = `600 ${scaled(CONFIG.COUNTER_CENTRE_LABEL_SIZE)}px 'Inter', sans-serif`;
+      ctx.fillText(labelStr, cx, ty);
+      ty += scaled(CONFIG.COUNTER_CENTRE_LABEL_SIZE + 8);
 
+      if (chaosSpin) {
+        const dt = timestamp - state.act5ChaosStartTime;
+        const midY = ty + scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE) / 2;
+        ctx.translate(cx, midY);
+        ctx.rotate(Math.sin(dt * 0.014) * 0.09);
+        ctx.translate(-cx, -midY);
+      }
       ctx.globalAlpha  = state.counterPulseAlpha;
-      ctx.fillStyle    = CONFIG.COLOR_COUNTER;
-      ctx.font         = `600 ${scaled(CONFIG.COUNTER_VALUE_SIZE)}px 'Playfair Display', serif`;
-      ctx.fillText(valueStr, textRight, ty);
-      ty += scaled(CONFIG.COUNTER_VALUE_SIZE + 6);
+      ctx.fillStyle    = state.act5QuestionPhase ? CONFIG.COLOR_COUNTER_ACCENT : CONFIG.COLOR_COUNTER;
+      ctx.font         = `600 ${scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE)}px 'Playfair Display', serif`;
+      ctx.fillText(valueStr, cx, ty);
+      if (chaosSpin) {
+        const dt = timestamp - state.act5ChaosStartTime;
+        const midY = ty + scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE) / 2;
+        ctx.translate(cx, midY);
+        ctx.rotate(-Math.sin(dt * 0.014) * 0.09);
+        ctx.translate(-cx, -midY);
+      }
+      ty += scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE + 8);
 
-      ctx.globalAlpha  = 0.85 * state.counterPulseAlpha;
+      ctx.globalAlpha  = 0.88 * state.counterPulseAlpha;
       ctx.fillStyle    = CONFIG.COLOR_TINY;
-      ctx.font         = `300 ${scaled(CONFIG.COUNTER_SUB_SIZE)}px 'Inter', sans-serif`;
-      ctx.fillText(subStr, textRight, ty);
+      ctx.font         = `300 ${scaled(CONFIG.COUNTER_CENTRE_SUB_SIZE)}px 'Inter', sans-serif`;
+      ctx.fillText(subStr, cx, ty);
 
       ctx.restore();
     }
@@ -774,8 +1012,17 @@
       if (line) lines.push(line);
 
       const totalH = lines.length * lh;
-      const bottomPad = canvas.height * CONFIG.NARRATOR_FROM_BOTTOM_RATIO;
-      const startY = canvas.height - bottomPad - totalH;
+      const r = state.cpftMapRect;
+      let startY;
+      if (r) {
+        startY = r.y + r.h + scaled(CONFIG.NARRATOR_MAP_GAP);
+      } else {
+        const bottomPad = canvas.height * CONFIG.NARRATOR_FROM_BOTTOM_RATIO;
+        startY = canvas.height - bottomPad - totalH;
+      }
+      if (startY + totalH > canvas.height - scaled(8)) {
+        startY = Math.max(scaled(12), canvas.height - totalH - scaled(12));
+      }
 
       lines.forEach((ln, i) => {
         ctx.fillText(ln, canvas.width / 2, startY + i * lh);
@@ -793,7 +1040,7 @@
       if (a < 0.01) return;
 
       const cx = canvas.width / 2;
-      const cy = canvas.height * 0.46;
+      const cy = canvas.height * 0.22;
       const gap = scaled(CONFIG.ACT6_FINALE_LINE_GAP);
 
       ctx.save();
@@ -891,24 +1138,25 @@
     function rebuildLayer3OriginCanvasCoords() {
       if (!state.layer3Origins) return;
       state.layer3Origins.forEach(o => {
-        o.x = canvas.width * o.xRatio;
-        o.y = canvas.height * o.yRatio;
+        const p = mapNormToCanvas(o.nx, o.ny);
+        o.x = p.x;
+        o.y = p.y;
       });
     }
 
     function ensureLayer3Phase1Origins() {
       if (state.layer3Origins) return;
       const specs = [
-        { xRatio: CONFIG.LAYER3_ORIGIN_A_X, yRatio: CONFIG.LAYER3_ORIGIN_A_Y },
-        { xRatio: CONFIG.LAYER3_ORIGIN_B_X, yRatio: CONFIG.LAYER3_ORIGIN_B_Y },
-        { xRatio: CONFIG.LAYER3_ORIGIN_C_X, yRatio: CONFIG.LAYER3_ORIGIN_C_Y }
+        { nx: CONFIG.LAYER3_ORIGIN_A_NX, ny: CONFIG.LAYER3_ORIGIN_A_NY },
+        { nx: CONFIG.LAYER3_ORIGIN_B_NX, ny: CONFIG.LAYER3_ORIGIN_B_NY },
+        { nx: CONFIG.LAYER3_ORIGIN_C_NX, ny: CONFIG.LAYER3_ORIGIN_C_NY }
       ];
       state.layer3Origins = [];
       const n = Math.min(CONFIG.LAYER3_ORIGIN_COUNT, specs.length);
       for (let i = 0; i < n; i++) {
         state.layer3Origins.push({
-          xRatio: specs[i].xRatio,
-          yRatio: specs[i].yRatio,
+          nx: specs[i].nx,
+          ny: specs[i].ny,
           x: 0,
           y: 0,
           fadeStartTime: null,
@@ -1073,6 +1321,7 @@
 
     // Check whether a ring's expanding edge has reached any of its trigger points
     function checkRingTriggers(ring, timestamp) {
+      if (ring.contracting) return;
       if (!ring.triggerPoints || ring.triggerPoints.length === 0) return;
 
       ring.triggerPoints.forEach(point => {
@@ -1145,9 +1394,13 @@
 
         const elapsed = timestamp - ring.startTime;
 
-        // Update radius — eased expansion
-        const expandT      = clamp(elapsed / ring.expandDuration, 0, 1);
-        ring.currentRadius = easeOut(expandT) * ring.maxRadius;
+        // Update radius — expand outward OR contract inward (visual-only “bounce back”)
+        const expandT = clamp(elapsed / ring.expandDuration, 0, 1);
+        if (ring.contracting) {
+          ring.currentRadius = ring.maxRadius * (1 - easeInOut(expandT));
+        } else {
+          ring.currentRadius = easeOut(expandT) * ring.maxRadius;
+        }
 
         // Fade delay ratio is generation-specific (Layer 2 fix)
         const fadeDelayRatio = ring.generation === 1
@@ -1161,7 +1414,9 @@
         const fadeT            = clamp(fadeElapsed / ring.fadeDuration, 0, 1);
         ring.currentAlpha      = lerp(ring.startAlpha, 0, easeInOut(fadeT));
 
-        checkRingTriggers(ring, timestamp);
+        if (!ring.contracting) {
+          checkRingTriggers(ring, timestamp);
+        }
 
         // Record ghost trace when ring first nears zero alpha
         if (ring.currentAlpha <= 0.06 && !ring.ghostTraceCreated) {
@@ -1252,7 +1507,45 @@
         currentAlpha:      genConfig.alpha,
         ghostTraceCreated: false,
         triggerPoints:     triggerPoints.map(p => ({ ...p, triggered: false })),
-        active:            true
+        active:            true,
+        contracting:       false
+      });
+    }
+
+    function spawnContractingRingsBurst(timestamp) {
+      const c = state.cpftCentroidCanvas || state.origin;
+      const maxR =
+        Math.max(canvas.width, canvas.height) * CONFIG.ACT4_INWARD_MAX_RADIUS_RATIO * 0.48;
+      const n = CONFIG.ACT4_INWARD_RING_COUNT;
+      for (let i = 0; i < n; i++) {
+        if (state.rings.length >= 48) break;
+        state.rings.push({
+          id:                ringIdCounter++,
+          x:                 c.x,
+          y:                 c.y,
+          generation:        1,
+          maxRadius:         maxR,
+          startTime:         timestamp + i * 260,
+          expandDuration:    CONFIG.ACT4_INWARD_RING_DURATION_MS,
+          fadeDuration:      CONFIG.RING_GEN1_FADE_MS,
+          startAlpha:        CONFIG.RING_GEN1_START_ALPHA * 0.78,
+          currentRadius:     maxR,
+          currentAlpha:      CONFIG.RING_GEN1_START_ALPHA * 0.78,
+          ghostTraceCreated: false,
+          triggerPoints:     [],
+          active:            true,
+          contracting:       true
+        });
+      }
+    }
+
+    function spawnAct5ExplosiveRings(ts) {
+      if (state.act5ExplosiveFired) return;
+      state.act5ExplosiveFired = true;
+      CONFIG.CPFT_NODES.forEach((n, i) => {
+        const p = mapNormToCanvas(n.nx, n.ny);
+        if (state.rings.length < 46) spawnRing(p.x, p.y, 1, [], ts + i * 65);
+        if (state.rings.length < 46) spawnRing(p.x, p.y, 2, [], ts + 140 + i * 65);
       });
     }
 
@@ -1330,6 +1623,11 @@
       if (!state.narratorSetForAct) {
         state.narratorSetForAct = true;
         setNarratorText('One person. Undiagnosed ADHD. Active addiction.');
+      }
+
+      if (!state.act1CounterKickoff) {
+        state.act1CounterKickoff = true;
+        startCounterAnimation(0, 4200, 5000, timestamp);
       }
 
       if (!state.act1RingSpawned) {
@@ -1624,6 +1922,7 @@
     const ACT4_STAGGER_DELAYS = [0, 3000, 6000];
 
     function initAct4() {
+      state.act4InwardBurstFired = false;
       state.act4Points_canvas = ACT4_POINTS.map(p => {
         const parent = state.act3Points_canvas.find(a => a.name === p.parentName);
         return {
@@ -1731,6 +2030,14 @@
         state.counterPulseAlpha = 0.85 + 0.15 * Math.sin(timestamp / 400);
       }
 
+      if (
+        elapsed >= CONFIG.ACT4_DURATION - CONFIG.ACT4_INWARD_BURST_BEFORE_END_MS &&
+        !state.act4InwardBurstFired
+      ) {
+        state.act4InwardBurstFired = true;
+        spawnContractingRingsBurst(timestamp);
+      }
+
       if (elapsed >= CONFIG.ACT4_DURATION && !state.transitioning) {
         state.counterPulseAlpha = 1;
         initAct5();
@@ -1754,6 +2061,11 @@
       state.freezeFired         = false;
       state.layer3SpawnBaseTime = null;
       state.layer3Origins = null;
+      state.layer3DeferDrawOneFrame = false;
+      state.act5ChaosStartTime = null;
+      state.act5ExplosiveFired = false;
+      state.act5QuestionPhase = false;
+      state.act5FinalNarratorDone = false;
     }
 
     function drawChildFigure(x, y, alpha) {
@@ -1844,6 +2156,26 @@
         startCinematicFreeze(timestamp);
       }
 
+      if (
+        state.freezeFired &&
+        !state.cinematicFreeze &&
+        state.layer3SpawnBaseTime !== null &&
+        state.act5ChaosStartTime === null
+      ) {
+        state.act5ChaosStartTime = timestamp;
+        spawnAct5ExplosiveRings(timestamp);
+      }
+
+      if (state.act5ChaosStartTime !== null && !state.act5QuestionPhase) {
+        if (timestamp - state.act5ChaosStartTime >= CONFIG.ACT5_CHAOS_SPIRAL_MS) {
+          state.act5QuestionPhase = true;
+          if (!state.act5FinalNarratorDone) {
+            state.act5FinalNarratorDone = true;
+            setNarratorText(CONFIG.ACT5_FINAL_NARRATOR);
+          }
+        }
+      }
+
       if (elapsed >= CONFIG.ACT5_DURATION && !state.transitioning) {
         initAct6();
         transitionToAct(6, timestamp);
@@ -1931,9 +2263,15 @@
       state.ghostTraces  = [];
       ringIdCounter      = 0;
 
+      state.act1CounterKickoff = false;
       state.act1RingSpawned = false;
       state.act2RingSpawned = false;
       state.act5RingSpawned = false;
+      state.act4InwardBurstFired = false;
+      state.act5ChaosStartTime = null;
+      state.act5ExplosiveFired = false;
+      state.act5QuestionPhase = false;
+      state.act5FinalNarratorDone = false;
 
       state.act2Points_canvas   = [];
       state.act3Points_canvas   = [];
@@ -2006,6 +2344,9 @@
 
       updateAndDrawRings(timestamp);
 
+      drawCpftOutsideDim();
+      drawCpftMapOverlay();
+
       switch (state.currentAct) {
         case 1: runAct1(elapsed, timestamp); break;
         case 2: runAct2(elapsed, timestamp); break;
@@ -2014,6 +2355,8 @@
         case 5: runAct5(elapsed, timestamp); break;
         case 6: runAct6(elapsed, timestamp); break;
       }
+
+      drawCpftNodeEmphasis();
 
       // Cinematic freeze overlay and text — drawn after act content, before narrator
       updateAndDrawCinematicFreeze(timestamp);
@@ -2024,14 +2367,14 @@
         drawLayer3Phase1Origins(timestamp);
       }
 
-      // Narrative band (bottom) — supporting copy
+      // Narrative band — below CPFT frame when map loaded
       drawNarratorText();
 
-      // Act 6 — centre headline lock-up (late)
+      // Act 6 — headline above centre counter
       drawAct6Finale(timestamp);
 
-      // Cost ticker — top-right, last draw so it stays visually dominant
-      drawCounter();
+      // Cost ticker — dead centre, last draw for maximum salience
+      drawCounter(timestamp);
 
       // Black overlay for transition fades and Act 6 fade-out
       if (state.globalAlpha < 1) {
@@ -2049,7 +2392,8 @@
     // Initialise canvas, vignette, and start the animation
     // ============================================================
     function init() {
-      resizeCanvas();  // also calls buildVignetteGradient()
+      resizeCanvas();
+      loadCpftMap();
       requestAnimationFrame(animate);
     }
 
