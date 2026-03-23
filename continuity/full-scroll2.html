@@ -7,12 +7,12 @@
 <meta name="description" content="OTOS Continuity™ — single-page pilot narrative: how it works, demos, infrastructure, reporting, and references.">
 <meta name="theme-color" content="#0a0806">
 <!-- Deploy / cache check: if this rev doesn’t match GitHub, the host is serving a stale file -->
-<meta name="otos-scroll2-rev" content="20260319-live-10">
+<meta name="otos-scroll2-rev" content="20260319-live-11">
 <meta http-equiv="Cache-Control" content="max-age=0, must-revalidate">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="otos-shared.css?v=20260319-live-10">
+<link rel="stylesheet" href="otos-shared.css?v=20260319-live-11">
 <style>
 /* full-scroll2.html — OTOS Continuity single-page; long-form (no fixed top nav). How-it-works is a static section (#fs-how). */
 :root {
@@ -2603,35 +2603,35 @@ a { color: var(--amber); }
     <h1 class="fs-h1 fs-reveal fs-reveal--nudge" data-fs-reveal data-fs-cm-heading data-fs-hero-heading-mode="plain"></h1>
     <p class="fs-hero-lede fs-reveal fs-reveal--rise" data-fs-reveal data-fs-cm-body></p>
     <div class="fs-stats fs-reveal fs-reveal--fade" data-fs-reveal role="list" aria-label="Personal journey statistics">
-      <div class="fs-stat" role="listitem" data-fs-hero-stat="1" aria-label="30 years self-medicating">
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="1" aria-label="35 years self-medicating">
         <span class="fs-stat__eyebrow">Signal 01</span>
-        <b>30</b>
+        <b>35</b>
         <span class="fs-stat__label">Years<br>self-medicating</span>
       </div>
-      <div class="fs-stat" role="listitem" data-fs-hero-stat="2" aria-label="6 years waiting">
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="2" aria-label="6 years ADHD waiting list">
         <span class="fs-stat__eyebrow">Signal 02</span>
         <b>6</b>
-        <span class="fs-stat__label">Years<br>waiting</span>
+        <span class="fs-stat__label">Years ADHD<br>waiting list</span>
       </div>
-      <div class="fs-stat" role="listitem" data-fs-hero-stat="3" aria-label="11 services used">
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="3" aria-label="6 A and E crisis presentations">
         <span class="fs-stat__eyebrow">Signal 03</span>
-        <b>11</b>
-        <span class="fs-stat__label">Services<br>used</span>
+        <b>6</b>
+        <span class="fs-stat__label">A&amp;E crisis<br>presentations</span>
       </div>
-      <div class="fs-stat" role="listitem" data-fs-hero-stat="4" aria-label="3 days to change everything">
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="4" aria-label="2 intensive care admissions">
         <span class="fs-stat__eyebrow">Signal 04</span>
+        <b>2</b>
+        <span class="fs-stat__label">Intensive care<br>admissions</span>
+      </div>
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="5" aria-label="2 private paid detoxes">
+        <span class="fs-stat__eyebrow">Signal 05</span>
+        <b>2</b>
+        <span class="fs-stat__label">Private paid<br>detoxes</span>
+      </div>
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="6" aria-label="3 days to change everything">
+        <span class="fs-stat__eyebrow">Signal 06</span>
         <b>3</b>
         <span class="fs-stat__label">Days to change<br>everything</span>
-      </div>
-      <div class="fs-stat" role="listitem" data-fs-hero-stat="5" aria-label="Statistic 5">
-        <span class="fs-stat__eyebrow">Signal 05</span>
-        <b>-</b>
-        <span class="fs-stat__label">Add in editor</span>
-      </div>
-      <div class="fs-stat" role="listitem" data-fs-hero-stat="6" aria-label="Statistic 6">
-        <span class="fs-stat__eyebrow">Signal 06</span>
-        <b>-</b>
-        <span class="fs-stat__label">Add in editor</span>
       </div>
     </div>
     <a href="#fs-how" class="fs-hero-cta is-visible" data-fs-cm-cta>See how it works -&gt;</a>
@@ -3122,25 +3122,26 @@ a { color: var(--amber); }
 <script>
 (function () {
   /* Same canonical defaults as content-manager.html — preview shows these before first Save; full scroll must match. */
+  /* Shipped defaults = what every new visitor sees (Incognito, phone, investors). CM Save still overrides via localStorage on that browser only. */
   var FS_HOME_DEFAULTS = {
     image: 'images/Nurse and patient discussing treatment information.png',
     kicker: 'OTOS Continuity™',
-    quote: '',
-    heading_desktop: 'You refer someone.\nThen what?',
-    subheading_desktop: 'Nobody disappears quietly. OTOS Continuity™ shows what happens after a referral, handoff, or discharge — one scan, one tap, always knowing they made the next step. Touchpoints, not records. No EPR write-back. Human decisions only.',
-    heading_mobile: 'You refer someone.\nThen what?',
-    subheading_mobile: 'Nobody disappears quietly. OTOS Continuity™ shows what happens after a referral, handoff, or discharge — one scan, one tap, always knowing they made the next step. Touchpoints, not records. No EPR write-back. Human decisions only.',
+    quote: 'At discharge from my final A&E detox, I left a familiar face with these words…',
+    heading_desktop: 'Next time we meet, I won\'t be your patient — I\'ll be your partner.',
+    subheading_desktop: '"Out The Other Side" was how I felt — and still feel. That became OTOS. OTOS Digital Ltd was officially formulated six months later.\n\nFraming: Addenbrooke\'s Hospital, Cambridge · September 2025 — lived experience narrative, not a clinical record.',
+    heading_mobile: 'Next time we meet, I won\'t be your patient — I\'ll be your partner.',
+    subheading_mobile: '"Out The Other Side" was how I felt — and still feel. That became OTOS. OTOS Digital Ltd was officially formulated six months later.\n\nFraming: Addenbrooke\'s Hospital, Cambridge · September 2025 — lived experience narrative, not a clinical record.',
     text_colour: '#ffffff',
-    headingSize: 40,
-    subSize: 15,
+    headingSize: 34,
+    subSize: 14,
     posDesktop: { x: 30, y: 54 },
     posMobile: { x: 50, y: 54 },
-    stat1: { value: '30', label: 'Years self-medicating' },
-    stat2: { value: '6', label: 'Years waiting' },
-    stat3: { value: '11', label: 'Services used' },
-    stat4: { value: '3', label: 'Days to change everything' },
-    stat5: { value: '', label: '' },
-    stat6: { value: '', label: '' },
+    stat1: { value: '35', label: 'Years\nself-medicating' },
+    stat2: { value: '6', label: 'Years ADHD\nwaiting list' },
+    stat3: { value: '6', label: 'A&E crisis\npresentations' },
+    stat4: { value: '2', label: 'Intensive care\nadmissions' },
+    stat5: { value: '2', label: 'Private paid\ndetoxes' },
+    stat6: { value: '3', label: 'Days to change\neverything' },
     cta_text: 'See how it works ->',
     cta_href: 'full-scroll2.html#fs-how',
     ctaSize: 14,
