@@ -700,12 +700,12 @@ a { color: var(--amber); }
   background: #0a0806 center/cover no-repeat;
   color: #f5f0e8;
 }
-/* Home hero: founder opening (top) + proposition stack (bottom) — no card around founder quote */
+/* Home hero (scroll2): single CM stack — headline, body, stats, CTA */
 .fs-hero-band {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: stretch;
   min-height: 100svh;
   background-position: 46% 30%;
@@ -999,6 +999,10 @@ a { color: var(--amber); }
   max-width: min(520px, 100%);
   margin: 0;
 }
+/* Optional fourth row hidden: use only four stats by leaving 5–6 empty */
+.fs-stat.fs-stat--scroll2-hidden {
+  display: none !important;
+}
 .fs-stats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1259,6 +1263,16 @@ a { color: var(--amber); }
   transform: translateX(-50%);
   z-index: 6;
   pointer-events: none;
+}
+/* Avoid one-frame “ghost” glass cue before pin JS measures scroll (flash under How it works) */
+.fs-pin:not(.fs-pin--initialized) .fs-pin__scroll-cue {
+  opacity: 0;
+  visibility: hidden;
+}
+.fs-pin.fs-pin--initialized .fs-pin__scroll-cue {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s ease;
 }
 .fs-pin__scroll-cue__glass {
   display: inline-flex;
@@ -1865,22 +1879,12 @@ a { color: var(--amber); }
 
 <main class="fs-main">
 
-<!-- HOME — founder opening (locked copy) + language-bank line + CM-driven proposition, stats, CTA -->
+<!-- HOME — Full scroll 2: Content Manager only (headline + body + up to six stats). No static kicker/quote/founder. -->
 <section id="fs-home" class="fs-band fs-band--image fs-hero-band" data-fs-cm-hero data-fs-hero-image-default="images/Focused on progress in the office.png" style="background-image:url('images/Focused on progress in the office.png');">
   <div class="fs-shade" aria-hidden="true"></div>
-  <header class="fs-founder-open" aria-labelledby="fs-founder-quote-text">
-    <blockquote id="fs-founder-quote-text" class="fs-founder-quote text-gradient-hero">Next time we meet, I won't be your patient &mdash; I'll be your partner.</blockquote>
-    <p class="fs-founder-context">As I left my final detox at Addenbrooke's Hospital, Cambridge, 6 months ago, I said this to Helen, the Alcohol Liaison Nurse, at my bedside on discharge.</p>
-  </header>
   <div class="fs-inner" data-fs-cm-inner>
-    <p class="fs-bank-strap text-gradient-hero">The failure is not in the care &mdash; it is in the space between it.</p>
-    <span class="fs-kicker fs-hero-band__kicker" data-fs-cm-kicker>OTOS Continuity&trade;</span>
-    <h1 class="fs-h1 fs-reveal fs-reveal--nudge" data-fs-reveal data-fs-cm-heading>You refer someone.<br><span class="fs-h1-accent">Then what?</span></h1>
-    <p class="fs-hero-lede fs-reveal fs-reveal--rise" data-fs-reveal data-fs-cm-body>Nobody disappears quietly. OTOS Continuity&trade; shows what happens after a referral, handoff, or discharge &mdash; one scan, one tap, always knowing they made the next step. Touchpoints, not records. No EPR write-back. Human decisions only.</p>
-    <div class="fs-hero-insight fs-reveal fs-reveal--fade" data-fs-reveal>
-      <p class="fs-hero-insight__primary">Continuity is the difference between someone making it and someone not making it.</p>
-      <p class="fs-hero-insight__support">Many people are described as being &ldquo;held&rdquo; on waiting lists &mdash; but waiting without continuity can leave someone exposed, not safely contained. OTOS is the continuity layer: the thread between touchpoints, not the touchpoints themselves.</p>
-    </div>
+    <h1 class="fs-h1 fs-reveal fs-reveal--nudge" data-fs-reveal data-fs-cm-heading data-fs-hero-heading-mode="plain"></h1>
+    <p class="fs-hero-lede fs-reveal fs-reveal--rise" data-fs-reveal data-fs-cm-body></p>
     <div class="fs-stats fs-reveal fs-reveal--fade" data-fs-reveal role="list" aria-label="Personal journey statistics">
       <div class="fs-stat" role="listitem" data-fs-hero-stat="1" aria-label="30 years self-medicating">
         <span class="fs-stat__eyebrow">Signal 01</span>
@@ -2596,11 +2600,14 @@ a { color: var(--amber); }
     var heading = d
       ? (isMobile ? (d.heading_mobile != null ? d.heading_mobile : d.heading_desktop) : d.heading_desktop)
       : null;
+    var plainHead = h1 && h1.getAttribute('data-fs-hero-heading-mode') === 'plain';
     if (h1 && d && heading != null && String(heading).trim() !== '') {
       h1.classList.add('fs-h1--cm-managed');
       var hl = String(heading).split(/\r?\n/).map(function (t) { return t.trim(); }).filter(Boolean);
       var cwHead = d.apply_colourwork_headline && gradCss;
-      if (cwHead) {
+      if (plainHead) {
+        h1.innerHTML = hl.map(escHtmlFs).join('<br>');
+      } else if (cwHead) {
         h1.innerHTML = hl.map(escHtmlFs).join('<br>');
       } else if (hl.length >= 2) {
         h1.innerHTML = hl.slice(0, -1).map(escHtmlFs).join('<br>') + '<br><span class="fs-h1-accent">' + escHtmlFs(hl[hl.length - 1]) + '</span>';
@@ -2665,12 +2672,19 @@ a { color: var(--amber); }
       wrap.classList.add('fs-stat--cm');
       var numEl = wrap.querySelector('b');
       var labEl = wrap.querySelector('.fs-stat__label');
-      if (numEl && value != null && String(value).trim() !== '') {
-        var v = String(value).trim();
-        numEl.textContent = v;
+      if (numEl) {
+        if (value != null && String(value).trim() !== '') {
+          numEl.textContent = String(value).trim();
+        } else {
+          numEl.textContent = '\u2014';
+        }
       }
-      if (labEl && label != null && String(label).trim() !== '') {
-        labEl.innerHTML = String(label).trim().split(/\r?\n/).map(escHtmlFs).join('<br>');
+      if (labEl) {
+        if (label != null && String(label).trim() !== '') {
+          labEl.innerHTML = String(label).trim().split(/\r?\n/).map(escHtmlFs).join('<br>');
+        } else {
+          labEl.innerHTML = 'Add in<br>editor';
+        }
       }
     }
     if (d) {
@@ -2681,6 +2695,23 @@ a { color: var(--amber); }
         }
       }
     }
+    (function hideOptionalStatsScroll2() {
+      if (!document.body || document.body.getAttribute('data-otos-shell') !== 'full-scroll2') return;
+      function slotEmpty(st) {
+        if (!st || typeof st !== 'object') return true;
+        var v = String(st.value != null ? st.value : '').trim();
+        var l = String(st.label != null ? st.label : '').trim();
+        if (v === '' && l === '') return true;
+        if ((v === '' || v === '\u2014' || v === '-') && (!l || /^add in editor/i.test(l.replace(/<[^>]+>/g, '')))) return true;
+        return false;
+      }
+      for (var sx = 5; sx <= 6; sx++) {
+        var w = document.querySelector('[data-fs-hero-stat="' + sx + '"]');
+        if (!w) continue;
+        var stx = d && d['stat' + sx];
+        w.classList.toggle('fs-stat--scroll2-hidden', slotEmpty(stx));
+      }
+    })();
 
     if (ctaEl) {
       ctaEl.classList.add('is-visible');
@@ -2800,7 +2831,9 @@ a { color: var(--amber); }
   }
 
   applyFsHomeFromStore();
-  setTimeout(applyFsHomeFromStore, 80);
+  requestAnimationFrame(function () {
+    requestAnimationFrame(applyFsHomeFromStore);
+  });
 
   function initPin(root) {
     var slides = root.querySelectorAll('[data-fs-slide]');
@@ -2855,12 +2888,17 @@ a { color: var(--amber); }
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', function () { setHeight(); onScroll(); });
+    root.classList.add('fs-pin--initialized');
   }
   document.querySelectorAll('[data-fs-pin]').forEach(initPin);
 
   /* —— Scroll-reveal straplines + statement beats —— */
   function initInviewObserver(selector) {
-    var nodes = document.querySelectorAll(selector);
+    var all = document.querySelectorAll(selector);
+    var nodes = [];
+    for (var ni = 0; ni < all.length; ni++) {
+      if (!all[ni].closest('[data-fs-pin]')) nodes.push(all[ni]);
+    }
     if (!nodes.length) return;
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {
