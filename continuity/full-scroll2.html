@@ -7,12 +7,12 @@
 <meta name="description" content="OTOS Continuity™ — single-page pilot narrative: how it works, demos, infrastructure, reporting, and references.">
 <meta name="theme-color" content="#0a0806">
 <!-- Deploy / cache check: if this rev doesn’t match GitHub, the host is serving a stale file -->
-<meta name="otos-scroll2-rev" content="20260319-live-14">
+<meta name="otos-scroll2-rev" content="20260319-live-15">
 <meta http-equiv="Cache-Control" content="max-age=0, must-revalidate">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="otos-shared.css?v=20260319-live-14">
+<link rel="stylesheet" href="otos-shared.css?v=20260319-live-15">
 <style>
 /* full-scroll2.html — OTOS Continuity single-page; long-form (no fixed top nav). How-it-works is a static section (#fs-how). */
 :root {
@@ -1870,7 +1870,7 @@ a { color: var(--amber); }
   }
 }
 
-/* Guided demos: stacked cards — all three routes visible (no scroll-pin carousel) */
+/* Guided demos: stacked cards — all demo routes visible (no scroll-pin carousel) */
 .fs-demos-section {
   position: relative;
   background: var(--bg-alt);
@@ -2717,7 +2717,7 @@ a { color: var(--amber); }
       </figure>
     </div>
     <footer class="fs-how-foot">
-      <a href="#fs-demos">Three demo routes with real scenarios &amp; photos &rarr;</a>
+      <a href="#fs-demos">Demo routes with real scenarios &amp; photos &rarr;</a>
       <a href="wireframes/flow-overview.html">Step-by-step wireframes (every screen) &rarr;</a>
     </footer>
   </div>
@@ -2741,11 +2741,11 @@ a { color: var(--amber); }
   </div>
 </section>
 
-<!-- GUIDED DEMOS — all three routes stacked (visible without scroll-pin) -->
-<section id="fs-demos" class="fs-demos-section" aria-label="Guided demos — three routes">
+<!-- GUIDED DEMOS — stacked routes (visible without scroll-pin) -->
+<section id="fs-demos" class="fs-demos-section" aria-label="Guided demos — four routes">
   <span class="fs-sec-label fs-sec-label--light">Demos</span>
   <header class="fs-demos-intro">
-    <p class="fs-demos-intro__strap">Three routes. Three real scenarios. Each one shows what OTOS looks like in practice.</p>
+    <p class="fs-demos-intro__strap">Four routes. Four scenarios &mdash; bedside, community hub, VCSE therapy, and the CGL&ndash;CPFT dual pathway. Each shows what OTOS looks like in practice.</p>
   </header>
   <div class="fs-demos-stack">
     <article class="fs-demo-split" aria-label="Route A — Addenbrooke’s discharge">
@@ -2844,6 +2844,43 @@ a { color: var(--amber); }
           <li><span class="text-gradient-soft"><strong>Request a handoff receipt</strong> when the client is referred onwards (e.g. CGL, ADHD assessment route, recovery support).</span></li>
         </ul>
         <a class="fs-demo-wf" href="wireframes/flow-overview.html#flow-coordinator">See therapist flow →</a>
+      </div>
+    </article>
+    <article class="fs-demo-split fs-demo-split--reverse" aria-label="Route D — CGL and CPFT dual pathway">
+      <div class="fs-demo-split__media">
+        <img class="fs-demo-split__img" src="images/Woman%20reviewing%20NHS%20data%20dashboard.png" alt="Coordinator reviewing continuity signals on an NHS-style data dashboard">
+        <div class="fs-demo-split__stats" aria-label="Route D highlights">
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">2</span><span class="fs-demo-stat__l">Silo lenses</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Journey token</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">Merged records</span></div>
+        </div>
+      </div>
+      <div class="fs-demo-split__copy">
+        <div class="fs-route">ROUTE D &mdash; DUAL PATHWAY (CGL &middot; CPFT)</div>
+        <p class="fs-demo-strap--head text-gradient-soft">Same person. Two silos. One continuity thread.</p>
+        <p class="fs-demo-strap--sub">Addiction and mental health often meet the same life at different doors &mdash; without a shared record. OTOS does not merge EPRs; it carries an <strong>encrypted, anonymised journey token</strong> in the continuity layer so both sides can see follow-through, not each other&rsquo;s notes.</p>
+        <h3>Dual diagnosis &mdash; pilot framing</h3>
+        <p style="color:var(--muted); font-size:clamp(13px,1.35vw,14px); line-height:1.6; margin:0 0 1rem;">One doorway: someone in <strong>addiction treatment</strong> where ADHD is suspected. Another: someone in <strong>mental health care</strong> where substance use is escalating. Too often that means duplicated appointments, duplicated contacts, and overload for the person in the middle. OTOS <strong>unites the silos at the continuity layer only</strong> &mdash; touchpoints and handoff receipts on the <strong>same token</strong>, with human review and governance agreed in the pilot.</p>
+        <p style="color:var(--muted); font-size:clamp(12px,1.2vw,13px); line-height:1.55; margin:0 0 1rem; font-style:italic;"><strong style="font-style:normal;color:var(--text);">Express gateway (Phase 1 proposal):</strong> start with a <strong>narrow posture</strong> between these two providers &mdash; the addiction silo (e.g. CGL / CRS) and the mental health silo (CPFT) &mdash; before widening. <strong>Batch or correlation analytics</strong> would be <strong>aggregate and pre-agreed</strong> only, not automatic &ldquo;match everyone&rdquo; queries. Whether both sides tokenise every contact on day one is a <strong>governance and cohort design</strong> choice, not a technical default.</p>
+        <div class="fs-demo-pills" aria-label="Dual pathway demo highlights">
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Encrypted token</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">No EPR write-back</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Dual-pathway visibility</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Human review</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Pilot-scoped gateway</span></span>
+        </div>
+        <ul class="fs-demo-points">
+          <li><span class="text-gradient-soft"><strong>CGL / CRS lens:</strong> illustrative dashboard for the addiction pathway &mdash; drift and follow-through on the thread (fixture).</span></li>
+          <li><span class="text-gradient-soft"><strong>CPFT lens:</strong> illustrative dashboard for the mental health pathway &mdash; same token, parallel view (fixture).</span></li>
+          <li><span class="text-gradient-soft"><strong>No merged clinical record</strong> &mdash; only continuity signals both sides have agreed to surface.</span></li>
+          <li><span class="text-gradient-soft"><strong>Escalation</strong> stays human-gated; diagnostic claims stay with the owning clinical team.</span></li>
+        </ul>
+        <div style="display:flex;flex-wrap:wrap;gap:0.65rem 1.25rem;margin-top:0.25rem;align-items:center;">
+          <a class="fs-demo-wf" href="reporting.html#reporting-cgl">CGL pathway dashboard (fixture) →</a>
+          <a class="fs-demo-wf" href="reporting.html#reporting-cpft">CPFT pathway dashboard (fixture) →</a>
+        </div>
+        <p style="margin:0.85rem 0 0;font-size:clamp(12px,1.15vw,13px);color:var(--muted);line-height:1.5;"><a href="reporting.html#dual-silo-dashboards" style="color:var(--amber);font-weight:600;">Overview: dual-silo fixtures on reporting →</a>
+        &nbsp;&middot;&nbsp;<a href="wireframes/desktop-coordinator-dashboard.html" style="color:var(--amber);font-weight:600;">Coordinator dashboard wireframe →</a></p>
       </div>
     </article>
   </div>
