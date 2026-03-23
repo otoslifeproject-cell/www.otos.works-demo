@@ -7,12 +7,12 @@
 <meta name="description" content="OTOS Continuity™ — single-page pilot narrative: how it works, demos, infrastructure, reporting, and references.">
 <meta name="theme-color" content="#0a0806">
 <!-- Deploy / cache check: if this rev doesn’t match GitHub, the host is serving a stale file -->
-<meta name="otos-scroll2-rev" content="20260319-live-12">
+<meta name="otos-scroll2-rev" content="20260319-live-13">
 <meta http-equiv="Cache-Control" content="max-age=0, must-revalidate">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="otos-shared.css?v=20260319-live-12">
+<link rel="stylesheet" href="otos-shared.css?v=20260319-live-13">
 <style>
 /* full-scroll2.html — OTOS Continuity single-page; long-form (no fixed top nav). How-it-works is a static section (#fs-how). */
 :root {
@@ -488,6 +488,12 @@ a { color: var(--amber); }
 }
 .fs-demos-section + .fs-band--statement {
   padding-top: clamp(2.25rem, 5vw, 3.5rem);
+}
+/* Community quote inside Infrastructure band — sits above 250 hubs split */
+.fs-infra-community-quote {
+  margin-top: clamp(1.25rem, 3vw, 2.25rem);
+  width: 100%;
+  box-sizing: border-box;
 }
 .fs-statement--pullquote .fs-statement__line:not(.fs-statement__line--sub):not(.fs-statement__line--cite) {
   font-size: clamp(1.65rem, 4.2vw, 3rem);
@@ -2920,6 +2926,14 @@ a { color: var(--amber); }
   </div>
   </div>
 
+  <div class="fs-band fs-band--mid fs-band--statement fs-infra-community-quote" role="region" aria-label="Community continuity">
+    <span class="fs-brain-inline fs-brain-inline--bl" aria-hidden="true"></span>
+    <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--mix fs-statement--pullquote" data-fs-statement>
+      <p class="fs-statement__line text-gradient-soft">&ldquo;Community is the Continuity&trade;.&rdquo;</p>
+      <p class="fs-statement__line fs-statement__line--sub">Co-produced with SUN Network and people with lived experience.</p>
+    </div>
+  </div>
+
   <div class="fs-split fs-split--hubs" style="margin-top:clamp(1.25rem,3vw,2.25rem); border-radius:22px; overflow:hidden; border:1px solid rgba(193,127,36,0.18); box-shadow:0 18px 48px rgba(26,20,16,0.08);">
     <div class="fs-split__img" style="background-image:url('images/Community%20collaboration%20at%20the%20NHS%20hub%20%20%20.png'); background-position:48% 38%;" role="img" aria-label="NHS Community Hub: staff collaborating with OTOS on laptop; NHS hub signage visible"></div>
     <div class="fs-split__body fs-split__body--hubs">
@@ -2932,14 +2946,6 @@ a { color: var(--amber); }
         <p class="fs-hubs-note">Anonymous touchpoints first. Your clinical decisions stay yours. Phase 1 needs no Joy integration &mdash; this is the direction of travel.</p>
       </div>
     </div>
-  </div>
-</section>
-
-<section class="fs-band fs-band--mid fs-band--statement" aria-label="Community continuity">
-  <span class="fs-brain-inline fs-brain-inline--bl" aria-hidden="true"></span>
-  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--mix fs-statement--pullquote" data-fs-statement>
-    <p class="fs-statement__line text-gradient-soft">&ldquo;Community is the continuity.&rdquo;</p>
-    <p class="fs-statement__line fs-statement__line--sub">Co-produced with SUN Network and people with lived experience.</p>
   </div>
 </section>
 
