@@ -246,7 +246,7 @@ body {
       </div>
     </div>
   </div>
-  <a href="how-it-works.html" class="home-hero__cta" data-cm-cta>See how it works →</a>
+  <a href="full-scroll2.html#fs-how" class="home-hero__cta" data-cm-cta>See how it works →</a>
 </section>
 
 <script defer src="otos-shared.js"></script>
@@ -420,7 +420,12 @@ body {
         ctaEl.style.whiteSpace = 'pre-line';
       }
       if (d.cta_href != null && String(d.cta_href).trim() !== '') {
-        ctaEl.setAttribute('href', d.cta_href.trim());
+        var href = d.cta_href.trim();
+        if (/how-it-works/i.test(href)) href = 'full-scroll2.html#fs-how';
+        else if (/guided-demos/i.test(href)) href = 'full-scroll2.html#fs-demos';
+        else if (/infrastructure-partners/i.test(href)) href = 'full-scroll2.html#fs-infra';
+        else if (/full-scroll\.html/i.test(href)) href = 'full-scroll2.html';
+        ctaEl.setAttribute('href', href);
       }
     }
 

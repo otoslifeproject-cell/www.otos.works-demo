@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OTOS Continuity™ — Full scroll 2 (single page)</title>
-<meta name="description" content="OTOS Continuity front door — full scroll v2 (language lock + visual pass). Use full-scroll.html for the previous version.">
+<meta name="description" content="OTOS Continuity™ — single-page pilot narrative: how it works, demos, infrastructure, reporting, and references.">
 <meta name="theme-color" content="#0a0806">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2180,6 +2180,30 @@ a { color: var(--amber); }
   background: rgba(193, 127, 36, 0.09);
   border: 1px solid rgba(193, 127, 36, 0.2);
 }
+.fs-partner__brand {
+  margin: 0 0 0.85rem;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.fs-partner__logo {
+  display: block;
+  max-width: min(240px, 88%);
+  width: auto;
+  height: auto;
+  max-height: 44px;
+  object-fit: contain;
+  object-position: left center;
+}
+.fs-partner__logo--qb {
+  max-height: 36px;
+  max-width: min(200px, 85%);
+}
+.fs-partner__logo--joy {
+  max-height: 42px;
+  max-width: min(200px, 88%);
+}
 .fs-partner h3 {
   font-family: var(--font-h);
   font-style: italic;
@@ -2715,36 +2739,38 @@ a { color: var(--amber); }
         <a class="fs-demo-wf" href="wireframes/flow-overview.html#flow-coordinator">See step-by-step →</a>
       </div>
     </article>
-    <article class="fs-demo-split" aria-label="Route C — Primary care">
+    <article class="fs-demo-split" aria-label="Route C — Community therapy (WorkWell / VCSE)">
       <div class="fs-demo-split__media">
-        <img class="fs-demo-split__img" src="images/Community%20collaboration%20at%20the%20NHS%20hub%20%20%20.png" alt="NHS community hub — staff collaborating">
+        <img class="fs-demo-split__img" src="images/Therapist%20reviewing%20OTOS%20app%20progress.png" alt="Therapist reviewing OTOS continuity signals on a smartphone">
         <div class="fs-demo-split__stats" aria-label="Route C highlights">
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">2</span><span class="fs-demo-stat__l">Referrals sent</span></div>
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Signal visible</span></div>
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">Cross-service records</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">Lite</span><span class="fs-demo-stat__l">Partner tier</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Thread visible</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">Service records</span></div>
         </div>
       </div>
       <div class="fs-demo-split__copy">
-        <div class="fs-route">ROUTE C &mdash; PRIMARY CARE</div>
+        <div class="fs-route">ROUTE C &mdash; COMMUNITY THERAPY (WORKWELL / VCSE-FUNDED)</div>
         <p class="fs-demo-strap--head text-gradient-soft">Follow-through without opening another service&rsquo;s record.</p>
         <p class="fs-demo-strap--sub">Anonymous continuity signal only &mdash; clinical decisions stay with each team.</p>
-        <h3>Dr Priya, GP</h3>
-        <p style="color:var(--muted); font-size:clamp(13px,1.35vw,14px); line-height:1.6; margin:0 0 1rem;">Dr Priya has a patient she has referred twice to addiction services. She doesn&rsquo;t know if they attended. OTOS shows her the thread without showing her clinical records from other services.</p>
-        <div class="fs-demo-pills" aria-label="Primary care demo highlights">
+        <h3>Priya, Therapist (WorkWell / VCSE partner)</h3>
+        <p style="color:var(--muted); font-size:clamp(13px,1.35vw,14px); line-height:1.6; margin:0 0 1rem;">Priya is supporting a client through a WorkWell-funded therapy route after a GP signpost. She suspects untreated ADHD is driving repeated relapse and missed appointments. She cannot see other services&rsquo; records, and does not need to. OTOS shows whether the next steps happened and flags when the client drifts.</p>
+        <p style="color:var(--muted); font-size:clamp(12px,1.2vw,13px); line-height:1.55; margin:0 0 1rem; font-style:italic;"><strong style="font-style:normal;color:var(--text);">Tier 3 &mdash; Partner Lite:</strong> read-only continuity view, raise structured flag, request receipt &mdash; no records, no diagnosis, no clinical actions in OTOS.</p>
+        <div class="fs-demo-pills" aria-label="Community therapy demo highlights">
           <span class="fs-demo-pill"><span class="text-gradient-soft">Anonymous signal only</span></span>
           <span class="fs-demo-pill"><span class="text-gradient-soft">No cross-service records</span></span>
           <span class="fs-demo-pill"><span class="text-gradient-soft">Follow-through visible</span></span>
-          <span class="fs-demo-pill"><span class="text-gradient-soft">Referral pattern clear</span></span>
-          <span class="fs-demo-pill"><span class="text-gradient-soft">Decisions stay clinical</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Drift flagged for review</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Referral receipt confirmed</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Decisions stay with the clinical team</span></span>
         </div>
         <ul class="fs-demo-points">
-          <li><span class="text-gradient-soft">Anonymous signal only</span></li>
-          <li><span class="text-gradient-soft">No cross-service records</span></li>
-          <li><span class="text-gradient-soft">Follow-through visible</span></li>
-          <li><span class="text-gradient-soft">Referral confirmed</span></li>
-          <li><span class="text-gradient-soft">Clinical decisions stay with the team</span></li>
+          <li><span class="text-gradient-soft"><strong>Access: Partner Lite</strong> (read-only + signal raise)</span></li>
+          <li><span class="text-gradient-soft"><strong>QR touchpoint link</strong> to start the thread (client-led consent).</span></li>
+          <li><span class="text-gradient-soft"><strong>Continuity status only</strong> &mdash; attended / missed / drift / next step due. No cross-service notes or clinical content.</span></li>
+          <li><span class="text-gradient-soft"><strong>Raise a concern / suspected ADHD flag</strong> &mdash; structured, non-diagnostic tag to the agreed reviewer (e.g. CGL / CPFT / pilot ops), not a GP inbox.</span></li>
+          <li><span class="text-gradient-soft"><strong>Request a handoff receipt</strong> when the client is referred onwards (e.g. CGL, ADHD assessment route, recovery support).</span></li>
         </ul>
-        <a class="fs-demo-wf" href="wireframes/flow-overview.html#flow-commissioner">See step-by-step →</a>
+        <a class="fs-demo-wf" href="wireframes/flow-overview.html#flow-coordinator">See therapist flow →</a>
       </div>
     </article>
   </div>
@@ -2787,7 +2813,9 @@ a { color: var(--amber); }
   <div class="fs-partner-grid">
     <div class="fs-partner">
       <div class="fs-phase">Phase 1 — Active</div>
-      <h3 class="text-gradient-soft">SUN Network</h3>
+      <div class="fs-partner__brand">
+        <img class="fs-partner__logo" src="images/sun_logo.png" alt="SUN Network" width="220" height="48" loading="lazy" decoding="async" />
+      </div>
       <p>Co-production lead. Service user voice, participant-facing language design, and evaluation credibility. SUN's involvement is budgeted, structured, and produces a named deliverable in the evaluation report.</p>
       <ul>
         <li>Independent service user representation</li>
@@ -2798,7 +2826,9 @@ a { color: var(--amber); }
     </div>
     <div class="fs-partner">
       <div class="fs-phase">L2 — Named strategic connection</div>
-      <h3 class="text-gradient-soft">QbTest</h3>
+      <div class="fs-partner__brand">
+        <img class="fs-partner__logo fs-partner__logo--qb" src="images/qbtech.svg" alt="Qbtech / QbTest" width="180" height="36" loading="lazy" decoding="async" />
+      </div>
       <p>When a partner flags a suspected ADHD indicator, OTOS carries that signal to the referral route. NHS Right to Choose is already available — every service provider can use it. QbTest is the fast-track assessment tool at the end of that pathway.</p>
       <ul>
         <li>Partner flags indicator — OTOS carries the signal</li>
@@ -2809,7 +2839,9 @@ a { color: var(--amber); }
     </div>
     <div class="fs-partner">
       <div class="fs-phase">L3 — Named strategic connection</div>
-      <h3 class="text-gradient-soft">Joy (JoyConnect)</h3>
+      <div class="fs-partner__brand">
+        <img class="fs-partner__logo fs-partner__logo--joy" src="images/Joy_Logo.png" alt="Joy (JoyConnect)" width="200" height="48" loading="lazy" decoding="async" />
+      </div>
       <p>Joy gets people to the right front door. OTOS makes sure they follow through. A natural Phase 3 extension as OTOS expands into Neighbourhood Health and the 250 planned NHS community hubs across England.</p>
       <ul>
         <li>Joy: GP-level signposting, primary care workflow</li>
@@ -3028,7 +3060,7 @@ a { color: var(--amber); }
 </section>
 
 <div class="fs-end-strip">
-  <p>Prefer separate pages? <a href="how-it-works.html">How it works</a> · <a href="guided-demos.html">Guided demos</a> · <a href="infrastructure-partners.html">Infrastructure</a> · <a href="index.html">Home portal</a></p>
+  <p>On this page: <a href="#fs-how">How it works</a> · <a href="#fs-demos">Demos</a> · <a href="#fs-infra">Infrastructure</a> · <a href="#fs-reporting">Reporting</a> · <a href="#fs-home">Top</a></p>
 </div>
 
 <footer class="fs-footer">© OTOS Digital Ltd. Company registered in England &amp; Wales with Company No. 17084455. Phone +447466334143. Email info@otos.life.</footer>
@@ -3349,6 +3381,9 @@ a { color: var(--amber); }
       }
       var href = (d && d.cta_href && String(d.cta_href).trim()) || '#fs-how';
       if (/how-it-works/i.test(href)) href = '#fs-how';
+      if (/guided-demos/i.test(href)) href = '#fs-demos';
+      if (/infrastructure-partners/i.test(href)) href = '#fs-infra';
+      if (/full-scroll\.html/i.test(href) && !/full-scroll2/i.test(href)) href = '#fs-how';
       if (/full-scroll2\.html#/i.test(href) && /full-scroll2\.html/i.test(window.location.pathname || '')) {
         var hashPos = href.indexOf('#');
         href = hashPos >= 0 ? href.slice(hashPos) : '#fs-how';
