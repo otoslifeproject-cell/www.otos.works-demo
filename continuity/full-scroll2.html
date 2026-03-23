@@ -7,12 +7,12 @@
 <meta name="description" content="OTOS Continuity™ — single-page pilot narrative: how it works, demos, infrastructure, reporting, and references.">
 <meta name="theme-color" content="#0a0806">
 <!-- Deploy / cache check: if this rev doesn’t match GitHub, the host is serving a stale file -->
-<meta name="otos-scroll2-rev" content="20260319-live-6">
+<meta name="otos-scroll2-rev" content="20260319-live-7">
 <meta http-equiv="Cache-Control" content="max-age=0, must-revalidate">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="otos-shared.css?v=20260319-live-6">
+<link rel="stylesheet" href="otos-shared.css?v=20260319-live-7">
 <style>
 /* full-scroll2.html — OTOS Continuity single-page; long-form (no fixed top nav). How-it-works is a static section (#fs-how). */
 :root {
@@ -1491,9 +1491,18 @@ a { color: var(--amber); }
   color: rgba(245, 240, 232, 0.88);
 }
 /* Hero stats: 2 columns × 3 rows (six cells) — matches Content Manager preview */
+/* Stronger glass (hero only): easy to verify deploy vs older opaque panels */
 .fs-hero-band .fs-stats {
   max-width: min(520px, 100%);
   margin: 0;
+  background: rgba(12, 10, 8, 0.12);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  border: 1px solid rgba(193, 127, 36, 0.22);
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(255, 252, 246, 0.05) inset,
+    0 1px 0 rgba(255, 252, 246, 0.07) inset;
 }
 /* Optional fourth row hidden: use only four stats by leaving 5–6 empty */
 .fs-stat.fs-stat--scroll2-hidden {
@@ -1508,15 +1517,15 @@ a { color: var(--amber); }
   margin: 0 auto;
   padding: 0;
   border-radius: 22px;
-  /* Lighter glass — more of the hero photo reads through */
-  background: rgba(12, 10, 8, 0.26);
-  backdrop-filter: blur(14px) saturate(135%);
-  -webkit-backdrop-filter: blur(14px) saturate(135%);
-  border: 1px solid rgba(193, 127, 36, 0.26);
+  /* Default glass (non-hero .fs-stats if any); hero overrides in .fs-hero-band .fs-stats */
+  background: rgba(12, 10, 8, 0.2);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+  border: 1px solid rgba(193, 127, 36, 0.24);
   box-shadow:
-    0 14px 40px rgba(0, 0, 0, 0.2),
+    0 12px 36px rgba(0, 0, 0, 0.16),
     0 0 0 1px rgba(255, 252, 246, 0.06) inset,
-    0 1px 0 rgba(255, 252, 246, 0.09) inset;
+    0 1px 0 rgba(255, 252, 246, 0.08) inset;
   overflow: hidden;
 }
 .fs-stat {
