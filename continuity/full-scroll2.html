@@ -1,0 +1,3000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTOS Continuity™ — Full scroll 2 (single page)</title>
+<meta name="description" content="OTOS Continuity front door — full scroll v2 (language lock + visual pass). Use full-scroll.html for the previous version.">
+<meta name="theme-color" content="#0a0806">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="otos-shared.css">
+<style>
+/* full-scroll2.html — same layout system as full-scroll.html; v2 content fork. Long-form (no fixed top nav). Scroll-pinned blocks use sticky + scroll math
+   (same *idea* as sites like Oura’s how-it-works — https://ouraring.com/how-it-works — implemented here in vanilla JS, not copied third-party code). */
+:root {
+  /* Section rhythm — shared scale (full-scroll kit) */
+  --fs-space-xs: clamp(0.5rem, 1.2vw, 0.75rem);
+  --fs-space-sm: clamp(0.75rem, 2vw, 1.1rem);
+  --fs-space-md: clamp(1rem, 2.4vw, 1.75rem);
+  --fs-space-lg: clamp(1.25rem, 3vw, 2.25rem);
+  --fs-radius-panel: 22px;
+  --fs-radius-pill: 999px;
+  --fs-brain-y: 0px;
+  --bg-page: #f5f0e8;
+  --bg-alt: #ede8df;
+  --bg-mid: #e4dfd4;
+  --bg-dark: #1e150a;
+  --text: #1a1410;
+  --muted: #7a6a58;
+  --amber: #c17f24;
+  --teal: #4a9e8e;
+  --orange: #e8720c;
+  --font-h: 'Playfair Display', Georgia, serif;
+  --font-b: 'Inter', system-ui, sans-serif;
+  --glass: rgba(255, 252, 246, 0.86);
+  --glass-b: rgba(193, 127, 36, 0.22);
+  /* OTOS section system (aliases — use with full-scroll layout) */
+  --otos-section-padding-v: clamp(1rem, 2.4vw, 1.75rem);
+  --otos-section-padding-h: clamp(16px, 3vw, 40px);
+  --otos-container-max: min(920px, 94vw);
+  --otos-container-narrow: min(42rem, 94vw);
+  --otos-overlay-text-max: min(36rem, 94vw);
+  --otos-glass-blur: 12px;
+  --otos-glass-bg: rgba(255, 252, 248, 0.07);
+  --otos-glass-border: rgba(255, 252, 248, 0.1);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 12px; font-size: 16px; -webkit-font-smoothing: antialiased; background: var(--bg-page); }
+/* Kill otos-shared.css body gradient bleed + any subpixel gap above the hero */
+body { margin: 0; font-family: var(--font-b); color: var(--text); line-height: 1.65; overflow-x: hidden; background: var(--bg-page); background-image: radial-gradient(130% 90% at 50% -15%, #fdfaf4 0%, var(--bg-page) 42%, #e8e2d6 100%); background-attachment: fixed; }
+a { color: var(--amber); }
+/* Titles: tonal gradient — never flat “full” colour */
+.text-gradient {
+  background: linear-gradient(102deg, #3a332c 0%, #2e2822 22%, #5c4d3e 42%, #8f7349 62%, #6d8078 88%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.text-gradient-soft {
+  background: linear-gradient(105deg, #4a4238 0%, #3d352e 30%, #6b5c4a 48%, #a08050 68%, #5c756c 92%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+/* Hero on photo: light mist + warm edge only */
+.text-gradient-hero {
+  background: linear-gradient(95deg, #f7f2ea 0%, #ebe3d6 32%, #dcc8a8 58%, #c4a574 78%, #9ab0a4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.fs-h1-accent {
+  font-style: italic;
+  background: linear-gradient(100deg, #e8d4b8 0%, #d4a862 45%, #c17f24 70%, #7a9e92 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* No fixed top nav on this page — main starts at top of viewport */
+.fs-main { padding-top: 0; position: relative; z-index: 1; }
+
+/* —— Brain: 3 depth layers + parallax + scroll / motion peek —— */
+.fs-brain-stage {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  perspective: 1200px;
+}
+.fs-brain-layer {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.7s ease, filter 0.7s ease;
+  will-change: transform, opacity;
+}
+.fs-brain-layer span {
+  position: absolute;
+  background: url('brain.png') center / contain no-repeat;
+}
+/* Back: large, cooler, soft */
+.fs-brain-layer--deep {
+  transform: translate3d(0, calc(var(--fs-brain-y) * 0.035), -80px) scale(1.02);
+  opacity: 0.85;
+}
+.fs-brain-layer--deep span {
+  opacity: 0.038;
+  filter: saturate(0.25) hue-rotate(-8deg);
+}
+.fs-brain-layer--deep .b1 { width: min(480px, 58vw); height: min(480px, 58vw); top: 5%; left: -8%; transform: rotate(-11deg); }
+.fs-brain-layer--deep .b2 { width: 320px; height: 320px; top: 42%; right: -5%; transform: rotate(14deg); opacity: 0.045; }
+/* Mid: warm, crosses section tones */
+.fs-brain-layer--mid {
+  transform: translate3d(0, calc(var(--fs-brain-y) * -0.055), -35px) scale(1);
+  mix-blend-mode: multiply;
+  opacity: 0.92;
+}
+.fs-brain-layer--mid span {
+  opacity: 0.055;
+  filter: saturate(0.45) sepia(0.12);
+}
+.fs-brain-layer--mid .b3 { width: min(360px, 48vw); height: min(360px, 48vw); top: 18%; right: 3%; transform: rotate(19deg); }
+.fs-brain-layer--mid .b4 { width: 200px; height: 200px; bottom: 22%; left: 6%; transform: rotate(-20deg); opacity: 0.065; }
+/* Front ghost: stronger; dips out while scrolling, peeks on mouse move */
+.fs-brain-layer--ghost {
+  transform: translate3d(0, calc(var(--fs-brain-y) * 0.09), 0);
+  opacity: 1;
+}
+.fs-brain-layer--ghost span {
+  opacity: 0.09;
+  filter: saturate(0.55) brightness(1.05);
+}
+.fs-brain-layer--ghost .b5 { width: 160px; height: 160px; top: 26%; left: 10%; transform: rotate(-16deg); }
+.fs-brain-layer--ghost .b6 { width: 240px; height: 240px; bottom: 8%; right: 14%; transform: rotate(12deg); opacity: 0.07; }
+.fs-brain-layer--ghost .b7 { width: 120px; height: 120px; top: 58%; left: 68%; transform: rotate(22deg); opacity: 0.06; }
+.fs-brain-stage.is-scrolling .fs-brain-layer--ghost {
+  opacity: 0.2;
+}
+.fs-brain-stage.is-scrolling .fs-brain-layer--ghost span {
+  opacity: 0.03;
+}
+.fs-brain-stage.is-peek .fs-brain-layer--ghost {
+  opacity: 1;
+}
+.fs-brain-stage.is-peek .fs-brain-layer--ghost span {
+  opacity: 0.11;
+}
+.fs-band--cream .fs-brain-inline,
+.fs-band--alt .fs-brain-inline,
+.fs-band--mid .fs-brain-inline {
+  position: absolute;
+  width: min(320px, 45vw);
+  height: min(320px, 45vw);
+  background: url('brain.png') center / contain no-repeat;
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 0;
+}
+.fs-brain-inline--tr { top: -40px; right: -60px; transform: rotate(15deg); }
+.fs-brain-inline--bl { bottom: -30px; left: -50px; transform: rotate(-18deg); }
+
+/* —— Scroll-reveal straplines (slide in from left) —— */
+.fs-reveal {
+  opacity: 0;
+  transform: translateX(-56px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fs-reveal.is-inview {
+  opacity: 1;
+  transform: translateX(0);
+}
+/* Subtle fade-up (alternate beat) */
+.fs-reveal--fade {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1), transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fs-reveal--fade.is-inview {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fs-reveal--rise {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fs-reveal--rise.is-inview {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Tighter slide for secondary headlines */
+.fs-reveal--nudge {
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fs-reveal--nudge.is-inview {
+  opacity: 1;
+  transform: translateX(0);
+}
+/* Slow glide in from the right (e.g. “always” on How it works hero) */
+.fs-reveal.fs-reveal--from-right-slow {
+  display: inline-block;
+  opacity: 0;
+  transform: translateX(56px);
+  transition:
+    opacity 1.35s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.55s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: 0s;
+  vertical-align: baseline;
+}
+.fs-reveal.fs-reveal--from-right-slow.is-inview {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.55s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fs-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .fs-reveal--fade {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .fs-reveal--rise,
+  .fs-reveal--nudge {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .fs-reveal.fs-reveal--from-right-slow {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    transition-delay: 0s !important;
+  }
+}
+
+/* —— Premium statement beats: two-line glide from left (scroll-triggered) —— */
+.fs-statement {
+  position: relative;
+  z-index: 1;
+}
+.fs-statement--center {
+  text-align: center;
+  max-width: min(920px, 96vw);
+  margin-left: auto;
+  margin-right: auto;
+}
+.fs-statement--wide {
+  max-width: min(1020px, 97vw) !important;
+}
+.fs-statement--left {
+  text-align: left;
+  max-width: min(820px, 100%);
+}
+.fs-statement--right {
+  text-align: right;
+  max-width: min(820px, 100%);
+  margin-left: auto;
+}
+.fs-statement__line {
+  font-family: var(--font-h);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(1.25rem, 2.9vw, 2.2rem);
+  line-height: 1.3;
+  margin: 0 0 0.75rem;
+  opacity: 0;
+  transform: translate3d(-48px, 0, 0);
+  transition:
+    opacity 1.05s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fs-statement__line:last-child { margin-bottom: 0; }
+.fs-statement__line--sub {
+  font-family: var(--font-b);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(0.92rem, 1.55vw, 1.12rem);
+  color: var(--muted);
+  max-width: 48ch;
+}
+.fs-statement--center .fs-statement__line--sub { margin-left: auto; margin-right: auto; }
+.fs-statement__line--cite {
+  font-family: var(--font-b);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-top: 0.35rem;
+}
+.fs-statement.is-inview .fs-statement__line:nth-child(1) {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 0s;
+}
+.fs-statement.is-inview .fs-statement__line:nth-child(2) {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 0.28s;
+}
+.fs-statement.is-inview .fs-statement__line:nth-child(3) {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 0.5s;
+}
+/* Animation variants: all fade-up */
+.fs-statement--fade .fs-statement__line {
+  transform: translate3d(0, 20px, 0);
+}
+.fs-statement--fade.is-inview .fs-statement__line {
+  transform: translate3d(0, 0, 0);
+}
+/* Mix: odd lines fade, even glide from left */
+.fs-statement--mix .fs-statement__line:nth-child(odd) {
+  transform: translate3d(0, 16px, 0);
+}
+.fs-statement--mix .fs-statement__line:nth-child(even) {
+  transform: translate3d(-44px, 0, 0);
+}
+.fs-statement--mix.is-inview .fs-statement__line:nth-child(odd),
+.fs-statement--mix.is-inview .fs-statement__line:nth-child(even) {
+  transform: translate3d(0, 0, 0);
+}
+/* On dark / photo */
+.fs-statement--on-photo .fs-statement__line {
+  color: #f5f0e8;
+}
+.fs-statement--on-photo .fs-statement__line.text-gradient {
+  background: linear-gradient(92deg, #f5f0e8 0%, #f0d090 42%, #c17f24 88%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+.fs-statement--on-photo .fs-statement__line--sub {
+  color: rgba(245, 240, 232, 0.78);
+}
+.fs-statement--on-photo .fs-statement__line--cite {
+  color: rgba(232, 194, 122, 0.95);
+}
+.fs-band--statement { padding: clamp(1.25rem, 3.2vw, 2rem) clamp(16px, 3vw, 40px); }
+/* Tighter handoff after stacked demos (removes “dead air” before strapline) */
+.fs-demos-section + .fs-band--statement {
+  padding-top: clamp(0.85rem, 2.2vw, 1.35rem);
+}
+/* Hero: two-line glide for opening quote */
+.fs-hero-quote.fs-statement {
+  margin: 0 auto clamp(1.25rem, 3vh, 2rem);
+  max-width: min(44ch, 94vw);
+  border: none;
+  padding: 0;
+}
+.fs-hero-quote.fs-statement.fs-statement--wide {
+  max-width: min(62ch, 100%) !important;
+}
+.fs-hero-band .fs-hero-quote.fs-statement {
+  text-align: left;
+  margin-left: 0;
+  margin-right: 0;
+}
+.fs-hero-quote.fs-statement:not(.fs-statement--hero-right) .fs-statement__line {
+  font-family: var(--font-h);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.35rem, 3.6vw, 2.45rem);
+  line-height: 1.38;
+  color: rgba(245, 240, 232, 0.94);
+  letter-spacing: -0.015em;
+}
+.fs-hero-quote.fs-statement .fs-statement__line:first-child::before { content: '\201C'; }
+.fs-hero-quote.fs-statement .fs-statement__line:last-of-type::after { content: '\201D'; }
+/* Opening quote: main-heading scale, hero gradient, slow glide in from the right */
+.fs-statement--hero-right .fs-statement__line {
+  opacity: 0;
+  transform: translate3d(56px, 0, 0);
+  transition:
+    opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.65s cubic-bezier(0.16, 1, 0.3, 1);
+  font-weight: 600;
+  font-style: italic;
+  font-size: clamp(1.85rem, 5.4vw, 3.45rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+  color: transparent;
+}
+.fs-statement--hero-right.is-inview .fs-statement__line:nth-child(1) {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 0.08s;
+}
+.fs-statement--hero-right.is-inview .fs-statement__line:nth-child(2) {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 0.45s;
+}
+/* Content Manager can supply 3+ quote lines — previous rules only revealed 1–2 */
+.fs-statement--hero-right.is-inview .fs-statement__line:nth-child(n+3) {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 0.62s;
+}
+.fs-hero-quote.fs-statement--hero-right .fs-statement__line:first-child::before,
+.fs-hero-quote.fs-statement--hero-right .fs-statement__line:last-of-type::after {
+  background: none;
+  -webkit-text-fill-color: rgba(252, 248, 240, 0.92);
+  color: rgba(252, 248, 240, 0.92);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fs-statement__line {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .fs-statement--fade .fs-statement__line,
+  .fs-statement--mix .fs-statement__line:nth-child(odd),
+  .fs-statement--mix .fs-statement__line:nth-child(even) {
+    transform: none;
+  }
+  .fs-statement--hero-right .fs-statement__line {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+.fs-strapline-xl {
+  font-family: var(--font-h);
+  font-size: clamp(2rem, 5.5vw, 3.75rem);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.1;
+  margin: 0 0 0.85rem;
+  letter-spacing: -0.025em;
+}
+.fs-strapline-sub {
+  font-size: clamp(1.05rem, 1.95vw, 1.32rem);
+  color: var(--muted);
+  font-style: italic;
+  line-height: 1.55;
+  max-width: 48ch;
+  margin: 0;
+}
+.fs-slide--strapline {
+  padding: 0 clamp(12px, 3vw, 28px);
+}
+.fs-slide--strapline .fs-strapline-wrap {
+  max-width: min(960px, 95vw);
+  margin: 0 auto;
+  text-align: left;
+  padding: 0.5rem 0 1rem;
+  position: relative;
+  z-index: 2;
+}
+.fs-slide--strapline .fs-kicker { margin-bottom: 1rem; }
+.fs-pin .fs-slide--how.fs-slide--strapline .fs-strapline-wrap {
+  max-width: min(1100px, 96vw);
+  margin: 0 auto;
+  padding: clamp(0.65rem, 2vh, 1.35rem) 0 clamp(0.35rem, 1vh, 0.65rem);
+}
+.fs-slide--strapline .fs-pills--how-hero {
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: clamp(1.85rem, 4.5vh, 2.85rem);
+  margin-bottom: 0;
+  gap: 10px;
+  max-width: 100%;
+}
+.fs-pin .fs-slide--how.fs-slide--strapline .fs-strapline-sub {
+  max-width: 52ch;
+}
+/* How it works — first slide: hero-scale headline + staged “always” */
+.fs-strapline-xl--how-hero {
+  font-size: clamp(2.35rem, 6.2vw, 4.25rem);
+  line-height: 1.06;
+  margin: 0 0 clamp(0.85rem, 2.5vh, 1.5rem);
+  letter-spacing: -0.03em;
+}
+.fs-how-hero__line1 {
+  display: block;
+  margin-bottom: 0.08em;
+}
+.fs-how-hero__line2 {
+  display: block;
+}
+.fs-how-hero__always {
+  font-weight: 800;
+  font-style: italic;
+  margin: 0 0.04em;
+}
+/* Stagger: “You’ll” slightly after line 1; tail after “always” starts */
+.fs-how-hero__line2 > .fs-reveal--nudge.is-inview {
+  transition-delay: 0.18s;
+}
+.fs-how-hero__tail.fs-reveal--fade.is-inview {
+  transition-delay: 1.05s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fs-how-hero__line2 > .fs-reveal--nudge.is-inview,
+  .fs-how-hero__tail.fs-reveal--fade.is-inview {
+    transition-delay: 0s !important;
+  }
+}
+
+/* —— Photo bands & split sections —— */
+.fs-photo-band {
+  position: relative;
+  min-height: min(36vh, 380px);
+  background: #1a1410 center / cover no-repeat;
+  display: flex;
+  align-items: center;
+  padding: clamp(1.35rem, 3.5vw, 2.5rem) clamp(16px, 4vw, 40px);
+}
+.fs-photo-band__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, rgba(10,8,6,0.82) 0%, rgba(10,8,6,0.45) 55%, rgba(10,8,6,0.25) 100%);
+  pointer-events: none;
+}
+.fs-photo-band__inner {
+  position: relative;
+  z-index: 2;
+  max-width: min(820px, 100%);
+}
+.fs-photo-band .fs-strapline-xl { color: #f5f0e8; -webkit-text-fill-color: #f5f0e8; background: none; }
+.fs-photo-band .fs-strapline-xl.text-gradient,
+.fs-photo-band .fs-strapline-xl.text-gradient-soft {
+  background: linear-gradient(100deg, #f2ebe2 0%, #e5d8c4 38%, #d2b896 62%, #a8906e 85%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.fs-statement--on-photo .fs-statement__line.text-gradient-soft {
+  background: linear-gradient(100deg, #f2ebe2 0%, #e5d8c4 40%, #c9ae86 72%, #9a9e98 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+.fs-photo-band .fs-strapline-sub { color: rgba(245, 240, 232, 0.78); }
+/* Headline top, partner quote anchored bottom-left */
+.fs-photo-band.fs-photo-band--quote-bottom {
+  align-items: stretch;
+  min-height: min(28vh, 340px);
+  padding: 0;
+}
+.fs-photo-band--quote-bottom .fs-photo-band__inner {
+  flex: 1;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: min(920px, 94vw);
+  width: 100%;
+  margin: 0;
+  /* Balanced vertical rhythm at section break (top ≈ bottom) */
+  padding: clamp(1.1rem, 2.5vw, 1.65rem) clamp(16px, 4vw, 40px);
+  min-height: min(28vh, 340px);
+}
+.fs-photo-band--quote-bottom .fs-photo-band__quote {
+  margin-top: auto;
+  align-self: flex-start;
+  max-width: min(540px, 100%);
+  padding-top: clamp(0.65rem, 1.8vh, 1.15rem);
+}
+.fs-photo-band--quote-bottom .fs-photo-band__quote .fs-statement__line {
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+}
+.fs-band .fs-photo-band.fs-photo-band--bleed {
+  margin-left: calc(-1 * clamp(16px, 3vw, 40px));
+  margin-right: calc(-1 * clamp(16px, 3vw, 40px));
+  width: calc(100% + 2 * clamp(16px, 3vw, 40px));
+  max-width: none;
+  margin-top: calc(-1 * clamp(1rem, 3vw, 2rem));
+}
+.fs-band--white .fs-quote { position: relative; z-index: 1; }
+.fs-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: min(300px, 46vh);
+  position: relative;
+  overflow: hidden;
+}
+@media (max-width: 900px) {
+  .fs-split { grid-template-columns: 1fr; min-height: 0; }
+}
+.fs-split__img {
+  background: #2a241c center / cover no-repeat;
+  min-height: 260px;
+}
+.fs-split__body {
+  display: flex;
+  align-items: center;
+  padding: clamp(1.35rem, 3.2vw, 2.35rem);
+  background: var(--bg-page);
+  position: relative;
+}
+.fs-split__body .fs-brain-inline { opacity: 0.06; }
+
+/* 250 hubs: ~45/55 split, intro + copy columns, all body copy = Inter */
+.fs-split--hubs {
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  min-height: min(320px, 44vh);
+}
+.fs-split--hubs .fs-split__img {
+  min-height: min(300px, 42vh);
+}
+.fs-split__body--hubs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: clamp(1.25rem, 3.2vw, 2.25rem);
+  align-items: start;
+  align-content: center;
+  background: linear-gradient(160deg, #faf7f2 0%, #f2ece4 50%, #ebe4d9 100%);
+}
+.fs-hubs-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-top: 0.15rem;
+}
+.fs-hubs-intro .fs-kicker { margin: 0; }
+.fs-hubs-intro .fs-hubs-title {
+  font-family: var(--font-h);
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.2;
+  margin: 0;
+  color: var(--text);
+}
+.fs-hubs-copy {
+  font-family: var(--font-b);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.85rem, 2vw, 1.1rem);
+}
+.fs-hubs-lede,
+.fs-hubs-note {
+  font-family: var(--font-b);
+  margin: 0;
+  line-height: 1.65;
+  color: var(--muted);
+  font-size: clamp(0.92rem, 1.45vw, 1.02rem);
+}
+.fs-hubs-note {
+  font-size: clamp(0.88rem, 1.35vw, 0.98rem);
+  opacity: 0.95;
+  padding-top: 0.15rem;
+  border-top: 1px solid rgba(193, 127, 36, 0.2);
+}
+@media (max-width: 900px) {
+  .fs-split--hubs {
+    grid-template-columns: 1fr;
+  }
+  .fs-split__body--hubs {
+    grid-template-columns: 1fr;
+    gap: 1.15rem;
+    padding: clamp(1.35rem, 4vw, 2rem);
+  }
+  .fs-hubs-note {
+    border-top: 0;
+    padding-top: 0;
+  }
+}
+
+/* Founder: no forced viewport-tall split — avoids empty “stage” above/below copy */
+.fs-split--founder {
+  min-height: 0;
+}
+.fs-split--founder .fs-split__body {
+  align-items: flex-start;
+  justify-content: center;
+}
+.fs-split--founder .fs-split__img {
+  min-height: min(220px, 34vh);
+}
+
+/* Small anchor offset (no fixed header on this page) */
+[id^="fs-"] { scroll-margin-top: 12px; }
+
+/* —— Bands —— */
+.fs-band { position: relative; padding: var(--otos-section-padding-v) var(--otos-section-padding-h); }
+.fs-band--cream { background: var(--bg-page); }
+.fs-band--alt { background: var(--bg-alt); }
+.fs-band--mid { background: var(--bg-mid); }
+.fs-band--white { background: #faf8f5; }
+.fs-band--dark { background: var(--bg-dark); color: rgba(245, 240, 232, 0.9); }
+.fs-band--image {
+  background: #0a0806 center/cover no-repeat;
+  color: #f5f0e8;
+}
+/* Home hero: founder opening (top) + proposition stack (bottom) — no card around founder quote */
+.fs-hero-band {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  min-height: 100svh;
+  background-position: 46% 30%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding-bottom: clamp(1.5rem, 4vh, 2.5rem);
+}
+.fs-founder-open {
+  position: relative;
+  z-index: 2;
+  padding: clamp(2.25rem, 7vh, 4.5rem) clamp(16px, 4vw, 40px) clamp(1rem, 2.5vh, 1.75rem);
+  max-width: var(--otos-overlay-text-max);
+  margin: 0 auto 0 0;
+}
+@media (min-width: 900px) {
+  .fs-founder-open { margin-left: clamp(16px, 5vw, 64px); }
+}
+@media (max-width: 720px) {
+  .fs-founder-open {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+  }
+}
+.fs-founder-quote {
+  font-family: var(--font-h);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(1.35rem, 3.8vw, 2.35rem);
+  line-height: 1.28;
+  margin: 0 0 clamp(1.1rem, 2.5vh, 1.65rem);
+  padding: 0;
+  border: none;
+  max-width: var(--otos-container-narrow);
+  text-wrap: balance;
+}
+.fs-founder-context {
+  font-family: var(--font-b);
+  font-size: clamp(0.95rem, 1.45vw, 1.05rem);
+  line-height: 1.65;
+  color: rgba(245, 240, 232, 0.78);
+  margin: 0;
+  max-width: 52ch;
+  font-weight: 400;
+}
+.fs-bank-strap {
+  font-family: var(--font-h);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(1.05rem, 2.2vw, 1.45rem);
+  line-height: 1.4;
+  margin: 0 0 clamp(1rem, 2.2vh, 1.5rem);
+  max-width: 38ch;
+  color: rgba(245, 240, 232, 0.92);
+}
+.fs-hero-insight {
+  margin-top: clamp(1.25rem, 3vh, 2rem);
+  padding-top: clamp(1rem, 2.5vh, 1.5rem);
+  border-top: 1px solid rgba(245, 240, 232, 0.12);
+  max-width: min(40rem, 100%);
+}
+.fs-hero-insight__primary {
+  font-family: var(--font-h);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  line-height: 1.35;
+  margin: 0 0 0.75rem;
+  color: rgba(245, 240, 232, 0.94);
+}
+.fs-hero-insight__support {
+  font-size: clamp(0.92rem, 1.5vw, 1.02rem);
+  line-height: 1.65;
+  color: rgba(245, 240, 232, 0.78);
+  margin: 0;
+  max-width: 48ch;
+}
+/* Architecture / reporting teasers — light glass chip only */
+.fs-otos-glass-chip {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 12px;
+  backdrop-filter: blur(var(--otos-glass-blur));
+  -webkit-backdrop-filter: blur(var(--otos-glass-blur));
+  background: var(--otos-glass-bg);
+  border: 1px solid var(--otos-glass-border);
+}
+/* Silent layer band: text floats on image — no heavy panel */
+.fs-band--image.fs-silent-layer .fs-inner--float {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: clamp(1rem, 3vw, 1.5rem) 0;
+  max-width: min(34rem, 92vw);
+}
+.fs-hero-band .fs-shade {
+  background: linear-gradient(165deg, rgba(8,6,5,0.45) 0%, rgba(10,8,6,0.35) 38%, rgba(12,10,8,0.55) 70%, rgba(6,5,4,0.78) 100%);
+}
+.fs-band--image .fs-shade {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, rgba(10,8,6,0.7) 0%, rgba(10,8,6,0.4) 50%, rgba(10,8,6,0.82) 100%);
+  pointer-events: none;
+}
+.fs-band--image .fs-inner {
+  position: relative; z-index: 2;
+  max-width: min(920px, 94vw);
+  margin: 0 auto;
+  text-align: center;
+  padding: clamp(1.25rem, 3vh, 2.25rem) clamp(12px, 3vw, 28px) clamp(3.5rem, 8vh, 5rem);
+}
+.fs-hero-band .fs-inner {
+  max-width: min(1080px, 96vw);
+  margin: 0 auto 0 0;
+  text-align: left;
+  padding: clamp(0.75rem, 2vh, 1.5rem) clamp(16px, 4vw, 40px) clamp(0.5rem, 1.5vh, 1rem);
+}
+@media (min-width: 900px) {
+  .fs-hero-band .fs-inner {
+    margin-left: clamp(16px, 5vw, 64px);
+  }
+}
+@media (max-width: 720px) {
+  .fs-hero-band {
+    justify-content: flex-end;
+    background-position: 50% 25%;
+  }
+  .fs-hero-band .fs-inner {
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+.fs-glass {
+  background: linear-gradient(155deg, rgba(255, 252, 246, 0.92) 0%, rgba(245, 237, 224, 0.88) 100%);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  border: 1px solid rgba(193, 127, 36, 0.22);
+  border-radius: 22px;
+  padding: clamp(1.1rem, 3vw, 1.85rem);
+  box-shadow:
+    0 16px 52px rgba(26, 20, 16, 0.1),
+    0 0 0 1px rgba(255, 252, 246, 0.65) inset;
+}
+/* Oura-like dark glass on light bands */
+.fs-glass--dark {
+  background: linear-gradient(165deg, rgba(28, 22, 16, 0.92) 0%, rgba(18, 14, 10, 0.94) 100%);
+  border-color: rgba(255, 252, 246, 0.12);
+  color: rgba(245, 240, 232, 0.94);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(255, 252, 246, 0.06) inset;
+}
+.fs-glass--dark .fs-kicker { color: #e8c27a; }
+.fs-glass--dark .fs-h2 { color: #f5f0e8; }
+.fs-glass--dark p, .fs-glass--dark li { color: rgba(245, 240, 232, 0.78); }
+.fs-glass--dark ul { color: rgba(245, 240, 232, 0.78); }
+.fs-glass--dark .fs-slide--how li::before { color: #7fd4c1; }
+.fs-band--image .fs-glass {
+  background: rgba(10, 8, 6, 0.45);
+  border-color: rgba(245, 240, 232, 0.18);
+  color: rgba(245, 240, 232, 0.92);
+  text-align: left;
+}
+.fs-kicker {
+  display: block;
+  font-size: clamp(0.68rem, 1.1vw, 0.78rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: clamp(0.85rem, 2vh, 1.25rem);
+}
+.fs-band--image .fs-kicker { color: var(--amber); opacity: 0.95; }
+.fs-hero-band .fs-kicker {
+  font-size: clamp(0.72rem, 1.15vw, 0.82rem);
+  margin-bottom: clamp(0.65rem, 1.5vh, 1rem);
+  color: rgba(232, 194, 122, 0.92);
+}
+.fs-hero-quote {
+  font-family: var(--font-h);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  line-height: 1.55;
+  color: rgba(245, 240, 232, 0.88);
+  margin: 0 auto clamp(1.25rem, 3vh, 2rem);
+  max-width: 42ch;
+  border: none;
+  padding: 0;
+}
+.fs-h1 {
+  font-family: var(--font-h);
+  font-size: clamp(2.15rem, 6.5vw, 4.25rem);
+  font-weight: 700;
+  line-height: 1.05;
+  margin: 0 0 clamp(1rem, 2.5vh, 1.75rem);
+  letter-spacing: -0.02em;
+}
+.fs-hero-band .fs-h1 {
+  font-size: clamp(2.85rem, 9vw, 5.85rem);
+  line-height: 1.02;
+  max-width: 12ch;
+  margin-bottom: clamp(0.85rem, 2vh, 1.35rem);
+  color: transparent;
+  background: linear-gradient(98deg, #fdf9f3 0%, #e8dfd2 35%, #d2c2a8 62%, #c9a86a 82%, #a8bdb4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.fs-hero-band .fs-h1 .fs-h1-accent {
+  display: inline-block;
+  margin-top: 0.06em;
+}
+/* Content Manager (`otos_home_content`) overrides default hero headline gradient */
+.fs-hero-band .fs-h1.fs-h1--cm-managed {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: unset;
+  color: inherit;
+  max-width: min(22ch, 96vw);
+}
+.fs-hero-band .fs-h1.fs-h1--cm-managed .fs-h1-accent {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: unset;
+  color: inherit;
+}
+.fs-hero-band .fs-h1.otos-cw-on,
+.fs-hero-quote .fs-statement__line.otos-cw-on {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+/* Hero CTA — same source as portal home; hidden until Content Manager save or default text */
+.fs-hero-cta {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  margin-top: clamp(1rem, 2.5vh, 1.75rem);
+  width: fit-content;
+  max-width: min(220px, 88vw);
+  background: rgba(245, 240, 232, 0.95);
+  color: #1a1410;
+  font-family: var(--font-b);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 14px 26px;
+  border-radius: 100px;
+  text-decoration: none;
+  text-align: center;
+  line-height: 1.3;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  white-space: pre-line;
+}
+.fs-hero-cta.is-visible { display: inline-flex; }
+.fs-hero-cta:hover {
+  background: var(--amber);
+  color: #f5f0e8;
+  transform: translateY(-2px);
+}
+.fs-hero-band .fs-stat.fs-stat--cm .fs-stat__eyebrow { display: none; }
+.fs-h2 {
+  font-family: var(--font-h);
+  font-size: clamp(1.35rem, 3vw, 2.2rem);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.15;
+  margin: 0 0 1rem;
+}
+.fs-hero-lede {
+  font-size: clamp(1.02rem, 1.85vw, 1.22rem);
+  line-height: 1.75;
+  color: rgba(245, 240, 232, 0.9);
+  max-width: 46ch;
+  margin: 0 auto clamp(1.75rem, 4vh, 2.75rem);
+  font-weight: 400;
+}
+.fs-hero-band .fs-hero-lede {
+  font-size: clamp(1.12rem, 2.15vw, 1.42rem);
+  max-width: min(36ch, 94vw);
+  margin: 0 0 clamp(1.25rem, 3vh, 2rem);
+  color: rgba(245, 240, 232, 0.88);
+}
+/* Hero stats: 2 columns × 3 rows (six cells) — matches Content Manager preview */
+.fs-hero-band .fs-stats {
+  max-width: min(520px, 100%);
+  margin: 0;
+}
+.fs-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, auto);
+  gap: 0;
+  max-width: min(520px, 100%);
+  margin: 0 auto;
+  padding: 0;
+  border-radius: 22px;
+  background: rgba(12, 10, 8, 0.55);
+  backdrop-filter: blur(26px) saturate(155%);
+  -webkit-backdrop-filter: blur(26px) saturate(155%);
+  border: 1px solid rgba(193, 127, 36, 0.35);
+  box-shadow:
+    0 20px 56px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 252, 246, 0.08) inset,
+    0 1px 0 rgba(255, 252, 246, 0.12) inset;
+  overflow: hidden;
+}
+.fs-stat {
+  text-align: center;
+  padding: clamp(1.1rem, 2.2vw, 1.45rem) clamp(0.65rem, 1.5vw, 1rem);
+  border-right: 1px solid rgba(255, 252, 246, 0.1);
+  border-bottom: 1px solid rgba(255, 252, 246, 0.1);
+  position: relative;
+}
+.fs-stat:nth-child(2n) { border-right: none; }
+.fs-stat:nth-child(n + 5) { border-bottom: none; }
+.fs-stat::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, rgba(193, 127, 36, 0.65), transparent);
+  opacity: 0.85;
+}
+.fs-stat__eyebrow {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245, 240, 232, 0.42);
+  margin: 0.65rem 0 0.35rem;
+}
+.fs-stat b {
+  display: block;
+  font-family: var(--font-h);
+  font-size: clamp(1.65rem, 3.8vw, 2.35rem);
+  font-weight: 700;
+  color: var(--amber);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-shadow: 0 2px 20px rgba(193, 127, 36, 0.2);
+}
+.fs-stat__label {
+  display: block;
+  font-size: clamp(9px, 1.15vw, 11px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(245, 240, 232, 0.82);
+  line-height: 1.4;
+  margin-top: 0.5rem;
+  max-width: 11rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (max-width: 480px) {
+  .fs-stats {
+    grid-template-columns: 1fr;
+  }
+  .fs-stat { border-right: none !important; border-bottom: 1px solid rgba(255, 252, 246, 0.1); }
+  .fs-stat:last-child { border-bottom: none; }
+}
+
+/* —— Single section-jump system: letter rail (replaces duplicate between-section “cue” strips) —— */
+.fs-section-rail {
+  position: fixed;
+  right: clamp(6px, 1.2vw, 14px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 6px;
+  border-radius: 14px;
+  background: rgba(26, 20, 16, 0.42);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(193, 127, 36, 0.28);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+}
+.fs-section-rail a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 2px 4px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-family: var(--font-b);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: rgba(245, 240, 232, 0.55);
+  border: 1px solid transparent;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+.fs-section-rail a:hover,
+.fs-section-rail a:focus-visible {
+  color: #f5f0e8;
+  background: rgba(193, 127, 36, 0.22);
+  border-color: rgba(193, 127, 36, 0.45);
+  outline: none;
+}
+.fs-section-rail a.is-active {
+  color: #f5f0e8;
+  background: rgba(193, 127, 36, 0.38);
+  border-color: rgba(232, 194, 122, 0.55);
+}
+.fs-section-rail__glyph { line-height: 1; }
+.fs-section-rail__hint {
+  display: none;
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  max-width: 52px;
+  text-align: center;
+  line-height: 1.15;
+}
+@media (min-width: 1200px) {
+  .fs-section-rail a { min-height: 38px; }
+  .fs-section-rail__hint { display: block; }
+}
+@media (max-width: 720px) {
+  body[data-otos-shell="full-scroll"],
+  body[data-otos-shell="full-scroll2"] {
+    padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px));
+  }
+  .fs-section-rail {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 6px 10px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    gap: 4px;
+  }
+  .fs-section-rail a { flex: 0 0 auto; min-width: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* —— Scroll-pinned stage (Oura-like) —— */
+.fs-pin {
+  position: relative;
+  /* height set by JS: slides × compact slide height (not full viewport) */
+}
+.fs-pin__sticky {
+  position: sticky;
+  top: 0;
+  /* Content height only — no viewport-tall empty “stage” */
+  min-height: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(0.35rem, 1.2vw, 0.85rem) clamp(0.5rem, 1.5vw, 1rem) clamp(1rem, 2.5vw, 1.65rem);
+  overflow: visible;
+  background: var(--bg-mid);
+  box-sizing: border-box;
+}
+.fs-pin__slides { position: relative; width: 100%; max-width: min(960px, 96vw); min-height: min(220px, 30vh); }
+/* How pin: compact slide stage */
+.fs-pin .fs-pin__slides {
+  min-height: min(240px, 32vh);
+  max-width: min(1100px, 96vw);
+}
+/* IO often misses reveals inside opacity:0 slides — always show copy on the active pin slide */
+.fs-pin .fs-slide.is-active .fs-reveal,
+.fs-pin .fs-slide.is-active .fs-reveal--fade,
+.fs-pin .fs-slide.is-active .fs-reveal--rise,
+.fs-pin .fs-slide.is-active .fs-reveal--nudge,
+.fs-pin .fs-slide.is-active .fs-reveal.fs-reveal--from-right-slow {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0s;
+}
+.fs-slide {
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  transform: translateY(-50%) translateY(12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+  padding: 0 8px;
+}
+.fs-slide.is-active {
+  opacity: 1;
+  transform: translateY(-50%) translateY(0);
+  pointer-events: auto;
+}
+.fs-slide .fs-glass { margin: 0 auto; max-width: 560px; }
+.fs-pin__progress {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 5;
+}
+.fs-pin__dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: rgba(26, 20, 10, 0.15);
+  border: 1px solid rgba(193, 127, 36, 0.25);
+}
+.fs-pin__dot.is-on { background: var(--amber); }
+.fs-pin__hint {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(26, 20, 10, 0.38);
+  z-index: 4;
+  white-space: nowrap;
+}
+/* How pin: glass scroll cue (replaces “Scroll to advance” + dots) — type size aligned with nav links */
+.fs-pin__scroll-cue {
+  position: absolute;
+  bottom: clamp(6px, 1.2vh, 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  pointer-events: none;
+}
+.fs-pin__scroll-cue__glass {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px 12px;
+  border-radius: 22px;
+  background: rgba(255, 252, 246, 0.42);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(193, 127, 36, 0.2);
+  box-shadow: 0 10px 32px rgba(26, 20, 16, 0.07);
+}
+.fs-pin__scroll-cue__label {
+  font-family: var(--font-b);
+  font-size: clamp(12px, 1.45vw, 14px);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(74, 58, 48, 0.52);
+  line-height: 1.2;
+}
+.fs-pin__scroll-cue__arrow {
+  width: 11px;
+  height: 11px;
+  border-right: 2px solid var(--amber);
+  border-bottom: 2px solid var(--amber);
+  transform: rotate(45deg);
+  margin-top: -4px;
+  animation: fs-pin-scroll-nudge 1.45s ease-in-out infinite;
+}
+@keyframes fs-pin-scroll-nudge {
+  0%, 100% { transform: rotate(45deg) translateY(-1px); opacity: 0.65; }
+  50% { transform: rotate(45deg) translateY(6px); opacity: 1; }
+}
+.fs-pin__scroll-cue__wheel {
+  width: 11px;
+  height: 16px;
+  border: 1.5px solid rgba(74, 58, 48, 0.35);
+  border-radius: 5px;
+  position: relative;
+  margin-bottom: 2px;
+  animation: fs-pin-wheel 1.45s ease-in-out infinite;
+}
+.fs-pin__scroll-cue__wheel::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 3px;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 4px;
+  border-radius: 1px;
+  background: rgba(193, 127, 36, 0.75);
+  animation: fs-pin-wheel-dot 1.45s ease-in-out infinite;
+}
+@keyframes fs-pin-wheel {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+@keyframes fs-pin-wheel-dot {
+  0%, 100% { opacity: 0.5; top: 3px; }
+  50% { opacity: 1; top: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fs-pin__scroll-cue__arrow,
+  .fs-pin__scroll-cue__wheel,
+  .fs-pin__scroll-cue__wheel::after {
+    animation: none !important;
+  }
+}
+
+/* Guided demos: stacked cards — all three routes visible (no scroll-pin carousel) */
+.fs-demos-section {
+  position: relative;
+  background: var(--bg-alt);
+  padding: clamp(0.75rem, 2vw, 1.25rem) clamp(16px, 3vw, 40px) clamp(1rem, 2.4vw, 1.5rem);
+}
+.fs-demos-intro {
+  width: 100%;
+  max-width: min(1100px, 94vw);
+  margin: 0 auto;
+  padding: 0 clamp(12px, 3vw, 24px) clamp(0.65rem, 1.8vw, 1.1rem);
+  text-align: center;
+}
+.fs-demos-intro__strap {
+  font-family: var(--font-h);
+  font-weight: 600;
+  font-style: italic;
+  font-size: clamp(1.15rem, 2.4vw, 1.75rem);
+  line-height: 1.35;
+  margin: 0;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.fs-demos-stack {
+  width: 100%;
+  max-width: min(1320px, 97vw);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.4vw, 1.6rem);
+  padding: 0 clamp(4px, 1.2vw, 10px);
+  box-sizing: border-box;
+}
+.fs-demos-stack .fs-demo-split {
+  min-height: 0;
+}
+.fs-demo-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  min-height: min(200px, 28vh);
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(193, 127, 36, 0.22);
+  box-shadow: 0 24px 60px rgba(26, 20, 16, 0.12);
+  background: rgba(255, 252, 246, 0.98);
+}
+.fs-demo-split--reverse .fs-demo-split__media { order: 2; }
+.fs-demo-split--reverse .fs-demo-split__copy { order: 1; }
+.fs-demo-split__media {
+  position: relative;
+  min-height: 280px;
+  background: #1a1410;
+}
+.fs-demo-split__img {
+  width: 100%;
+  height: 100%;
+  min-height: min(220px, 30vh);
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+}
+.fs-demo-split__stats {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 28px 10px 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  background: linear-gradient(180deg, transparent 0%, rgba(6, 5, 4, 0.2) 35%, rgba(8, 6, 5, 0.88) 100%);
+  pointer-events: none;
+}
+.fs-demo-stat {
+  text-align: center;
+  padding: 10px 6px 8px;
+  border-radius: 14px;
+  background: rgba(12, 10, 8, 0.52);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(245, 240, 232, 0.14);
+}
+.fs-demo-stat__n {
+  display: block;
+  font-family: var(--font-h);
+  font-size: clamp(1.2rem, 2.4vw, 1.55rem);
+  font-weight: 700;
+  color: var(--amber);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.fs-demo-stat__l {
+  display: block;
+  margin-top: 4px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245, 240, 232, 0.82);
+  line-height: 1.35;
+}
+.fs-demo-split__copy {
+  padding: clamp(1.35rem, 2.8vw, 2.25rem) clamp(1.25rem, 3vw, 2.5rem);
+  background: linear-gradient(165deg, rgba(255, 252, 246, 0.98) 0%, rgba(245, 237, 224, 0.96) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+.fs-demo-strap--head {
+  font-family: var(--font-h);
+  font-weight: 700;
+  font-style: italic;
+  font-size: clamp(1.12rem, 2.1vw, 1.52rem);
+  line-height: 1.3;
+  text-align: left;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+.fs-demo-strap--sub {
+  font-size: clamp(0.82rem, 1.35vw, 0.96rem);
+  color: var(--muted);
+  text-align: left;
+  line-height: 1.55;
+  margin: 0 0 0.85rem;
+  font-style: italic;
+}
+.fs-demo-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-start;
+  margin: 0 0 14px;
+}
+.fs-demo-pill {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 252, 248, 0.92);
+  border: 1px solid rgba(200, 146, 42, 0.28);
+  color: rgba(26, 20, 16, 0.78);
+}
+.fs-route { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); text-align: left; margin-bottom: 8px; }
+.fs-demos-stack .fs-demo-split__copy h3 { font-family: var(--font-h); text-align: left; margin: 0 0 8px; font-size: clamp(1.15rem, 2vw, 1.35rem); }
+.fs-demos-stack .fs-demo-split__copy ul { list-style: none; padding: 0; margin: 0; font-size: clamp(12px, 1.25vw, 13px); color: var(--muted); }
+.fs-demos-stack .fs-demo-split__copy li { padding: 6px 0 6px 18px; position: relative; border-top: 1px solid rgba(193,127,36,0.1); }
+.fs-demos-stack .fs-demo-split__copy li:first-child { border-top: none; }
+.fs-demos-stack .fs-demo-split__copy li::before { content: '→'; position: absolute; left: 0; color: var(--teal); font-size: 10px; top: 8px; }
+@media (max-width: 900px) {
+  .fs-demo-split {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .fs-demo-split__media { order: -1; }
+  .fs-demo-split--reverse .fs-demo-split__media { order: -1; }
+  .fs-demo-split--reverse .fs-demo-split__copy { order: 0; }
+  .fs-demo-split__img { min-height: min(30vh, 220px); }
+  .fs-demo-split__stats { grid-template-columns: repeat(3, 1fr); padding-top: 20px; }
+}
+
+/* How slides: compact lists */
+.fs-slide--how ul { list-style: none; padding: 0; margin: 0.5rem 0 0; font-size: 0.88rem; color: var(--muted); }
+.fs-slide--how li { padding: 0.2rem 0 0.2rem 1rem; position: relative; }
+.fs-slide--how li::before { content: '→'; position: absolute; left: 0; color: var(--teal); font-size: 0.8rem; }
+
+.fs-controls-strip {
+  font-family: var(--font-h);
+  font-size: clamp(1.45rem, 2.8vw, 2.3rem);
+  font-weight: 600;
+  font-style: italic;
+  text-align: center;
+  color: var(--amber);
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 1.5rem;
+}
+.fs-control-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(1rem, 2vw, 1.5rem);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px 2.5rem;
+}
+@media (max-width: 640px) { .fs-control-grid { grid-template-columns: 1fr; } }
+.fs-control-card {
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(255, 252, 246, 0.92);
+  border: 1px solid rgba(74, 158, 142, 0.22);
+  box-shadow: 0 14px 44px rgba(26, 20, 16, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+.fs-control-card.amber { border-color: rgba(232, 114, 12, 0.28); }
+.fs-control-card__img {
+  width: 100%;
+  height: 200px;
+  background: #2a241c center / cover no-repeat;
+  flex-shrink: 0;
+}
+.fs-control-card__body {
+  padding: 1rem 1.15rem 1.2rem;
+  text-align: left;
+}
+.fs-control-card .lab { font-size: 8px; font-weight: 700; letter-spacing: 0.18em; color: var(--amber); margin-bottom: 4px; }
+.fs-control-card h3 { font-family: var(--font-h); font-size: clamp(0.95rem, 2vw, 1.05rem); margin: 0 0 8px; line-height: 1.2; }
+.fs-control-card p { font-size: 12px; color: var(--muted); margin: 0 0 8px; line-height: 1.5; }
+.fs-control-card ul { list-style: none; padding: 0; margin: 0; text-align: left; width: 100%; }
+.fs-control-card li { font-size: 11px; color: var(--muted); padding: 4px 0 4px 14px; position: relative; border-top: 1px solid rgba(193,127,36,0.08); }
+.fs-control-card li:first-child { border-top: none; }
+.fs-control-card li::before { content: '→'; position: absolute; left: 0; color: var(--teal); font-size: 9px; top: 5px; }
+
+/* Partners */
+.fs-partner-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+@media (max-width: 900px) { .fs-partner-grid { grid-template-columns: 1fr; } }
+.fs-partner {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(193, 127, 36, 0.14);
+  border-radius: 20px;
+  padding: 1.35rem 1.5rem;
+  box-shadow: 0 8px 32px rgba(26, 20, 16, 0.07);
+}
+.fs-phase { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); margin-bottom: 8px; }
+.fs-partner h3 { font-family: var(--font-h); margin: 0 0 10px; font-size: 1.25rem; }
+.fs-partner p { font-size: 0.9rem; margin: 0 0 10px; color: rgba(26,20,10,0.78); }
+.fs-partner ul { list-style: none; padding: 0; margin: 0; font-size: 0.85rem; }
+.fs-partner li { padding: 0.35rem 0; border-top: 1px solid rgba(193,127,36,0.1); color: rgba(26,20,10,0.75); }
+.fs-partner li:first-child { border-top: none; }
+
+/* Stats dark */
+.fs-stats-dark { text-align: center; padding: clamp(1.75rem, 4vw, 2.85rem) 1.5rem; }
+.fs-stats-dark .fs-over { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); }
+.fs-stats-dark h2 { font-family: var(--font-h); font-size: clamp(1.5rem, 3.5vw, 2.5rem); margin: 0.75rem auto; max-width: 20ch; color: #f5f0e8; }
+.fs-stats-dark > p { max-width: 52ch; margin: 0 auto 2rem; color: rgba(245,240,232,0.65); font-size: 1rem; }
+.fs-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+@media (min-width: 800px) { .fs-stat-grid { grid-template-columns: repeat(4, 1fr); } }
+.fs-stat-card {
+  background: rgba(255, 252, 246, 0.09);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border: 1px solid rgba(193, 127, 36, 0.32);
+  border-radius: 18px;
+  padding: 1.25rem 1.2rem;
+  text-align: left;
+  box-shadow:
+    0 10px 36px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(255, 252, 246, 0.12) inset;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.fs-stat-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(193, 127, 36, 0.45);
+  box-shadow:
+    0 16px 44px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(255, 252, 246, 0.16) inset,
+    0 0 28px rgba(193, 127, 36, 0.08);
+}
+.fs-stat-card b { display: block; font-family: var(--font-h); font-size: clamp(1.25rem, 2.5vw, 1.75rem); color: var(--amber); margin-bottom: 6px; text-shadow: 0 1px 12px rgba(193, 127, 36, 0.15); }
+.fs-stat-card span { font-size: 11px; line-height: 1.45; color: rgba(245,240,232,0.62); }
+@media (prefers-reduced-motion: reduce) {
+  .fs-stat-card { transition: none; }
+  .fs-stat-card:hover { transform: none; }
+}
+
+/* Reporting */
+.fs-report-panel {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow: 0 18px 50px rgba(26, 20, 16, 0.08);
+}
+.fs-topNote { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; border: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.02); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; }
+.fs-topNote .t { font-weight: 800; margin-bottom: 4px; }
+.fs-topNote .s { color: #555; font-size: 12px; line-height: 1.4; }
+.fs-badge { display: inline-flex; align-items: center; gap: 8px; padding: 0.2rem 0.75rem; border-radius: 999px; border: 1px solid var(--amber); background: rgba(193,127,36,0.12); color: var(--amber); font-weight: 500; font-size: 0.72rem; }
+.fs-dot { width: 10px; height: 10px; border-radius: 999px; background: var(--amber); box-shadow: 0 0 0 4px rgba(193,127,36,0.16); }
+.fs-dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 980px) { .fs-dash-grid { grid-template-columns: 1fr; } }
+.fs-dash { border-radius: 12px; background: rgba(255,255,255,0.75); border: 1px solid rgba(255,255,255,0.35); padding: 0.95rem; }
+.fs-dash h3 { margin: 0; font-size: 15px; }
+.fs-hint { font-size: 0.72rem; color: var(--amber); border: 1px solid var(--amber); background: rgba(193,127,36,0.12); border-radius: 999px; padding: 0.2rem 0.75rem; }
+.fs-tiles { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 10px 0; }
+.fs-tile { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px; padding: 8px 10px; }
+.fs-tile .label { font-size: 0.75rem; margin: 0 0 4px; }
+.fs-tile .val { font-family: var(--font-h); font-size: 1.2rem; font-weight: 600; margin: 0; }
+.fs-chartTitle { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #777; margin: 0 0 8px; }
+.fs-strip { margin: 0.4rem auto 0; padding: 0.3rem 0.9rem; border-radius: 999px; background: #5eead4; color: #0f172a; text-align: center; font-weight: 500; font-size: 0.78rem; }
+.fs-disclaimer { background: rgba(74,158,142,0.15); border: 1px solid #5eead4; border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.78rem; font-style: italic; margin: 0.6rem 0; line-height: 1.45; }
+.fs-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.fs-table th, .fs-table td { padding: 0.45rem 0.8rem; border-bottom: 1px solid rgba(15,23,42,0.08); }
+.fs-table thead th { background: #0f172a; color: #f4f5f7; font-weight: 500; font-size: 0.75rem; }
+.fs-mono { font-family: ui-monospace, monospace; font-size: 11px; }
+.fs-note { font-size: 12px; color: #555; margin-top: 8px; }
+
+/* References — full-width rhythm (same band as founder split, no skinny 840px island) */
+#fs-refs.fs-band {
+  position: relative;
+  padding-left: clamp(14px, 3.5vw, 40px);
+  padding-right: clamp(14px, 3.5vw, 40px);
+  background-image:
+    linear-gradient(90deg, rgba(232, 226, 216, 0.55) 0%, transparent 14%, transparent 86%, rgba(232, 226, 216, 0.55) 100%),
+    linear-gradient(180deg, var(--bg-alt) 0%, var(--bg-alt) 100%);
+}
+.fs-ref-intro {
+  max-width: min(1240px, 100%);
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem clamp(8px, 1.5vw, 16px);
+  font-size: clamp(13px, 1.25vw, 14px);
+  color: var(--muted);
+}
+.fs-ref-note {
+  max-width: min(1240px, 100%);
+  width: 100%;
+  margin: 0 auto 1rem;
+  padding: 12px clamp(14px, 2vw, 22px);
+  background: rgba(193,127,36,0.08);
+  border: 1px solid rgba(193,127,36,0.2);
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  box-sizing: border-box;
+}
+.fs-ref-group {
+  max-width: min(1240px, 100%);
+  width: 100%;
+  margin: 0 auto 1.25rem;
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(193,127,36,0.14);
+  border-radius: 18px;
+  padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1.1rem, 2.5vw, 2.25rem);
+  box-shadow: 0 12px 40px rgba(26, 20, 16, 0.06);
+  box-sizing: border-box;
+}
+.fs-ref-group h2 { font-family: var(--font-h); font-size: clamp(1.1rem, 2vw, 1.35rem); margin: 0 0 0.5rem; }
+.fs-ref-group .desc { font-size: clamp(12px, 1.15vw, 13px); color: var(--muted); margin: 0 0 10px; max-width: 85ch; }
+.fs-ref-sec {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin: 2rem 0 0.5rem;
+  padding: 0 clamp(8px, 1.5vw, 16px);
+  max-width: min(1240px, 100%);
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+.fs-ref-item { border-top: 1px solid rgba(193,127,36,0.1); padding: 14px 0; font-size: 13px; }
+.fs-ref-item:first-child { border-top: none; padding-top: 0; }
+.fs-ref-item strong { display: block; margin-bottom: 4px; }
+.fs-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.fs-tag { font-size: 10px; font-weight: 600; color: var(--amber); background: rgba(193,127,36,0.1); border: 1px solid rgba(193,127,36,0.22); border-radius: 20px; padding: 3px 10px; }
+
+.fs-quote { max-width: 680px; margin: 2rem auto; padding: 1rem 1.5rem; text-align: center; position: relative; }
+.fs-quote p { font-family: var(--font-h); font-style: italic; font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 600; margin: 0 0 12px; }
+.fs-quote cite { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); font-style: normal; }
+.fs-quote--left { text-align: left; max-width: 560px; margin: 2rem auto; padding: 0 1.5rem; font-family: var(--font-h); font-style: italic; font-size: clamp(1rem, 1.8vw, 1.25rem); font-weight: 600; }
+
+.fs-footer {
+  background: #120d08;
+  color: rgba(240,235,227,0.4);
+  text-align: center;
+  padding: 22px 16px calc(22px + env(safe-area-inset-bottom, 0px));
+  font-size: 12px;
+  line-height: 1.6;
+  scroll-margin-bottom: 24px;
+}
+.fs-demo-wf {
+  display: inline-block;
+  margin-top: clamp(0.75rem, 2vw, 1.1rem);
+  margin-bottom: clamp(0.25rem, 0.8vw, 0.45rem);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--amber);
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(193, 127, 36, 0.35);
+  background: rgba(255, 252, 246, 0.85);
+}
+.fs-demo-wf:hover {
+  background: var(--amber);
+  color: #f5f0e8;
+  border-color: var(--amber);
+}
+.fs-end-strip {
+  text-align: center;
+  padding: clamp(0.85rem, 2vw, 1.1rem) 1rem;
+  background: var(--bg-mid);
+}
+.fs-end-strip p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.fs-end-strip a { font-weight: 600; }
+@media print {
+  .fs-section-rail, .fs-brain-stage { display: none !important; }
+  body, body.fs-dock-minimal { padding-bottom: 0 !important; }
+}
+.fs-center { text-align: center; max-width: 720px; margin-left: auto; margin-right: auto; }
+
+/* Mermaid — Cambridge pilot architecture (matches architecture-cambridge-pilot.mmd) */
+.fs-architecture-section { padding-bottom: clamp(1rem, 2.5vw, 1.65rem); }
+.fs-mermaid-lede {
+  color: var(--muted);
+  font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+  max-width: 62ch;
+  margin: 0.75rem auto 0;
+  line-height: 1.65;
+}
+.fs-mermaid-wrap {
+  max-width: min(1180px, 100%);
+  margin: clamp(1.5rem, 4vw, 2.25rem) auto 0;
+  padding: clamp(0.85rem, 2.2vw, 1.35rem);
+  background: linear-gradient(155deg, #faf7f2 0%, #f3eee6 45%, #ebe4d9 100%);
+  border: 1px solid rgba(193, 127, 36, 0.22);
+  border-radius: 22px;
+  box-shadow: 0 18px 48px rgba(26, 20, 16, 0.07);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.fs-mermaid-wrap pre.mermaid {
+  margin: 0;
+  padding: 0.5rem 0.25rem 1rem;
+  background: transparent;
+  border: 0;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  min-width: min(100%, 680px);
+  white-space: pre-wrap;
+  word-break: normal;
+}
+.fs-mermaid-foot {
+  margin-top: 1.25rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.fs-mermaid-foot a { font-weight: 600; color: var(--amber); }
+.fs-mermaid-foot a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+.fs-pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 1rem; }
+.fs-pill {
+  font-size: 11px; padding: 6px 14px; border-radius: 999px;
+  background: rgba(255,252,248,0.85);
+  border: 1px solid rgba(200,146,42,0.28);
+}
+.fs-report-intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 900px; margin: 0 auto 16px; padding: 8px 8px 0; }
+@media (max-width: 720px) { .fs-report-intro-grid { grid-template-columns: 1fr; } }
+.fs-partners-intro { text-align: center; max-width: 1100px; margin: 0 auto 1.5rem; padding: 0 1rem; }
+.fs-partners-intro .lbl { display: block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--amber); margin: 0 0 0.75rem; }
+.fs-partners-intro h2 { font-family: var(--font-h); font-size: clamp(1.5rem, 3vw, 2.1rem); margin: 0; font-weight: 700; font-style: italic; }
+.fs-quote--left cite { display: block; font-family: var(--font-b); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--amber); font-style: normal; margin-top: 8px; }
+
+/* —— No scroll-driven text motion (static copy; avoids gradient/clip “blue box” glitches during transitions) —— */
+.fs-reveal,
+.fs-reveal--fade,
+.fs-reveal--rise,
+.fs-reveal--nudge,
+.fs-reveal.fs-reveal--from-right-slow {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+  transition-delay: 0s !important;
+}
+.fs-statement__line,
+.fs-statement--fade .fs-statement__line,
+.fs-statement--mix .fs-statement__line:nth-child(odd),
+.fs-statement--mix .fs-statement__line:nth-child(even),
+.fs-statement--hero-right .fs-statement__line,
+.fs-statement.is-inview .fs-statement__line:nth-child(n) {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+  transition-delay: 0s !important;
+}
+</style>
+</head>
+<body data-otos-shell="full-scroll2">
+
+<div class="fs-brain-stage" id="fs-brain-stage" aria-hidden="true">
+  <div class="fs-brain-layer fs-brain-layer--deep">
+    <span class="b1"></span><span class="b2"></span>
+  </div>
+  <div class="fs-brain-layer fs-brain-layer--mid">
+    <span class="b3"></span><span class="b4"></span>
+  </div>
+  <div class="fs-brain-layer fs-brain-layer--ghost">
+    <span class="b5"></span><span class="b6"></span><span class="b7"></span>
+  </div>
+</div>
+
+<nav class="fs-section-rail" aria-label="Jump to section">
+  <a href="#fs-home" data-fs-jump><span class="fs-section-rail__glyph">A</span><span class="fs-section-rail__hint">Home</span></a>
+  <a href="#fs-how" data-fs-jump><span class="fs-section-rail__glyph">B</span><span class="fs-section-rail__hint">How</span></a>
+  <a href="#fs-demos" data-fs-jump><span class="fs-section-rail__glyph">C</span><span class="fs-section-rail__hint">Demos</span></a>
+  <a href="#fs-infra" data-fs-jump><span class="fs-section-rail__glyph">D</span><span class="fs-section-rail__hint">Infra</span></a>
+  <a href="#fs-architecture" data-fs-jump><span class="fs-section-rail__glyph">E</span><span class="fs-section-rail__hint">Map</span></a>
+  <a href="#fs-controls" data-fs-jump><span class="fs-section-rail__glyph">F</span><span class="fs-section-rail__hint">Controls</span></a>
+  <a href="#fs-reporting" data-fs-jump><span class="fs-section-rail__glyph">G</span><span class="fs-section-rail__hint">Reporting</span></a>
+  <a href="#fs-refs" data-fs-jump><span class="fs-section-rail__glyph">H</span><span class="fs-section-rail__hint">Refs</span></a>
+  <a href="#fs-founder" data-fs-jump><span class="fs-section-rail__glyph">I</span><span class="fs-section-rail__hint">Founder</span></a>
+</nav>
+
+<main class="fs-main">
+
+<!-- HOME — founder opening (locked copy) + language-bank line + CM-driven proposition, stats, CTA -->
+<section id="fs-home" class="fs-band fs-band--image fs-hero-band" data-fs-cm-hero data-fs-hero-image-default="images/Focused on progress in the office.png" style="background-image:url('images/Focused on progress in the office.png');">
+  <div class="fs-shade" aria-hidden="true"></div>
+  <header class="fs-founder-open" aria-labelledby="fs-founder-quote-text">
+    <blockquote id="fs-founder-quote-text" class="fs-founder-quote text-gradient-hero">Next time we meet, I won't be your patient &mdash; I'll be your partner.</blockquote>
+    <p class="fs-founder-context">As I left my final detox at Addenbrooke's Hospital, Cambridge, 6 months ago, I said this to Helen, the Alcohol Liaison Nurse, at my bedside on discharge.</p>
+  </header>
+  <div class="fs-inner" data-fs-cm-inner>
+    <p class="fs-bank-strap text-gradient-hero">The failure is not in the care &mdash; it is in the space between it.</p>
+    <span class="fs-kicker fs-hero-band__kicker" data-fs-cm-kicker>OTOS Continuity&trade;</span>
+    <h1 class="fs-h1 fs-reveal fs-reveal--nudge" data-fs-reveal data-fs-cm-heading>You refer someone.<br><span class="fs-h1-accent">Then what?</span></h1>
+    <p class="fs-hero-lede fs-reveal fs-reveal--rise" data-fs-reveal data-fs-cm-body>Nobody disappears quietly. OTOS Continuity&trade; shows what happens after a referral, handoff, or discharge &mdash; one scan, one tap, always knowing they made the next step. Touchpoints, not records. No EPR write-back. Human decisions only.</p>
+    <div class="fs-hero-insight fs-reveal fs-reveal--fade" data-fs-reveal>
+      <p class="fs-hero-insight__primary">Continuity is the difference between someone making it and someone not making it.</p>
+      <p class="fs-hero-insight__support">Many people are described as being &ldquo;held&rdquo; on waiting lists &mdash; but waiting without continuity can leave someone exposed, not safely contained. OTOS is the continuity layer: the thread between touchpoints, not the touchpoints themselves.</p>
+    </div>
+    <div class="fs-stats fs-reveal fs-reveal--fade" data-fs-reveal role="list" aria-label="Personal journey statistics">
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="1" aria-label="30 years self-medicating">
+        <span class="fs-stat__eyebrow">Signal 01</span>
+        <b>30</b>
+        <span class="fs-stat__label">Years<br>self-medicating</span>
+      </div>
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="2" aria-label="6 years waiting">
+        <span class="fs-stat__eyebrow">Signal 02</span>
+        <b>6</b>
+        <span class="fs-stat__label">Years<br>waiting</span>
+      </div>
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="3" aria-label="11 services used">
+        <span class="fs-stat__eyebrow">Signal 03</span>
+        <b>11</b>
+        <span class="fs-stat__label">Services<br>used</span>
+      </div>
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="4" aria-label="3 days to change everything">
+        <span class="fs-stat__eyebrow">Signal 04</span>
+        <b>3</b>
+        <span class="fs-stat__label">Days to change<br>everything</span>
+      </div>
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="5" aria-label="Statistic 5">
+        <span class="fs-stat__eyebrow">Signal 05</span>
+        <b>&mdash;</b>
+        <span class="fs-stat__label">Add in editor</span>
+      </div>
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="6" aria-label="Statistic 6">
+        <span class="fs-stat__eyebrow">Signal 06</span>
+        <b>&mdash;</b>
+        <span class="fs-stat__label">Add in editor</span>
+      </div>
+    </div>
+    <a href="#fs-how" class="fs-hero-cta is-visible" data-fs-cm-cta>See how it works →</a>
+  </div>
+</section>
+
+<!-- PIN: HOW IT WORKS -->
+<section id="fs-how" class="fs-pin" data-fs-pin aria-label="How it works — scroll stages">
+  <div class="fs-pin__sticky">
+    <div class="fs-pin__slides">
+      <div class="fs-slide fs-slide--how fs-slide--strapline is-active" data-fs-slide>
+        <div class="fs-strapline-wrap">
+          <span class="fs-kicker fs-reveal fs-reveal--fade" data-fs-reveal>How it works</span>
+          <h2 class="fs-strapline-xl fs-strapline-xl--how-hero" id="fs-how-hero-headline">
+            <span class="fs-how-hero__line1 fs-reveal fs-reveal--fade text-gradient-soft" data-fs-reveal>One tap. One thread.</span><br aria-hidden="true">
+            <span class="fs-how-hero__line2">
+              <span class="fs-reveal fs-reveal--nudge text-gradient-soft" data-fs-reveal>You&rsquo;ll </span><span class="fs-how-hero__always fs-reveal fs-reveal--from-right-slow fs-h1-accent" data-fs-reveal>always</span><span class="fs-how-hero__tail fs-reveal fs-reveal--fade text-gradient-soft" data-fs-reveal> know they made the next step.</span>
+            </span>
+          </h2>
+          <p class="fs-strapline-sub fs-reveal fs-reveal--rise" data-fs-reveal>Nothing changes in how you work. Your clinical decisions stay yours.</p>
+          <div class="fs-pills fs-pills--how-hero fs-reveal" data-fs-reveal>
+            <span class="fs-pill">Touchpoints, not records</span>
+            <span class="fs-pill">No system integration</span>
+            <span class="fs-pill">No extra paperwork</span>
+            <span class="fs-pill">No disruption</span>
+          </div>
+        </div>
+      </div>
+      <div class="fs-slide fs-slide--how" data-fs-slide>
+        <div class="fs-glass fs-glass--dark">
+          <span class="fs-kicker">Anonymous by design</span>
+          <h2 class="fs-h2">Anonymous at first contact</h2>
+          <p>Staff taps Register touchpoint or scans QR. OTOS creates a secure, anonymous journey ID.</p>
+          <ul>
+            <li>No name</li><li>No date of birth</li><li>No diagnosis</li><li>No extra form</li>
+          </ul>
+        </div>
+      </div>
+      <div class="fs-slide fs-slide--how" data-fs-slide>
+        <div class="fs-glass fs-glass--dark">
+          <span class="fs-kicker">Touchpoints, not records</span>
+          <h2 class="fs-h2">Touchpoints, not records</h2>
+          <p>Each provider notes a touchpoint against the same anonymous journey ID.</p>
+          <ul>
+            <li>Attended</li><li>Missed</li><li>Contacted</li><li>Referred</li><li>Stabilising</li>
+          </ul>
+        </div>
+      </div>
+      <div class="fs-slide fs-slide--how" data-fs-slide>
+        <div class="fs-glass fs-glass--dark">
+          <span class="fs-kicker">Early warning</span>
+          <h2 class="fs-h2">Early warning, no extra work</h2>
+          <p>OTOS notices when the pattern changes. Your team gets an alert. You decide what to do. Always.</p>
+          <ul>
+            <li>Team gets an alert</li><li>You decide what to do</li><li>No automated clinical decisions</li>
+          </ul>
+        </div>
+      </div>
+      <div class="fs-slide fs-slide--how" data-fs-slide>
+        <div class="fs-glass fs-glass--dark">
+          <span class="fs-kicker">Reporting</span>
+          <h2 class="fs-h2">Reporting your manager will actually read</h2>
+          <p>See where journeys stall, where drop-off happens, where continuity is working.</p>
+          <ul>
+            <li>Aggregate anonymous signals</li><li>No individual patient data</li><li>No GDPR headache</li>
+          </ul>
+          <p style="margin-top:1rem; font-family:var(--font-h); font-style:italic; font-weight:600; color:var(--amber);">See where journeys stall, where drop-off happens, where continuity is working.</p>
+        </div>
+      </div>
+    </div>
+    <div class="fs-pin__scroll-cue" aria-hidden="true">
+      <div class="fs-pin__scroll-cue__glass">
+        <span class="fs-pin__scroll-cue__label" data-fs-pin-hint-label>Scroll</span>
+        <span class="fs-pin__scroll-cue__wheel" aria-hidden="true"></span>
+        <span class="fs-pin__scroll-cue__arrow" aria-hidden="true"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="fs-photo-band fs-photo-band--quote-bottom" style="background-image:url('images/Engaging conversation at NHS Community Hub.png');">
+  <div class="fs-photo-band__shade" aria-hidden="true"></div>
+  <div class="fs-photo-band__inner">
+    <div class="fs-photo-band__lead">
+      <div class="fs-reveal" data-fs-reveal>
+        <h2 class="fs-strapline-xl text-gradient-soft">The space between services is where people get lost.</h2>
+        <p class="fs-strapline-sub">OTOS lights that gap &mdash; without touching the record, without slowing the ward round.</p>
+      </div>
+    </div>
+    <div class="fs-photo-band__quote">
+      <div class="fs-statement fs-statement--on-photo fs-statement--left fs-statement--wide fs-statement--mix" data-fs-statement data-fs-cm-photo-quote-wrap>
+        <p class="fs-statement__line text-gradient-soft">&ldquo;The gap has a name now.&rdquo;</p>
+        <p class="fs-statement__line fs-statement__line--cite" data-fs-cm-photo-cite>OTOS continuity framing</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GUIDED DEMOS — all three routes stacked (visible without scroll-pin) -->
+<section id="fs-demos" class="fs-demos-section" aria-label="Guided demos — three routes">
+  <header class="fs-demos-intro">
+    <p class="fs-demos-intro__strap">Three routes. Three real scenarios. Each one shows what OTOS looks like in practice.</p>
+  </header>
+  <div class="fs-demos-stack">
+    <article class="fs-demo-split" aria-label="Route A — Addenbrooke’s discharge">
+      <div class="fs-demo-split__media">
+        <img class="fs-demo-split__img" src="images/NHS nurse assists patient with OTOS tool.png" alt="Ward nurse at Addenbrooke's with patient">
+        <div class="fs-demo-split__stats" aria-label="Route A highlights">
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">10s</span><span class="fs-demo-stat__l">At bedside</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Thread before discharge</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">EPR write-back</span></div>
+        </div>
+      </div>
+      <div class="fs-demo-split__copy">
+        <div class="fs-route">ROUTE A &mdash; ADDENBROOKE&rsquo;S DISCHARGE</div>
+        <p class="fs-demo-strap--head text-gradient-soft">When someone is at their lowest &mdash; OTOS is already there.</p>
+        <p class="fs-demo-strap--sub">Frontline staff log a touchpoint in seconds. The system does the rest.</p>
+        <h3>Helen, ward nurse</h3>
+        <p style="color:var(--muted); font-size:clamp(13px,1.35vw,14px); line-height:1.6; margin:0 0 1rem;">A patient is being discharged from Addenbrooke&rsquo;s after a crisis admission. Helen uses OTOS to create a continuity thread before the patient leaves the ward.</p>
+        <div class="fs-demo-pills" aria-label="Bedside demo highlights">
+          <span class="fs-demo-pill">Seconds at the bedside</span>
+          <span class="fs-demo-pill">Touchpoint logged</span>
+          <span class="fs-demo-pill">Thread before discharge</span>
+          <span class="fs-demo-pill">Community keyworker notified</span>
+          <span class="fs-demo-pill">No EPR write-back</span>
+        </div>
+        <ul>
+          <li>One tap at the bedside</li>
+          <li>Journey thread created before discharge</li>
+          <li>Community keyworker notified</li>
+          <li>No EPR write-back</li>
+          <li>No extra paperwork</li>
+        </ul>
+        <a class="fs-demo-wf" href="wireframes/flow-overview.html#flow-helen">See step-by-step →</a>
+      </div>
+    </article>
+    <article class="fs-demo-split fs-demo-split--reverse" aria-label="Route B — Community referral">
+      <div class="fs-demo-split__media">
+        <img class="fs-demo-split__img" src="images/Woman showing OTOS app at community centre.png" alt="Community keyworker with OTOS">
+        <div class="fs-demo-split__stats" aria-label="Route B highlights">
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">10s</span><span class="fs-demo-stat__l">Touchpoint log</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Thread continued</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">Extra forms</span></div>
+        </div>
+      </div>
+      <div class="fs-demo-split__copy">
+        <div class="fs-route">ROUTE B &mdash; COMMUNITY REFERRAL</div>
+        <p class="fs-demo-strap--head text-gradient-soft">The thread picks up where it left off.</p>
+        <p class="fs-demo-strap--sub">Same anonymous journey ID &mdash; new touchpoint, no new paperwork.</p>
+        <h3>Marcus, community keyworker</h3>
+        <p style="color:var(--muted); font-size:clamp(13px,1.35vw,14px); line-height:1.6; margin:0 0 1rem;">Marcus works at a drop-in community hub. Someone comes in who has been bouncing between services. He registers a touchpoint and the thread picks up where it left off.</p>
+        <div class="fs-demo-pills" aria-label="Community hub demo highlights">
+          <span class="fs-demo-pill">Token continuity</span>
+          <span class="fs-demo-pill">No name required</span>
+          <span class="fs-demo-pill">10-second touchpoint</span>
+          <span class="fs-demo-pill">Pattern visible to manager</span>
+          <span class="fs-demo-pill">Same workflow for Marcus</span>
+        </div>
+        <ul>
+          <li>Existing thread found by token</li>
+          <li>No name required</li>
+          <li>Touchpoint logged in 10 seconds</li>
+          <li>Service manager alerted to pattern</li>
+          <li>Nothing changes in Marcus&rsquo;s workflow</li>
+        </ul>
+        <a class="fs-demo-wf" href="wireframes/flow-overview.html#flow-coordinator">See step-by-step →</a>
+      </div>
+    </article>
+    <article class="fs-demo-split" aria-label="Route C — Primary care">
+      <div class="fs-demo-split__media">
+        <img class="fs-demo-split__img" src="images/Community%20collaboration%20at%20the%20NHS%20hub%20%20%20.png" alt="NHS community hub — staff collaborating">
+        <div class="fs-demo-split__stats" aria-label="Route C highlights">
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">2</span><span class="fs-demo-stat__l">Referrals sent</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Signal visible</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">Cross-service records</span></div>
+        </div>
+      </div>
+      <div class="fs-demo-split__copy">
+        <div class="fs-route">ROUTE C &mdash; PRIMARY CARE</div>
+        <p class="fs-demo-strap--head text-gradient-soft">Follow-through without opening another service&rsquo;s record.</p>
+        <p class="fs-demo-strap--sub">Anonymous continuity signal only &mdash; clinical decisions stay with each team.</p>
+        <h3>Dr Priya, GP</h3>
+        <p style="color:var(--muted); font-size:clamp(13px,1.35vw,14px); line-height:1.6; margin:0 0 1rem;">Dr Priya has a patient she has referred twice to addiction services. She doesn&rsquo;t know if they attended. OTOS shows her the thread without showing her clinical records from other services.</p>
+        <div class="fs-demo-pills" aria-label="Primary care demo highlights">
+          <span class="fs-demo-pill">Anonymous signal only</span>
+          <span class="fs-demo-pill">No cross-service records</span>
+          <span class="fs-demo-pill">Follow-through visible</span>
+          <span class="fs-demo-pill">Referral pattern clear</span>
+          <span class="fs-demo-pill">Decisions stay clinical</span>
+        </div>
+        <ul>
+          <li>Anonymous signal only</li>
+          <li>No cross-service records</li>
+          <li>Follow-through visible</li>
+          <li>Referral confirmed</li>
+          <li>Clinical decisions stay with the team</li>
+        </ul>
+        <a class="fs-demo-wf" href="wireframes/flow-overview.html#flow-commissioner">See step-by-step →</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="fs-band fs-band--mid fs-band--statement" aria-label="Transition">
+  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--fade" data-fs-statement>
+    <p class="fs-statement__line text-gradient-soft">Real wards. Real hubs. Real GP practices.</p>
+    <p class="fs-statement__line fs-statement__line--sub">Same thread. Same anonymous signal. Nothing extra on the clipboard.</p>
+  </div>
+</section>
+
+<div class="fs-split">
+  <div class="fs-split__img" style="background-image:url('images/Woman showing OTOS app at community centre.png');" role="img" aria-label="Community keyworker with OTOS"></div>
+  <div class="fs-split__body">
+    <span class="fs-brain-inline fs-brain-inline--tr" aria-hidden="true"></span>
+    <div class="fs-reveal" data-fs-reveal>
+      <span class="fs-kicker">At the front door</span>
+      <h2 class="fs-strapline-xl text-gradient-soft">No wrong door. No dead end.</h2>
+      <p class="fs-strapline-sub">Whoever they meet first can register the thread in seconds &mdash; name optional, continuity not.</p>
+    </div>
+    <div class="fs-statement fs-statement--left fs-statement--wide fs-statement--fade" data-fs-statement style="margin-top:1.75rem;">
+      <p class="fs-statement__line text-gradient-soft">The support existed. None of it was connected.</p>
+      <p class="fs-statement__line fs-statement__line--cite">Continuity framing</p>
+    </div>
+  </div>
+</div>
+
+<!-- INFRASTRUCTURE -->
+<section id="fs-infra" class="fs-band fs-band--cream">
+  <span class="fs-brain-inline fs-brain-inline--tr" aria-hidden="true"></span>
+  <div class="fs-center">
+    <span class="fs-kicker">Infrastructure Partners</span>
+    <div class="fs-reveal" data-fs-reveal>
+      <h2 class="fs-h2">The infrastructure already exists.<br>OTOS connects it.</h2>
+      <p style="color:var(--muted); font-size:clamp(1rem,1.8vw,1.12rem); max-width:56ch; margin:0.75rem auto 0;">Three strategic relationships. Each one strengthening a different dimension of the OTOS proposition.</p>
+    </div>
+  </div>
+  <div class="fs-partners-intro">
+    <span class="lbl">Strategic connections</span>
+    <div class="fs-reveal" data-fs-reveal><h2>Not operating alone.</h2></div>
+  </div>
+  <div class="fs-center" style="margin-bottom:2rem;">
+    <p style="font-family:var(--font-h); font-style:italic; font-size:clamp(1.1rem,2vw,1.35rem); font-weight:600; margin:0;">&ldquo;Community is the continuity.&rdquo;</p>
+    <p style="color:var(--muted); font-size:0.85rem; margin:0.5rem 0 0;">Co-produced with SUN Network and people with lived experience.</p>
+  </div>
+  <div class="fs-partner-grid">
+    <div class="fs-partner">
+      <div class="fs-phase">Phase 1 — Active</div>
+      <h3>SUN Network</h3>
+      <p>Co-production lead. Service user voice, participant-facing language design, and evaluation credibility. SUN's involvement is budgeted, structured, and produces a named deliverable in the evaluation report.</p>
+      <ul>
+        <li>Independent service user representation</li>
+        <li>ND-safe language review for all check-in content</li>
+        <li>Evaluation input — week 12 report</li>
+        <li>Local credibility with CPFT, CGL and the ICB</li>
+      </ul>
+    </div>
+    <div class="fs-partner">
+      <div class="fs-phase">L2 — Named strategic connection</div>
+      <h3>QbTest</h3>
+      <p>When a partner flags a suspected ADHD indicator, OTOS carries that signal to the referral route. NHS Right to Choose is already available — every service provider can use it. QbTest is the fast-track assessment tool at the end of that pathway.</p>
+      <ul>
+        <li>Partner flags indicator — OTOS carries the signal</li>
+        <li>NHS Right to Choose — the existing standard pathway</li>
+        <li>QbTest: objective, CE-marked ADHD assessment</li>
+        <li>Goal: 50 people to faster diagnosis, not years of waiting</li>
+      </ul>
+    </div>
+    <div class="fs-partner">
+      <div class="fs-phase">L3 — Named strategic connection</div>
+      <h3>Joy (JoyConnect)</h3>
+      <p>Joy gets people to the right front door. OTOS makes sure they follow through. A natural Phase 3 extension as OTOS expands into Neighbourhood Health and the 250 planned NHS community hubs across England.</p>
+      <ul>
+        <li>Joy: GP-level signposting, primary care workflow</li>
+        <li>OTOS: continuity after the signpost lands</li>
+        <li>250 NHS community hubs — the expansion context</li>
+        <li>Phase 1 requires no Joy integration</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="fs-split fs-split--hubs" style="margin-top:clamp(1.25rem,3vw,2.25rem); border-radius:22px; overflow:hidden; border:1px solid rgba(193,127,36,0.18); box-shadow:0 18px 48px rgba(26,20,16,0.08);">
+    <div class="fs-split__img" style="background-image:url('images/Community%20collaboration%20at%20the%20NHS%20hub%20%20%20.png'); background-position:48% 38%;" role="img" aria-label="NHS Community Hub: staff collaborating with OTOS on laptop; NHS hub signage visible"></div>
+    <div class="fs-split__body fs-split__body--hubs">
+      <div class="fs-hubs-intro">
+        <span class="fs-kicker">250 community hubs</span>
+        <h3 class="fs-hubs-title text-gradient-soft">Where the front door meets follow-through.</h3>
+      </div>
+      <div class="fs-hubs-copy">
+        <p class="fs-hubs-lede">Under the 10 Year Health Plan, <strong style="color:var(--text); font-weight:600;">250 NHS community hubs</strong> are planned across England &mdash; neighbourhood spaces ready to welcome people and connect them to the right support. Joy helps them through the door; <strong style="color:var(--text); font-weight:600;">OTOS holds the thread</strong> so nobody drops off between hub, hospital, and VCSE.</p>
+        <p class="fs-hubs-note">Anonymous touchpoints first. Your clinical decisions stay yours. Phase 1 needs no Joy integration &mdash; this is the direction of travel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="fs-band fs-band--cream fs-band--statement" aria-label="Community continuity">
+  <span class="fs-brain-inline fs-brain-inline--bl" aria-hidden="true"></span>
+  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--mix" data-fs-statement>
+    <p class="fs-statement__line text-gradient-soft">&ldquo;Community is the continuity.&rdquo;</p>
+    <p class="fs-statement__line fs-statement__line--sub">Co-produced with SUN Network and people with lived experience.</p>
+  </div>
+</section>
+
+<section class="fs-band fs-band--dark fs-stats-dark" aria-label="Why continuity visibility matters">
+  <span class="fs-over">Signals, not noise</span>
+  <h2>See where journeys stall, where drop-off happens, where continuity is working.</h2>
+  <p>The cost of drift is measured in years &mdash; not in meetings. OTOS surfaces signals so your teams can see the shape of a pathway &mdash; where it bends and where it breaks. Your teams still make every decision.</p>
+  <p style="margin-top:1.5rem; font-family:var(--font-h); font-style:italic; font-size:clamp(1.05rem,2vw,1.25rem); color:rgba(245,240,232,0.88); max-width:40rem;">All the support already exists. It&rsquo;s never been connected like this.</p>
+  <p style="margin-top:2rem;"><a href="otos-ripple-effect-premium/otos-ripple-effect-premium.html" style="color:#f5f0e8; font-weight:600;">Deeper economics &amp; ripple view (off this page) →</a><br><a href="otos-ripple-cascade.html" style="color:#f5f0e8; font-weight:600; display:inline-block; margin-top:0.75rem;">Ripple cascade animation →</a></p>
+</section>
+
+<section class="fs-photo-band" style="background-image:url('images/Ripple-1024x546.jpg'); min-height:min(34vh,360px);" aria-label="Cost of drift">
+  <div class="fs-photo-band__shade" aria-hidden="true"></div>
+  <div class="fs-photo-band__inner" style="max-width:min(720px,100%); margin:0 auto; text-align:center;">
+    <div class="fs-statement fs-statement--on-photo fs-statement--center fs-statement--wide fs-statement--fade" data-fs-statement>
+      <p class="fs-statement__line">The cost of drift is measured in years &mdash; not in meetings.</p>
+      <p class="fs-statement__line fs-statement__line--sub">OTOS is the early warning. Your teams still make every decision.</p>
+    </div>
+  </div>
+</section>
+
+<section class="fs-band fs-band--image fs-silent-layer" style="background-image:url('images/Engaging conversation at NHS Community Hub.png'); background-position:50% 40%;">
+  <div class="fs-shade"></div>
+  <div class="fs-inner fs-inner--float" style="margin-left:clamp(16px,5vw,56px);">
+    <span class="fs-kicker">Continuity layer</span>
+    <h2 class="fs-h2" style="color:#f5f0e8;">The silent layer that connects every service.</h2>
+    <p style="color:rgba(245,240,232,0.86); margin:0 0 1rem; max-width:42ch;">Continuity-layer framing only: tokenised touchpoints and signals. No EPR write-back. No diagnostic claims. Human decisions only.</p>
+    <p style="margin:0; display:flex; flex-wrap:wrap; gap:0.65rem 1.1rem; align-items:center;">
+      <a href="#fs-architecture" style="display:inline-block; font-weight:600; color:var(--amber);">Architecture teaser ↓</a>
+      <a href="architecture-map.html" style="display:inline-block; font-weight:600; color:rgba(245,240,232,0.92); text-decoration:underline; text-underline-offset:3px;">Full map →</a>
+    </p>
+  </div>
+</section>
+
+<section id="fs-architecture" class="fs-band fs-band--cream fs-architecture-section" aria-labelledby="fs-architecture-heading">
+  <span class="fs-brain-inline fs-brain-inline--tr" aria-hidden="true"></span>
+  <div class="fs-center" style="max-width:var(--otos-container-max); margin:0 auto;">
+    <span class="fs-kicker">Cambridge pilot</span>
+    <h2 id="fs-architecture-heading" class="fs-h2 text-gradient-soft">Architecture map</h2>
+    <p class="fs-mermaid-lede" style="max-width:48ch; margin-left:auto; margin-right:auto;">Governance, actors, OTOS Continuity&trade; Phase&nbsp;1 layer, pilot touchpoints, and safety pins &mdash; the full diagram lives off this scroll so the front door stays calm.</p>
+    <p style="margin:1.5rem 0 0; display:flex; flex-wrap:wrap; gap:0.75rem 1.25rem; justify-content:center; align-items:center;">
+      <a class="fs-otos-glass-chip" href="architecture-map.html" style="color:var(--text); font-weight:700; text-decoration:none;">Open printable / interactive map →</a>
+      <a class="fs-otos-glass-chip" href="architecture-cambridge-pilot.mmd" style="color:var(--amber); font-weight:600; text-decoration:none;">Source: architecture-cambridge-pilot.mmd</a>
+    </p>
+  </div>
+</section>
+
+<section class="fs-band fs-band--alt fs-band--statement" aria-label="Architecture strapline">
+  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--mix" data-fs-statement>
+    <p class="fs-statement__line text-gradient-soft">The silent layer that connects every service.</p>
+    <p class="fs-statement__line fs-statement__line--sub">No write-back. No diagnostic theatre. Human control, always.</p>
+  </div>
+</section>
+
+<!-- CONTROLS -->
+<section id="fs-controls" class="fs-band fs-band--cream">
+  <span class="fs-brain-inline fs-brain-inline--bl" aria-hidden="true"></span>
+  <div class="fs-reveal" data-fs-reveal><p class="fs-controls-strip">OTOS surfaces signals. The partner team makes the decision.</p></div>
+  <div class="fs-control-grid">
+    <div class="fs-control-card">
+      <div class="fs-control-card__img" style="background-image:url('images/NHS%20nurse%20assists%20patient%20with%20OTOS%20tool.png'); background-position:50% 42%;" role="img" aria-hidden="true"></div>
+      <div class="fs-control-card__body">
+        <span class="lab">ACCESS</span>
+        <h3 class="text-gradient-soft">Who can see what</h3>
+        <p>Access is role-based. Keyworkers see their own touchpoints. Managers see aggregate signals.</p>
+        <ul>
+          <li>Role-based access</li>
+          <li>No cross-org patient data</li>
+          <li>Audit trail on every action</li>
+          <li>Anonymous journey IDs only</li>
+        </ul>
+      </div>
+    </div>
+    <div class="fs-control-card">
+      <div class="fs-control-card__img" style="background-image:url('images/Engaging%20conversation%20at%20NHS%20Community%20Hub.png'); background-position:48% 45%;" role="img" aria-hidden="true"></div>
+      <div class="fs-control-card__body">
+        <span class="lab">GOVERNANCE</span>
+        <h3 class="text-gradient-soft">Aligned with NHS standards</h3>
+        <p>Designed to align with DTAC, DSPT, NICE ESF, and NHS IG standards.</p>
+        <ul>
+          <li>DTAC aligned</li>
+          <li>DSPT aligned</li>
+          <li>No EPR write-back</li>
+          <li>No clinical record storage</li>
+          <li>Human-gated escalation</li>
+        </ul>
+      </div>
+    </div>
+    <div class="fs-control-card">
+      <div class="fs-control-card__img" style="background-image:url('images/Focused on progress in the office.png');" role="img" aria-hidden="true"></div>
+      <div class="fs-control-card__body">
+        <span class="lab">ESCALATION</span>
+        <h3 class="text-gradient-soft">Human decisions only</h3>
+        <p>When OTOS detects a signal, it alerts the relevant team. A human decides what to do. Always.</p>
+        <ul>
+          <li>Signal detected by OTOS</li>
+          <li>Alert sent to team</li>
+          <li>Human decides next step</li>
+          <li>OTOS logs the outcome</li>
+        </ul>
+      </div>
+    </div>
+    <div class="fs-control-card amber">
+      <div class="fs-control-card__img" style="background-image:url('images/Woman%20showing%20OTOS%20app%20at%20community%20centre.png'); background-position:50% 40%;" role="img" aria-hidden="true"></div>
+      <div class="fs-control-card__body">
+        <span class="lab">DATA</span>
+        <h3 class="text-gradient-soft">What OTOS stores</h3>
+        <p>Continuity signals and audit receipts only. Tokenised IDs. No name. No diagnosis.</p>
+        <ul>
+          <li>Tokenised IDs only</li>
+          <li>No clinical records</li>
+          <li>Audit receipts only</li>
+          <li>UK-hosted infrastructure</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--fade" data-fs-statement style="margin:2rem auto 0;">
+    <p class="fs-statement__line text-gradient-soft">Low integration. Low disruption. High clarity.</p>
+    <p class="fs-statement__line fs-statement__line--sub">Governance you can stand in front of on day one.</p>
+  </div>
+</section>
+
+<!-- REPORTING — oversight promise (Mode 2); demo layouts live on reporting.html -->
+<section id="fs-reporting" class="fs-band fs-band--white">
+  <div class="fs-photo-band fs-photo-band--bleed" style="background-image:url('images/Focused%20on%20progress%20in%20the%20office.png'); min-height:min(30vh,320px); margin-bottom:clamp(1rem,3vw,1.75rem); background-position:50% 35%;">
+    <div class="fs-photo-band__shade" aria-hidden="true"></div>
+    <div class="fs-photo-band__inner">
+      <div class="fs-reveal" data-fs-reveal>
+        <span class="fs-kicker" style="color:#e8c27a;">Reporting</span>
+        <h2 class="fs-strapline-xl text-gradient-soft">For the first time, you can see whether the handoffs are actually landing.</h2>
+        <p class="fs-strapline-sub">The shape of a pathway &mdash; so you can see where it bends and where it breaks.</p>
+      </div>
+    </div>
+  </div>
+  <div class="fs-report-panel" style="box-shadow:none; border:none; background:transparent; padding:0 clamp(16px,3vw,32px) clamp(2rem,4vw,3rem);">
+    <ul class="fs-report-promise-list" style="list-style:none; margin:0 auto; padding:0; max-width:38rem; color:var(--text); font-size:clamp(0.98rem,1.5vw,1.08rem); line-height:1.65;">
+      <li style="margin:0 0 0.85rem; padding-left:1.2rem; position:relative;"><span style="position:absolute; left:0; color:var(--amber); font-weight:800;">·</span>Anonymous by design &mdash; no name, no diagnosis, no date of birth.</li>
+      <li style="margin:0 0 0.85rem; padding-left:1.2rem; position:relative;"><span style="position:absolute; left:0; color:var(--amber); font-weight:800;">·</span>Signals, not case notes &mdash; aggregate continuity visibility only.</li>
+      <li style="margin:0 0 0.85rem; padding-left:1.2rem; position:relative;"><span style="position:absolute; left:0; color:var(--amber); font-weight:800;">·</span>OTOS surfaces signals. The partner team makes the decision.</li>
+      <li style="margin:0 0 0.85rem; padding-left:1.2rem; position:relative;"><span style="position:absolute; left:0; color:var(--amber); font-weight:800;">·</span>No EPR write-back. Human review required for any escalation.</li>
+      <li style="margin:0; padding-left:1.2rem; position:relative;"><span style="position:absolute; left:0; color:var(--amber); font-weight:800;">·</span>Low integration. Low disruption. High clarity.</li>
+    </ul>
+    <p style="text-align:center; margin:1.75rem 0 0;">
+      <span class="fs-otos-glass-chip" style="color:var(--muted); font-size:0.8rem;">Pilot-safe: exact KPI set is agreed with partners &mdash; not a live product demo.</span>
+    </p>
+    <p style="text-align:center; margin:1.25rem 0 0;">
+      <a href="reporting.html" style="font-weight:700; font-size:1.05rem;">Open reporting layout &amp; fixture detail →</a>
+    </p>
+  </div>
+</section>
+
+<section class="fs-band fs-band--cream fs-band--statement" aria-label="Connection and continuity">
+  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--mix" data-fs-statement>
+    <p class="fs-statement__line text-gradient-soft">The opposite of addiction is connection. But connection needs continuity.</p>
+    <p class="fs-statement__line fs-statement__line--sub">Framing line &mdash; not a clinical claim.</p>
+  </div>
+</section>
+
+<!-- REFERENCES — credibility signal only; full appendix on references.html -->
+<section id="fs-refs" class="fs-band fs-band--alt">
+  <span class="fs-brain-inline fs-brain-inline--tr" aria-hidden="true"></span>
+  <div class="fs-center" style="max-width:var(--otos-container-max); margin:0 auto; text-align:center;">
+    <div class="fs-reveal" data-fs-reveal>
+      <p class="fs-strapline-xl text-gradient-soft" style="font-size:clamp(1.35rem,3vw,2rem); margin-bottom:1rem;">Evidence you can trace. Claims you can defend.</p>
+    </div>
+    <p style="color:var(--muted); max-width:42rem; margin:0 auto 1.5rem; line-height:1.65;">The Continuity pilot sits inside national policy and assurance framing &mdash; ADHD taskforce direction, co-occurring conditions delivery expectations, NICE NG87, and NHS piloting guidance. The full linked list lives off this scroll.</p>
+    <ul style="list-style:none; margin:0 auto 1.75rem; padding:0; max-width:36rem; text-align:left; font-size:0.95rem; line-height:1.55; color:var(--text);">
+      <li style="margin-bottom:0.65rem;"><strong>NHS England</strong> &mdash; Independent ADHD Taskforce (direction of travel for ADHD care in England).</li>
+      <li style="margin-bottom:0.65rem;"><strong>DHSC</strong> &mdash; Co-occurring mental health and substance use delivery framework.</li>
+      <li style="margin-bottom:0.65rem;"><strong>NICE NG87</strong> &mdash; ADHD recognition, diagnosis, and management.</li>
+      <li style="margin-bottom:0;"><strong>DTAC / NHS Digital standards</strong> &mdash; referenced in assurance conversations; we do not claim certification unless evidenced.</li>
+    </ul>
+    <p style="margin:0;"><a href="references.html" style="font-weight:700; font-size:1.05rem;">Open full references &amp; links →</a></p>
+  </div>
+</section>
+
+<section id="fs-founder" class="fs-band fs-band--mid" style="padding:0; overflow:hidden;">
+  <div class="fs-split fs-split--founder">
+    <div class="fs-split__body" style="background:var(--bg-mid);">
+      <div class="fs-reveal" data-fs-reveal>
+        <span class="fs-kicker">Founder</span>
+        <h2 class="fs-strapline-xl text-gradient-soft">Built from the gap &mdash; not from a slide deck.</h2>
+        <p class="fs-strapline-sub" style="color:var(--muted); max-width:42ch;">The lived arc behind OTOS Continuity: why the handoff matters more than the referral.</p>
+        <p style="margin:1.25rem 0 0;"><a href="founder-story-v2.html" style="font-weight:700; font-size:1rem;">Read founder story v2 →</a></p>
+      </div>
+    </div>
+    <div class="fs-split__img" style="background-image:url('images/Focused on progress in the office.png');" role="img" aria-label="Founder context — progress in the office"></div>
+  </div>
+</section>
+
+<div class="fs-end-strip">
+  <p>Prefer separate pages? <a href="how-it-works.html">How it works</a> · <a href="guided-demos.html">Guided demos</a> · <a href="infrastructure-partners.html">Infrastructure</a> · <a href="index.html">Home portal</a></p>
+</div>
+
+<footer class="fs-footer">© OTOS Digital Ltd. Company registered in England &amp; Wales with Company No. 17084455. Phone +447466334143. Email info@otos.life.</footer>
+</main>
+
+<script>
+(function () {
+  /* Pin scroll math: no fixed header on this page — use viewport top */
+  var NAV = 0;
+
+  /* Same canonical defaults as content-manager.html — preview shows these before first Save; full scroll must match. */
+  var FS_HOME_DEFAULTS = {
+    image: 'images/Focused on progress in the office.png',
+    kicker: 'OTOS Continuity™',
+    quote: '',
+    heading_desktop: 'You refer someone.\nThen what?',
+    subheading_desktop: 'Nobody disappears quietly. OTOS Continuity™ shows what happens after a referral, handoff, or discharge — one scan, one tap, always knowing they made the next step. Touchpoints, not records. No EPR write-back. Human decisions only.',
+    heading_mobile: 'You refer someone.\nThen what?',
+    subheading_mobile: 'Nobody disappears quietly. OTOS Continuity™ shows what happens after a referral, handoff, or discharge — one scan, one tap, always knowing they made the next step. Touchpoints, not records. No EPR write-back. Human decisions only.',
+    text_colour: '#ffffff',
+    headingSize: 40,
+    subSize: 15,
+    posDesktop: { x: 30, y: 54 },
+    posMobile: { x: 50, y: 54 },
+    stat1: { value: '30', label: 'Years self-medicating' },
+    stat2: { value: '6', label: 'Years waiting' },
+    stat3: { value: '11', label: 'Services used' },
+    stat4: { value: '3', label: 'Days to change everything' },
+    stat5: { value: '', label: '' },
+    stat6: { value: '', label: '' },
+    cta_text: 'See how it works \u2192',
+    cta_href: 'full-scroll2.html#fs-how',
+    ctaSize: 14,
+    kickerSize: 11,
+    quoteSize: 14,
+    quote_photo_band: '\u201cThe gap has a name now.\u201d',
+    quote_photo_band_cite: 'OTOS continuity framing',
+    quote_photo_band_size: 18,
+    apply_colourwork_headline: false,
+    apply_colourwork_quote: false,
+    colourwork_style: 'hero',
+    pin_hint: '',
+    dock_by_section: {},
+    /* Hero line-break control: px width per block (0 = use CSS default) */
+    box_w_kicker: 0,
+    box_w_quote: 0,
+    box_w_heading: 0,
+    box_w_body: 0
+  };
+
+  function resolveHomeContentData() {
+    var base = JSON.parse(JSON.stringify(FS_HOME_DEFAULTS));
+    try {
+      var raw = localStorage.getItem('otos_home_content');
+      if (raw) {
+        var p = JSON.parse(raw);
+        return Object.assign(base, p);
+      }
+      var leg = localStorage.getItem('otosContinuity.homepage.v2');
+      if (leg) {
+        var L = JSON.parse(leg);
+        if (L.image) base.image = L.image;
+        if (L.heading != null) base.heading_desktop = L.heading;
+        if (L.subheading != null) base.subheading_desktop = L.subheading;
+        base.heading_mobile = base.heading_desktop;
+        base.subheading_mobile = base.subheading_desktop;
+        if (L.headingSize) base.headingSize = L.headingSize;
+        if (L.subSize) base.subSize = L.subSize;
+        if (L.posDesktop) base.posDesktop = L.posDesktop;
+        if (L.posMobile) base.posMobile = L.posMobile;
+        if (L.pos && !L.posDesktop) base.posDesktop = L.pos;
+        return base;
+      }
+    } catch (e) {}
+    return base;
+  }
+
+  function otosReadHomeContent() {
+    return resolveHomeContentData();
+  }
+
+  var CW_GRAD_FS = {
+    hero: 'linear-gradient(95deg, #f7f2ea 0%, #ebe3d6 32%, #dcc8a8 58%, #c4a574 78%, #9ab0a4 100%)',
+    softlight: 'linear-gradient(98deg, #fdf9f3 0%, #e8dfd2 35%, #d2c2a8 62%, #c9a86a 82%, #a8bdb4 100%)',
+    amber: 'linear-gradient(100deg, #e8d4b8 0%, #d4a862 45%, #c17f24 70%, #7a9e92 100%)'
+  };
+
+  function clearGradientTextFs(el) {
+    if (!el) return;
+    el.classList.remove('otos-cw-on');
+    el.style.background = 'none';
+    el.style.webkitBackgroundClip = '';
+    el.style.backgroundClip = '';
+    el.style.webkitTextFillColor = '';
+    el.style.color = '';
+  }
+
+  function applyGradientTextFs(el, gradientCss) {
+    if (!el) return;
+    el.classList.add('otos-cw-on');
+    el.style.background = gradientCss;
+    el.style.webkitBackgroundClip = 'text';
+    el.style.backgroundClip = 'text';
+    el.style.webkitTextFillColor = 'transparent';
+    el.style.color = 'transparent';
+  }
+
+  function escHtmlFs(s) {
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function applyFsHomeFromStore() {
+    var d = resolveHomeContentData();
+    var isMobile = window.innerWidth < 768;
+    var heroSection = document.getElementById('fs-home');
+    var inner = document.querySelector('[data-fs-cm-inner]');
+    var kickerEl = document.querySelector('[data-fs-cm-kicker]');
+    var quoteWrap = document.querySelector('[data-fs-cm-quote-wrap]');
+    var h1 = document.querySelector('[data-fs-cm-heading]');
+    var bodyEl = document.querySelector('[data-fs-cm-body]');
+    var ctaEl = document.querySelector('[data-fs-cm-cta]');
+
+    if (!heroSection) return;
+
+    var colour = (d && d.text_colour) ? d.text_colour : '#ffffff';
+    var hasHeroColourPrefs = d && (
+      d.apply_colourwork_headline ||
+      d.apply_colourwork_quote ||
+      (d.text_colour && /^#[0-9A-Fa-f]{6}$/.test(String(d.text_colour)))
+    );
+    var cwStyleKey = d && d.colourwork_style && CW_GRAD_FS[d.colourwork_style] ? d.colourwork_style : 'hero';
+    var gradCss = CW_GRAD_FS[cwStyleKey];
+
+    if (d && d.image) {
+      heroSection.style.backgroundImage = 'url(\'' + String(d.image).replace(/'/g, '%27') + '\')';
+    } else {
+      var defImg = heroSection.getAttribute('data-fs-hero-image-default');
+      if (defImg) heroSection.style.backgroundImage = 'url(\'' + defImg.replace(/'/g, '%27') + '\')';
+    }
+
+    if (kickerEl) {
+      if (d && d.kicker != null && String(d.kicker).trim() !== '') {
+        kickerEl.textContent = d.kicker;
+        kickerEl.style.whiteSpace = 'pre-line';
+        kickerEl.removeAttribute('hidden');
+        kickerEl.style.display = '';
+      } else {
+        kickerEl.textContent = '';
+        kickerEl.setAttribute('hidden', '');
+        kickerEl.style.display = 'none';
+      }
+      if (d && d.kickerSize != null && d.kickerSize !== '') {
+        kickerEl.style.fontSize = Number(d.kickerSize) + 'px';
+      }
+    }
+
+    if (quoteWrap && d && d.quote != null && String(d.quote).trim() !== '') {
+      var rawQ = String(d.quote);
+      var qLines = rawQ.split(/\r?\n/).map(function (t) { return t.trim(); }).filter(Boolean);
+      if (!qLines.length) qLines = [rawQ];
+      quoteWrap.innerHTML = '';
+      qLines.forEach(function (line) {
+        var p = document.createElement('p');
+        p.className = 'fs-statement__line';
+        p.textContent = line;
+        quoteWrap.appendChild(p);
+      });
+    }
+
+    if (quoteWrap && hasHeroColourPrefs) {
+      quoteWrap.querySelectorAll('.fs-statement__line').forEach(function (p) {
+        p.classList.remove('text-gradient-hero');
+        clearGradientTextFs(p);
+        if (d.apply_colourwork_quote && gradCss) {
+          applyGradientTextFs(p, gradCss);
+        } else {
+          p.style.color = colour;
+          p.style.webkitTextFillColor = '';
+        }
+      });
+    } else if (quoteWrap) {
+      quoteWrap.querySelectorAll('.fs-statement__line').forEach(function (p) {
+        clearGradientTextFs(p);
+        p.classList.add('text-gradient-hero');
+      });
+    }
+
+    var heading = d
+      ? (isMobile ? (d.heading_mobile != null ? d.heading_mobile : d.heading_desktop) : d.heading_desktop)
+      : null;
+    if (h1 && d && heading != null && String(heading).trim() !== '') {
+      h1.classList.add('fs-h1--cm-managed');
+      var hl = String(heading).split(/\r?\n/).map(function (t) { return t.trim(); }).filter(Boolean);
+      var cwHead = d.apply_colourwork_headline && gradCss;
+      if (cwHead) {
+        h1.innerHTML = hl.map(escHtmlFs).join('<br>');
+      } else if (hl.length >= 2) {
+        h1.innerHTML = hl.slice(0, -1).map(escHtmlFs).join('<br>') + '<br><span class="fs-h1-accent">' + escHtmlFs(hl[hl.length - 1]) + '</span>';
+      } else {
+        h1.innerHTML = escHtmlFs(hl[0] || heading);
+      }
+    }
+
+    var subheading = d
+      ? (isMobile ? (d.subheading_mobile != null ? d.subheading_mobile : d.subheading_desktop) : d.subheading_desktop)
+      : null;
+    if (bodyEl && d && subheading != null && String(subheading).trim() !== '') {
+      bodyEl.textContent = subheading;
+      bodyEl.style.whiteSpace = 'pre-line';
+      bodyEl.style.color = colour;
+    }
+
+    if (h1 && d && d.headingSize) {
+      h1.style.fontSize = d.headingSize + 'px';
+    }
+    if (bodyEl && d && d.subSize) {
+      bodyEl.style.fontSize = d.subSize + 'px';
+    }
+
+    if (quoteWrap && d && d.quoteSize != null && d.quoteSize !== '') {
+      quoteWrap.style.fontSize = Number(d.quoteSize) + 'px';
+    }
+
+    function applyHeroBoxW(el, w) {
+      if (!el) return;
+      var n = parseFloat(w);
+      if (!isFinite(n) || n < 72) {
+        el.style.maxWidth = '';
+      } else {
+        el.style.maxWidth = Math.round(n) + 'px';
+      }
+    }
+    if (d) {
+      applyHeroBoxW(kickerEl, d.box_w_kicker);
+      applyHeroBoxW(quoteWrap, d.box_w_quote);
+      applyHeroBoxW(h1, d.box_w_heading);
+      applyHeroBoxW(bodyEl, d.box_w_body);
+    }
+
+    if (h1 && hasHeroColourPrefs && h1.classList.contains('fs-h1--cm-managed')) {
+      clearGradientTextFs(h1);
+      if (d.apply_colourwork_headline && gradCss) {
+        applyGradientTextFs(h1, gradCss);
+      } else {
+        h1.style.color = colour;
+        h1.style.webkitTextFillColor = '';
+        h1.querySelectorAll('.fs-h1-accent').forEach(function (sp) {
+          sp.style.color = colour;
+          sp.style.webkitTextFillColor = '';
+        });
+      }
+    }
+
+    function setFsStat(idx, value, label) {
+      var wrap = document.querySelector('[data-fs-hero-stat="' + idx + '"]');
+      if (!wrap) return;
+      wrap.classList.add('fs-stat--cm');
+      var numEl = wrap.querySelector('b');
+      var labEl = wrap.querySelector('.fs-stat__label');
+      if (numEl && value != null && String(value).trim() !== '') {
+        var v = String(value).trim();
+        numEl.textContent = v;
+      }
+      if (labEl && label != null && String(label).trim() !== '') {
+        labEl.innerHTML = String(label).trim().split(/\r?\n/).map(escHtmlFs).join('<br>');
+      }
+    }
+    if (d) {
+      for (var s = 1; s <= 6; s++) {
+        var key = 'stat' + s;
+        if (d[key] && typeof d[key] === 'object') {
+          setFsStat(s, d[key].value, d[key].label);
+        }
+      }
+    }
+
+    if (ctaEl) {
+      ctaEl.classList.add('is-visible');
+      if (d && d.cta_text != null && String(d.cta_text).trim() !== '') {
+        ctaEl.textContent = d.cta_text;
+        ctaEl.style.whiteSpace = 'pre-line';
+      } else {
+        ctaEl.textContent = 'See how it works →';
+      }
+      var href = (d && d.cta_href && String(d.cta_href).trim()) || '#fs-how';
+      if (/how-it-works/i.test(href)) href = '#fs-how';
+      if (/full-scroll2\.html#/i.test(href) && /full-scroll2\.html/i.test(window.location.pathname || '')) {
+        var hashPos = href.indexOf('#');
+        href = hashPos >= 0 ? href.slice(hashPos) : '#fs-how';
+      }
+      ctaEl.setAttribute('href', href);
+      if (d && d.ctaSize != null && d.ctaSize !== '') {
+        ctaEl.style.fontSize = Number(d.ctaSize) + 'px';
+      }
+    }
+
+    if (inner && d) {
+      var posDesk = d.posDesktop && typeof d.posDesktop === 'object' ? d.posDesktop : { x: 30, y: 54 };
+      var posMob = d.posMobile && typeof d.posMobile === 'object' ? d.posMobile : posDesk;
+      var pos = isMobile ? posMob : posDesk;
+      var x = parseFloat(pos.x);
+      var y = parseFloat(pos.y);
+      if (isFinite(x) && isFinite(y) && x >= 5 && x <= 95 && y >= 5 && y <= 95) {
+        if (window.innerWidth < 480) {
+          inner.style.position = '';
+          inner.style.left = '';
+          inner.style.top = '';
+          inner.style.transform = '';
+          inner.style.margin = '';
+          inner.style.zIndex = '';
+          inner.style.textAlign = '';
+          inner.style.width = '';
+          inner.style.maxWidth = '';
+        } else {
+          inner.style.position = 'absolute';
+          inner.style.left = x + '%';
+          inner.style.top = y + '%';
+          inner.style.transform = 'translate(-50%, -50%)';
+          inner.style.maxWidth = 'min(1080px, 94vw)';
+          inner.style.width = 'max-content';
+          inner.style.margin = '0';
+          inner.style.zIndex = '3';
+          /* Same thresholds as Content Manager preview */
+          if (x < 36) {
+            inner.style.textAlign = 'left';
+          } else if (x > 64) {
+            inner.style.textAlign = 'right';
+          } else {
+            inner.style.textAlign = 'center';
+          }
+        }
+      }
+    }
+
+    /* Full scroll only: photo-band quote (below How it works) — same CM keys as hero quote colour work */
+    var photoStmt = document.querySelector('[data-fs-cm-photo-quote-wrap]');
+    if (photoStmt && d) {
+      var qpb = d.quote_photo_band;
+      if (qpb != null && String(qpb).trim() !== '') {
+        var pbLines = String(qpb).split(/\r?\n/).map(function (t) { return t.trim(); }).filter(Boolean);
+        if (!pbLines.length) pbLines = [String(qpb)];
+        var citeTxt = d.quote_photo_band_cite != null ? String(d.quote_photo_band_cite).trim() : '';
+        photoStmt.innerHTML = '';
+        pbLines.forEach(function (line) {
+          var p = document.createElement('p');
+          p.className = 'fs-statement__line text-gradient-soft';
+          p.textContent = line;
+          photoStmt.appendChild(p);
+        });
+        if (citeTxt !== '') {
+          var pc = document.createElement('p');
+          pc.className = 'fs-statement__line fs-statement__line--cite';
+          pc.setAttribute('data-fs-cm-photo-cite', '');
+          pc.textContent = citeTxt;
+          photoStmt.appendChild(pc);
+        }
+      }
+      var photoMain = photoStmt.querySelectorAll('.fs-statement__line:not(.fs-statement__line--cite)');
+      if (hasHeroColourPrefs) {
+        photoMain.forEach(function (p) {
+          p.classList.remove('text-gradient-soft');
+          clearGradientTextFs(p);
+          if (d.apply_colourwork_quote && gradCss) {
+            applyGradientTextFs(p, gradCss);
+          } else {
+            p.style.color = colour;
+            p.style.webkitTextFillColor = '';
+          }
+        });
+      } else {
+        photoMain.forEach(function (p) {
+          clearGradientTextFs(p);
+          p.classList.add('text-gradient-soft');
+        });
+      }
+      if (d.quote_photo_band_size != null && d.quote_photo_band_size !== '') {
+        photoStmt.style.fontSize = Number(d.quote_photo_band_size) + 'px';
+      }
+      photoStmt.classList.add('is-inview');
+    }
+
+    /* Hero must not stay at opacity:0 (fs-reveal / statement beats) — match Content Manager visibility */
+    var fsHomeRoot = document.getElementById('fs-home');
+    if (fsHomeRoot) {
+      fsHomeRoot.querySelectorAll('[data-fs-reveal], [data-fs-statement]').forEach(function (el) {
+        el.classList.add('is-inview');
+      });
+    }
+    document.querySelectorAll('.fs-photo-band [data-fs-reveal]').forEach(function (el) {
+      el.classList.add('is-inview');
+    });
+  }
+
+  applyFsHomeFromStore();
+  setTimeout(applyFsHomeFromStore, 80);
+
+  function initPin(root) {
+    var slides = root.querySelectorAll('[data-fs-slide]');
+    var dotsWrap = root.querySelector('[data-fs-dots]');
+    var n = slides.length;
+    if (!n) return;
+    slides[0].classList.add('is-active');
+    if (dotsWrap) {
+      dotsWrap.innerHTML = '';
+      for (var d = 0; d < n; d++) {
+        var dot = document.createElement('span');
+        dot.className = 'fs-pin__dot' + (d === 0 ? ' is-on' : '');
+        dotsWrap.appendChild(dot);
+      }
+    }
+    function getSlidePx() {
+      var vh = window.innerHeight || 640;
+      /* Compact steps — less empty scroll between pin slides / section transitions */
+      return Math.round(Math.max(190, Math.min(vh * 0.28, 360)));
+    }
+    function setHeight() {
+      root.style.height = (n * getSlidePx()) + 'px';
+    }
+    var lastPinIdx = -1;
+    function onScroll() {
+      var slidePx = getSlidePx();
+      var rect = root.getBoundingClientRect();
+      var idx = 0;
+      if (rect.top > NAV) idx = 0;
+      else if (rect.bottom < window.innerHeight) idx = n - 1;
+      else {
+        var scrolled = -(rect.top - NAV);
+        idx = Math.min(n - 1, Math.max(0, Math.floor(scrolled / slidePx)));
+      }
+      for (var i = 0; i < n; i++) {
+        slides[i].classList.toggle('is-active', i === idx);
+        if (dotsWrap && dotsWrap.children[i]) {
+          dotsWrap.children[i].classList.toggle('is-on', i === idx);
+        }
+      }
+      /* Reveal animations: IO fails when parent slide was opacity:0 — unstick copy on activate */
+      if (idx !== lastPinIdx) {
+        lastPinIdx = idx;
+        for (var j = 0; j < n; j++) {
+          slides[j].querySelectorAll('[data-fs-reveal]').forEach(function (el) {
+            if (j === idx) el.classList.add('is-inview');
+          });
+        }
+      }
+    }
+    setHeight();
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', function () { setHeight(); onScroll(); });
+  }
+  document.querySelectorAll('[data-fs-pin]').forEach(initPin);
+
+  /* —— Scroll-reveal straplines + statement beats —— */
+  function initInviewObserver(selector) {
+    var nodes = document.querySelectorAll(selector);
+    if (!nodes.length) return;
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            en.target.classList.add('is-inview');
+            io.unobserve(en.target);
+          }
+        });
+      }, { root: null, rootMargin: '0px 0px -7% 0px', threshold: 0.14 });
+      nodes.forEach(function (el) { io.observe(el); });
+    } else {
+      nodes.forEach(function (el) { el.classList.add('is-inview'); });
+    }
+  }
+  initInviewObserver('[data-fs-reveal]');
+  initInviewObserver('[data-fs-statement]');
+
+  (function initFsSectionRailSpy() {
+    var ids = ['fs-home', 'fs-how', 'fs-demos', 'fs-infra', 'fs-architecture', 'fs-controls', 'fs-reporting', 'fs-refs', 'fs-founder'];
+    var links = document.querySelectorAll('.fs-section-rail a[data-fs-jump]');
+    if (!links.length) return;
+    var els = ids.map(function (id) { return document.getElementById(id); }).filter(Boolean);
+    function update() {
+      var mid = window.innerHeight * 0.32;
+      var best = null;
+      var bestDist = 1e9;
+      els.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.bottom < 100 || r.top > window.innerHeight - 40) return;
+        var center = r.top + Math.min(r.height * 0.22, 160);
+        var dist = Math.abs(center - mid);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = el.id;
+        }
+      });
+      if (!best && els.length) best = els[0].id;
+      links.forEach(function (a) {
+        var href = a.getAttribute('href') || '';
+        var id = href.replace(/^#/, '');
+        a.classList.toggle('is-active', id === best);
+      });
+    }
+    update();
+    window.addEventListener('scroll', function () { window.requestAnimationFrame(update); }, { passive: true });
+    window.addEventListener('resize', update);
+  })();
+
+  /* Brain parallax + ghost layer: softens while scrolling, peeks on pointer move */
+  var brainStage = document.getElementById('fs-brain-stage');
+  if (brainStage) {
+    var brainScrollT;
+    function setBrainY() {
+      document.documentElement.style.setProperty('--fs-brain-y', (window.scrollY || 0) + 'px');
+    }
+    setBrainY();
+    window.addEventListener('scroll', function () {
+      setBrainY();
+      brainStage.classList.add('is-scrolling');
+      clearTimeout(brainScrollT);
+      brainScrollT = setTimeout(function () {
+        brainStage.classList.remove('is-scrolling');
+      }, 140);
+    }, { passive: true });
+    var brainPeekT;
+    document.addEventListener('mousemove', function () {
+      brainStage.classList.add('is-peek');
+      clearTimeout(brainPeekT);
+      brainPeekT = setTimeout(function () {
+        brainStage.classList.remove('is-peek');
+      }, 900);
+    }, { passive: true });
+  }
+
+  (function applyPinHintsFromStore() {
+    var H = otosReadHomeContent();
+    if (H && H.pin_hint != null && String(H.pin_hint).trim() !== '') {
+      var t = H.pin_hint.trim();
+      document.querySelectorAll('.fs-pin__hint').forEach(function (el) {
+        el.textContent = t;
+      });
+      document.querySelectorAll('[data-fs-pin-hint-label]').forEach(function (el) {
+        el.textContent = t;
+      });
+    }
+  })();
+
+  window.addEventListener('resize', function () {
+    applyFsHomeFromStore();
+  });
+  window.addEventListener('pageshow', function (ev) {
+    if (ev.persisted) applyFsHomeFromStore();
+  });
+  window.addEventListener('storage', function (ev) {
+    if (ev.key === 'otos_home_content' || ev.key === 'otosContinuity.homepage.v2') {
+      applyFsHomeFromStore();
+    }
+  });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') {
+      applyFsHomeFromStore();
+    }
+  });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  if (typeof mermaid === 'undefined') return;
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'base',
+    securityLevel: 'loose',
+    themeVariables: {
+      primaryColor: '#faf7f2',
+      primaryTextColor: '#1a1410',
+      primaryBorderColor: '#c17f24',
+      lineColor: '#6b5344',
+      secondaryColor: '#f5efe6',
+      tertiaryColor: '#ebe4d9',
+      clusterBkg: '#f3eee6',
+      clusterBorder: 'rgba(193,127,36,0.38)',
+      edgeLabelBackground: '#faf7f2',
+      titleColor: '#1a1410'
+    },
+    flowchart: { curve: 'basis', htmlLabels: true, padding: 12, nodeSpacing: 28, rankSpacing: 38 }
+  });
+  var el = document.querySelector('#fs-architecture pre.mermaid');
+  if (el) {
+    mermaid.run({ nodes: [el] });
+  }
+})();
+</script>
+<script defer src="otos-shared.js"></script>
+</body>
+</html>

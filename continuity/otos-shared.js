@@ -121,6 +121,8 @@
 
   const initFloatingNav = () => {
     if (qs('.floating-next')) return;
+    const shell = document.body && document.body.dataset.otosShell;
+    if (shell === 'full-scroll' || shell === 'full-scroll2') return;
 
     const nextBtn = document.querySelector(
       '.page-nav .next, [class*="next-page"], .bottom-nav .nav-next, #btn-next'
