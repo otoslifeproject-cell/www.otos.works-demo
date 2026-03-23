@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OTOS Ripple Cascade — OTOS Digital Ltd</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
 
     *, *::before, *::after {
       margin: 0;
@@ -17,7 +17,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #0a0f1e;
+      background: #141009;
     }
 
     canvas {
@@ -31,8 +31,8 @@
   <canvas id="rippleCanvas"></canvas>
   <script>
     // ============================================================
-    // OTOS RIPPLE CASCADE — Layer 2: Ring Fix, Vignette, Narrator, Freeze
-    // Single-file canvas animation — NHS commissioner briefing tool
+    // OTOS RIPPLE CASCADE — Canonical briefing animation (full-scroll design alignment)
+    // UI hierarchy: cost ticker (top-right) → narrative band (bottom) → Act 6 finale headline (centre)
     // OTOS Digital Ltd — All values sourced from OTOS Evidence Ledger V1.1
     // ============================================================
 
@@ -61,18 +61,20 @@
       SECONDARY_RING_SPEED: 3000,
       TERTIARY_RING_SPEED: 2200,
 
-      // Colour palette — do not deviate
-      BG_COLOR_1: '#0a0f1e',
-      BG_COLOR_2: '#0d1a2e',
+      // Colour palette — warm dark stage (aligned with full-scroll.html tokens: --bg-dark, --amber, --glass)
+      BG_COLOR_1: '#141009',
+      BG_COLOR_2: '#1e150a',
       RING_PRIMARY:   'rgba(255, 138, 0, 0.6)',
       RING_SECONDARY: 'rgba(200, 146, 42, 0.4)',
       RING_TERTIARY:  'rgba(255, 255, 255, 0.15)',
       RING_CHILD:     'rgba(200, 146, 42, 0.45)',
       COLOR_COST_LABEL: '#F0C060',
       COLOR_NAME_LABEL: '#ffffff',
-      COLOR_COUNTER:    '#ff8a00',
-      COLOR_SUBTEXT:    'rgba(255,255,255,0.55)',
-      COLOR_TINY:       'rgba(255,255,255,0.4)',
+      COLOR_STONE_ACCENT: '#e8720c',
+      COLOR_COUNTER:    '#f5e6d4',
+      COLOR_COUNTER_ACCENT: '#c17f24',
+      COLOR_SUBTEXT:    'rgba(245,240,232,0.62)',
+      COLOR_TINY:       'rgba(245,240,232,0.5)',
 
       // Stone sizes in pre-scale pixels
       STONE_RADIUS: 8,
@@ -139,14 +141,41 @@
       VIGNETTE_OUTER_ALPHA:        0.60,
       VIGNETTE_OUTER_RADIUS_FACTOR: 0.55,
 
-      // Narrator text
-      NARRATOR_Y_RATIO:        0.10,
-      NARRATOR_FONT_SIZE:      38,
+      // Narrator — lower band (supporting layer; does not compete with ticker)
+      NARRATOR_FROM_BOTTOM_RATIO: 0.10,
+      NARRATOR_FONT_SIZE:      22,
+      NARRATOR_FONT_WEIGHT:    500,
+      NARRATOR_MAX_WIDTH_RATIO: 0.78,
+      NARRATOR_LINE_HEIGHT_EM: 1.42,
       NARRATOR_FADE_IN_SPEED:  0.045,
       NARRATOR_FADE_OUT_SPEED: 0.035,
-      NARRATOR_COLOR:          '#ffffff',
-      NARRATOR_SHADOW_BLUR:    12,
-      NARRATOR_SHADOW_COLOR:   'rgba(255,255,255,0.15)',
+      NARRATOR_COLOR:          'rgba(245,240,232,0.92)',
+      NARRATOR_SHADOW_BLUR:    8,
+      NARRATOR_SHADOW_COLOR:   'rgba(30,21,10,0.85)',
+
+      // Cost ticker — top-right glass panel (full-scroll glass / amber discipline)
+      COUNTER_MARGIN_X:        24,
+      COUNTER_MARGIN_Y:        22,
+      COUNTER_PANEL_PAD_X:     22,
+      COUNTER_PANEL_PAD_Y:     18,
+      COUNTER_PANEL_RADIUS:    16,
+      COUNTER_PANEL_FILL:      'rgba(255, 252, 246, 0.12)',
+      COUNTER_PANEL_STROKE:    'rgba(193, 127, 36, 0.42)',
+      COUNTER_PANEL_STROKE_WIDTH: 1.25,
+      COUNTER_LABEL_SIZE:      10,
+      COUNTER_VALUE_SIZE:      40,
+      COUNTER_SUB_SIZE:        11,
+
+      // Act 6 — finale headline (centre, late; V14-safe, no overclaim)
+      ACT6_NARRATOR_CLEAR_MS:     3200,
+      ACT6_FINALE_START_MS:       4400,
+      ACT6_FINALE_FADE_MS:        1000,
+      ACT6_FINALE_LINE1:          'OTOS Continuity™',
+      ACT6_FINALE_LINE2:          'Touchpoints, not records. Human decisions always.',
+      ACT6_FINALE_LINE1_SIZE:     32,
+      ACT6_FINALE_LINE2_SIZE:     15,
+      ACT6_FINALE_LINE_GAP:       14,
+      ACT6_OPEN_NARRATOR: 'Follow-through before the rings reach the edge — anonymous touchpoints, not clinical records.',
 
       // Cinematic freeze (Act 5 "It breeds" beat)
       FREEZE_START_ELAPSED:  6500,
@@ -356,6 +385,8 @@
       // Act 6 special ring variables
       act6RingStartTime: null,
       act6FadeOutStartTime: null,
+      act6FinaleStartTime: null,
+      act6NarratorClearFired: false,
 
       // Ring pool
       rings: [],
@@ -480,8 +511,19 @@
     }
 
     // ============================================================
-    // Cost counter functions (unchanged)
+    // Cost counter — top-right glass panel (full-scroll design language)
     // ============================================================
+
+    function pathRoundRect(ctx2, x, y, w, h, rad) {
+      const r = Math.min(rad, w / 2, h / 2);
+      ctx2.beginPath();
+      ctx2.moveTo(x + r, y);
+      ctx2.arcTo(x + w, y, x + w, y + h, r);
+      ctx2.arcTo(x + w, y + h, x, y + h, r);
+      ctx2.arcTo(x, y + h, x, y, r);
+      ctx2.arcTo(x, y, x + w, y, r);
+      ctx2.closePath();
+    }
 
     function startCounterAnimation(fromValue, toValue, durationMs, timestamp) {
       state.counterAnimating    = true;
@@ -504,30 +546,67 @@
 
     function drawCounter() {
       if (state.counterDisplayValue < 1) return;
+      const mx   = scaled(CONFIG.COUNTER_MARGIN_X);
+      const my   = scaled(CONFIG.COUNTER_MARGIN_Y);
+      const padX = scaled(CONFIG.COUNTER_PANEL_PAD_X);
+      const padY = scaled(CONFIG.COUNTER_PANEL_PAD_Y);
+      const rad  = scaled(CONFIG.COUNTER_PANEL_RADIUS);
+
       ctx.save();
-      const x    = canvas.width - scaled(40);
-      const topY = scaled(32);
+      ctx.font = `600 ${scaled(CONFIG.COUNTER_VALUE_SIZE)}px 'Playfair Display', serif`;
+      const valueStr = '£' + Math.round(state.counterDisplayValue).toLocaleString('en-GB');
+      const valueW = ctx.measureText(valueStr).width;
+
+      ctx.font = `600 ${scaled(CONFIG.COUNTER_LABEL_SIZE)}px 'Inter', sans-serif`;
+      const labelStr = 'ANNUAL SYSTEM COST';
+      const labelW = ctx.measureText(labelStr).width;
+
+      ctx.font = `300 ${scaled(CONFIG.COUNTER_SUB_SIZE)}px 'Inter', sans-serif`;
+      const subStr = 'per person · per year · indicative minimum';
+      const subW = ctx.measureText(subStr).width;
+
+      const innerW = Math.min(
+        Math.max(valueW, labelW, subW) + padX * 2,
+        canvas.width - mx * 2
+      );
+      const innerH =
+        padY * 2 +
+        scaled(CONFIG.COUNTER_LABEL_SIZE + 6) +
+        scaled(CONFIG.COUNTER_VALUE_SIZE) +
+        scaled(6) +
+        scaled(CONFIG.COUNTER_SUB_SIZE);
+
+      let panelX = canvas.width - mx - innerW;
+      if (panelX < mx) panelX = mx;
+
+      pathRoundRect(ctx, panelX, my, innerW, innerH, rad);
+      ctx.fillStyle   = CONFIG.COUNTER_PANEL_FILL;
+      ctx.fill();
+      ctx.strokeStyle = CONFIG.COUNTER_PANEL_STROKE;
+      ctx.lineWidth   = scaled(CONFIG.COUNTER_PANEL_STROKE_WIDTH);
+      ctx.stroke();
+
+      const textRight = panelX + innerW - padX;
+      let ty = my + padY;
 
       ctx.textAlign    = 'right';
       ctx.textBaseline = 'top';
-      ctx.globalAlpha  = 0.6;
-      ctx.fillStyle    = CONFIG.COLOR_TINY;
-      ctx.font         = `500 ${scaled(11)}px 'Inter', sans-serif`;
-      ctx.fillText('ANNUAL SYSTEM COST', x, topY);
+      ctx.globalAlpha  = 0.92 * state.counterPulseAlpha;
+      ctx.fillStyle    = CONFIG.COLOR_SUBTEXT;
+      ctx.font         = `600 ${scaled(CONFIG.COUNTER_LABEL_SIZE)}px 'Inter', sans-serif`;
+      ctx.fillText(labelStr, textRight, ty);
+      ty += scaled(CONFIG.COUNTER_LABEL_SIZE + 6);
 
-      ctx.textAlign    = 'right';
-      ctx.textBaseline = 'top';
       ctx.globalAlpha  = state.counterPulseAlpha;
       ctx.fillStyle    = CONFIG.COLOR_COUNTER;
-      ctx.font         = `700 ${scaled(36)}px 'Playfair Display', serif`;
-      ctx.fillText('£' + Math.round(state.counterDisplayValue).toLocaleString('en-GB'), x, topY + scaled(16));
+      ctx.font         = `600 ${scaled(CONFIG.COUNTER_VALUE_SIZE)}px 'Playfair Display', serif`;
+      ctx.fillText(valueStr, textRight, ty);
+      ty += scaled(CONFIG.COUNTER_VALUE_SIZE + 6);
 
-      ctx.textAlign    = 'right';
-      ctx.textBaseline = 'top';
-      ctx.globalAlpha  = 0.3;
-      ctx.fillStyle    = 'rgba(255,255,255,0.3)';
-      ctx.font         = `${scaled(10)}px 'Inter', sans-serif`;
-      ctx.fillText('per person · per year · minimum', x, topY + scaled(58));
+      ctx.globalAlpha  = 0.85 * state.counterPulseAlpha;
+      ctx.fillStyle    = CONFIG.COLOR_TINY;
+      ctx.font         = `300 ${scaled(CONFIG.COUNTER_SUB_SIZE)}px 'Inter', sans-serif`;
+      ctx.fillText(subStr, textRight, ty);
 
       ctx.restore();
     }
@@ -552,10 +631,11 @@
 
     function drawBackground() {
       const grad = ctx.createRadialGradient(
-        canvas.width * 0.5, canvas.height * 0.5, 0,
-        canvas.width * 0.5, canvas.height * 0.5, canvas.width * 0.7
+        canvas.width * 0.52, canvas.height * 0.42, 0,
+        canvas.width * 0.5, canvas.height * 0.5, canvas.width * 0.85
       );
-      grad.addColorStop(0, CONFIG.BG_COLOR_2);
+      grad.addColorStop(0, '#2a2218');
+      grad.addColorStop(0.42, CONFIG.BG_COLOR_2);
       grad.addColorStop(1, CONFIG.BG_COLOR_1);
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -577,7 +657,7 @@
         ctx.globalAlpha = alphas[i];
         ctx.beginPath();
         ctx.arc(x, y, scaled(r), 0, Math.PI * 2);
-        ctx.strokeStyle = CONFIG.COLOR_COUNTER;
+        ctx.strokeStyle = CONFIG.COLOR_STONE_ACCENT;
         ctx.lineWidth   = scaled(1);
         ctx.stroke();
         ctx.restore();
@@ -661,22 +741,75 @@
       }
     }
 
-    // Draw narrator text in upper canvas zone — always above ring action
+    // Narrator — lower band (supporting layer; Inter for body tone like full-scroll)
     function drawNarratorText() {
       if (state.narratorAlpha < 0.01 || !state.narratorCurrentText) return;
+      const maxW  = canvas.width * CONFIG.NARRATOR_MAX_WIDTH_RATIO;
+      const fontPx = scaled(CONFIG.NARRATOR_FONT_SIZE);
+      const lh    = fontPx * CONFIG.NARRATOR_LINE_HEIGHT_EM;
+
       ctx.save();
-      ctx.globalAlpha  = state.narratorAlpha;
-      ctx.textAlign    = 'center';
+      let alpha = state.narratorAlpha;
+      if (state.cinematicFreeze) alpha *= CONFIG.FREEZE_LABEL_DIM_ALPHA;
+      ctx.globalAlpha = alpha;
+      ctx.textAlign   = 'center';
       ctx.textBaseline = 'top';
-      ctx.font         = `700 ${scaled(CONFIG.NARRATOR_FONT_SIZE)}px 'Playfair Display', serif`;
-      ctx.fillStyle    = CONFIG.NARRATOR_COLOR;
-      ctx.shadowBlur   = scaled(CONFIG.NARRATOR_SHADOW_BLUR);
-      ctx.shadowColor  = CONFIG.NARRATOR_SHADOW_COLOR;
-      ctx.fillText(
-        state.narratorCurrentText,
-        canvas.width / 2,
-        canvas.height * CONFIG.NARRATOR_Y_RATIO
-      );
+      ctx.font = `${CONFIG.NARRATOR_FONT_WEIGHT} ${fontPx}px 'Inter', sans-serif`;
+      ctx.fillStyle   = CONFIG.NARRATOR_COLOR;
+      ctx.shadowBlur  = scaled(CONFIG.NARRATOR_SHADOW_BLUR);
+      ctx.shadowColor = CONFIG.NARRATOR_SHADOW_COLOR;
+
+      const words = state.narratorCurrentText.split(/\s+/).filter(Boolean);
+      const lines = [];
+      let line = '';
+      words.forEach(word => {
+        const test = line ? `${line} ${word}` : word;
+        if (ctx.measureText(test).width > maxW && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = test;
+        }
+      });
+      if (line) lines.push(line);
+
+      const totalH = lines.length * lh;
+      const bottomPad = canvas.height * CONFIG.NARRATOR_FROM_BOTTOM_RATIO;
+      const startY = canvas.height - bottomPad - totalH;
+
+      lines.forEach((ln, i) => {
+        ctx.fillText(ln, canvas.width / 2, startY + i * lh);
+      });
+      ctx.shadowBlur  = 0;
+      ctx.shadowColor = 'transparent';
+      ctx.restore();
+    }
+
+    // Act 6 — closing headline lock-up (centre, late; after bottom narrative clears)
+    function drawAct6Finale(timestamp) {
+      if (state.currentAct !== 6 || !state.act6FinaleStartTime) return;
+      const t = clamp((timestamp - state.act6FinaleStartTime) / CONFIG.ACT6_FINALE_FADE_MS, 0, 1);
+      const a = easeInOut(t) * state.globalAlpha;
+      if (a < 0.01) return;
+
+      const cx = canvas.width / 2;
+      const cy = canvas.height * 0.46;
+      const gap = scaled(CONFIG.ACT6_FINALE_LINE_GAP);
+
+      ctx.save();
+      ctx.globalAlpha = a;
+      ctx.textAlign   = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle   = 'rgba(245,240,232,0.97)';
+      ctx.shadowBlur  = scaled(20);
+      ctx.shadowColor = 'rgba(30,21,10,0.55)';
+      ctx.font = `700 ${scaled(CONFIG.ACT6_FINALE_LINE1_SIZE)}px 'Playfair Display', serif`;
+      ctx.fillText(CONFIG.ACT6_FINALE_LINE1, cx, cy - gap * 0.55);
+      ctx.shadowBlur  = scaled(12);
+      ctx.shadowColor = 'rgba(30,21,10,0.4)';
+      ctx.fillStyle   = CONFIG.COLOR_SUBTEXT;
+      ctx.font = `400 ${scaled(CONFIG.ACT6_FINALE_LINE2_SIZE)}px 'Inter', sans-serif`;
+      ctx.fillText(CONFIG.ACT6_FINALE_LINE2, cx, cy + gap * 0.95);
       ctx.shadowBlur  = 0;
       ctx.shadowColor = 'transparent';
       ctx.restore();
@@ -822,7 +955,7 @@
         ctx.save();
         ctx.globalCompositeOperation = 'source-over';
         ctx.globalAlpha = easeT;
-        ctx.fillStyle = CONFIG.COLOR_COUNTER;
+        ctx.fillStyle = CONFIG.COLOR_STONE_ACCENT;
         ctx.beginPath();
         ctx.arc(origin.x, origin.y, scaled(CONFIG.LAYER3_ORIGIN_DOT_RADIUS) * easeT, 0, Math.PI * 2);
         ctx.fill();
@@ -1204,7 +1337,7 @@
         spawnRing(state.origin.x, state.origin.y, 1, [], timestamp);
       }
 
-      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_COUNTER);
+      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_STONE_ACCENT);
       drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
 
       if (elapsed >= 1500 && !state.textAct1.visible) {
@@ -1338,7 +1471,7 @@
         spawnRing(state.origin.x, state.origin.y, 1, gen1TriggerPoints, timestamp);
       }
 
-      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_COUNTER);
+      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_STONE_ACCENT);
       drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
 
       // Draw labels for triggered Act 2 points — dimmed during cinematic freeze
@@ -1429,7 +1562,7 @@
         setNarratorText('The ripple reaches the people around them.');
       }
 
-      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_COUNTER);
+      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_STONE_ACCENT);
       drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
 
       // Draw persistent Act 2 impact points — dimmed during freeze
@@ -1534,10 +1667,11 @@
       ctx.textBaseline = 'middle';
       ctx.fillStyle    = CONFIG.COLOR_COST_LABEL;
       ctx.font         = `700 ${scaled(32)}px 'Playfair Display', serif`;
-      ctx.fillText('£40,070 minimum.', canvas.width / 2, canvas.height * 0.82);
+      // Slightly above lower narrator band (narrative sits bottom ~8–10%)
+      ctx.fillText('£40,070 minimum.', canvas.width / 2, canvas.height * 0.74);
       ctx.fillStyle = CONFIG.COLOR_SUBTEXT;
       ctx.font      = `${scaled(13)}px 'Inter', sans-serif`;
-      ctx.fillText('Single year. Single person. One touch each service.', canvas.width / 2, canvas.height * 0.82 + scaled(44));
+      ctx.fillText('Single year. Single person. One touch each service.', canvas.width / 2, canvas.height * 0.74 + scaled(44));
       ctx.restore();
     }
 
@@ -1547,7 +1681,7 @@
         setNarratorText('And further still — to people no one is tracking.');
       }
 
-      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_COUNTER);
+      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_STONE_ACCENT);
       drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
 
       // Background labels — dimmed during freeze
@@ -1651,7 +1785,7 @@
         if (point.triggered) drawAct3Label(point, ghostAlpha);
       });
 
-      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_COUNTER);
+      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_STONE_ACCENT);
       drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
 
       const childX = state.origin.x + scaled(CONFIG.CHILD_OFFSET_X);
@@ -1726,15 +1860,25 @@
       state.textAct6Line3 = { visible: false, alpha: 0, startTime: null, duration: CONFIG.TEXT_FADE_DURATION };
       state.act6RingStartTime    = null;
       state.act6FadeOutStartTime = null;
+      state.act6FinaleStartTime  = null;
+      state.act6NarratorClearFired = false;
     }
 
     function runAct6(elapsed, timestamp) {
       if (!state.narratorSetForAct) {
         state.narratorSetForAct = true;
-        setNarratorText('OTOS enters before the first ring leaves the water.');
+        setNarratorText(CONFIG.ACT6_OPEN_NARRATOR);
       }
 
-      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_COUNTER);
+      if (elapsed >= CONFIG.ACT6_NARRATOR_CLEAR_MS && !state.act6NarratorClearFired) {
+        state.act6NarratorClearFired = true;
+        clearNarratorText();
+      }
+      if (elapsed >= CONFIG.ACT6_FINALE_START_MS && !state.act6FinaleStartTime) {
+        state.act6FinaleStartTime = timestamp;
+      }
+
+      drawStone(state.origin.x, state.origin.y, scaled(CONFIG.STONE_RADIUS), CONFIG.COLOR_STONE_ACCENT);
       drawStoneGlow(state.origin.x, state.origin.y, CONFIG.STONE_GLOW_RINGS);
 
       if (elapsed >= 1000 && !state.act6RingStartTime) {
@@ -1755,51 +1899,6 @@
           currentAlpha:  ringAlpha,
           startAlpha:    CONFIG.RING_GEN1_START_ALPHA
         });
-      }
-
-      if (elapsed >= 2500 && !state.textAct6Line1.visible) {
-        state.textAct6Line1.visible   = true;
-        state.textAct6Line1.startTime = timestamp;
-      }
-      if (state.textAct6Line1.visible) {
-        ctx.save();
-        ctx.globalAlpha  = state.textAct6Line1.alpha;
-        ctx.textAlign    = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle    = CONFIG.COLOR_NAME_LABEL;
-        ctx.font         = `700 ${scaled(20)}px 'Playfair Display', serif`;
-        ctx.fillText('OTOS enters before the first ring leaves the water.', canvas.width / 2, canvas.height * 0.35);
-        ctx.restore();
-      }
-
-      if (elapsed >= 5000 && !state.textAct6Line2.visible) {
-        state.textAct6Line2.visible   = true;
-        state.textAct6Line2.startTime = timestamp;
-      }
-      if (state.textAct6Line2.visible) {
-        ctx.save();
-        ctx.globalAlpha  = state.textAct6Line2.alpha;
-        ctx.textAlign    = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle    = CONFIG.COLOR_COST_LABEL;
-        ctx.font         = `700 ${scaled(24)}px 'Playfair Display', serif`;
-        ctx.fillText('£40,070 per person per year. Prevented.', canvas.width / 2, canvas.height * 0.50);
-        ctx.restore();
-      }
-
-      if (elapsed >= 7000 && !state.textAct6Line3.visible) {
-        state.textAct6Line3.visible   = true;
-        state.textAct6Line3.startTime = timestamp;
-      }
-      if (state.textAct6Line3.visible) {
-        ctx.save();
-        ctx.globalAlpha  = state.textAct6Line3.alpha;
-        ctx.textAlign    = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle    = 'rgba(255,255,255,0.65)';
-        ctx.font         = `${scaled(14)}px 'Inter', sans-serif`;
-        ctx.fillText('OTOS is the only shot at breaking that cycle.', canvas.width / 2, canvas.height * 0.60);
-        ctx.restore();
       }
 
       const fadeOutTrigger = CONFIG.ACT6_DURATION - 1500;
@@ -1862,6 +1961,8 @@
 
       state.act6RingStartTime    = null;
       state.act6FadeOutStartTime = null;
+      state.act6FinaleStartTime  = null;
+      state.act6NarratorClearFired = false;
 
       // Layer 2 narrator reset
       state.narratorCurrentText = '';
@@ -1923,9 +2024,13 @@
         drawLayer3Phase1Origins(timestamp);
       }
 
-      // Narrator text — always on top of rings and labels
+      // Narrative band (bottom) — supporting copy
       drawNarratorText();
 
+      // Act 6 — centre headline lock-up (late)
+      drawAct6Finale(timestamp);
+
+      // Cost ticker — top-right, last draw so it stays visually dominant
       drawCounter();
 
       // Black overlay for transition fades and Act 6 fade-out

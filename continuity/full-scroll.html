@@ -14,6 +14,13 @@
 /* full-scroll.html — long-form layout (no fixed top nav). Scroll-pinned blocks use sticky + scroll math
    (same *idea* as sites like Oura’s how-it-works — https://ouraring.com/how-it-works — implemented here in vanilla JS, not copied third-party code). */
 :root {
+  /* Section rhythm — shared scale (full-scroll kit) */
+  --fs-space-xs: clamp(0.5rem, 1.2vw, 0.75rem);
+  --fs-space-sm: clamp(0.75rem, 2vw, 1.1rem);
+  --fs-space-md: clamp(1rem, 2.4vw, 1.75rem);
+  --fs-space-lg: clamp(1.25rem, 3vw, 2.25rem);
+  --fs-radius-panel: 22px;
+  --fs-radius-pill: 999px;
   --fs-brain-y: 0px;
   --bg-page: #f5f0e8;
   --bg-alt: #ede8df;
@@ -674,7 +681,7 @@ a { color: var(--amber); }
 [id^="fs-"] { scroll-margin-top: 12px; }
 
 /* —— Bands —— */
-.fs-band { position: relative; padding: clamp(1rem, 2.4vw, 1.75rem) clamp(16px, 3vw, 40px); }
+.fs-band { position: relative; padding: var(--fs-space-md) clamp(16px, 3vw, 40px); }
 .fs-band--cream { background: var(--bg-page); }
 .fs-band--alt { background: var(--bg-alt); }
 .fs-band--mid { background: var(--bg-mid); }
@@ -888,16 +895,17 @@ a { color: var(--amber); }
   margin: 0 0 clamp(1.25rem, 3vh, 2rem);
   color: rgba(245, 240, 232, 0.88);
 }
-/* Oura-style glass stats: 4 columns desktop, 2×2 mobile */
+/* Hero stats: 2 columns × 3 rows (six cells) — matches Content Manager preview */
 .fs-hero-band .fs-stats {
-  max-width: min(960px, 100%);
+  max-width: min(520px, 100%);
   margin: 0;
 }
 .fs-stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, auto);
   gap: 0;
-  max-width: min(880px, 100%);
+  max-width: min(520px, 100%);
   margin: 0 auto;
   padding: 0;
   border-radius: 22px;
@@ -915,8 +923,11 @@ a { color: var(--amber); }
   text-align: center;
   padding: clamp(1.1rem, 2.2vw, 1.45rem) clamp(0.65rem, 1.5vw, 1rem);
   border-right: 1px solid rgba(255, 252, 246, 0.1);
+  border-bottom: 1px solid rgba(255, 252, 246, 0.1);
   position: relative;
 }
+.fs-stat:nth-child(2n) { border-right: none; }
+.fs-stat:nth-child(n + 5) { border-bottom: none; }
 .fs-stat::before {
   content: '';
   position: absolute;
@@ -929,7 +940,6 @@ a { color: var(--amber); }
   background: linear-gradient(90deg, transparent, rgba(193, 127, 36, 0.65), transparent);
   opacity: 0.85;
 }
-.fs-stat:last-child { border-right: none; }
 .fs-stat__eyebrow {
   display: block;
   font-size: 9px;
@@ -962,46 +972,105 @@ a { color: var(--amber); }
   margin-left: auto;
   margin-right: auto;
 }
-@media (max-width: 720px) {
+@media (max-width: 480px) {
   .fs-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
-  .fs-stat { border-right: 1px solid rgba(255, 252, 246, 0.08); border-bottom: 1px solid rgba(255, 252, 246, 0.08); }
-  .fs-stat:nth-child(2n) { border-right: none; }
-  .fs-stat:nth-child(n + 3) { border-bottom: none; }
+  .fs-stat { border-right: none !important; border-bottom: 1px solid rgba(255, 252, 246, 0.1); }
+  .fs-stat:last-child { border-bottom: none; }
 }
 
-.fs-cue {
-  display: flex; justify-content: center;
+/* —— Single section-jump system: letter rail (replaces duplicate between-section “cue” strips) —— */
+.fs-section-rail {
+  position: fixed;
+  right: clamp(6px, 1.2vw, 14px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 6px;
+  border-radius: 14px;
+  background: rgba(26, 20, 16, 0.42);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(193, 127, 36, 0.28);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+}
+.fs-section-rail a {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: clamp(0.85rem, 2.2vw, 1.2rem) 1rem;
-  background: linear-gradient(180deg, var(--bg-mid) 0%, var(--bg-alt) 100%);
+  justify-content: center;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 2px 4px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-family: var(--font-b);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: rgba(245, 240, 232, 0.55);
+  border: 1px solid transparent;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
-.fs-cue a {
-  display: inline-flex; flex-direction: column; align-items: center; gap: 4px;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--muted); text-decoration: none;
-  padding: 10px 22px 12px;
-  margin: 4px 0;
-  border-radius: 999px;
-  background: rgba(255, 252, 246, 0.9);
-  border: 1px solid var(--glass-b);
-  backdrop-filter: blur(12px);
+.fs-section-rail a:hover,
+.fs-section-rail a:focus-visible {
+  color: #f5f0e8;
+  background: rgba(193, 127, 36, 0.22);
+  border-color: rgba(193, 127, 36, 0.45);
+  outline: none;
 }
-.fs-cue__arr {
-  width: 18px; height: 18px;
-  border-right: 2px solid var(--amber);
-  border-bottom: 2px solid var(--amber);
-  transform: rotate(45deg);
-  animation: fs-bounce 1.5s ease-in-out infinite;
+.fs-section-rail a.is-active {
+  color: #f5f0e8;
+  background: rgba(193, 127, 36, 0.38);
+  border-color: rgba(232, 194, 122, 0.55);
 }
-@keyframes fs-bounce {
-  0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.85; }
-  50% { transform: rotate(45deg) translateY(6px); opacity: 0.4; }
+.fs-section-rail__glyph { line-height: 1; }
+.fs-section-rail__hint {
+  display: none;
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  max-width: 52px;
+  text-align: center;
+  line-height: 1.15;
+}
+@media (min-width: 1200px) {
+  .fs-section-rail a { min-height: 38px; }
+  .fs-section-rail__hint { display: block; }
+}
+@media (max-width: 720px) {
+  body[data-otos-shell="full-scroll"] {
+    padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px));
+  }
+  .fs-section-rail {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 6px 10px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    gap: 4px;
+  }
+  .fs-section-rail a { flex: 0 0 auto; min-width: 32px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .fs-cue__arr { animation: none; }
 }
 
 /* —— Scroll-pinned stage (Oura-like) —— */
@@ -1586,7 +1655,7 @@ a { color: var(--amber); }
 }
 .fs-end-strip a { font-weight: 600; }
 @media print {
-  .fs-cue, .fs-brain-stage { display: none !important; }
+  .fs-section-rail, .fs-brain-stage { display: none !important; }
   body, body.fs-dock-minimal { padding-bottom: 0 !important; }
 }
 .fs-center { text-align: center; max-width: 720px; margin-left: auto; margin-right: auto; }
@@ -1668,7 +1737,7 @@ a { color: var(--amber); }
 }
 </style>
 </head>
-<body>
+<body data-otos-shell="full-scroll">
 
 <div class="fs-brain-stage" id="fs-brain-stage" aria-hidden="true">
   <div class="fs-brain-layer fs-brain-layer--deep">
@@ -1681,6 +1750,18 @@ a { color: var(--amber); }
     <span class="b5"></span><span class="b6"></span><span class="b7"></span>
   </div>
 </div>
+
+<nav class="fs-section-rail" aria-label="Jump to section">
+  <a href="#fs-home" data-fs-jump><span class="fs-section-rail__glyph">A</span><span class="fs-section-rail__hint">Home</span></a>
+  <a href="#fs-how" data-fs-jump><span class="fs-section-rail__glyph">B</span><span class="fs-section-rail__hint">How</span></a>
+  <a href="#fs-demos" data-fs-jump><span class="fs-section-rail__glyph">C</span><span class="fs-section-rail__hint">Demos</span></a>
+  <a href="#fs-infra" data-fs-jump><span class="fs-section-rail__glyph">D</span><span class="fs-section-rail__hint">Infra</span></a>
+  <a href="#fs-architecture" data-fs-jump><span class="fs-section-rail__glyph">E</span><span class="fs-section-rail__hint">Map</span></a>
+  <a href="#fs-controls" data-fs-jump><span class="fs-section-rail__glyph">F</span><span class="fs-section-rail__hint">Controls</span></a>
+  <a href="#fs-reporting" data-fs-jump><span class="fs-section-rail__glyph">G</span><span class="fs-section-rail__hint">Reporting</span></a>
+  <a href="#fs-refs" data-fs-jump><span class="fs-section-rail__glyph">H</span><span class="fs-section-rail__hint">Refs</span></a>
+  <a href="#fs-founder" data-fs-jump><span class="fs-section-rail__glyph">I</span><span class="fs-section-rail__hint">Founder</span></a>
+</nav>
 
 <main class="fs-main">
 
@@ -1712,12 +1793,20 @@ a { color: var(--amber); }
         <b>3</b>
         <span class="fs-stat__label">Days to change<br>everything</span>
       </div>
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="5" aria-label="Statistic 5">
+        <span class="fs-stat__eyebrow">Signal 05</span>
+        <b>&mdash;</b>
+        <span class="fs-stat__label">Add in editor</span>
+      </div>
+      <div class="fs-stat" role="listitem" data-fs-hero-stat="6" aria-label="Statistic 6">
+        <span class="fs-stat__eyebrow">Signal 06</span>
+        <b>&mdash;</b>
+        <span class="fs-stat__label">Add in editor</span>
+      </div>
     </div>
     <a href="#fs-how" class="fs-hero-cta is-visible" data-fs-cm-cta>See how it works →</a>
   </div>
 </section>
-
-<div class="fs-cue"><a href="#fs-how">How it works <span class="fs-cue__arr" aria-hidden="true"></span></a></div>
 
 <!-- PIN: HOW IT WORKS -->
 <section id="fs-how" class="fs-pin" data-fs-pin aria-label="How it works — scroll stages">
@@ -1810,8 +1899,6 @@ a { color: var(--amber); }
     </div>
   </div>
 </section>
-
-<div class="fs-cue" style="background:linear-gradient(180deg,var(--bg-page),var(--bg-alt));"><a href="#fs-demos">Guided demos <span class="fs-cue__arr" aria-hidden="true"></span></a></div>
 
 <!-- GUIDED DEMOS — all three routes stacked (visible without scroll-pin) -->
 <section id="fs-demos" class="fs-demos-section" aria-label="Guided demos — three routes">
@@ -1941,8 +2028,6 @@ a { color: var(--amber); }
   </div>
 </div>
 
-<div class="fs-cue"><a href="#fs-infra">Infrastructure <span class="fs-cue__arr" aria-hidden="true"></span></a></div>
-
 <!-- INFRASTRUCTURE -->
 <section id="fs-infra" class="fs-band fs-band--cream">
   <span class="fs-brain-inline fs-brain-inline--tr" aria-hidden="true"></span>
@@ -2030,7 +2115,7 @@ a { color: var(--amber); }
     <div class="fs-stat-card"><b>877</b><span>People in CPFT region with ADHD and addiction — estimated direct cost £3m–£6m per year</span></div>
     <div class="fs-stat-card"><b>250</b><span>NHS community hubs planned under the 10 Year Health Plan — the expansion network</span></div>
   </div>
-  <p style="margin-top:2rem;"><a href="otos-ripple-effect-premium/otos-ripple-effect-premium.html" style="color:#f5f0e8; font-weight:600;">View full ripple cost diagram →</a></p>
+  <p style="margin-top:2rem;"><a href="otos-ripple-effect-premium/otos-ripple-effect-premium.html" style="color:#f5f0e8; font-weight:600;">View full ripple cost diagram →</a><br><a href="otos-ripple-cascade.html" style="color:#f5f0e8; font-weight:600; display:inline-block; margin-top:0.75rem;">View ripple cascade animation →</a></p>
 </section>
 
 <section class="fs-photo-band" style="background-image:url('images/Ripple-1024x546.jpg'); min-height:min(34vh,360px);" aria-label="Cost of drift">
@@ -2112,8 +2197,6 @@ a { color: var(--amber); }
   </div>
 </section>
 
-<div class="fs-cue" style="background:var(--bg-alt);"><a href="#fs-controls">Controls <span class="fs-cue__arr" aria-hidden="true"></span></a></div>
-
 <!-- CONTROLS -->
 <section id="fs-controls" class="fs-band fs-band--cream">
   <span class="fs-brain-inline fs-brain-inline--bl" aria-hidden="true"></span>
@@ -2186,8 +2269,6 @@ a { color: var(--amber); }
     <p class="fs-statement__line fs-statement__line--cite">&mdash; Name, Role, Organisation</p>
   </div>
 </section>
-
-<div class="fs-cue"><a href="#fs-reporting">Reporting <span class="fs-cue__arr" aria-hidden="true"></span></a></div>
 
 <!-- REPORTING (exact copy blocks from reporting.html) -->
 <section id="fs-reporting" class="fs-band fs-band--white">
@@ -2276,8 +2357,6 @@ a { color: var(--amber); }
     <p class="fs-statement__line fs-statement__line--cite">Johann Hari &mdash; framing only; not a clinical claim</p>
   </div>
 </section>
-
-<div class="fs-cue" style="background:var(--bg-page);"><a href="#fs-refs">References <span class="fs-cue__arr" aria-hidden="true"></span></a></div>
 
 <!-- REFERENCES — verbatim from references.html -->
 <section id="fs-refs" class="fs-band fs-band--alt">
@@ -2393,6 +2472,8 @@ a { color: var(--amber); }
     stat2: { value: '6', label: 'Years waiting' },
     stat3: { value: '11', label: 'Services used' },
     stat4: { value: '3', label: 'Days to change everything' },
+    stat5: { value: '', label: '' },
+    stat6: { value: '', label: '' },
     cta_text: 'See how it works \u2192',
     cta_href: 'how-it-works.html',
     ctaSize: 14,
@@ -2434,8 +2515,6 @@ a { color: var(--amber); }
         if (L.posDesktop) base.posDesktop = L.posDesktop;
         if (L.posMobile) base.posMobile = L.posMobile;
         if (L.pos && !L.posDesktop) base.posDesktop = L.pos;
-        var qLegacy = localStorage.getItem('otos-hero-quote');
-        if (qLegacy != null && String(qLegacy).trim() !== '') base.quote = qLegacy;
         return base;
       }
     } catch (e) {}
@@ -2635,7 +2714,7 @@ a { color: var(--amber); }
       }
     }
     if (d) {
-      for (var s = 1; s <= 4; s++) {
+      for (var s = 1; s <= 6; s++) {
         var key = 'stat' + s;
         if (d[key] && typeof d[key] === 'object') {
           setFsStat(s, d[key].value, d[key].label);
@@ -2836,6 +2915,37 @@ a { color: var(--amber); }
   initInviewObserver('[data-fs-reveal]');
   initInviewObserver('[data-fs-statement]');
 
+  (function initFsSectionRailSpy() {
+    var ids = ['fs-home', 'fs-how', 'fs-demos', 'fs-infra', 'fs-architecture', 'fs-controls', 'fs-reporting', 'fs-refs', 'fs-founder'];
+    var links = document.querySelectorAll('.fs-section-rail a[data-fs-jump]');
+    if (!links.length) return;
+    var els = ids.map(function (id) { return document.getElementById(id); }).filter(Boolean);
+    function update() {
+      var mid = window.innerHeight * 0.32;
+      var best = null;
+      var bestDist = 1e9;
+      els.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.bottom < 100 || r.top > window.innerHeight - 40) return;
+        var center = r.top + Math.min(r.height * 0.22, 160);
+        var dist = Math.abs(center - mid);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = el.id;
+        }
+      });
+      if (!best && els.length) best = els[0].id;
+      links.forEach(function (a) {
+        var href = a.getAttribute('href') || '';
+        var id = href.replace(/^#/, '');
+        a.classList.toggle('is-active', id === best);
+      });
+    }
+    update();
+    window.addEventListener('scroll', function () { window.requestAnimationFrame(update); }, { passive: true });
+    window.addEventListener('resize', update);
+  })();
+
   /* Brain parallax + ghost layer: softens while scrolling, peeks on pointer move */
   var brainStage = document.getElementById('fs-brain-stage');
   if (brainStage) {
@@ -2882,7 +2992,7 @@ a { color: var(--amber); }
     if (ev.persisted) applyFsHomeFromStore();
   });
   window.addEventListener('storage', function (ev) {
-    if (ev.key === 'otos_home_content' || ev.key === 'otosContinuity.homepage.v2' || ev.key === 'otos-hero-quote') {
+    if (ev.key === 'otos_home_content' || ev.key === 'otosContinuity.homepage.v2') {
       applyFsHomeFromStore();
     }
   });
