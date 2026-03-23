@@ -465,15 +465,50 @@ a { color: var(--amber); }
 .fs-pin .fs-slide--how.fs-slide--strapline .fs-strapline-wrap {
   max-width: min(1100px, 96vw);
   margin: 0 auto;
-  padding: clamp(0.65rem, 2vh, 1.35rem) 0 clamp(0.35rem, 1vh, 0.65rem);
+  /* Sit in the cream band: breathing room top-left, thin band (no vertical center into hero) */
+  padding: clamp(1.35rem, 3.5vw, 2.4rem) clamp(1.1rem, 4vw, 2.75rem) clamp(0.65rem, 1.8vh, 1.1rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.65rem, 1.8vh, 1.15rem);
+  box-sizing: border-box;
+}
+/* How strapline slide: anchor to top of pin stage (not 50% — avoids headline straddling hero image) */
+.fs-pin .fs-slide.fs-slide--how.fs-slide--strapline {
+  top: 0;
+  transform: translateY(10px);
+}
+.fs-pin .fs-slide.fs-slide--how.fs-slide--strapline.is-active {
+  transform: translateY(0);
+}
+.fs-pin .fs-slide--how.fs-slide--strapline .fs-kicker {
+  margin: 0;
+  align-self: flex-start;
+}
+.fs-pin .fs-slide--how.fs-slide--strapline .fs-strapline-xl--how-hero {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.fs-pin .fs-slide--how.fs-slide--strapline .fs-strapline-sub {
+  margin-top: 0;
 }
 .fs-slide--strapline .fs-pills--how-hero {
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: clamp(1.85rem, 4.5vh, 2.85rem);
+  margin-top: clamp(1rem, 2.5vh, 1.65rem);
   margin-bottom: 0;
   gap: 10px;
   max-width: 100%;
+}
+.fs-pin .fs-slide--how.fs-slide--strapline .fs-pills--how-hero {
+  width: 100%;
+  justify-content: space-between;
+  gap: clamp(10px, 2vw, 28px);
+}
+@media (max-width: 720px) {
+  .fs-pin .fs-slide--how.fs-slide--strapline .fs-pills--how-hero {
+    justify-content: center;
+    gap: 10px;
+  }
 }
 .fs-pin .fs-slide--how.fs-slide--strapline .fs-strapline-sub {
   max-width: 52ch;
@@ -1190,15 +1225,15 @@ a { color: var(--amber); }
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: clamp(0.35rem, 1.2vw, 0.85rem) clamp(0.5rem, 1.5vw, 1rem) clamp(1rem, 2.5vw, 1.65rem);
+  padding: clamp(0.25rem, 0.9vw, 0.55rem) clamp(0.5rem, 1.5vw, 1rem) clamp(0.65rem, 1.8vw, 1.1rem);
   overflow: visible;
   background: var(--bg-mid);
   box-sizing: border-box;
 }
 .fs-pin__slides { position: relative; width: 100%; max-width: min(960px, 96vw); min-height: min(220px, 30vh); }
-/* How pin: compact slide stage */
+/* How pin: thinner strapline band; height comes from content + small floor */
 .fs-pin .fs-pin__slides {
-  min-height: min(240px, 32vh);
+  min-height: min(200px, 28vh);
   max-width: min(1100px, 96vw);
 }
 /* IO often misses reveals inside opacity:0 slides — always show copy on the active pin slide */
@@ -1255,70 +1290,58 @@ a { color: var(--amber); }
   z-index: 4;
   white-space: nowrap;
 }
-/* How pin: glass scroll cue (replaces “Scroll to advance” + dots) — type size aligned with nav links */
-.fs-pin__scroll-cue {
-  position: absolute;
-  bottom: clamp(6px, 1.2vh, 14px);
+/* Fixed How scroll hint: same idea as section rail (fixed viewport) — icon only, no label / glass box */
+.fs-how-scroll-nudge {
+  position: fixed;
   left: 50%;
+  bottom: clamp(14px, 2.5vh, 26px);
   transform: translateX(-50%);
-  z-index: 6;
-  pointer-events: none;
-}
-/* Avoid one-frame “ghost” glass cue before pin JS measures scroll (flash under How it works) */
-.fs-pin:not(.fs-pin--initialized) .fs-pin__scroll-cue {
-  opacity: 0;
-  visibility: hidden;
-}
-.fs-pin.fs-pin--initialized .fs-pin__scroll-cue {
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 0.2s ease;
-}
-.fs-pin__scroll-cue__glass {
-  display: inline-flex;
+  z-index: 880;
+  display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 7px;
-  padding: 10px 20px 12px;
-  border-radius: 22px;
-  background: rgba(255, 252, 246, 0.42);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid rgba(193, 127, 36, 0.2);
-  box-shadow: 0 10px 32px rgba(26, 20, 16, 0.07);
+  gap: 5px;
+  padding: 10px 14px;
+  margin: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--amber);
+  -webkit-tap-highlight-color: transparent;
+  filter: drop-shadow(0 1px 3px rgba(26, 20, 16, 0.35));
+  transition: opacity 0.25s ease, transform 0.2s ease;
 }
-.fs-pin__scroll-cue__label {
-  font-family: var(--font-b);
-  font-size: clamp(12px, 1.45vw, 14px);
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(74, 58, 48, 0.52);
-  line-height: 1.2;
+.fs-how-scroll-nudge:hover,
+.fs-how-scroll-nudge:focus-visible {
+  transform: translateX(-50%) translateY(-2px);
+  outline: none;
+  opacity: 0.95;
 }
-.fs-pin__scroll-cue__arrow {
+.fs-how-scroll-nudge[hidden] {
+  display: none !important;
+}
+.fs-how-scroll-nudge__arrow {
   width: 11px;
   height: 11px;
   border-right: 2px solid var(--amber);
   border-bottom: 2px solid var(--amber);
   transform: rotate(45deg);
-  margin-top: -4px;
+  margin-top: -2px;
   animation: fs-pin-scroll-nudge 1.45s ease-in-out infinite;
 }
 @keyframes fs-pin-scroll-nudge {
   0%, 100% { transform: rotate(45deg) translateY(-1px); opacity: 0.65; }
   50% { transform: rotate(45deg) translateY(6px); opacity: 1; }
 }
-.fs-pin__scroll-cue__wheel {
+.fs-how-scroll-nudge__wheel {
   width: 11px;
   height: 16px;
-  border: 1.5px solid rgba(74, 58, 48, 0.35);
+  border: 1.5px solid rgba(74, 58, 48, 0.42);
   border-radius: 5px;
   position: relative;
-  margin-bottom: 2px;
   animation: fs-pin-wheel 1.45s ease-in-out infinite;
 }
-.fs-pin__scroll-cue__wheel::after {
+.fs-how-scroll-nudge__wheel::after {
   content: '';
   position: absolute;
   left: 50%;
@@ -1327,7 +1350,7 @@ a { color: var(--amber); }
   width: 3px;
   height: 4px;
   border-radius: 1px;
-  background: rgba(193, 127, 36, 0.75);
+  background: rgba(193, 127, 36, 0.85);
   animation: fs-pin-wheel-dot 1.45s ease-in-out infinite;
 }
 @keyframes fs-pin-wheel {
@@ -1338,10 +1361,15 @@ a { color: var(--amber); }
   0%, 100% { opacity: 0.5; top: 3px; }
   50% { opacity: 1; top: 7px; }
 }
+@media (max-width: 720px) {
+  body[data-otos-shell="full-scroll2"] .fs-how-scroll-nudge {
+    bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .fs-pin__scroll-cue__arrow,
-  .fs-pin__scroll-cue__wheel,
-  .fs-pin__scroll-cue__wheel::after {
+  .fs-how-scroll-nudge__arrow,
+  .fs-how-scroll-nudge__wheel,
+  .fs-how-scroll-nudge__wheel::after {
     animation: none !important;
   }
 }
@@ -1877,6 +1905,11 @@ a { color: var(--amber); }
   <a href="#fs-founder" data-fs-jump><span class="fs-section-rail__glyph">I</span><span class="fs-section-rail__hint">Founder</span></a>
 </nav>
 
+<button type="button" class="fs-how-scroll-nudge" id="fs-how-scroll-nudge" hidden aria-label="Scroll down">
+  <span class="fs-how-scroll-nudge__wheel" aria-hidden="true"></span>
+  <span class="fs-how-scroll-nudge__arrow" aria-hidden="true"></span>
+</button>
+
 <main class="fs-main">
 
 <!-- HOME — Full scroll 2: Content Manager only (headline + body + up to six stats). No static kicker/quote/founder. -->
@@ -1983,13 +2016,6 @@ a { color: var(--amber); }
           </ul>
           <p style="margin-top:1rem; font-family:var(--font-h); font-style:italic; font-weight:600; color:var(--amber);">See where journeys stall, where drop-off happens, where continuity is working.</p>
         </div>
-      </div>
-    </div>
-    <div class="fs-pin__scroll-cue" aria-hidden="true">
-      <div class="fs-pin__scroll-cue__glass">
-        <span class="fs-pin__scroll-cue__label" data-fs-pin-hint-label>Scroll</span>
-        <span class="fs-pin__scroll-cue__wheel" aria-hidden="true"></span>
-        <span class="fs-pin__scroll-cue__arrow" aria-hidden="true"></span>
       </div>
     </div>
   </div>
@@ -2888,9 +2914,47 @@ a { color: var(--amber); }
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', function () { setHeight(); onScroll(); });
-    root.classList.add('fs-pin--initialized');
   }
   document.querySelectorAll('[data-fs-pin]').forEach(initPin);
+
+  (function initHowScrollNudge() {
+    var how = document.getElementById('fs-how');
+    var nudge = document.getElementById('fs-how-scroll-nudge');
+    if (!how || !nudge) return;
+    function slidePx() {
+      var vh = window.innerHeight || 640;
+      return Math.round(Math.max(190, Math.min(vh * 0.28, 360)));
+    }
+    function setNudgeVisible(show) {
+      if (show) {
+        nudge.removeAttribute('hidden');
+        nudge.setAttribute('aria-hidden', 'false');
+      } else {
+        nudge.setAttribute('hidden', '');
+        nudge.setAttribute('aria-hidden', 'true');
+      }
+    }
+    if (!('IntersectionObserver' in window)) {
+      function updNudgeFallback() {
+        var r = how.getBoundingClientRect();
+        var vh = window.innerHeight || 640;
+        setNudgeVisible(r.top < vh * 0.9 && r.bottom > vh * 0.14);
+      }
+      updNudgeFallback();
+      window.addEventListener('scroll', updNudgeFallback, { passive: true });
+      window.addEventListener('resize', updNudgeFallback);
+    } else {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          setNudgeVisible(en.isIntersecting);
+        });
+      }, { root: null, threshold: [0, 0.02, 0.08] });
+      io.observe(how);
+    }
+    nudge.addEventListener('click', function () {
+      window.scrollBy({ top: slidePx(), behavior: 'smooth' });
+    });
+  })();
 
   /* —— Scroll-reveal straplines + statement beats —— */
   function initInviewObserver(selector) {
@@ -2979,9 +3043,6 @@ a { color: var(--amber); }
     if (H && H.pin_hint != null && String(H.pin_hint).trim() !== '') {
       var t = H.pin_hint.trim();
       document.querySelectorAll('.fs-pin__hint').forEach(function (el) {
-        el.textContent = t;
-      });
-      document.querySelectorAll('[data-fs-pin-hint-label]').forEach(function (el) {
         el.textContent = t;
       });
     }
