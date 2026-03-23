@@ -53,6 +53,16 @@
     .btn-reset-pos:hover { border-color: #c17f24; color: #f5f0e8; background: rgba(193,127,36,0.12); }
     .toast { font-size: 12px; font-weight: 600; color: #4a9e8e; opacity: 0; transition: opacity 0.3s; white-space: nowrap; }
     .toast.on { opacity: 1; }
+    .save-status {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(245, 240, 232, 0.42);
+      white-space: nowrap;
+      max-width: min(220px, 28vw);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0.02em;
+    }
 
     .bar .view-btn {
       background: transparent; border: 1px solid rgba(193,127,36,0.22);
@@ -319,8 +329,26 @@
     .field-clear:hover { color: #f5f0e8; border-color: rgba(193,127,36,0.4); }
 
     .size-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+    .size-row--with-reset { flex-wrap: wrap; row-gap: 10px; column-gap: 12px; align-items: center; }
+    .size-row__range { display: flex; align-items: center; gap: 8px; flex: 1; min-width: min(100%, 220px); }
+    .size-row__range input[type="range"] { flex: 1; min-width: 0; }
     .size-label { font-size: 10px; color: #7a6a58; font-weight: 600; letter-spacing: 0.5px; white-space: nowrap; }
     .size-val { font-size: 11px; font-weight: 700; color: #c17f24; min-width: 32px; text-align: right; }
+    .btn-reset-typo {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 7px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      border: 1px solid rgba(193, 127, 36, 0.5);
+      background: rgba(193, 127, 36, 0.14);
+      color: #e8c27a;
+      white-space: nowrap;
+    }
+    .btn-reset-typo:hover { background: rgba(193, 127, 36, 0.26); color: #fdf9f3; border-color: #c17f24; }
     input[type="range"] {
       flex: 1; height: 3px; cursor: pointer;
       accent-color: #c17f24; background: rgba(193,127,36,0.15); border-radius: 999px;
@@ -388,6 +416,108 @@
     }
     .cw-check { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px; color: #c4b8a8; }
     .cw-check input { width: 16px; height: 16px; accent-color: #c17f24; }
+    .cm-prod-banner {
+      grid-column: 1 / -1;
+      background: rgba(74, 158, 142, 0.12);
+      border: 1px solid rgba(74, 158, 142, 0.45);
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 4px;
+    }
+    .cm-prod-banner h2 { margin: 0 0 8px; font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #7fd4c1; }
+    .cm-prod-banner p { margin: 0; font-size: 13px; color: #c4c8c4; line-height: 1.55; }
+    .cm-prod-banner strong { color: #f0faf7; }
+    .btn-export-prod {
+      background: transparent; border: 1px solid rgba(74, 158, 142, 0.55);
+      color: #9ee0d0; font-family: 'Inter', sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
+      padding: 8px 16px; border-radius: 999px; cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-export-prod:hover { border-color: #7fd4c1; color: #f0faf7; background: rgba(74, 158, 142, 0.15); }
+    .cm-design-lib {
+      grid-column: 1 / -1;
+      background: rgba(193, 127, 36, 0.06);
+      border: 1px solid rgba(193, 127, 36, 0.28);
+      border-radius: 14px;
+      padding: 16px 18px;
+    }
+    .cm-design-lib h2 {
+      margin: 0 0 6px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #e8c27a;
+    }
+    .cm-design-lib > p { margin: 0 0 14px; font-size: 12px; color: #9a8b7a; line-height: 1.55; }
+    .cm-design-lib__row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .cm-design-lib__row input[type="text"] {
+      flex: 1;
+      min-width: 200px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(193, 127, 36, 0.25);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #f5f0e8;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    .btn-lib-save {
+      background: rgba(193, 127, 36, 0.35);
+      border: 1px solid rgba(193, 127, 36, 0.55);
+      color: #fdf9f3;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-lib-save:hover { background: rgba(193, 127, 36, 0.5); }
+    #designLibList { display: flex; flex-direction: column; gap: 8px; }
+    .design-lib-empty { margin: 0; font-size: 12px; color: #7a6a58; font-style: italic; }
+    .design-lib-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+    }
+    .design-lib-row__meta { min-width: 0; flex: 1; }
+    .design-lib-row__meta strong { display: block; color: #f5f0e8; font-size: 14px; margin-bottom: 2px; }
+    .design-lib-row__date { font-size: 11px; color: #7a6a58; }
+    .design-lib-row__img { font-size: 10px; color: #8a7a68; margin-top: 4px; word-break: break-all; }
+    .design-lib-row__actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .design-lib-row__actions button {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.06);
+      color: #d8cfc4;
+    }
+    .design-lib-row__actions button:hover { border-color: #c17f24; color: #f5f0e8; }
+    .design-lib-row__actions button[data-lib-action="live"] {
+      border-color: rgba(74, 158, 142, 0.5);
+      color: #9ee0d0;
+    }
+    .design-lib-row__actions button[data-lib-action="live"]:hover { background: rgba(74, 158, 142, 0.15); }
+    .design-lib-row__actions button[data-lib-action="delete"] { color: #c98a7a; border-color: rgba(200, 100, 80, 0.35); }
   </style>
 </head>
 <body>
@@ -397,12 +527,14 @@
   <div class="bar-right" style="flex-wrap:wrap;justify-content:flex-end;gap:8px;">
     <button class="view-btn active" id="btnDesktop" type="button" title="Desktop preview width">Desktop</button>
     <button class="view-btn" id="btnMobile" type="button" title="Mobile preview frame">Mobile</button>
+    <span class="save-status" id="saveStatus" title="Nothing is uploaded — only this browser’s storage"></span>
     <span class="toast" id="toast">✓ Saved</span>
     <a class="btn-view" href="index.html" target="otos-home">Portal home ↗</a>
     <a class="btn-view" href="full-scroll2.html" target="_blank">Full scroll (live) ↗</a>
     <a class="btn-view bar-link-scroll2" href="content-manager.html?mode=scroll2" title="Bookmark this URL for the Scroll 2 layout">CM (scroll 2) ↗</a>
     <button class="btn-reset-pos" id="btnResetPos" type="button" title="Reset hero position for the current preview only (Desktop or Mobile). The other breakpoint is left unchanged.">Reset position</button>
-    <button class="btn-save-top" id="btnSave" type="button">Save &amp; apply</button>
+    <button class="btn-export-prod" id="btnExportProd" type="button" title="Copies text + code so you can paste into full-scroll2.html — that is what the public site serves">Copy for public site</button>
+    <button class="btn-save-top" id="btnSave" type="button" title="Writes to this browser only (localStorage). No upload. Refresh Full scroll 2 to see it.">Save &amp; apply</button>
   </div>
 </div>
 
@@ -416,13 +548,13 @@
         <p class="preview-p" id="previewK" style="letter-spacing:0.18em;text-transform:uppercase;font-weight:700;color:#e8c27a;margin:0;">OTOS Continuity™</p>
       </div>
       <div class="preview-resize" data-preview-box="quote" title="Resize width for line breaks">
-        <p class="preview-p" id="previewQ" style="font-family:'Playfair Display',serif;font-style:italic;margin:0;">“The failure is not in the care — it’s in the space between it.”</p>
+        <p class="preview-p" id="previewQ" style="font-family:'Playfair Display',serif;font-style:italic;margin:0;">At discharge from my final A&amp;E detox, I left a familiar face with these words&hellip;</p>
       </div>
       <div class="preview-resize" data-preview-box="heading" title="Resize width for line breaks">
-        <p class="preview-h" id="previewH" style="margin:0;">When ADHD is left waiting, addiction steps in.</p>
+        <p class="preview-h" id="previewH" style="margin:0;">Next time we meet, I won&rsquo;t be your patient &mdash; I&rsquo;ll be your partner.</p>
       </div>
       <div class="preview-resize" data-preview-box="body" title="Resize width for line breaks">
-        <p class="preview-p" id="previewP" style="margin:0;">People with ADHD are not being held on waiting lists — they are being left exposed…</p>
+        <p class="preview-p" id="previewP" style="margin:0;">&ldquo;Out The Other Side&rdquo; was how I felt &mdash; and still feel. That became OTOS.</p>
       </div>
       <div class="fs-stats" id="previewStats" role="list" aria-label="Preview: hero statistics"></div>
       <a class="preview-cta" id="previewCta" href="#">See how it works -&gt;</a>
@@ -433,9 +565,25 @@
 <div class="panel">
   <div class="panel-grid">
 
+    <div class="cm-prod-banner">
+      <h2>Who sees what you build?</h2>
+      <p><strong>Save &amp; apply</strong> only stores hero settings in <strong>this browser</strong> (localStorage). <strong>Visitors to otos.works do not use that.</strong> They get whatever is in the <strong>HTML file on the server</strong> — the <code>FS_HOME_DEFAULTS</code> block in <code>full-scroll2.html</code>.</p>
+      <p style="margin-top:10px;"><strong>To make the world match your preview:</strong> click <strong>Copy for public site</strong>, then paste into the repo, commit the image file if new, bump the page <code>rev</code>, push, and deploy.</p>
+    </div>
+
+    <div class="cm-design-lib">
+      <h2>Design library (playground)</h2>
+      <p>Save <strong>named snapshots</strong> of the whole hero (image, headline, sub, position, stats, photo-band quote, dock hints). Tinker all you like — nothing here affects visitors until you <strong>Copy for public site</strong> and deploy. <strong>Put live</strong> = apply that snapshot to <strong>this browser</strong> so <code>full-scroll2.html</code> matches (same as Save &amp; apply).</p>
+      <div class="cm-design-lib__row">
+        <input type="text" id="designLibName" maxlength="120" placeholder="Name this design (e.g. NHS commissioners / Investor tight)" autocomplete="off">
+        <button type="button" class="btn-lib-save" id="btnSaveDesignLib">Save to library</button>
+      </div>
+      <div id="designLibList" aria-live="polite"></div>
+    </div>
+
     <div class="field" style="grid-column:1/-1; background:rgba(193,127,36,0.08); border:1px solid rgba(193,127,36,0.2); border-radius:14px; padding:16px 18px;">
       <span style="font-size:10px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#e8c27a;">Hero — kicker &amp; top quote</span>
-      <p style="margin:8px 0 14px;font-size:12px;color:#9a8b7a;line-height:1.55;">Kicker and opening quote render on <strong>Full scroll 2</strong> when filled. Use <strong>Return</strong> for line breaks; resize dashed boxes in the preview, then <strong>Save &amp; apply</strong>.</p>
+      <p style="margin:8px 0 14px;font-size:12px;color:#9a8b7a;line-height:1.55;">Kicker and opening quote render on <strong>Full scroll 2</strong> when filled. Use <strong>Return</strong> for line breaks; resize dashed boxes in the preview. Changes <strong>auto-save</strong> after a short pause — or click <strong>Save &amp; apply</strong> for a clear confirmation.</p>
     </div>
     <div class="field" style="grid-column:1/-1;">
       <label for="fKicker">Kicker <span style="opacity:0.55;font-weight:500;">(line breaks OK)</span></label>
@@ -476,10 +624,13 @@
         <button class="field-clear" id="clearHeading" type="button">Clear</button>
       </div>
       <textarea id="fHeading" class="field-textarea-grow" rows="3" placeholder="Enter hero heading (press Enter for a new line)"></textarea>
-      <div class="size-row">
-        <span class="size-label">Size</span>
-        <input type="range" id="fHeadingSize" min="20" max="72" step="1" value="40">
-        <span class="size-val" id="headingSizeVal">40px</span>
+      <div class="size-row size-row--with-reset">
+        <div class="size-row__range">
+          <span class="size-label">Size</span>
+          <input type="range" id="fHeadingSize" min="20" max="72" step="1" value="40">
+          <span class="size-val" id="headingSizeVal">40px</span>
+        </div>
+        <button type="button" class="btn-reset-typo" id="btnResetHeroTypo" title="Defaults for headline/body/kicker/quote sizes and clears dashed preview box widths — fixes runaway giant type on Full scroll 2">Reset sizes &amp; boxes</button>
       </div>
     </div>
 
@@ -644,6 +795,8 @@
 <script>
 (function () {
   const LEGACY_KEY = 'otosContinuity.homepage.v2';
+  const DESIGN_LIB_KEY = 'otos_home_design_library';
+  const DESIGN_LIB_MAX = 40;
   const CM_SCROLL2 = /[?&]mode=scroll2(?:&|$)/i.test(location.search);
   if (CM_SCROLL2) {
     document.documentElement.classList.add('cm-mode-scroll2');
@@ -718,9 +871,9 @@
     kicker: "OTOS Continuity\u2122",
     quote: "At discharge from my final A&E detox, I left a familiar face with these words\u2026",
     heading_desktop: "Next time we meet, I won't be your patient \u2014 I'll be your partner.",
-    subheading_desktop: "\"Out The Other Side\" was how I felt \u2014 and still feel. That became OTOS. OTOS Digital Ltd was officially formulated six months later.\n\nFraming: Addenbrooke's Hospital, Cambridge \u00b7 September 2025 \u2014 lived experience narrative, not a clinical record.",
+    subheading_desktop: "\"Out The Other Side\" was how I felt \u2014 and still feel. That became OTOS. OTOS Digital Ltd was officially formulated six months later.\n\nFraming: Addenbrooke's Hospital, Cambridge \u2014 lived experience narrative, not a clinical record.",
     heading_mobile: "Next time we meet, I won't be your patient \u2014 I'll be your partner.",
-    subheading_mobile: "\"Out The Other Side\" was how I felt \u2014 and still feel. That became OTOS. OTOS Digital Ltd was officially formulated six months later.\n\nFraming: Addenbrooke's Hospital, Cambridge \u00b7 September 2025 \u2014 lived experience narrative, not a clinical record.",
+    subheading_mobile: "\"Out The Other Side\" was how I felt \u2014 and still feel. That became OTOS. OTOS Digital Ltd was officially formulated six months later.\n\nFraming: Addenbrooke's Hospital, Cambridge \u2014 lived experience narrative, not a clinical record.",
     text_colour: "#ffffff",
     headingSize: 34,
     subSize: 14,
@@ -737,8 +890,8 @@
     ctaSize: 14,
     kickerSize: 11,
     quoteSize: 14,
-    quote_photo_band: "\u201c[Partner quote placeholder \u2014 to be confirmed]\u201d",
-    quote_photo_band_cite: "\u2014 Name, Role, Organisation",
+    quote_photo_band: "\u201cThe gap has a name now.\u201d",
+    quote_photo_band_cite: "OTOS continuity framing",
     quote_photo_band_size: 18,
     apply_colourwork_headline: false,
     apply_colourwork_quote: false,
@@ -751,12 +904,82 @@
     box_w_body: 0
   };
 
+  /* Debounced write to localStorage — same data as Save &amp; apply; no upload. */
+  var CM_AUTOSAVE_MS = 1000;
+  var cmAutoTimer = null;
+  function scheduleAutoSave() {
+    clearTimeout(cmAutoTimer);
+    cmAutoTimer = setTimeout(function () {
+      cmAutoTimer = null;
+      try {
+        persistHomePayload(collectHomePayload(), null, { silent: true });
+      } catch (eCmAuto) {}
+    }, CM_AUTOSAVE_MS);
+  }
+
+  /* Must match <input type="range"> min/max on hero fields — prevents giant type if JSON was edited or an old bug saved huge px. */
+  var CM_BOX_W_MAX = 720;
+  var CM_HEADING_SZ_MIN = 20;
+  var CM_HEADING_SZ_MAX = 72;
+  var CM_SUB_SZ_MIN = 10;
+  var CM_SUB_SZ_MAX = 22;
+  var CM_KICKER_SZ_MIN = 8;
+  var CM_KICKER_SZ_MAX = 18;
+  var CM_QUOTE_SZ_MIN = 10;
+  var CM_QUOTE_SZ_MAX = 22;
+  var CM_CTA_SZ_MIN = 11;
+  var CM_CTA_SZ_MAX = 20;
+  var CM_PHOTO_QUOTE_SZ_MIN = 12;
+  var CM_PHOTO_QUOTE_SZ_MAX = 28;
+
+  function clampCmPxInt(val, min, max, fallback) {
+    var v = parseFloat(val);
+    if (!isFinite(v)) return fallback;
+    return Math.round(Math.max(min, Math.min(max, v)));
+  }
+  function clampCmPxHalf(val, min, max, fallback) {
+    var v = parseFloat(val);
+    if (!isFinite(v)) return fallback;
+    return Math.round(Math.max(min, Math.min(max, v)) * 2) / 2;
+  }
+  function normalizeCmBoxW(v) {
+    var n = parseInt(v, 10);
+    if (!isFinite(n) || n < 72) return 0;
+    return Math.min(n, CM_BOX_W_MAX);
+  }
+  /** @returns {boolean} true if payload was mutated */
+  function sanitizeHeroPayload(s) {
+    if (!s || typeof s !== 'object') return false;
+    var changed = false;
+    function fixInt(key, min, max, def) {
+      var next = clampCmPxInt(s[key], min, max, def);
+      if (s[key] !== next) { s[key] = next; changed = true; }
+    }
+    function fixHalf(key, min, max, def) {
+      var next = clampCmPxHalf(s[key], min, max, def);
+      if (s[key] !== next) { s[key] = next; changed = true; }
+    }
+    fixInt('headingSize', CM_HEADING_SZ_MIN, CM_HEADING_SZ_MAX, DEFAULTS.headingSize);
+    fixHalf('subSize', CM_SUB_SZ_MIN, CM_SUB_SZ_MAX, DEFAULTS.subSize);
+    fixHalf('kickerSize', CM_KICKER_SZ_MIN, CM_KICKER_SZ_MAX, DEFAULTS.kickerSize);
+    fixHalf('quoteSize', CM_QUOTE_SZ_MIN, CM_QUOTE_SZ_MAX, DEFAULTS.quoteSize);
+    fixHalf('ctaSize', CM_CTA_SZ_MIN, CM_CTA_SZ_MAX, DEFAULTS.ctaSize);
+    fixHalf('quote_photo_band_size', CM_PHOTO_QUOTE_SZ_MIN, CM_PHOTO_QUOTE_SZ_MAX, DEFAULTS.quote_photo_band_size);
+    ['box_w_kicker', 'box_w_quote', 'box_w_heading', 'box_w_body'].forEach(function (k) {
+      var nb = normalizeCmBoxW(s[k]);
+      if (s[k] !== nb) { s[k] = nb; changed = true; }
+    });
+    return changed;
+  }
+
   let saved = JSON.parse(JSON.stringify(DEFAULTS));
+  var _cmSanitizedStored = false;
   try {
     const rawHome = localStorage.getItem('otos_home_content');
     if (rawHome) {
       const p = JSON.parse(rawHome);
       saved = Object.assign({}, DEFAULTS, p);
+      if (sanitizeHeroPayload(saved)) _cmSanitizedStored = true;
     } else {
       const rawLegacy = localStorage.getItem(LEGACY_KEY);
       if (rawLegacy) {
@@ -772,10 +995,14 @@
         saved.posMobile = L.posMobile || DEFAULTS.posMobile;
         if (L.pos && !L.posDesktop) saved.posDesktop = L.pos;
       }
+      if (sanitizeHeroPayload(saved)) _cmSanitizedStored = true;
     }
     if (!saved.posDesktop) saved.posDesktop = { x: 50, y: 50 };
     if (!saved.posMobile) saved.posMobile = { x: 50, y: 55 };
   } catch (e) {}
+  if (_cmSanitizedStored) {
+    try { localStorage.setItem('otos_home_content', JSON.stringify(saved)); } catch (eSanStore) {}
+  }
 
   /* Preview uses translate(-50%,-50%) + overflow:hidden — very small y clips the drag handle off the top */
   var POS_MIN_X = 8;
@@ -886,6 +1113,69 @@
   cwQuoteEl.checked = !!saved.apply_colourwork_quote;
   cwStyleEl.value = saved.colourwork_style && CW_GRAD[saved.colourwork_style] ? saved.colourwork_style : 'hero';
 
+  function hydrateEditorFromPayload(raw) {
+    if (!raw || typeof raw !== 'object') return;
+    try {
+      saved = Object.assign({}, DEFAULTS, JSON.parse(JSON.stringify(raw)));
+    } catch (eH) {
+      return;
+    }
+    if (!saved.posDesktop) saved.posDesktop = { x: DEFAULTS.posDesktop.x, y: DEFAULTS.posDesktop.y };
+    if (!saved.posMobile) saved.posMobile = { x: DEFAULTS.posMobile.x, y: DEFAULTS.posMobile.y };
+    saved.posDesktop = clampHeroPos(saved.posDesktop);
+    saved.posMobile = clampHeroPos(saved.posMobile);
+    sanitizeHeroPayload(saved);
+    posDesktop = { x: saved.posDesktop.x, y: saved.posDesktop.y };
+    posMobile = { x: saved.posMobile.x, y: saved.posMobile.y };
+
+    fKicker.value = saved.kicker != null ? saved.kicker : DEFAULTS.kicker;
+    fQuote.value = saved.quote != null ? saved.quote : DEFAULTS.quote;
+    fHeading.value = saved.heading_desktop != null ? saved.heading_desktop : DEFAULTS.heading_desktop;
+    fSub.value = saved.subheading_desktop != null ? saved.subheading_desktop : DEFAULTS.subheading_desktop;
+    fHeadingMobile.value = saved.heading_mobile != null ? saved.heading_mobile : fHeading.value;
+    fSubMobile.value = saved.subheading_mobile != null ? saved.subheading_mobile : fSub.value;
+    for (var si = 1; si <= 6; si++) statLoad(si);
+    document.getElementById('fCta').value = saved.cta_text != null ? saved.cta_text : DEFAULTS.cta_text;
+    document.getElementById('fCtaHref').value = saved.cta_href != null ? saved.cta_href : DEFAULTS.cta_href;
+    document.getElementById('fPinHint').value = saved.pin_hint != null ? saved.pin_hint : '';
+    loadDockRow('home', 'fs-home');
+    loadDockRow('how', 'fs-how');
+    loadDockRow('demos', 'fs-demos');
+    loadDockRow('infra', 'fs-infra');
+    fHeadingSize.value = saved.headingSize || DEFAULTS.headingSize;
+    fSubSize.value = saved.subSize || DEFAULTS.subSize;
+    fKickerSize.value = saved.kickerSize != null ? saved.kickerSize : DEFAULTS.kickerSize;
+    fQuoteSize.value = saved.quoteSize != null ? saved.quoteSize : DEFAULTS.quoteSize;
+    document.getElementById('fQuotePhoto').value = saved.quote_photo_band != null ? saved.quote_photo_band : DEFAULTS.quote_photo_band;
+    document.getElementById('fQuotePhotoCite').value = saved.quote_photo_band_cite != null ? saved.quote_photo_band_cite : DEFAULTS.quote_photo_band_cite;
+    document.getElementById('fQuotePhotoSize').value = saved.quote_photo_band_size != null ? saved.quote_photo_band_size : DEFAULTS.quote_photo_band_size;
+    fCtaSize.value = saved.ctaSize != null ? saved.ctaSize : DEFAULTS.ctaSize;
+    otosTextColour.value = saved.text_colour && /^#[0-9A-Fa-f]{6}$/.test(saved.text_colour) ? saved.text_colour : '#ffffff';
+    cwHeadlineEl.checked = !!saved.apply_colourwork_headline;
+    cwQuoteEl.checked = !!saved.apply_colourwork_quote;
+    cwStyleEl.value = saved.colourwork_style && CW_GRAD[saved.colourwork_style] ? saved.colourwork_style : 'hero';
+
+    var img = saved.image || DEFAULTS.image;
+    var customInp = document.getElementById('fImageCustom');
+    var matched = false;
+    document.querySelectorAll('input[name="img"]').forEach(function (radio) {
+      var on = radio.value === img;
+      radio.checked = on;
+      if (on) matched = true;
+    });
+    if (customInp) customInp.value = matched ? '' : img;
+
+    setPreviewImage(img);
+    applyPreviewBoxWidths();
+    document.querySelectorAll('#paletteRow .palette-btn').forEach(function (b) {
+      b.classList.toggle('on', b.dataset.hex && b.dataset.hex.toLowerCase() === otosTextColour.value.toLowerCase());
+    });
+    updateText();
+    updateSizes();
+    applyPos();
+    updatePreviewCta();
+  }
+
   (function buildPalette() {
     var row = document.getElementById('paletteRow');
     if (!row) return;
@@ -901,6 +1191,7 @@
         row.querySelectorAll('.palette-btn').forEach(function (x) { x.classList.remove('on'); });
         b.classList.add('on');
         updateText();
+        scheduleAutoSave();
       });
       row.appendChild(b);
     });
@@ -980,11 +1271,11 @@
   }
 
   function updateSizes() {
-    const hs = parseFloat(fHeadingSize.value) || 40;
-    const ss = parseFloat(fSubSize.value) || 15;
-    const ks = parseFloat(fKickerSize.value) || 11;
-    const qs = parseFloat(fQuoteSize.value) || 14;
-    const qps = parseFloat(document.getElementById('fQuotePhotoSize').value) || 18;
+    const hs = clampCmPxInt(fHeadingSize.value, CM_HEADING_SZ_MIN, CM_HEADING_SZ_MAX, DEFAULTS.headingSize);
+    const ss = clampCmPxHalf(fSubSize.value, CM_SUB_SZ_MIN, CM_SUB_SZ_MAX, DEFAULTS.subSize);
+    const ks = clampCmPxHalf(fKickerSize.value, CM_KICKER_SZ_MIN, CM_KICKER_SZ_MAX, DEFAULTS.kickerSize);
+    const qs = clampCmPxHalf(fQuoteSize.value, CM_QUOTE_SZ_MIN, CM_QUOTE_SZ_MAX, DEFAULTS.quoteSize);
+    const qps = clampCmPxHalf(document.getElementById('fQuotePhotoSize').value, CM_PHOTO_QUOTE_SZ_MIN, CM_PHOTO_QUOTE_SZ_MAX, DEFAULTS.quote_photo_band_size);
     /* Mobile preview: cap headline/body so it matches live narrow viewports */
     var pw = cmPreviewInnerWidth();
     var previewHs = viewMode === 'mobile'
@@ -1002,7 +1293,7 @@
     document.getElementById('kickerSizeVal').textContent = ks + 'px';
     document.getElementById('quoteSizeVal').textContent = qs + 'px';
     document.getElementById('quotePhotoSizeVal').textContent = qps + 'px';
-    document.getElementById('ctaSizeVal').textContent = (parseFloat(fCtaSize.value) || 14) + 'px';
+    document.getElementById('ctaSizeVal').textContent = clampCmPxHalf(fCtaSize.value, CM_CTA_SZ_MIN, CM_CTA_SZ_MAX, DEFAULTS.ctaSize) + 'px';
   }
 
   function applyPos() {
@@ -1108,6 +1399,7 @@
       r.checked = (r.value === BEDSIDE_LANDSCAPE_IMAGE);
     });
     setPreviewImage(BEDSIDE_LANDSCAPE_IMAGE);
+    scheduleAutoSave();
   }
 
   setPreviewImage(saved.image);
@@ -1115,6 +1407,15 @@
   updateText();
   updateSizes();
   applyPos();
+  (function initSaveStatusHint() {
+    var el = document.getElementById('saveStatus');
+    if (!el) return;
+    try {
+      el.textContent = localStorage.getItem('otos_home_content')
+        ? 'Loaded from this browser — auto-save when you pause ~1s'
+        : 'Start editing — auto-save when you pause ~1s (or Save & apply)';
+    } catch (eHint) {}
+  })();
 
   fKicker.addEventListener('input', updateText);
   fQuote.addEventListener('input', updateText);
@@ -1144,10 +1445,10 @@
   cwQuoteEl.addEventListener('change', updateText);
   cwStyleEl.addEventListener('change', updateText);
 
-  document.getElementById('clearHeading').addEventListener('click', function () { fHeading.value = ''; updateText(); });
-  document.getElementById('clearSub').addEventListener('click', function () { fSub.value = ''; updateText(); });
-  document.getElementById('clearHeadingMobile').addEventListener('click', function () { fHeadingMobile.value = ''; updateText(); });
-  document.getElementById('clearSubMobile').addEventListener('click', function () { fSubMobile.value = ''; updateText(); });
+  document.getElementById('clearHeading').addEventListener('click', function () { fHeading.value = ''; updateText(); scheduleAutoSave(); });
+  document.getElementById('clearSub').addEventListener('click', function () { fSub.value = ''; updateText(); scheduleAutoSave(); });
+  document.getElementById('clearHeadingMobile').addEventListener('click', function () { fHeadingMobile.value = ''; updateText(); scheduleAutoSave(); });
+  document.getElementById('clearSubMobile').addEventListener('click', function () { fSubMobile.value = ''; updateText(); scheduleAutoSave(); });
 
   document.querySelector('.panel').addEventListener('change', function (e) {
     if (e.target.name === 'img') setPreviewImage(e.target.value);
@@ -1161,6 +1462,7 @@
     applyPos();
     updateSizes();
     updateText();
+    scheduleAutoSave();
   });
   document.getElementById('btnMobile').addEventListener('click', function () {
     viewMode = 'mobile';
@@ -1171,6 +1473,7 @@
     requestAnimationFrame(function () {
       updateSizes();
       updateText();
+      scheduleAutoSave();
     });
   });
 
@@ -1250,6 +1553,7 @@
     dragging = false;
     dragContent.classList.remove('dragging');
     previewWrap.classList.remove('is-dragging');
+    scheduleAutoSave();
   }
 
   window.addEventListener('mouseup', dragEnd);
@@ -1286,6 +1590,11 @@
     toast.textContent = viewMode === 'mobile' ? '✓ Mobile position reset' : '✓ Desktop position reset';
     toast.classList.add('on');
     setTimeout(function () { toast.textContent = '✓ Saved'; toast.classList.remove('on'); }, 2200);
+    var stReset = document.getElementById('saveStatus');
+    if (stReset) {
+      var tsR = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      stReset.textContent = 'Saved in this browser · ' + tsR;
+    }
   });
 
   function collectDockSection(prefix, sectionId) {
@@ -1302,7 +1611,7 @@
     return o;
   }
 
-  document.getElementById('btnSave').addEventListener('click', function () {
+  function collectHomePayload() {
     var data = {
       kicker: document.getElementById('fKicker').value,
       quote: document.getElementById('fQuote').value,
@@ -1313,12 +1622,12 @@
       text_colour: document.getElementById('otos_text_colour').value,
       cta_text: document.getElementById('fCta').value,
       cta_href: document.getElementById('fCtaHref').value.trim(),
-      kickerSize: parseFloat(document.getElementById('fKickerSize').value) || 11,
-      quoteSize: parseFloat(document.getElementById('fQuoteSize').value) || 14,
+      kickerSize: clampCmPxHalf(document.getElementById('fKickerSize').value, CM_KICKER_SZ_MIN, CM_KICKER_SZ_MAX, DEFAULTS.kickerSize),
+      quoteSize: clampCmPxHalf(document.getElementById('fQuoteSize').value, CM_QUOTE_SZ_MIN, CM_QUOTE_SZ_MAX, DEFAULTS.quoteSize),
       quote_photo_band: document.getElementById('fQuotePhoto').value,
       quote_photo_band_cite: document.getElementById('fQuotePhotoCite').value,
-      quote_photo_band_size: parseFloat(document.getElementById('fQuotePhotoSize').value) || 18,
-      ctaSize: parseFloat(document.getElementById('fCtaSize').value) || 14,
+      quote_photo_band_size: clampCmPxHalf(document.getElementById('fQuotePhotoSize').value, CM_PHOTO_QUOTE_SZ_MIN, CM_PHOTO_QUOTE_SZ_MAX, DEFAULTS.quote_photo_band_size),
+      ctaSize: clampCmPxHalf(document.getElementById('fCtaSize').value, CM_CTA_SZ_MIN, CM_CTA_SZ_MAX, DEFAULTS.ctaSize),
       apply_colourwork_headline: document.getElementById('cwHeadline').checked,
       apply_colourwork_quote: document.getElementById('cwQuote').checked,
       colourwork_style: document.getElementById('cwStyle').value || 'hero',
@@ -1333,8 +1642,8 @@
     var customImg = document.getElementById('fImageCustom').value.trim();
     var sel = document.querySelector('input[name="img"]:checked');
     data.image = customImg || (sel ? sel.value : saved.image);
-    data.headingSize = parseFloat(fHeadingSize.value) || 40;
-    data.subSize = parseFloat(fSubSize.value) || 15;
+    data.headingSize = clampCmPxInt(fHeadingSize.value, CM_HEADING_SZ_MIN, CM_HEADING_SZ_MAX, DEFAULTS.headingSize);
+    data.subSize = clampCmPxHalf(fSubSize.value, CM_SUB_SZ_MIN, CM_SUB_SZ_MAX, DEFAULTS.subSize);
     data.posDesktop = { x: Math.round(posDesktop.x * 10) / 10, y: Math.round(posDesktop.y * 10) / 10 };
     data.posMobile = { x: Math.round(posMobile.x * 10) / 10, y: Math.round(posMobile.y * 10) / 10 };
 
@@ -1342,7 +1651,8 @@
       var el = document.querySelector('[data-preview-box="' + name + '"]');
       if (!el) return 0;
       var w = el.offsetWidth;
-      return w >= 72 ? Math.round(w) : 0;
+      if (w < 72) return 0;
+      return Math.min(Math.round(w), CM_BOX_W_MAX);
     }
     data.box_w_kicker = readPreviewBoxW('kicker');
     data.box_w_quote = readPreviewBoxW('quote');
@@ -1359,7 +1669,12 @@
     var d0 = collectDockSection('infra', 'fs-infra');
     if (d0) dockBy['fs-infra'] = d0;
     data.dock_by_section = dockBy;
+    return data;
+  }
 
+  function persistHomePayload(data, toastMsg, opts) {
+    opts = opts || {};
+    var silent = !!opts.silent;
     localStorage.setItem('otos_home_content', JSON.stringify(data));
     saved = Object.assign({}, DEFAULTS, data);
     applyPreviewBoxWidths();
@@ -1378,10 +1693,276 @@
         posMobile: data.posMobile
       }));
     } catch (e2) {}
+    var statusEl = document.getElementById('saveStatus');
+    if (statusEl) {
+      var tstr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      statusEl.textContent = silent ? ('Auto-saved · ' + tstr) : ('Saved in this browser · ' + tstr);
+    }
     var toast = document.getElementById('toast');
-    toast.classList.add('on');
-    setTimeout(function () { toast.classList.remove('on'); }, 2200);
+    if (!silent) {
+      toast.textContent = toastMsg || '\u2713 Saved in this browser';
+      toast.classList.add('on');
+      setTimeout(function () {
+        toast.classList.remove('on');
+        toast.textContent = '\u2713 Saved';
+      }, 2200);
+    }
+  }
+
+  function getDesignLibrary() {
+    try {
+      var raw = localStorage.getItem(DESIGN_LIB_KEY);
+      if (!raw) return [];
+      var arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch (eLib) {
+      return [];
+    }
+  }
+
+  function setDesignLibrary(arr) {
+    try {
+      localStorage.setItem(DESIGN_LIB_KEY, JSON.stringify(arr.slice(0, DESIGN_LIB_MAX)));
+    } catch (eSet) {
+      alert('Could not save design library (browser storage full?). Delete older designs or clear site data.');
+    }
+  }
+
+  function renderDesignLibrary() {
+    var listEl = document.getElementById('designLibList');
+    if (!listEl) return;
+    listEl.textContent = '';
+    var lib = getDesignLibrary();
+    if (!lib.length) {
+      var empty = document.createElement('p');
+      empty.className = 'design-lib-empty';
+      empty.textContent = 'No designs saved yet. Set image + heading + sub, enter a name, then Save to library.';
+      listEl.appendChild(empty);
+      return;
+    }
+    lib.forEach(function (item) {
+      var row = document.createElement('div');
+      row.className = 'design-lib-row';
+      var meta = document.createElement('div');
+      meta.className = 'design-lib-row__meta';
+      var strong = document.createElement('strong');
+      strong.textContent = item.name || 'Untitled';
+      meta.appendChild(strong);
+      var dateSpan = document.createElement('span');
+      dateSpan.className = 'design-lib-row__date';
+      dateSpan.textContent = item.savedAt ? new Date(item.savedAt).toLocaleString() : '';
+      meta.appendChild(dateSpan);
+      var imgLine = document.createElement('div');
+      imgLine.className = 'design-lib-row__img';
+      var payImg = item.payload && item.payload.image ? item.payload.image : '';
+      imgLine.textContent = payImg || '(no image path)';
+      meta.appendChild(imgLine);
+      var actions = document.createElement('div');
+      actions.className = 'design-lib-row__actions';
+      function mkBtn(label, action) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = label;
+        b.setAttribute('data-lib-action', action);
+        b.setAttribute('data-lib-id', item.id);
+        return b;
+      }
+      actions.appendChild(mkBtn('Load', 'load'));
+      actions.appendChild(mkBtn('Put live', 'live'));
+      actions.appendChild(mkBtn('Delete', 'delete'));
+      row.appendChild(meta);
+      row.appendChild(actions);
+      listEl.appendChild(row);
+    });
+  }
+
+  function jsSq(s) {
+    return '\'' + String(s == null ? '' : s)
+      .replace(/\\/g, '\\\\')
+      .replace(/'/g, '\\\'')
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g, '\n')
+      .replace(/\n/g, '\\n') + '\'';
+  }
+
+  document.getElementById('btnExportProd').addEventListener('click', function () {
+    var data = collectHomePayload();
+    var img = data.image || 'images/Nurse and patient discussing treatment information.png';
+    var imgUrl = String(img).replace(/ /g, '%20').replace(/'/g, '%27');
+    var L = [];
+    L.push('================================================================');
+    L.push('OTOS — PRODUCTION PACK (everyone who visits the live site)');
+    L.push('================================================================');
+    L.push('');
+    L.push('Save & apply only changes YOUR browser. To ship this hero to the world:');
+    L.push('1) Commit image file under continuity/ if it is new.');
+    L.push('2) In continuity/full-scroll2.html replace the entire FS_HOME_DEFAULTS = { ... };');
+    L.push('    object with the block below (search for "var FS_HOME_DEFAULTS").');
+    L.push('3) On <section id="fs-home" ... replace data-fs-hero-image-default and');
+    L.push('    style="background-image:..." using the ATTRIBUTE LINES at the bottom.');
+    L.push('4) Bump <meta name="otos-scroll2-rev" ...> and otos-shared.css?v= (defeat CDN cache).');
+    L.push('5) git push + deploy.');
+    L.push('');
+    L.push('--- FS_HOME_DEFAULTS (paste over existing object) ---');
+    L.push('');
+    L.push('  var FS_HOME_DEFAULTS = {');
+    L.push('    image: ' + jsSq(img) + ',');
+    L.push('    kicker: ' + jsSq(data.kicker) + ',');
+    L.push('    quote: ' + jsSq(data.quote) + ',');
+    L.push('    heading_desktop: ' + jsSq(data.heading_desktop) + ',');
+    L.push('    subheading_desktop: ' + jsSq(data.subheading_desktop) + ',');
+    L.push('    heading_mobile: ' + jsSq(data.heading_mobile) + ',');
+    L.push('    subheading_mobile: ' + jsSq(data.subheading_mobile) + ',');
+    L.push('    text_colour: ' + jsSq(data.text_colour) + ',');
+    L.push('    headingSize: ' + (parseFloat(data.headingSize) || 34) + ',');
+    L.push('    subSize: ' + (parseFloat(data.subSize) || 14) + ',');
+    L.push('    posDesktop: { x: ' + data.posDesktop.x + ', y: ' + data.posDesktop.y + ' },');
+    L.push('    posMobile: { x: ' + data.posMobile.x + ', y: ' + data.posMobile.y + ' },');
+    for (var si = 1; si <= 6; si++) {
+      var st = data['stat' + si] || { value: '', label: '' };
+      L.push('    stat' + si + ': { value: ' + jsSq(st.value) + ', label: ' + jsSq(st.label) + ' },');
+    }
+    L.push('    cta_text: ' + jsSq(data.cta_text) + ',');
+    L.push('    cta_href: ' + jsSq(data.cta_href) + ',');
+    L.push('    ctaSize: ' + (parseFloat(data.ctaSize) || 14) + ',');
+    L.push('    kickerSize: ' + (parseFloat(data.kickerSize) || 11) + ',');
+    L.push('    quoteSize: ' + (parseFloat(data.quoteSize) || 14) + ',');
+    L.push('    quote_photo_band: ' + jsSq(data.quote_photo_band) + ',');
+    L.push('    quote_photo_band_cite: ' + jsSq(data.quote_photo_band_cite) + ',');
+    L.push('    quote_photo_band_size: ' + (parseFloat(data.quote_photo_band_size) || 18) + ',');
+    L.push('    apply_colourwork_headline: ' + !!data.apply_colourwork_headline + ',');
+    L.push('    apply_colourwork_quote: ' + !!data.apply_colourwork_quote + ',');
+    L.push('    colourwork_style: ' + jsSq(data.colourwork_style || 'hero') + ',');
+    L.push('    pin_hint: ' + jsSq(data.pin_hint) + ',');
+    L.push('    dock_by_section: ' + JSON.stringify(data.dock_by_section || {}) + ',');
+    L.push('    box_w_kicker: ' + (parseInt(data.box_w_kicker, 10) || 0) + ',');
+    L.push('    box_w_quote: ' + (parseInt(data.box_w_quote, 10) || 0) + ',');
+    L.push('    box_w_heading: ' + (parseInt(data.box_w_heading, 10) || 0) + ',');
+    L.push('    box_w_body: ' + (parseInt(data.box_w_body, 10) || 0) + '');
+    L.push('  };');
+    L.push('');
+    L.push('--- #fs-home attributes (replace on opening <section id="fs-home" ...>) ---');
+    L.push('');
+    L.push('data-fs-hero-image-default="' + img.replace(/"/g, '&quot;') + '"');
+    L.push('style="background-image:url(\'' + imgUrl + '\');"');
+    L.push('');
+    L.push('--- JSON (optional backup) ---');
+    L.push(JSON.stringify(data, null, 2));
+    var pack = L.join('\n');
+    var toast = document.getElementById('toast');
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('on');
+      setTimeout(function () { toast.classList.remove('on'); toast.textContent = '\u2713 Saved'; }, 4200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(pack).then(function () {
+        showToast('\u2713 Copied production pack');
+      }).catch(function () {
+        window.prompt('Copy this text:', pack);
+      });
+    } else {
+      window.prompt('Copy this text:', pack);
+    }
   });
+
+  document.getElementById('btnSave').addEventListener('click', function () {
+    persistHomePayload(collectHomePayload(), '\u2713 Saved in this browser');
+  });
+
+  var btnResetHeroTypo = document.getElementById('btnResetHeroTypo');
+  if (btnResetHeroTypo) {
+    btnResetHeroTypo.addEventListener('click', function () {
+      fHeadingSize.value = DEFAULTS.headingSize;
+      fSubSize.value = DEFAULTS.subSize;
+      fKickerSize.value = DEFAULTS.kickerSize;
+      fQuoteSize.value = DEFAULTS.quoteSize;
+      fCtaSize.value = DEFAULTS.ctaSize;
+      var fQpSz = document.getElementById('fQuotePhotoSize');
+      if (fQpSz) fQpSz.value = DEFAULTS.quote_photo_band_size;
+      document.querySelectorAll('[data-preview-box]').forEach(function (el) { el.style.width = ''; });
+      saved.box_w_kicker = 0;
+      saved.box_w_quote = 0;
+      saved.box_w_heading = 0;
+      saved.box_w_body = 0;
+      updateSizes();
+      updateText();
+      persistHomePayload(collectHomePayload(), '\u2713 Reset hero sizes & boxes');
+    });
+  }
+
+  var panelRoot = document.querySelector('.panel');
+  if (panelRoot) {
+    panelRoot.addEventListener('input', scheduleAutoSave);
+    panelRoot.addEventListener('change', scheduleAutoSave);
+  }
+  if (window.ResizeObserver) {
+    document.querySelectorAll('[data-preview-box]').forEach(function (box) {
+      var ro = new ResizeObserver(function () { scheduleAutoSave(); });
+      ro.observe(box);
+    });
+  }
+  document.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && String(e.key).toLowerCase() === 's') {
+      e.preventDefault();
+      persistHomePayload(collectHomePayload(), '\u2713 Saved in this browser');
+    }
+  }, true);
+
+  document.getElementById('designLibList').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-lib-action]');
+    if (!btn) return;
+    var action = btn.getAttribute('data-lib-action');
+    var id = btn.getAttribute('data-lib-id');
+    var lib = getDesignLibrary();
+    var item = lib.filter(function (x) { return String(x.id) === String(id); })[0];
+    if (!item || !item.payload) return;
+    if (action === 'delete') {
+      if (!confirm('Delete this design from your library?')) return;
+      setDesignLibrary(lib.filter(function (x) { return String(x.id) !== String(id); }));
+      renderDesignLibrary();
+      return;
+    }
+    if (action === 'load') {
+      hydrateEditorFromPayload(item.payload);
+      var t0 = document.getElementById('toast');
+      t0.textContent = '\u2713 Loaded into editor';
+      t0.classList.add('on');
+      setTimeout(function () { t0.classList.remove('on'); t0.textContent = '\u2713 Saved'; }, 2000);
+      return;
+    }
+    if (action === 'live') {
+      var merged = Object.assign({}, DEFAULTS, JSON.parse(JSON.stringify(item.payload)));
+      persistHomePayload(merged, '\u2713 Put live — refresh Full scroll 2');
+      hydrateEditorFromPayload(merged);
+    }
+  });
+
+  document.getElementById('btnSaveDesignLib').addEventListener('click', function () {
+    var nameInp = document.getElementById('designLibName');
+    var name = nameInp && nameInp.value ? nameInp.value.trim() : '';
+    if (!name) {
+      alert('Enter a name for this design (e.g. NHS commissioners).');
+      return;
+    }
+    var payload = JSON.parse(JSON.stringify(collectHomePayload()));
+    var lib = getDesignLibrary();
+    lib.unshift({
+      id: 'd-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9),
+      name: name,
+      savedAt: new Date().toISOString(),
+      payload: payload
+    });
+    setDesignLibrary(lib);
+    renderDesignLibrary();
+    if (nameInp) nameInp.value = '';
+    var t1 = document.getElementById('toast');
+    t1.textContent = '\u2713 Saved to library';
+    t1.classList.add('on');
+    setTimeout(function () { t1.classList.remove('on'); t1.textContent = '\u2713 Saved'; }, 2000);
+  });
+
+  renderDesignLibrary();
 })();
 </script>
 </body>

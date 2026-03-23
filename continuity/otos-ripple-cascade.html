@@ -236,8 +236,9 @@
       COUNTER_CENTRE_RADIUS:      20,
 
       // Single hub panel — money + narrative + detail lines (opaque; nothing draws over £)
-      HUB_PANEL_FILL:    'rgba(10, 8, 6, 0.96)',
-      HUB_PANEL_STROKE:  'rgba(193, 127, 36, 0.55)',
+      // Fully opaque — prevents freeze / narrator layers showing through
+      HUB_PANEL_FILL:    '#0a0806',
+      HUB_PANEL_STROKE:  'rgba(193, 127, 36, 0.75)',
       HUB_INNER_PAD_X:   26,
       HUB_INNER_PAD_Y:   22,
       HUB_SECTION_GAP:   14,
@@ -904,26 +905,50 @@
         scaled(CONFIG.COUNTER_CENTRE_LABEL_SIZE + 8) +
         scaled(CONFIG.COUNTER_CENTRE_VALUE_SIZE + 8) +
         scaled(CONFIG.COUNTER_CENTRE_SUB_SIZE);
+
+      const freezeActive = state.cinematicFreeze && state.freezeStartTime !== null;
+      let freezeH = 0;
+      let freezeContentW = 0;
+      if (freezeActive) {
+        freezeH = gap;
+        state.freezeLines.forEach((line, i) => {
+          const fs = `${line.style} ${scaled(line.size)}px 'Playfair Display', serif`;
+          ctx.font = fs;
+          freezeContentW = Math.max(freezeContentW, ctx.measureText(line.text).width);
+          freezeH += scaled(line.size) * 1.45;
+          if (i < state.freezeLines.length - 1) freezeH += scaled(6);
+        });
+      }
+
       const narrH = narrLines.length ? gap + narrLines.length * lhN : 0;
       const midH =
         mid1Lines.length || mid2Lines.length
           ? gap + mid1Lines.length * lhM1 + (mid2Lines.length ? scaled(6) + mid2Lines.length * lhM2 : 0)
           : 0;
       const extraH = extraLines.length ? gap + extraLines.length * lhE : 0;
-      const hasLower = narrLines.length || midH > 0 || extraLines.length;
+      const hasLower =
+        freezeActive || narrLines.length || midH > 0 || extraLines.length;
       const dividerH = hasLower ? scaled(10) : 0;
 
       const contentW = Math.max(
         valueW,
         labelW,
         subW,
+        freezeContentW,
         maxLineWidth(narrLines, `${CONFIG.NARRATOR_FONT_WEIGHT} ${scaled(CONFIG.NARRATOR_FONT_SIZE)}px 'Inter', sans-serif`),
         maxLineWidth(mid1Lines, mid1Font),
         maxLineWidth(mid2Lines, mid2Font),
         maxLineWidth(extraLines, extraFont)
       );
       const panelW = Math.min(maxPanelW, contentW + innerPadX * 2);
-      const panelH = innerPadY * 2 + counterBlockH + dividerH + narrH + midH + extraH;
+      const panelH =
+        innerPadY * 2 +
+        counterBlockH +
+        dividerH +
+        freezeH +
+        narrH +
+        midH +
+        extraH;
 
       const anchorY = r ? r.y + r.h * 0.44 : canvas.height * 0.5;
       let panelTop = anchorY - panelH / 2;
@@ -984,6 +1009,31 @@
         ctx.lineTo(panelX + panelW - innerPadX, ty);
         ctx.stroke();
         ty += scaled(10);
+      }
+
+      if (freezeActive) {
+        ty += gap;
+        state.freezeLines.forEach((line, i) => {
+          const lineH = scaled(line.size) * 1.45;
+          if (line.alpha >= 0.01) {
+            ctx.save();
+            ctx.globalAlpha = line.alpha * ga;
+            ctx.textAlign    = 'center';
+            ctx.textBaseline = 'top';
+            ctx.font         = `${line.style} ${scaled(line.size)}px 'Playfair Display', serif`;
+            ctx.fillStyle    = line.color;
+            if (i === 0 || i === 1) {
+              ctx.shadowBlur  = scaled(12);
+              ctx.shadowColor = i === 1 ? 'rgba(255,138,0,0.45)' : 'rgba(255,255,255,0.15)';
+            }
+            ctx.fillText(line.text, cx, ty);
+            ctx.shadowBlur  = 0;
+            ctx.shadowColor = 'transparent';
+            ctx.restore();
+          }
+          ty += lineH;
+          if (i < state.freezeLines.length - 1) ty += scaled(6);
+        });
       }
 
       const nAlpha = state.cinematicFreeze
@@ -1182,28 +1232,8 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.restore();
 
-      // Draw the three freeze text lines in the centre zone
-      const centreX    = canvas.width / 2;
-      const line1Y     = canvas.height * 0.36;
-      const lineSpacing = scaled(CONFIG.FREEZE_LINE1_SIZE) * 1.5;
-
-      state.freezeLines.forEach((line, i) => {
-        if (line.alpha < 0.01) return;
-        ctx.save();
-        ctx.globalAlpha  = line.alpha;
-        ctx.textAlign    = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.font         = `${line.style} ${scaled(line.size)}px 'Playfair Display', serif`;
-        ctx.fillStyle    = line.color;
-        if (i === 0 || i === 1) {
-          ctx.shadowBlur  = scaled(20);
-          ctx.shadowColor = i === 1 ? 'rgba(255,138,0,0.5)' : 'rgba(255,255,255,0.2)';
-        }
-        ctx.fillText(line.text, centreX, line1Y + (i * lineSpacing));
-        ctx.shadowBlur  = 0;
-        ctx.shadowColor = 'transparent';
-        ctx.restore();
-      });
+      // Freeze copy is drawn inside drawHubPanel only — never on the canvas behind the hub
+      // (avoids “ghost” bleed-through and keeps one narrative surface).
 
       // End freeze after FREEZE_DURATION — Layer 3 schedule (origins draw next frame; avoids painting over freeze)
       if (freezeElapsed >= CONFIG.FREEZE_DURATION) {

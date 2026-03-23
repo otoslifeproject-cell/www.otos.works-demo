@@ -29,7 +29,7 @@ const screens = [
   { file: 'mobile-onboarding-checkin.html', name: '1-participant-checkin', ...mobileView },
   { file: 'mobile-onboarding-nextstep.html', name: '1-participant-nextstep', ...mobileView },
   { file: 'mobile-onboarding-done.html', name: '1-participant-done', ...mobileView },
-  // Wireframe 2 — Helen / bedside
+  // Wireframe 2 — Bedside / alcohol liaison
   { file: 'mobile-helen-scan.html', name: '2-helen-scan', ...mobileView },
   { file: 'mobile-helen-participant.html', name: '2-helen-participant', ...mobileView },
   { file: 'mobile-helen-record.html', name: '2-helen-record', ...mobileView },

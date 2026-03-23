@@ -7,12 +7,12 @@
 <meta name="description" content="OTOS Continuity™ — single-page pilot narrative: how it works, demos, infrastructure, reporting, and references.">
 <meta name="theme-color" content="#0a0806">
 <!-- Deploy / cache check: if this rev doesn’t match GitHub, the host is serving a stale file -->
-<meta name="otos-scroll2-rev" content="20260319-live-15">
+<meta name="otos-scroll2-rev" content="20260324-brain-kicker-space">
 <meta http-equiv="Cache-Control" content="max-age=0, must-revalidate">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="otos-shared.css?v=20260319-live-15">
+<link rel="stylesheet" href="otos-shared.css?v=20260324-brain-kicker-space">
 <style>
 /* full-scroll2.html — OTOS Continuity single-page; long-form (no fixed top nav). How-it-works is a static section (#fs-how). */
 :root {
@@ -106,6 +106,14 @@ a { color: var(--amber); }
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+/* Dark-band headings: warm amber → cream (presentation pass) */
+.text-gradient-amber-band {
+  background: linear-gradient(135deg, #C8922A 0%, #F0C060 50%, #FAF7F2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
 
 /* No fixed top nav on this page — main starts at top of viewport */
 .fs-main { padding-top: 0; position: relative; z-index: 1; }
@@ -127,6 +135,55 @@ a { color: var(--amber); }
 }
 .fs-sec-label--dark { color: var(--fs-label-ondark); }
 .fs-sec-label--light { color: var(--fs-label-onlight); }
+/* Corner section mark: brain ~ width of former “HOME” label, consistent on every band */
+.fs-sec-label.fs-sec-label--brain {
+  display: block;
+  width: clamp(44px, 5.2vw, 56px);
+  height: clamp(44px, 5.2vw, 56px);
+  padding: 0;
+  font-size: 0;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 0;
+  overflow: hidden;
+  color: transparent;
+  background: url('brain.png') center / contain no-repeat;
+  opacity: 0.9;
+}
+.fs-sec-label.fs-sec-label--brain.fs-sec-label--dark {
+  opacity: 0.92;
+  filter: sepia(0.38) saturate(1.2) brightness(1.12);
+}
+.fs-sec-label.fs-sec-label--brain.fs-sec-label--light {
+  opacity: 0.62;
+  filter: sepia(0.5) saturate(0.85) brightness(0.42);
+}
+/* Reporting / Founder: brain inline before kicker (same visual weight) */
+.fs-kicker-with-brain {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(8px, 1.2vw, 12px);
+  flex-wrap: nowrap;
+  margin-bottom: clamp(0.85rem, 2vh, 1.25rem);
+}
+.fs-kicker-with-brain .fs-kicker {
+  margin-bottom: 0;
+}
+.fs-kicker-with-brain .fs-sec-brain-mark {
+  display: block;
+  width: clamp(44px, 5.2vw, 56px);
+  height: clamp(44px, 5.2vw, 56px);
+  flex-shrink: 0;
+  background: url('brain.png') center / contain no-repeat;
+}
+.fs-kicker-with-brain--ondark .fs-sec-brain-mark {
+  opacity: 0.9;
+  filter: sepia(0.4) saturate(1.15) brightness(1.15);
+}
+.fs-kicker-with-brain--onmid .fs-sec-brain-mark {
+  opacity: 0.58;
+  filter: sepia(0.48) saturate(0.9) brightness(0.48);
+}
 .fs-sec-tpl-cream {
   position: relative;
   background: var(--fs-cream-solid);
@@ -269,19 +326,24 @@ a { color: var(--amber); }
   box-sizing: border-box;
 }
 .fs-how-layout__intro {
-  text-align: center;
+  text-align: left;
   padding-top: calc(var(--fs-label-size) + var(--fs-heading-mt) + 8px);
-  max-width: min(48rem, 100%);
-  margin: 0 auto clamp(0.25rem, 2vw, 0.5rem);
+  padding-left: 40px;
+  padding-right: clamp(16px, 3vw, 48px);
+  max-width: none;
+  margin: 0 0 clamp(0.25rem, 2vw, 0.5rem);
+  box-sizing: border-box;
 }
 .fs-how-layout__intro .fs-how-static__h2 {
-  margin-left: auto;
+  margin-left: 0;
   margin-right: auto;
+  max-width: 680px;
 }
 .fs-how-layout__intro .fs-how-static__sub {
-  max-width: 42rem;
-  margin-left: auto;
+  max-width: 680px;
+  margin-left: 0;
   margin-right: auto;
+  text-align: left;
   font-size: clamp(1rem, 1.35vw, 1.12rem);
   line-height: 1.55;
   color: rgba(58, 48, 38, 0.78);
@@ -444,6 +506,43 @@ a { color: var(--amber); }
   color: rgba(90, 78, 64, 0.78);
   text-align: left;
   padding: 0 0.15rem;
+}
+/* How: small warm insert (distinct from SUN multi-device hero elsewhere) */
+.fs-how-visual--insert {
+  text-align: right;
+}
+.fs-how-visual--insert .fs-how-visual__frame--insert {
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(193, 127, 36, 0.28);
+  box-shadow:
+    0 14px 40px rgba(26, 20, 16, 0.12),
+    0 0 0 1px rgba(255, 252, 248, 0.6) inset;
+  background: linear-gradient(155deg, rgba(255, 236, 210, 0.42) 0%, rgba(248, 241, 230, 0.96) 100%);
+}
+.fs-how-visual--insert .fs-how-visual__frame--insert img {
+  width: 280px;
+  height: 200px;
+  max-width: 100%;
+  object-fit: cover;
+  display: block;
+  filter: sepia(0.22) saturate(1.08) brightness(1.03) contrast(0.98);
+}
+.fs-how-visual--insert figcaption {
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: 0;
+}
+@media (max-width: 1023px) {
+  .fs-how-visual--insert { text-align: left; }
+  .fs-how-visual--insert .fs-how-visual__frame--insert,
+  .fs-how-visual--insert figcaption {
+    margin-left: 0;
+    margin-right: auto;
+  }
 }
 .fs-how-foot {
   margin: clamp(1.75rem, 4vw, 2.5rem) auto 0;
@@ -1317,7 +1416,7 @@ a { color: var(--amber); }
     /* Safe area: notches / home indicator */
     padding-bottom: max(clamp(1rem, 3vh, 1.75rem), calc(env(safe-area-inset-bottom, 0px) + 6px));
   }
-  /* Corner “Home” label + CM kicker both sit top-left — move label right on narrow viewports */
+  /* Corner brain mark + CM kicker — move mark right on narrow viewports */
   .fs-hero-band .fs-sec-label {
     left: auto;
     right: clamp(14px, 4vw, 22px);
@@ -1882,7 +1981,8 @@ a { color: var(--amber); }
   max-width: min(1100px, 94vw);
   margin: 0 auto;
   padding: 0 clamp(12px, 3vw, 24px) clamp(0.65rem, 1.8vw, 1.1rem);
-  text-align: center;
+  padding-left: max(40px, clamp(12px, 3vw, 24px));
+  text-align: left;
 }
 .fs-demos-intro__strap {
   font-family: var(--font-h);
@@ -1891,7 +1991,8 @@ a { color: var(--amber); }
   font-size: clamp(1.15rem, 2.4vw, 1.75rem);
   line-height: 1.35;
   margin: 0;
-  color: var(--text);
+  max-width: 680px;
+  color: #2C1A0E;
   letter-spacing: -0.02em;
 }
 .fs-demos-stack {
@@ -2100,19 +2201,28 @@ a { color: var(--amber); }
 
 /* How slides: compact lists */
 .fs-slide--how ul { list-style: none; padding: 0; margin: 0.5rem 0 0; font-size: 0.88rem; color: var(--muted); }
-.fs-slide--how li { padding: 0.2rem 0 0.2rem 1rem; position: relative; }
-.fs-slide--how li::before { content: '→'; position: absolute; left: 0; color: var(--teal); font-size: 0.8rem; }
+.fs-slide--how li { padding: 0.2rem 0 0.2rem 1.35rem; position: relative; }
+.fs-slide--how li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.38rem;
+  width: 14px;
+  height: 14px;
+  background: url('brain.png') center / contain no-repeat;
+  opacity: 0.75;
+}
 
 .fs-controls-strip {
   font-family: var(--font-h);
   font-size: clamp(1.45rem, 2.8vw, 2.3rem);
   font-weight: 600;
   font-style: italic;
-  text-align: center;
-  color: var(--amber);
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem 1.5rem;
+  text-align: left;
+  color: #2C1A0E;
+  max-width: 680px;
+  margin: 0 auto 0 40px;
+  padding: 2.5rem 1.5rem 1.5rem 0;
 }
 .fs-control-grid {
   display: grid;
@@ -2149,6 +2259,12 @@ a { color: var(--amber); }
   mix-blend-mode: multiply;
   pointer-events: none;
 }
+.fs-control-card__img.fs-control-card__img--dashboard {
+  filter: sepia(0.35) brightness(0.8);
+}
+.fs-control-card__img.fs-control-card__img--dashboard::after {
+  background: rgba(44, 26, 14, 0.45);
+}
 .fs-control-card__body {
   padding: 1rem 1.15rem 1.2rem;
   text-align: left;
@@ -2157,9 +2273,18 @@ a { color: var(--amber); }
 .fs-control-card h3 { font-family: var(--font-h); font-size: clamp(0.95rem, 2vw, 1.05rem); margin: 0 0 8px; line-height: 1.2; }
 .fs-control-card p { font-size: 12px; color: var(--muted); margin: 0 0 8px; line-height: 1.5; }
 .fs-control-card ul { list-style: none; padding: 0; margin: 0; text-align: left; width: 100%; }
-.fs-control-card li { font-size: 11px; color: var(--muted); padding: 4px 0 4px 14px; position: relative; border-top: 1px solid rgba(193,127,36,0.08); }
+.fs-control-card li { font-size: 11px; color: var(--muted); padding: 4px 0 4px 22px; position: relative; border-top: 1px solid rgba(193,127,36,0.08); }
 .fs-control-card li:first-child { border-top: none; }
-.fs-control-card li::before { content: '→'; position: absolute; left: 0; color: var(--teal); font-size: 9px; top: 5px; }
+.fs-control-card li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 14px;
+  height: 14px;
+  background: url('brain.png') center / contain no-repeat;
+  opacity: 0.72;
+}
 
 /* Partners — editorial cards + SUN visual */
 .fs-partner-showcase {
@@ -2326,10 +2451,29 @@ a { color: var(--amber); }
 }
 
 /* Stats dark */
-.fs-stats-dark { text-align: center; padding: clamp(1.75rem, 4vw, 2.85rem) 1.5rem; }
+.fs-stats-dark {
+  text-align: left;
+  padding: clamp(1.75rem, 4vw, 2.85rem) clamp(16px, 3vw, 28px) clamp(1.75rem, 4vw, 2.85rem) 40px;
+}
 .fs-stats-dark .fs-over { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); }
-.fs-stats-dark h2 { font-family: var(--font-h); font-size: clamp(1.5rem, 3.5vw, 2.5rem); margin: 0.75rem auto; max-width: 20ch; color: #f5f0e8; }
-.fs-stats-dark > p { max-width: 52ch; margin: 0 auto 2rem; color: rgba(245,240,232,0.65); font-size: 1rem; }
+.fs-stats-dark h2 {
+  font-family: var(--font-h);
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+  margin: 0.75rem 0;
+  max-width: 680px;
+  margin-left: 0;
+  margin-right: auto;
+  line-height: 1.2;
+}
+.fs-stats-dark > p {
+  max-width: 680px;
+  margin: 0 0 1.25rem;
+  margin-left: 0;
+  margin-right: auto;
+  color: rgba(245,240,232,0.65);
+  font-size: 1rem;
+  text-align: left;
+}
 .fs-stat-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2561,6 +2705,100 @@ a { color: var(--amber); }
 @media (max-width: 720px) { .fs-report-intro-grid { grid-template-columns: 1fr; } }
 .fs-quote--left cite { display: block; font-family: var(--font-b); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--amber); font-style: normal; margin-top: 8px; }
 
+/* —— Presentation pass: authoritative left stacks (Reporting / Founder remain reference) —— */
+#fs-infra > .fs-center {
+  text-align: left !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 40px;
+  padding-right: 16px;
+  box-sizing: border-box;
+}
+#fs-infra > .fs-center .fs-h2,
+#fs-infra > .fs-center > .fs-reveal p {
+  max-width: 680px !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  text-align: left !important;
+}
+#fs-architecture .fs-center {
+  text-align: left !important;
+  margin-left: 40px !important;
+  margin-right: auto !important;
+  padding-left: 0;
+  padding-right: 16px;
+  box-sizing: border-box;
+}
+#fs-architecture .fs-mermaid-lede {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  max-width: 680px !important;
+  text-align: left !important;
+  color: #2C1A0E;
+}
+#fs-architecture .fs-center > p[style*='flex-wrap'] {
+  justify-content: flex-start !important;
+}
+#fs-refs .fs-center {
+  text-align: left !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 40px;
+  padding-right: 40px;
+  box-sizing: border-box;
+}
+#fs-refs .fs-refs-cred-list,
+#fs-refs .fs-center > .fs-reveal,
+#fs-refs .fs-center > p:not(:last-child) {
+  max-width: 680px;
+  margin-left: 0;
+  margin-right: auto;
+}
+#fs-refs .fs-strapline-xl {
+  text-align: left !important;
+  display: block;
+}
+.fs-refs-cred-list {
+  list-style: none;
+  margin: 0 0 1.75rem;
+  padding: 0;
+  max-width: 36rem;
+  text-align: left;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+.fs-refs-cred-list li {
+  position: relative;
+  padding-left: 1.35rem;
+  margin-bottom: 0.65rem;
+}
+.fs-refs-cred-list li:last-child { margin-bottom: 0; }
+.fs-refs-cred-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.32rem;
+  width: 14px;
+  height: 14px;
+  background: url('brain.png') center / contain no-repeat;
+  opacity: 0.72;
+}
+#fs-controls .fs-statement.fs-statement--center {
+  text-align: left !important;
+  margin: 2rem 0 0 40px !important;
+  margin-right: auto !important;
+  max-width: 680px;
+}
+section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and continuity"] .fs-statement.fs-statement--center {
+  text-align: left !important;
+  margin-left: 40px;
+  margin-right: auto;
+  max-width: 680px;
+}
+
 /* —— No scroll-driven text motion (static copy; avoids gradient/clip “blue box” glitches during transitions) —— */
 .fs-reveal,
 .fs-reveal--fade,
@@ -2615,7 +2853,7 @@ a { color: var(--amber); }
 
 <!-- HOME — Full scroll 2: Content Manager drives kicker, optional opening quote, headline, body, stats, CTA (no hardcoded hero copy). -->
 <section id="fs-home" class="fs-band fs-band--image fs-hero-band" data-fs-cm-hero data-fs-hero-image-default="images/Nurse and patient discussing treatment information.png" style="background-image:url('images/Nurse%20and%20patient%20discussing%20treatment%20information.png');">
-  <span class="fs-sec-label fs-sec-label--dark" aria-hidden="true">Home</span>
+  <span class="fs-sec-label fs-sec-label--dark fs-sec-label--brain" role="img" aria-label="Home"></span>
   <div class="fs-shade" aria-hidden="true"></div>
   <div class="fs-inner" data-fs-cm-inner>
     <span class="fs-kicker fs-hero-band__kicker" data-fs-cm-kicker hidden></span>
@@ -2660,7 +2898,7 @@ a { color: var(--amber); }
 
 <!-- HOW IT WORKS — diagram timeline + product visual (static; presentation-safe) -->
 <section id="fs-how" class="fs-sec-tpl-cream fs-how-static fs-how-static--premium" aria-labelledby="fs-how-heading">
-  <span class="fs-sec-label fs-sec-label--light">How it works</span>
+  <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="How it works"></span>
   <div class="fs-how-layout">
     <header class="fs-how-layout__intro">
       <h2 id="fs-how-heading" class="fs-how-static__h2">How OTOS works &mdash; in four steps anyone can follow.</h2>
@@ -2709,16 +2947,16 @@ a { color: var(--amber); }
           </div>
         </li>
       </ol>
-      <figure class="fs-how-visual">
-        <div class="fs-how-visual__frame">
-          <img src="images/sun-dashboard-devices.png" width="1536" height="1024" loading="lazy" decoding="async" alt="OTOS dashboards on phone, tablet, and desktop: the continuity signals teams see in the pilot." />
+      <figure class="fs-how-visual fs-how-visual--insert">
+        <div class="fs-how-visual__frame fs-how-visual__frame--insert">
+          <img src="images/Morning reflections in a cozy room.png" width="280" height="200" loading="lazy" decoding="async" alt="Warm morning light: a calm human moment between touchpoints &mdash; continuity is emotional, not only clinical." />
         </div>
         <figcaption><strong>Pilot reality, not a slide.</strong> Co-produced with SUN Network &mdash; the same thread and reporting ideas you&rsquo;ll walk through in the demo routes below.</figcaption>
       </figure>
     </div>
     <footer class="fs-how-foot">
       <a href="#fs-demos">Demo routes with real scenarios &amp; photos &rarr;</a>
-      <a href="wireframes/flow-overview.html">Step-by-step wireframes (every screen) &rarr;</a>
+      <a href="#" onclick="return false;">Step-by-step wireframes (every screen) &rarr;</a>
     </footer>
   </div>
 </section>
@@ -2743,14 +2981,14 @@ a { color: var(--amber); }
 
 <!-- GUIDED DEMOS — stacked routes (visible without scroll-pin) -->
 <section id="fs-demos" class="fs-demos-section" aria-label="Guided demos — four routes">
-  <span class="fs-sec-label fs-sec-label--light">Demos</span>
+  <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="Demos"></span>
   <header class="fs-demos-intro">
-    <p class="fs-demos-intro__strap">Four routes. Four scenarios &mdash; bedside, community hub, VCSE therapy, and the CGL&ndash;CPFT dual pathway. Each shows what OTOS looks like in practice.</p>
+    <p class="fs-demos-intro__strap">Four routes. Four scenarios &mdash; bedside, community hub, GP&ndash;WorkWell (Joy / CPSL Mind), and the CGL&ndash;CPFT dual pathway. Each shows what OTOS looks like in practice.</p>
   </header>
   <div class="fs-demos-stack">
     <article class="fs-demo-split" aria-label="Route A — Addenbrooke’s discharge">
       <div class="fs-demo-split__media">
-        <img class="fs-demo-split__img" src="images/NHS nurse assists patient with OTOS tool.png" alt="Ward nurse at Addenbrooke's with patient">
+        <img class="fs-demo-split__img" src="images/Waiting for consultation in the corridor.png" alt="NHS corridor: someone waiting for consultation — warm, everyday continuity context">
         <div class="fs-demo-split__stats" aria-label="Route A highlights">
           <div class="fs-demo-stat"><span class="fs-demo-stat__n">10s</span><span class="fs-demo-stat__l">At bedside</span></div>
           <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Thread before discharge</span></div>
@@ -2761,8 +2999,8 @@ a { color: var(--amber); }
         <div class="fs-route">ROUTE A &mdash; ADDENBROOKE&rsquo;S DISCHARGE</div>
         <p class="fs-demo-strap--head text-gradient-soft">When someone is at their lowest &mdash; OTOS is already there.</p>
         <p class="fs-demo-strap--sub">Frontline staff log a touchpoint in seconds. The system does the rest.</p>
-        <h3>Helen, ward nurse</h3>
-        <p style="color:var(--muted); font-size:clamp(13px,1.35vw,14px); line-height:1.6; margin:0 0 1rem;">A patient is being discharged from Addenbrooke&rsquo;s after a crisis admission. Helen uses OTOS to create a continuity thread before the patient leaves the ward.</p>
+        <h3>CPFT on-site alcohol liaison nurse (Addenbrooke&rsquo;s)</h3>
+        <p style="color:var(--muted); font-size:clamp(13px,1.35vw,14px); line-height:1.6; margin:0 0 1rem;">Many patients aren&rsquo;t already known to alcohol services: they were admitted for something else, then went into withdrawal and needed a detox while they stayed on the ward. The CPFT alcohol liaison nurse on-site visits after that detox trigger to talk about drinking and signpost next steps &mdash; including people in the &ldquo;middle, no route&rdquo; gap with dual diagnosis when standard options have run out. With OTOS, they log a continuity touchpoint in seconds before the patient leaves.</p>
         <div class="fs-demo-pills" aria-label="Bedside demo highlights">
           <span class="fs-demo-pill"><span class="text-gradient-soft">Seconds at the bedside</span></span>
           <span class="fs-demo-pill"><span class="text-gradient-soft">Touchpoint logged</span></span>
@@ -2777,12 +3015,12 @@ a { color: var(--amber); }
           <li><span class="text-gradient-soft">No EPR write-back</span></li>
           <li><span class="text-gradient-soft">No extra paperwork</span></li>
         </ul>
-        <a class="fs-demo-wf" href="wireframes/flow-overview.html#flow-helen">See step-by-step →</a>
+        <a class="fs-demo-wf" href="#" onclick="return false;">See step-by-step →</a>
       </div>
     </article>
     <article class="fs-demo-split fs-demo-split--reverse" aria-label="Route B — Community referral">
       <div class="fs-demo-split__media">
-        <img class="fs-demo-split__img" src="images/Woman showing OTOS app at community centre.png" alt="Martina, community keyworker with OTOS">
+        <img class="fs-demo-split__img" src="images/Community%20conversation%20in%20a%20circle.png" alt="Martina at a community hub: two people in conversation around a circle">
         <div class="fs-demo-split__stats" aria-label="Route B highlights">
           <div class="fs-demo-stat"><span class="fs-demo-stat__n">10s</span><span class="fs-demo-stat__l">Touchpoint log</span></div>
           <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Thread continued</span></div>
@@ -2809,41 +3047,42 @@ a { color: var(--amber); }
           <li><span class="text-gradient-soft">Service manager alerted to pattern</span></li>
           <li><span class="text-gradient-soft">Nothing changes in Martina&rsquo;s workflow</span></li>
         </ul>
-        <a class="fs-demo-wf" href="wireframes/flow-overview.html#flow-coordinator">See step-by-step →</a>
+        <a class="fs-demo-wf" href="#" onclick="return false;">See step-by-step →</a>
       </div>
     </article>
-    <article class="fs-demo-split" aria-label="Route C — Community therapy (WorkWell / VCSE)">
+    <article class="fs-demo-split" aria-label="Route C — GP referral to WorkWell Cambridge City (Joy, CPSL Mind)">
       <div class="fs-demo-split__media">
-        <img class="fs-demo-split__img" src="images/Therapist%20reviewing%20OTOS%20app%20progress.png" alt="Therapist reviewing OTOS continuity signals on a smartphone">
+        <img class="fs-demo-split__img" src="images/A breakthrough moment in therapy.png" alt="Counselling session: a breakthrough moment &mdash; distinct from other demo routes on this page">
         <div class="fs-demo-split__stats" aria-label="Route C highlights">
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">Lite</span><span class="fs-demo-stat__l">Partner tier</span></div>
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Thread visible</span></div>
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">Service records</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">GP</span><span class="fs-demo-stat__l">Fit-note route</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">Joy</span><span class="fs-demo-stat__l">→ WorkWell</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">Merged records</span></div>
         </div>
       </div>
       <div class="fs-demo-split__copy">
-        <div class="fs-route">ROUTE C &mdash; COMMUNITY THERAPY (WORKWELL / VCSE-FUNDED)</div>
-        <p class="fs-demo-strap--head text-gradient-soft">Follow-through without opening another service&rsquo;s record.</p>
-        <p class="fs-demo-strap--sub">Anonymous continuity signal only &mdash; clinical decisions stay with each team.</p>
-        <h3>Priya, Therapist (WorkWell / VCSE partner)</h3>
-        <p style="color:var(--muted); font-size:clamp(13px,1.35vw,14px); line-height:1.6; margin:0 0 1rem;">Priya is supporting a client through a WorkWell-funded therapy route after a GP signpost. She suspects untreated ADHD is driving repeated relapse and missed appointments. She cannot see other services&rsquo; records, and does not need to. OTOS shows whether the next steps happened and flags when the client drifts.</p>
+        <div class="fs-route">ROUTE C &mdash; GP &rarr; WORKWELL (JOY · CPSL MIND)</div>
+        <p class="fs-demo-strap--head text-gradient-soft">Official referral, informal handoffs &mdash; continuity still has to hold.</p>
+        <p class="fs-demo-strap--sub">Signed off on a fit note with mental-health and addiction needs: primary care signposts into <strong>WorkWell Cambridge City</strong> via <strong>Joy</strong>; <strong>CPSL Mind</strong> Work and Health Coaches help people access the right mix of support (including recovery coaching and connections to counselling and substance-misuse services). OTOS carries <strong>anonymous signals</strong> when blocks of support end but the thread doesn&rsquo;t.</p>
+        <h3>Priya, counsellor (WorkWell pathway)</h3>
+        <p style="color:var(--muted); font-size:clamp(13px,1.35vw,14px); line-height:1.6; margin:0 0 1rem;">Priya is working with someone who reached WorkWell after a <strong>GP-led signpost</strong> while signed off work &mdash; co-occurring <strong>addiction</strong>, <strong>depression</strong>, and <strong>anxiety</strong> on the fit note. They accessed WorkWell through <strong>Joy</strong>; they chose a <strong>block of counselling</strong> (recovery coaching was also available). When counselling ends, the next steps with primary care and onward services can go quiet &mdash; even when risk hasn&rsquo;t. Priya cannot see other organisations&rsquo; records, and does not need to. OTOS shows whether agreed next steps happened and flags drift, as <strong>signals only</strong>.</p>
+        <p style="color:var(--muted); font-size:clamp(12px,1.2vw,13px); line-height:1.55; margin:0 0 1rem; font-style:italic;"><strong style="font-style:normal;color:var(--text);">Public programme note:</strong> WorkWell Cambridge City is described by local listings as a <strong>free service delivered by CPSL Mind</strong>, with referral via <strong>Joy</strong> and support from Work and Health Coaches. Pilot copy is illustrative; exact access criteria sit with the programme.</p>
         <p style="color:var(--muted); font-size:clamp(12px,1.2vw,13px); line-height:1.55; margin:0 0 1rem; font-style:italic;"><strong style="font-style:normal;color:var(--text);">Tier 3 &mdash; Partner Lite:</strong> read-only continuity view, raise structured flag, request receipt &mdash; no records, no diagnosis, no clinical actions in OTOS.</p>
-        <div class="fs-demo-pills" aria-label="Community therapy demo highlights">
+        <div class="fs-demo-pills" aria-label="WorkWell pathway demo highlights">
+          <span class="fs-demo-pill"><span class="text-gradient-soft">GP / fit-note context</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Joy → WorkWell entry</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Coach + counselling routes</span></span>
           <span class="fs-demo-pill"><span class="text-gradient-soft">Anonymous signal only</span></span>
-          <span class="fs-demo-pill"><span class="text-gradient-soft">No cross-service records</span></span>
-          <span class="fs-demo-pill"><span class="text-gradient-soft">Follow-through visible</span></span>
-          <span class="fs-demo-pill"><span class="text-gradient-soft">Drift flagged for review</span></span>
-          <span class="fs-demo-pill"><span class="text-gradient-soft">Referral receipt confirmed</span></span>
-          <span class="fs-demo-pill"><span class="text-gradient-soft">Decisions stay with the clinical team</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Post-block drift visible</span></span>
+          <span class="fs-demo-pill"><span class="text-gradient-soft">Decisions stay with clinicians</span></span>
         </div>
         <ul class="fs-demo-points">
           <li><span class="text-gradient-soft"><strong>Access: Partner Lite</strong> (read-only + signal raise)</span></li>
           <li><span class="text-gradient-soft"><strong>QR touchpoint link</strong> to start the thread (client-led consent).</span></li>
           <li><span class="text-gradient-soft"><strong>Continuity status only</strong> &mdash; attended / missed / drift / next step due. No cross-service notes or clinical content.</span></li>
-          <li><span class="text-gradient-soft"><strong>Raise a concern / suspected ADHD flag</strong> &mdash; structured, non-diagnostic tag to the agreed reviewer (e.g. CGL / CPFT / pilot ops), not a GP inbox.</span></li>
-          <li><span class="text-gradient-soft"><strong>Request a handoff receipt</strong> when the client is referred onwards (e.g. CGL, ADHD assessment route, recovery support).</span></li>
+          <li><span class="text-gradient-soft"><strong>Raise a structured concern</strong> (e.g. safeguarding, missed handoff, co-occurring risk) &mdash; non-diagnostic tag to the <strong>agreed reviewer</strong> (pilot ops / CPFT / addiction route), not a generic GP inbox.</span></li>
+          <li><span class="text-gradient-soft"><strong>Request a handoff receipt</strong> when someone is referred onwards (e.g. shared-care discussion, addiction service, talking therapies, ADHD pathway).</span></li>
         </ul>
-        <a class="fs-demo-wf" href="wireframes/flow-overview.html#flow-coordinator">See therapist flow →</a>
+        <a class="fs-demo-wf" href="#" onclick="return false;">See therapist flow →</a>
       </div>
     </article>
     <article class="fs-demo-split fs-demo-split--reverse" aria-label="Route D — CGL and CPFT dual pathway">
@@ -2876,18 +3115,18 @@ a { color: var(--amber); }
           <li><span class="text-gradient-soft"><strong>Escalation</strong> stays human-gated; diagnostic claims stay with the owning clinical team.</span></li>
         </ul>
         <div style="display:flex;flex-wrap:wrap;gap:0.65rem 1.25rem;margin-top:0.25rem;align-items:center;">
-          <a class="fs-demo-wf" href="reporting.html#reporting-cgl">CGL pathway dashboard (fixture) →</a>
-          <a class="fs-demo-wf" href="reporting.html#reporting-cpft">CPFT pathway dashboard (fixture) →</a>
+          <a class="fs-demo-wf" href="#" onclick="return false;">CGL pathway dashboard (fixture) →</a>
+          <a class="fs-demo-wf" href="#" onclick="return false;">CPFT pathway dashboard (fixture) →</a>
         </div>
-        <p style="margin:0.85rem 0 0;font-size:clamp(12px,1.15vw,13px);color:var(--muted);line-height:1.5;"><a href="reporting.html#dual-silo-dashboards" style="color:var(--amber);font-weight:600;">Overview: dual-silo fixtures on reporting →</a>
-        &nbsp;&middot;&nbsp;<a href="wireframes/desktop-coordinator-dashboard.html" style="color:var(--amber);font-weight:600;">Coordinator dashboard wireframe →</a></p>
+        <p style="margin:0.85rem 0 0;font-size:clamp(12px,1.15vw,13px);color:var(--muted);line-height:1.5;"><a href="#" onclick="return false;" style="color:var(--amber);font-weight:600;">Overview: dual-silo fixtures on reporting →</a>
+        &nbsp;&middot;&nbsp;<a href="#" onclick="return false;" style="color:var(--amber);font-weight:600;">Coordinator dashboard wireframe →</a></p>
       </div>
     </article>
   </div>
 </section>
 
 <div class="fs-split">
-  <div class="fs-split__img" style="background-image:url('images/Woman showing OTOS app at community centre.png');" role="img" aria-label="Community keyworker with OTOS"></div>
+  <div class="fs-split__img" style="background-image:url('images/Hesitant%20arrival%20at%20the%20community%20centre.png');" role="img" aria-label="Someone arriving at a community centre — hesitant, human, at the front door"></div>
   <div class="fs-split__body">
     <span class="fs-brain-inline fs-brain-inline--tr" aria-hidden="true"></span>
     <div class="fs-reveal" data-fs-reveal>
@@ -2895,16 +3134,12 @@ a { color: var(--amber); }
       <h2 class="fs-strapline-xl text-gradient-soft">No wrong door. No dead end.</h2>
       <p class="fs-strapline-sub">Whoever they meet first can register the thread in seconds &mdash; name optional, continuity not.</p>
     </div>
-    <div class="fs-statement fs-statement--left fs-statement--wide fs-statement--fade fs-statement--pullquote" data-fs-statement style="margin-top:1.75rem;">
-      <p class="fs-statement__line text-gradient-soft">The support existed. None of it was connected.</p>
-      <p class="fs-statement__line fs-statement__line--cite">Continuity framing</p>
-    </div>
   </div>
 </div>
 
 <!-- INFRASTRUCTURE -->
 <section id="fs-infra" class="fs-band fs-band--cream">
-  <span class="fs-sec-label fs-sec-label--light">Infrastructure</span>
+  <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="Infrastructure"></span>
   <span class="fs-brain-inline fs-brain-inline--tr" aria-hidden="true"></span>
   <div class="fs-center">
     <span class="fs-kicker">Infrastructure Partners</span>
@@ -2988,10 +3223,10 @@ a { color: var(--amber); }
 
 <section class="fs-band fs-band--dark fs-stats-dark" aria-label="Why continuity visibility matters">
   <span class="fs-over">Signals, not noise</span>
-  <h2>See where journeys stall, where drop-off happens, where continuity is working.</h2>
+  <h2 class="text-gradient-amber-band">See where journeys stall, where drop-off happens, where continuity is working.</h2>
   <p>The cost of drift is measured in years &mdash; not in meetings. OTOS surfaces signals so your teams can see the shape of a pathway &mdash; where it bends and where it breaks. Your teams still make every decision.</p>
   <p style="margin-top:1.5rem; font-family:var(--font-h); font-style:italic; font-size:clamp(1.05rem,2vw,1.25rem); color:rgba(245,240,232,0.88); max-width:40rem;">All the support already exists. It&rsquo;s never been connected like this.</p>
-  <p style="margin-top:2rem;"><a href="otos-ripple-effect-premium/otos-ripple-effect-premium.html" style="color:#f5f0e8; font-weight:600;">Deeper economics &amp; ripple view (off this page) →</a><br><a href="otos-ripple-cascade.html" style="color:#f5f0e8; font-weight:600; display:inline-block; margin-top:0.75rem;">Ripple cascade animation →</a></p>
+  <p style="margin-top:2rem;"><a href="#" onclick="return false;" style="color:#f5f0e8; font-weight:600;">Deeper economics &amp; ripple view (off this page) →</a><br><a href="otos-ripple-cascade.html" style="color:#f5f0e8; font-weight:600; display:inline-block; margin-top:0.75rem;">Ripple cascade animation →</a></p>
 </section>
 
 <section class="fs-band fs-band--mid fs-band--brain-spacer" role="presentation" aria-hidden="true"></section>
@@ -3000,39 +3235,38 @@ a { color: var(--amber); }
   <div class="fs-shade"></div>
   <div class="fs-inner fs-inner--float" style="margin-left:clamp(16px,5vw,56px);">
     <span class="fs-kicker">Continuity layer</span>
-    <h2 class="fs-h2" style="color:#f5f0e8;">The silent layer that connects every service.</h2>
+    <h2 class="fs-h2 text-gradient-amber-band">The silent layer that connects every service.</h2>
     <p style="color:rgba(245,240,232,0.86); margin:0 0 1rem; max-width:42ch;">Continuity-layer framing only: tokenised touchpoints and signals. No EPR write-back. No diagnostic claims. Human decisions only.</p>
     <p style="margin:0; display:flex; flex-wrap:wrap; gap:0.65rem 1.1rem; align-items:center;">
       <a href="#fs-architecture" style="display:inline-block; font-weight:600; color:var(--amber);">Architecture teaser ↓</a>
-      <a href="architecture-map.html" style="display:inline-block; font-weight:600; color:rgba(245,240,232,0.92); text-decoration:underline; text-underline-offset:3px;">Full map →</a>
+      <a href="#" onclick="return false;" style="display:inline-block; font-weight:600; color:rgba(245,240,232,0.92); text-decoration:underline; text-underline-offset:3px;">Full map →</a>
     </p>
   </div>
 </section>
 
 <section id="fs-architecture" class="fs-band fs-band--cream fs-architecture-section" aria-labelledby="fs-architecture-heading">
-  <span class="fs-sec-label fs-sec-label--light">Map</span>
+  <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="Map"></span>
   <span class="fs-brain-inline fs-brain-inline--tr" aria-hidden="true"></span>
   <div class="fs-center" style="max-width:var(--otos-container-max); margin:0 auto;">
     <span class="fs-kicker">Cambridge pilot</span>
     <h2 id="fs-architecture-heading" class="fs-h2 text-gradient-soft">Architecture map</h2>
     <p class="fs-mermaid-lede" style="max-width:48ch; margin-left:auto; margin-right:auto;">Governance, actors, OTOS Continuity&trade; Phase&nbsp;1 layer, pilot touchpoints, and safety pins &mdash; the full diagram lives off this scroll so the front door stays calm.</p>
     <p style="margin:1.5rem 0 0; display:flex; flex-wrap:wrap; gap:0.75rem 1.25rem; justify-content:center; align-items:center;">
-      <a class="fs-otos-glass-chip" href="architecture-map.html" style="color:var(--text); font-weight:700; text-decoration:none;">Open printable / interactive map →</a>
-      <a class="fs-otos-glass-chip" href="architecture-cambridge-pilot.mmd" style="color:var(--amber); font-weight:600; text-decoration:none;">Source: architecture-cambridge-pilot.mmd</a>
+      <a class="fs-otos-glass-chip" href="#" onclick="return false;" style="color:var(--text); font-weight:700; text-decoration:none;">Open printable / interactive map →</a>
+      <a class="fs-otos-glass-chip" href="#" onclick="return false;" style="color:var(--amber); font-weight:600; text-decoration:none;">Source: architecture-cambridge-pilot.mmd</a>
     </p>
   </div>
 </section>
 
 <section class="fs-band fs-band--alt fs-band--statement" aria-label="Architecture strapline">
   <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--mix fs-statement--pullquote" data-fs-statement>
-    <p class="fs-statement__line text-gradient-soft">The silent layer that connects every service.</p>
-    <p class="fs-statement__line fs-statement__line--sub">No write-back. No diagnostic theatre. Human control, always.</p>
+    <p class="fs-statement__line text-gradient-soft">No write-back. No diagnostic theatre. Human control, always.</p>
   </div>
 </section>
 
 <!-- CONTROLS -->
 <section id="fs-controls" class="fs-band fs-band--cream">
-  <span class="fs-sec-label fs-sec-label--light">Controls</span>
+  <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="Controls"></span>
   <span class="fs-brain-inline fs-brain-inline--bl" aria-hidden="true"></span>
   <div class="fs-reveal" data-fs-reveal><p class="fs-controls-strip">OTOS surfaces signals. The partner team makes the decision.</p></div>
   <div class="fs-control-grid">
@@ -3051,7 +3285,7 @@ a { color: var(--amber); }
       </div>
     </div>
     <div class="fs-control-card">
-      <div class="fs-control-card__img" style="background-image:url('images/Professional%20at%20work%20with%20data%20dashboard.png'); background-position:50% 45%;" role="img" aria-hidden="true"></div>
+      <div class="fs-control-card__img fs-control-card__img--dashboard" style="background-image:url('images/Professional%20at%20work%20with%20data%20dashboard.png'); background-position:50% 45%;" role="img" aria-hidden="true"></div>
       <div class="fs-control-card__body">
         <span class="lab">GOVERNANCE</span>
         <h3 class="text-gradient-soft">Aligned with NHS standards</h3>
@@ -3066,7 +3300,7 @@ a { color: var(--amber); }
       </div>
     </div>
     <div class="fs-control-card">
-      <div class="fs-control-card__img" style="background-image:url('images/sun-dashboard-devices.png'); background-position:50% 50%;" role="img" aria-hidden="true"></div>
+      <div class="fs-control-card__img fs-control-card__img--dashboard" style="background-image:url('images/sun-dashboard-devices.png'); background-position:50% 50%;" role="img" aria-hidden="true"></div>
       <div class="fs-control-card__body">
         <span class="lab">ESCALATION</span>
         <h3 class="text-gradient-soft">Human decisions only</h3>
@@ -3080,7 +3314,7 @@ a { color: var(--amber); }
       </div>
     </div>
     <div class="fs-control-card amber">
-      <div class="fs-control-card__img" style="background-image:url('images/Consulting%20with%20OTOS%20dashboard%20in%20office.png'); background-position:50% 40%;" role="img" aria-hidden="true"></div>
+      <div class="fs-control-card__img fs-control-card__img--dashboard" style="background-image:url('images/Consulting%20with%20OTOS%20dashboard%20in%20office.png'); background-position:50% 40%;" role="img" aria-hidden="true"></div>
       <div class="fs-control-card__body">
         <span class="lab">DATA</span>
         <h3 class="text-gradient-soft">What OTOS stores</h3>
@@ -3106,7 +3340,10 @@ a { color: var(--amber); }
     <div class="fs-photo-band__shade" aria-hidden="true"></div>
     <div class="fs-photo-band__inner">
       <div class="fs-reveal" data-fs-reveal>
-        <span class="fs-kicker" style="color:#e8c27a;">Reporting</span>
+        <div class="fs-kicker-with-brain fs-kicker-with-brain--ondark">
+          <span class="fs-sec-brain-mark" aria-hidden="true"></span>
+          <span class="fs-kicker" style="color:#e8c27a;">Reporting</span>
+        </div>
         <h2 class="fs-strapline-xl text-gradient-soft">For the first time, you can see whether the handoffs are actually landing.</h2>
         <p class="fs-strapline-sub">The shape of a pathway &mdash; so you can see where it bends and where it breaks.</p>
       </div>
@@ -3138,20 +3375,20 @@ a { color: var(--amber); }
 
 <!-- REFERENCES — credibility signal only; full appendix on references.html -->
 <section id="fs-refs" class="fs-band fs-band--alt">
-  <span class="fs-sec-label fs-sec-label--light">References</span>
+  <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="References"></span>
   <span class="fs-brain-inline fs-brain-inline--tr" aria-hidden="true"></span>
   <div class="fs-center" style="max-width:var(--otos-container-max); margin:0 auto; text-align:center;">
     <div class="fs-reveal" data-fs-reveal>
       <p class="fs-strapline-xl text-gradient-soft" style="font-size:clamp(1.35rem,3vw,2rem); margin-bottom:1rem;">Evidence you can trace. Claims you can defend.</p>
     </div>
     <p style="color:var(--muted); max-width:42rem; margin:0 auto 1.5rem; line-height:1.65;">The Continuity pilot sits inside national policy and assurance framing &mdash; ADHD taskforce direction, co-occurring conditions delivery expectations, NICE NG87, and NHS piloting guidance. The full linked list lives off this scroll.</p>
-    <ul style="list-style:none; margin:0 auto 1.75rem; padding:0; max-width:36rem; text-align:left; font-size:0.95rem; line-height:1.55; color:var(--text);">
-      <li style="margin-bottom:0.65rem;"><strong>NHS England</strong> &mdash; Independent ADHD Taskforce (direction of travel for ADHD care in England).</li>
-      <li style="margin-bottom:0.65rem;"><strong>DHSC</strong> &mdash; Co-occurring mental health and substance use delivery framework.</li>
-      <li style="margin-bottom:0.65rem;"><strong>NICE NG87</strong> &mdash; ADHD recognition, diagnosis, and management.</li>
-      <li style="margin-bottom:0;"><strong>DTAC / NHS Digital standards</strong> &mdash; referenced in assurance conversations; we do not claim certification unless evidenced.</li>
+    <ul class="fs-refs-cred-list">
+      <li><strong>NHS England</strong> &mdash; Independent ADHD Taskforce (direction of travel for ADHD care in England).</li>
+      <li><strong>DHSC</strong> &mdash; Co-occurring mental health and substance use delivery framework.</li>
+      <li><strong>NICE NG87</strong> &mdash; ADHD recognition, diagnosis, and management.</li>
+      <li><strong>DTAC / NHS Digital standards</strong> &mdash; referenced in assurance conversations; we do not claim certification unless evidenced.</li>
     </ul>
-    <p style="margin:0;"><a href="references.html" style="font-weight:700; font-size:1.05rem;">Open full references &amp; links →</a></p>
+    <p style="margin:0;"><a href="#" onclick="return false;" style="font-weight:700; font-size:1.05rem;">Open full references &amp; links →</a></p>
   </div>
 </section>
 
@@ -3159,7 +3396,10 @@ a { color: var(--amber); }
   <div class="fs-split fs-split--founder">
     <div class="fs-split__body" style="background:var(--bg-mid);">
       <div class="fs-reveal" data-fs-reveal>
-        <span class="fs-kicker">Founder</span>
+        <div class="fs-kicker-with-brain fs-kicker-with-brain--onmid">
+          <span class="fs-sec-brain-mark" aria-hidden="true"></span>
+          <span class="fs-kicker">Founder</span>
+        </div>
         <h2 class="fs-strapline-xl text-gradient-soft">Built from the gap &mdash; not from a slide deck.</h2>
         <p class="fs-strapline-sub" style="color:var(--muted); max-width:42ch;">The lived arc behind OTOS Continuity: why the handoff matters more than the referral.</p>
         <p style="margin:1.25rem 0 0;"><a href="founder-story-v2.html" style="font-weight:700; font-size:1rem;">Read founder story v2 →</a></p>
@@ -3185,9 +3425,9 @@ a { color: var(--amber); }
     kicker: 'OTOS Continuity™',
     quote: 'At discharge from my final A&E detox, I left a familiar face with these words…',
     heading_desktop: 'Next time we meet, I won\'t be your patient — I\'ll be your partner.',
-    subheading_desktop: '"Out The Other Side" was how I felt — and still feel. That became OTOS. OTOS Digital Ltd was officially formulated six months later.\n\nFraming: Addenbrooke\'s Hospital, Cambridge · September 2025 — lived experience narrative, not a clinical record.',
+    subheading_desktop: '"Out The Other Side" was how I felt — and still feel. That became OTOS. OTOS Digital Ltd was officially formulated six months later.\n\nFraming: Addenbrooke\'s Hospital, Cambridge — lived experience narrative, not a clinical record.',
     heading_mobile: 'Next time we meet, I won\'t be your patient — I\'ll be your partner.',
-    subheading_mobile: '"Out The Other Side" was how I felt — and still feel. That became OTOS. OTOS Digital Ltd was officially formulated six months later.\n\nFraming: Addenbrooke\'s Hospital, Cambridge · September 2025 — lived experience narrative, not a clinical record.',
+    subheading_mobile: '"Out The Other Side" was how I felt — and still feel. That became OTOS. OTOS Digital Ltd was officially formulated six months later.\n\nFraming: Addenbrooke\'s Hospital, Cambridge — lived experience narrative, not a clinical record.',
     text_colour: '#ffffff',
     headingSize: 34,
     subSize: 14,

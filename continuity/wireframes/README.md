@@ -7,7 +7,7 @@ UI wireframe concepts for the Cambridge Pilot interface. **Four distinct views**
 | View | Who uses it | Device | Complexity |
 |------|-------------|--------|-------------|
 | 1. Participant onboarding | Person in recovery / cohort member | Mobile (QR → web) | Ultra-minimal |
-| 2. Bedside / rapid handoff (Helen view) | Hospital liaison, A&E, bedside staff | Mobile-first | Low — 3 actions max |
+| 2. Bedside / rapid handoff (alcohol liaison) | CPFT on-site alcohol liaison, A&E, bedside staff | Mobile-first | Low — 3 actions max |
 | 3. Coordinator dashboard (CGL / CRS view) | Keyworker, coordinator, reviewer | Desktop / tablet | Medium — overview + review queue |
 | 4. Commissioner reporting (Scott view) | Commissioner, sponsor | Desktop | Read-only — metrics only |
 
@@ -25,7 +25,7 @@ UI wireframe concepts for the Cambridge Pilot interface. **Four distinct views**
 - Welcome → Consent → Anonymous ID (XXXX-XXXX) → First check-in (😔/😐/😊) → Next step → Done
 - Progress indicator (Step 1 of 5). "I need help" visible but not prominent.
 
-### Wireframe 2 — Helen / bedside
+### Wireframe 2 — Bedside / alcohol liaison
 - Scan QR or enter 8-digit code → Participant found → Record touchpoint (Attended / Referred / Fast-track ADHD) → Receipt
 - Fast-track ADHD = single toggle; RTC / QbTest as one-tap referral. Receipt automatic.
 

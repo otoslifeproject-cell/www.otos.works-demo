@@ -336,13 +336,13 @@ const JOURNEY_EVENTS = [
   {
     id: 22,
     phase: 4,
-    title: "Meet CPFT Helen Bedside — 1st time",
-    description: "First time meeting Helen Bedside at CPFT. She sees the full picture. The beginning of someone actually holding the thread.",
+    title: "Meet CPFT alcohol liaison — bedside, 1st time",
+    description: "First bedside contact with CPFT's on-site alcohol liaison nurse at Addenbrooke's — often after a detox trigger for someone not already known to alcohol services. She sees the full picture. The beginning of someone actually holding the thread.",
     location: "CPFT",
     type: "touchpoint",
     cost: 600,
     selfMed: "escalates",
-    otosWouldHave: "Helen's notes visible to CGL and GP immediately.",
+    otosWouldHave: "Liaison nurse notes visible to CGL and GP immediately.",
     shake: 2
   },
   {
@@ -729,8 +729,8 @@ const JOURNEY_EVENTS = [
   {
     id: 54,
     phase: 5,
-    title: "CPFT Helen — discharge letter",
-    description: "Helen Bedside writes discharge letter with the words Psymplicity need to see. She fights for Dean. Confirms detoxed. Supporting the medication pathway.",
+    title: "CPFT alcohol liaison — discharge letter",
+    description: "The on-site alcohol liaison nurse writes the discharge letter with the words Psymplicity need to see. She fights for Dean. Confirms detoxed. Supporting the medication pathway.",
     location: "CPFT",
     type: "touchpoint",
     cost: 600,
