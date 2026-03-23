@@ -7,12 +7,12 @@
 <meta name="description" content="OTOS Continuity™ — single-page pilot narrative: how it works, demos, infrastructure, reporting, and references.">
 <meta name="theme-color" content="#0a0806">
 <!-- Deploy / cache check: if this rev doesn’t match GitHub, the host is serving a stale file -->
-<meta name="otos-scroll2-rev" content="20260319-live-4">
+<meta name="otos-scroll2-rev" content="20260319-live-6">
 <meta http-equiv="Cache-Control" content="max-age=0, must-revalidate">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="otos-shared.css?v=20260319-live-4">
+<link rel="stylesheet" href="otos-shared.css?v=20260319-live-6">
 <style>
 /* full-scroll2.html — OTOS Continuity single-page; long-form (no fixed top nav). How-it-works is a static section (#fs-how). */
 :root {
@@ -1307,12 +1307,33 @@ a { color: var(--amber); }
 @media (max-width: 720px) {
   .fs-hero-band {
     justify-content: flex-end;
-    background-position: 50% 25%;
+    background-position: 50% 22%;
+    /* Safe area: notches / home indicator */
+    padding-bottom: max(clamp(1rem, 3vh, 1.75rem), calc(env(safe-area-inset-bottom, 0px) + 6px));
   }
   .fs-hero-band .fs-inner {
     text-align: left;
     margin-left: auto;
     margin-right: auto;
+    padding-left: clamp(14px, 4vw, 22px);
+    padding-right: clamp(14px, 4vw, 22px);
+    padding-top: clamp(0.5rem, 2vh, 1rem);
+  }
+  .fs-hero-band .fs-h1.fs-h1--cm-managed {
+    line-height: 1.12;
+    max-width: min(20ch, 92vw);
+  }
+  .fs-hero-band .fs-hero-lede {
+    font-size: clamp(0.92rem, 3.6vw, 1.05rem);
+    max-width: 36ch;
+  }
+  .fs-hero-band .fs-hero-quote {
+    font-size: clamp(0.82rem, 3.2vw, 0.98rem);
+    max-width: 38ch;
+    margin-bottom: clamp(0.75rem, 2vh, 1.25rem);
+  }
+  .fs-hero-band .fs-kicker {
+    font-size: clamp(0.62rem, 2.4vw, 0.72rem);
   }
 }
 .fs-glass {
@@ -1487,14 +1508,15 @@ a { color: var(--amber); }
   margin: 0 auto;
   padding: 0;
   border-radius: 22px;
-  background: rgba(12, 10, 8, 0.55);
-  backdrop-filter: blur(26px) saturate(155%);
-  -webkit-backdrop-filter: blur(26px) saturate(155%);
-  border: 1px solid rgba(193, 127, 36, 0.35);
+  /* Lighter glass — more of the hero photo reads through */
+  background: rgba(12, 10, 8, 0.26);
+  backdrop-filter: blur(14px) saturate(135%);
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
+  border: 1px solid rgba(193, 127, 36, 0.26);
   box-shadow:
-    0 20px 56px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(255, 252, 246, 0.08) inset,
-    0 1px 0 rgba(255, 252, 246, 0.12) inset;
+    0 14px 40px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 252, 246, 0.06) inset,
+    0 1px 0 rgba(255, 252, 246, 0.09) inset;
   overflow: hidden;
 }
 .fs-stat {
@@ -1550,12 +1572,24 @@ a { color: var(--amber); }
   margin-left: auto;
   margin-right: auto;
 }
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .fs-stats {
     grid-template-columns: 1fr;
+    max-width: 100%;
   }
-  .fs-stat { border-right: none !important; border-bottom: 1px solid rgba(255, 252, 246, 0.1); }
+  .fs-stat {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 252, 246, 0.1);
+    padding: clamp(0.85rem, 2vw, 1.15rem) clamp(0.5rem, 2vw, 0.85rem);
+  }
   .fs-stat:last-child { border-bottom: none; }
+  .fs-stat b {
+    font-size: clamp(1.35rem, 7vw, 1.85rem);
+  }
+  .fs-stat__label {
+    font-size: clamp(8px, 2.6vw, 10px);
+    max-width: 16rem;
+  }
 }
 
 /* —— Single section-jump system: letter rail (replaces duplicate between-section “cue” strips) —— */
@@ -3404,7 +3438,8 @@ a { color: var(--amber); }
       var x = parseFloat(pos.x);
       var y = parseFloat(pos.y);
       if (isFinite(x) && isFinite(y) && x >= 5 && x <= 95 && y >= 5 && y <= 95) {
-        if (window.innerWidth < 480) {
+        /* Match isMobile (<768): stack hero in normal flow on phones — don’t absolute-position desktop coords */
+        if (window.innerWidth < 768) {
           inner.style.position = '';
           inner.style.left = '';
           inner.style.top = '';
