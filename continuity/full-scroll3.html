@@ -632,9 +632,6 @@ a { color: var(--amber); }
   transition: opacity 0.7s ease, filter 0.7s ease;
   will-change: transform, opacity;
 }
-.fs-brain-layer--deep { animation: fsBrainFloatDeep 28s ease-in-out infinite alternate; }
-.fs-brain-layer--mid { animation: fsBrainFloatMid 21s ease-in-out infinite alternate; }
-.fs-brain-layer--ghost { animation: fsBrainFloatGhost 15s ease-in-out infinite alternate; }
 .fs-brain-layer span {
   position: absolute;
   background: url('brain.png') center / contain no-repeat;
@@ -645,7 +642,7 @@ a { color: var(--amber); }
   opacity: 0.85;
 }
 .fs-brain-layer--deep span {
-  opacity: 0.048;
+  opacity: 0.038;
   filter: saturate(0.25) hue-rotate(-8deg);
 }
 .fs-brain-layer--deep .b1 { width: min(480px, 58vw); height: min(480px, 58vw); top: 5%; left: -8%; transform: rotate(-11deg); }
@@ -657,7 +654,7 @@ a { color: var(--amber); }
   opacity: 0.92;
 }
 .fs-brain-layer--mid span {
-  opacity: 0.07;
+  opacity: 0.055;
   filter: saturate(0.45) sepia(0.12);
 }
 .fs-brain-layer--mid .b3 { width: min(360px, 48vw); height: min(360px, 48vw); top: 18%; right: 3%; transform: rotate(19deg); }
@@ -668,7 +665,7 @@ a { color: var(--amber); }
   opacity: 1;
 }
 .fs-brain-layer--ghost span {
-  opacity: 0.11;
+  opacity: 0.09;
   filter: saturate(0.55) brightness(1.05);
 }
 .fs-brain-layer--ghost .b5 { width: 160px; height: 160px; top: 26%; left: 10%; transform: rotate(-16deg); }
@@ -690,28 +687,15 @@ a { color: var(--amber); }
 .fs-band--alt .fs-brain-inline,
 .fs-band--mid .fs-brain-inline {
   position: absolute;
-  width: min(420px, 58vw);
-  height: min(420px, 58vw);
+  width: min(320px, 45vw);
+  height: min(320px, 45vw);
   background: url('brain.png') center / contain no-repeat;
-  opacity: 0.06;
-  mix-blend-mode: multiply;
+  opacity: 0.04;
   pointer-events: none;
   z-index: 0;
 }
 .fs-brain-inline--tr { top: -40px; right: -60px; transform: rotate(15deg); }
 .fs-brain-inline--bl { bottom: -30px; left: -50px; transform: rotate(-18deg); }
-@keyframes fsBrainFloatDeep {
-  0% { transform: translate3d(0, calc(var(--fs-brain-y) * 0.03), -80px) scale(1.02) rotate(-1deg); }
-  100% { transform: translate3d(-18px, calc(var(--fs-brain-y) * 0.045), -80px) scale(1.07) rotate(2deg); }
-}
-@keyframes fsBrainFloatMid {
-  0% { transform: translate3d(0, calc(var(--fs-brain-y) * -0.05), -35px) scale(1) rotate(0deg); }
-  100% { transform: translate3d(14px, calc(var(--fs-brain-y) * -0.07), -35px) scale(1.06) rotate(-2deg); }
-}
-@keyframes fsBrainFloatGhost {
-  0% { transform: translate3d(0, calc(var(--fs-brain-y) * 0.08), 0) scale(1); }
-  100% { transform: translate3d(-12px, calc(var(--fs-brain-y) * 0.11), 0) scale(1.09); }
-}
 
 /* —— Scroll-reveal straplines (slide in from left) —— */
 .fs-reveal {
@@ -923,6 +907,31 @@ a { color: var(--amber); }
 .fs-hero-lede,
 .fs-section.fs-dual-panel p {
   text-wrap: pretty;
+}
+.fs-problem-copy {
+  max-width: min(760px, 92vw);
+}
+.fs-problem-copy__eyebrow {
+  margin: 0 0 20px;
+}
+.fs-problem-copy__heading {
+  margin: 0;
+  max-width: 740px;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: clamp(36px, 4.3vw, 58px);
+  line-height: 1.08;
+  color: #2C1A0E;
+}
+.fs-problem-copy__body {
+  margin: 24px 0 0;
+  max-width: 720px;
+  font-family: Inter, sans-serif;
+  font-weight: 300;
+  font-size: clamp(17px, 1.8vw, 21px);
+  line-height: 1.72;
+  color: #4A3728;
 }
 .fs-doorway-learnmore {
   display: inline-flex;
@@ -3362,10 +3371,15 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
 <section id="fs-dual" aria-label="CGL and CPFT dual diagnosis continuity section">
   <section class="fs-section fs-dual-panel" style="height:100vh;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;padding:80px 60px;position:relative;overflow:hidden;box-sizing:border-box;background:#FAF7F2;text-align:left;">
     <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="Dual pathway light"></span>
-    <span style="font-family:Inter,sans-serif;font-weight:500;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#2C1A0E;margin-bottom:22px;">1 / 4 · Pilot opening</span>
-    <h2 style="margin:0;max-width:700px;font-family:'Playfair Display',serif;font-style:italic;font-weight:800;font-size:clamp(38px,4.2vw,58px);line-height:1.08;color:#2C1A0E;">What this pilot plan does &mdash; and for whom.</h2>
-    <p style="margin:22px 0 0;max-width:680px;font-family:Inter,sans-serif;font-weight:300;font-size:19px;line-height:1.72;color:#4A3728;">Stage 1 focuses on selected people moving between addiction and mental-health pathways where continuity currently breaks across handoffs.</p>
-    <p style="margin:12px 0 0;max-width:700px;font-family:Inter,sans-serif;font-weight:300;font-size:15px;line-height:1.75;color:#5A4636;"><strong style="font-weight:600;color:#2C1A0E;">Planned visibility:</strong> each partner sees touchpoint status, handoff receipts, and drift markers on the shared token thread &mdash; not cross-service records.</p>
+    <span style="font-family:Inter,sans-serif;font-weight:500;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#2C1A0E;margin-bottom:18px;">1 / 4 · Problem opening</span>
+    <div class="fs-problem-copy">
+      <div class="fs-kicker-with-brain fs-problem-copy__eyebrow">
+        <span class="fs-sec-brain-mark" aria-hidden="true"></span>
+        <span class="fs-kicker">Problem text</span>
+      </div>
+      <h2 class="fs-problem-copy__heading">When ADHD is left waiting, addiction does not arrive quietly &mdash; it brings chaos with it.</h2>
+      <p class="fs-problem-copy__body">When ADHD is left untreated for too long, addiction can emerge as a way of coping with overwhelm, under-stimulation, emotional intensity and executive dysfunction. But addiction does not solve those problems; it compounds them. In general terms, it can bring chaos into every part of a person&rsquo;s life: sleep becomes erratic, routines collapse, money becomes harder to manage, work becomes unstable, relationships come under strain, and shame drives further secrecy and isolation. What may begin as self-medication can quickly become a cycle of short-term relief followed by longer-term damage, where the person is no longer simply waiting for help &mdash; they are fighting to stop everything falling apart.</p>
+    </div>
   </section>
   <section class="fs-section fs-dual-panel" style="height:100vh;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;padding:80px 60px;position:relative;overflow:hidden;box-sizing:border-box;background:#1A1208;text-align:left;">
     <span class="fs-sec-label fs-sec-label--dark fs-sec-label--brain" role="img" aria-label="Dual pathway dark"></span>
