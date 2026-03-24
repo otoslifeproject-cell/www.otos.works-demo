@@ -338,17 +338,17 @@ a { color: var(--amber); }
 .fs-how-layout__intro .fs-how-static__h2 {
   margin-left: 0;
   margin-right: auto;
-  max-width: 680px;
+  max-width: 640px;
   font-size: clamp(32px, 3.5vw, 44px);
   text-align: left;
 }
 .fs-how-layout__intro .fs-how-static__sub {
-  max-width: 680px;
+  max-width: 640px;
   margin-left: 0;
   margin-right: auto;
   text-align: left;
-  font-size: clamp(1rem, 1.35vw, 1.12rem);
-  line-height: 1.55;
+  font-size: clamp(0.98rem, 1.3vw, 1.08rem);
+  line-height: 1.52;
   color: rgba(58, 48, 38, 0.78);
 }
 .fs-how-layout__grid {
@@ -2051,9 +2051,28 @@ a { color: var(--amber); }
   font-size: clamp(1.15rem, 2.4vw, 1.75rem);
   line-height: 1.35;
   margin: 0;
-  max-width: 680px;
+  max-width: 760px;
   color: #2C1A0E;
   letter-spacing: -0.02em;
+}
+.fs-stage-chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(44, 26, 14, 0.7);
+  border: 1px solid rgba(193, 127, 36, 0.24);
+  background: rgba(193, 127, 36, 0.09);
+  border-radius: 999px;
+  padding: 0.36rem 0.66rem;
+  margin: 0 0 0.65rem;
+}
+.fs-stage-chip--core {
+  color: rgba(245, 240, 232, 0.92);
+  border-color: rgba(232, 194, 122, 0.5);
+  background: rgba(26, 20, 16, 0.48);
 }
 .fs-demos-stack {
   width: 100%;
@@ -2283,6 +2302,71 @@ a { color: var(--amber); }
     max-width: min(200px, 52vw);
     padding: 9px 12px 10px;
   }
+}
+
+/* Embedded demo chapters: internal scroll inside the page (keeps users in-flow) */
+.fs-embedded-demo {
+  position: relative;
+  background: linear-gradient(180deg, #f8f3ea 0%, #f3ece1 100%);
+  padding: clamp(2rem, 4.5vw, 3rem) clamp(16px, 3vw, 40px);
+}
+.fs-embedded-demo__inner {
+  max-width: min(1080px, 96vw);
+  margin: 0 auto;
+  padding-left: max(40px, clamp(12px, 3vw, 24px));
+}
+.fs-embedded-demo__title {
+  margin: 0;
+  max-width: 700px;
+  font-family: var(--font-h);
+  font-weight: 700;
+  font-style: italic;
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  line-height: 1.2;
+}
+.fs-embedded-demo__sub {
+  margin: 0.75rem 0 1rem;
+  max-width: 720px;
+  color: var(--muted);
+  font-size: clamp(0.96rem, 1.3vw, 1.04rem);
+  line-height: 1.58;
+}
+.fs-embedded-demo__viewport {
+  margin-top: 1rem;
+  max-width: min(980px, 100%);
+  border-radius: 18px;
+  border: 1px solid rgba(193, 127, 36, 0.2);
+  background: rgba(255, 252, 246, 0.9);
+  box-shadow: 0 18px 44px rgba(26, 20, 16, 0.09);
+  overflow: hidden;
+}
+.fs-embedded-demo__scroller {
+  max-height: min(64vh, 620px);
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.75rem;
+}
+.fs-embedded-demo__card {
+  scroll-snap-align: start;
+  border-radius: 14px;
+  background: linear-gradient(160deg, rgba(255, 252, 248, 0.98) 0%, rgba(248, 241, 230, 0.94) 100%);
+  border: 1px solid rgba(193, 127, 36, 0.2);
+  padding: clamp(1rem, 2.4vw, 1.4rem) clamp(1rem, 2.4vw, 1.3rem);
+}
+.fs-embedded-demo__card h4 {
+  margin: 0;
+  font-family: var(--font-h);
+  font-style: italic;
+  font-size: clamp(1.06rem, 2vw, 1.26rem);
+}
+.fs-embedded-demo__card p {
+  margin: 0.5rem 0 0;
+  color: rgba(44, 36, 28, 0.83);
+  line-height: 1.55;
+  font-size: clamp(0.92rem, 1.2vw, 0.99rem);
 }
 
 /* How slides: compact lists */
@@ -2994,14 +3078,15 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
 
 <nav class="fs-section-rail" aria-label="Jump to section">
   <a href="#fs-home" data-fs-jump><span class="fs-section-rail__glyph">A</span><span class="fs-section-rail__hint">Home</span></a>
-  <a href="#fs-how" data-fs-jump><span class="fs-section-rail__glyph">B</span><span class="fs-section-rail__hint">How it works</span></a>
-  <a href="#fs-demos" data-fs-jump><span class="fs-section-rail__glyph">C</span><span class="fs-section-rail__hint">Demos</span></a>
-  <a href="#fs-dual" data-fs-jump><span class="fs-section-rail__glyph">D</span><span class="fs-section-rail__hint">Dual</span></a>
-  <a href="#fs-architecture" data-fs-jump><span class="fs-section-rail__glyph">E</span><span class="fs-section-rail__hint">Map</span></a>
-  <a href="#fs-controls" data-fs-jump><span class="fs-section-rail__glyph">F</span><span class="fs-section-rail__hint">Controls</span></a>
-  <a href="#fs-reporting" data-fs-jump><span class="fs-section-rail__glyph">G</span><span class="fs-section-rail__hint">Reporting</span></a>
-  <a href="#fs-refs" data-fs-jump><span class="fs-section-rail__glyph">H</span><span class="fs-section-rail__hint">Refs</span></a>
-  <a href="#fs-founder" data-fs-jump><span class="fs-section-rail__glyph">I</span><span class="fs-section-rail__hint">Founder</span></a>
+  <a href="#fs-dual" data-fs-jump><span class="fs-section-rail__glyph">B</span><span class="fs-section-rail__hint">CGL×CPFT</span></a>
+  <a href="#fs-how" data-fs-jump><span class="fs-section-rail__glyph">C</span><span class="fs-section-rail__hint">How (pilot)</span></a>
+  <a href="#fs-demo-core" data-fs-jump><span class="fs-section-rail__glyph">D</span><span class="fs-section-rail__hint">Demo core</span></a>
+  <a href="#fs-demos" data-fs-jump><span class="fs-section-rail__glyph">E</span><span class="fs-section-rail__hint">Routes</span></a>
+  <a href="#fs-architecture" data-fs-jump><span class="fs-section-rail__glyph">F</span><span class="fs-section-rail__hint">Map</span></a>
+  <a href="#fs-controls" data-fs-jump><span class="fs-section-rail__glyph">G</span><span class="fs-section-rail__hint">Controls</span></a>
+  <a href="#fs-reporting" data-fs-jump><span class="fs-section-rail__glyph">H</span><span class="fs-section-rail__hint">Reporting</span></a>
+  <a href="#fs-refs" data-fs-jump><span class="fs-section-rail__glyph">I</span><span class="fs-section-rail__hint">Refs</span></a>
+  <a href="#fs-founder" data-fs-jump><span class="fs-section-rail__glyph">J</span><span class="fs-section-rail__hint">Founder</span></a>
 </nav>
 
 <main class="fs-main">
@@ -3127,10 +3212,17 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
 <section id="fs-dual" aria-label="CGL and CPFT dual diagnosis continuity section">
   <section class="fs-section fs-dual-panel" style="height:100vh;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 60px;position:relative;overflow:hidden;box-sizing:border-box;background:#1A1208;text-align:left;">
     <span class="fs-sec-label fs-sec-label--dark fs-sec-label--brain" role="img" aria-label="Dual pathway dark"></span>
-    <span style="font-family:Inter,sans-serif;font-weight:500;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,252,248,0.72);margin-bottom:30px;">CGL × CPFT</span>
-    <div style="display:flex;align-items:center;gap:40px;margin-bottom:48px;">
-      <span class="org-logo-text" style="font-family:Inter,sans-serif;font-weight:700;font-size:18px;letter-spacing:0.12em;color:rgba(255,252,248,0.75);">CGL</span>
-      <span class="org-logo-text" style="font-family:Inter,sans-serif;font-weight:700;font-size:18px;letter-spacing:0.12em;color:rgba(255,252,248,0.75);">CPFT</span>
+    <span style="font-family:Inter,sans-serif;font-weight:500;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,252,248,0.72);margin-bottom:14px;">CGL × CPFT</span>
+    <span class="fs-stage-chip fs-stage-chip--core" style="margin-bottom:26px;">Stage 1 core pilot proof</span>
+    <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;margin-bottom:48px;">
+      <div style="display:inline-flex;align-items:center;">
+        <img src="../assets/partners/CGL_Logo.png" alt="CGL logo" style="height:44px;width:auto;max-width:180px;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(0,0,0,0.25));" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+        <span style="display:none;font-family:Inter,sans-serif;font-weight:700;font-size:18px;letter-spacing:0.12em;color:rgba(255,252,248,0.75);">CGL</span>
+      </div>
+      <div style="display:inline-flex;align-items:center;">
+        <img src="../assets/partners/NHS_CPFT_Logo.png" alt="CPFT logo" style="height:44px;width:auto;max-width:190px;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(0,0,0,0.25));" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+        <span style="display:none;font-family:Inter,sans-serif;font-weight:700;font-size:18px;letter-spacing:0.12em;color:rgba(255,252,248,0.75);">CPFT</span>
+      </div>
     </div>
     <h2 style="margin:0;max-width:620px;font-family:'Playfair Display',serif;font-style:italic;font-weight:800;font-size:clamp(38px,4.2vw,58px);line-height:1.08;background:linear-gradient(90deg,#C8922A 0%,#F0C060 52%,#FAF7F2 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Same person. Two silos.<br>One continuity thread.</h2>
     <p style="margin:24px 0 0;max-width:560px;font-family:Inter,sans-serif;font-weight:300;font-size:20px;line-height:1.7;color:rgba(255,252,248,0.72);">Addiction and mental health meeting the same life at different doors &mdash; without a shared record.</p>
@@ -3151,9 +3243,15 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
   <section class="fs-section fs-dual-panel" style="height:100vh;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 60px;position:relative;overflow:hidden;box-sizing:border-box;background:#FAF7F2;text-align:left;">
     <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="Dual pathway light"></span>
     <span style="font-family:Inter,sans-serif;font-weight:500;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#2C1A0E;margin-bottom:30px;">Pilot framing</span>
-    <div style="display:flex;align-items:center;gap:40px;margin-bottom:48px;">
-      <span class="org-logo-text" style="font-family:Inter,sans-serif;font-weight:700;font-size:18px;letter-spacing:0.12em;color:#2C1A0E;">CGL</span>
-      <span class="org-logo-text" style="font-family:Inter,sans-serif;font-weight:700;font-size:18px;letter-spacing:0.12em;color:#2C1A0E;">CPFT</span>
+    <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;margin-bottom:48px;">
+      <div style="display:inline-flex;align-items:center;">
+        <img src="../assets/partners/CGL_Logo.png" alt="CGL logo" style="height:44px;width:auto;max-width:180px;object-fit:contain;" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+        <span style="display:none;font-family:Inter,sans-serif;font-weight:700;font-size:18px;letter-spacing:0.12em;color:#2C1A0E;">CGL</span>
+      </div>
+      <div style="display:inline-flex;align-items:center;">
+        <img src="../assets/partners/NHS_CPFT_Logo.png" alt="CPFT logo" style="height:44px;width:auto;max-width:190px;object-fit:contain;" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+        <span style="display:none;font-family:Inter,sans-serif;font-weight:700;font-size:18px;letter-spacing:0.12em;color:#2C1A0E;">CPFT</span>
+      </div>
     </div>
     <h2 style="margin:0;max-width:620px;font-family:'Playfair Display',serif;font-style:italic;font-weight:800;font-size:clamp(38px,4.2vw,58px);line-height:1.08;color:#2C1A0E;">An express gateway between<br>two willing partners.</h2>
     <p style="margin:28px 0 0;max-width:560px;font-family:Inter,sans-serif;font-weight:300;font-size:20px;line-height:1.75;color:#4A3728;">Phase 1 establishes the bilateral connection between CGL and CPFT only. The mental health silo and the addiction silo. Dual diagnosis in the middle. Both can surface correlation without either seeing the other&rsquo;s records.</p>
@@ -3183,8 +3281,8 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
   <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="How it works"></span>
   <div class="fs-how-layout">
     <header class="fs-how-layout__intro">
-      <h2 id="fs-how-heading" class="fs-how-static__h2">How OTOS works &mdash; in four steps anyone can follow.</h2>
-      <p class="fs-how-static__sub">It&rsquo;s not a new clinical system. OTOS sits <strong>lightly on top</strong> of what you already run: <strong>anonymous touchpoints</strong>, <strong>human decisions only</strong>, and <strong>one journey thread</strong> so teams can see whether support actually <em>connects</em> &mdash; not just whether it was referred.</p>
+      <h2 id="fs-how-heading" class="fs-how-static__h2">How this works in the CGL &times; CPFT pilot.</h2>
+      <p class="fs-how-static__sub">Stage 1 is specific: the addiction pathway and the mental-health pathway share <strong>continuity signals only</strong>. OTOS logs touchpoints, handoff receipts, and drift markers on one encrypted token &mdash; <strong>no shared case notes, no EPR write-back, human decisions only</strong>.</p>
     </header>
     <div class="fs-how-layout__grid">
       <ol class="fs-how-steps">
@@ -3193,9 +3291,9 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
             <div class="fs-how-step__num" aria-hidden="true"><span class="fs-how-step__num-inner">1</span></div>
           </div>
           <div class="fs-how-step__panel">
-            <span class="fs-how-step__tag">Touchpoint</span>
-            <h3 class="fs-how-step__title">Logged in seconds &mdash; no EPR write-back</h3>
-            <p class="fs-how-step__body">At the bedside, in the hub, or at the front door: staff open OTOS and record <strong>that a contact happened</strong> (when, where, what kind). The person can stay <strong>anonymous</strong>. OTOS keeps a <strong>tokenised signal</strong> &mdash; not a duplicate clinical record. <strong>Nothing writes back</strong> to your EPR.</p>
+            <span class="fs-how-step__tag">CGL / CPFT touchpoint</span>
+            <h3 class="fs-how-step__title">A clinician logs one continuity event in seconds</h3>
+            <p class="fs-how-step__body">When a key contact happens, the pathway owner logs <strong>that contact happened</strong> (time, service, event type). The person can remain anonymous. OTOS stores a <strong>tokenised continuity signal</strong>, not a duplicate clinical record.</p>
           </div>
         </li>
         <li class="fs-how-step">
@@ -3203,9 +3301,9 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
             <div class="fs-how-step__num" aria-hidden="true"><span class="fs-how-step__num-inner">2</span></div>
           </div>
           <div class="fs-how-step__panel">
-            <span class="fs-how-step__tag">Human review</span>
-            <h3 class="fs-how-step__title">The right team sees the signal</h3>
-            <p class="fs-how-step__body">That touchpoint <strong>surfaces in the partner workflow</strong> that needs to act (ward, VCSE, primary care &mdash; configured in the pilot). OTOS does <strong>not</strong> auto-discharge, auto-refer, or decide care. <strong>People choose</strong> outreach, referral, or no further action.</p>
+            <span class="fs-how-step__tag">Partner visibility</span>
+            <h3 class="fs-how-step__title">CGL and CPFT see the same continuity thread state</h3>
+            <p class="fs-how-step__body">The signal appears in the agreed partner view. Teams can see <strong>follow-through status</strong> and <strong>handoff receipts</strong> on the same token. OTOS does not auto-refer, discharge, or make care decisions.</p>
           </div>
         </li>
         <li class="fs-how-step">
@@ -3213,9 +3311,9 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
             <div class="fs-how-step__num" aria-hidden="true"><span class="fs-how-step__num-inner">3</span></div>
           </div>
           <div class="fs-how-step__panel">
-            <span class="fs-how-step__tag">Follow-through</span>
-            <h3 class="fs-how-step__title">See whether the handoff actually landed</h3>
-            <p class="fs-how-step__body">When a referral or handoff is made, OTOS tracks <strong>whether the next step happened</strong> &mdash; as <strong>signals</strong> (e.g. attended, callback made), not by exposing another service&rsquo;s notes. You can answer: <em>did continuity hold, or did we lose them in the gap?</em></p>
+            <span class="fs-how-step__tag">Handoff receipts</span>
+            <h3 class="fs-how-step__title">You can tell if the handoff landed or drifted</h3>
+            <p class="fs-how-step__body">When onward support is agreed, OTOS tracks <strong>landing vs drift</strong> as continuity signals (attended, missed, callback, due). You can answer quickly: did this person progress, or disappear between services?</p>
           </div>
         </li>
         <li class="fs-how-step">
@@ -3223,9 +3321,9 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
             <div class="fs-how-step__num" aria-hidden="true"><span class="fs-how-step__num-inner">4</span></div>
           </div>
           <div class="fs-how-step__panel">
-            <span class="fs-how-step__tag">One thread</span>
-            <h3 class="fs-how-step__title">Every step stitches onto the same journey</h3>
-            <p class="fs-how-step__body">Approved touchpoints <strong>add to one thread over time</strong>. Reporting shows the <strong>shape of the pathway</strong> &mdash; where people flow, where they stall, where drop-off repeats. Same pilot stance: <strong>low integration</strong> into existing systems, <strong>high clarity</strong> for governance and improvement.</p>
+            <span class="fs-how-step__tag">Governance-safe</span>
+            <h3 class="fs-how-step__title">One encrypted thread, no shared records</h3>
+            <p class="fs-how-step__body">Every approved touchpoint adds to one journey thread. Reporting shows pathway shape and repeat drop-off patterns. Same stance throughout: <strong>low integration, low disruption, high clarity</strong>.</p>
           </div>
         </li>
       </ol>
@@ -3237,15 +3335,15 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
       </figure>
     </div>
     <footer class="fs-how-foot">
-      <a href="#fs-demos">Demo routes with real scenarios &amp; photos &rarr;</a>
-      <a href="#" onclick="return false;">Step-by-step wireframes (every screen) &rarr;</a>
+      <a href="#fs-demo-core">Core pilot walkthrough (inside this page) &rarr;</a>
+      <a href="#fs-demo-expansion">Expansion routes (inside this page) &rarr;</a>
     </footer>
   </div>
 </section>
 
 <section class="fs-section fs-hero-slide" id="fs-slide-6" style="height: 100vh; min-height: 100vh; position: relative; overflow: hidden; display: flex; align-items: flex-end;">
   <span class="fs-sec-label fs-sec-label--dark fs-sec-label--brain" role="img" aria-label="Scene 6"></span>
-  <div style="position: absolute; inset: 0; background-image: url('images/Morning light and morning routine.png'); background-size: cover; background-position: center; z-index: 0;"></div>
+  <div style="position: absolute; inset: 0; background-image: url('images/Therapist reviewing OTOS app progress.png'); background-size: cover; background-position: center; z-index: 0;"></div>
   <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,8,6,0.05) 0%, rgba(10,8,6,0.55) 60%, rgba(10,8,6,0.90) 100%); z-index: 1;"></div>
   <div style="position: absolute; top: 40px; right: 40px; background: rgba(15,12,8,0.82); backdrop-filter: blur(12px); border-radius: 12px; padding: 20px 24px; z-index: 3; min-width: 180px;">
     <div style="font-family:Inter;font-size:10px; font-weight:500;letter-spacing:0.12em; color:rgba(200,146,42,0.85); text-transform:uppercase; margin-bottom:6px;">PILOT STATUS</div>
@@ -3261,10 +3359,64 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
   </div>
 </section>
 
-<section id="fs-demos" class="fs-demos-section" aria-label="Guided demos — four routes">
+<section id="fs-demo-core" class="fs-embedded-demo" aria-label="Embedded demo — core pilot walkthrough">
+  <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="Core demo"></span>
+  <div class="fs-embedded-demo__inner">
+    <span class="fs-stage-chip fs-stage-chip--core">Stage 1 core proof</span>
+    <h3 class="fs-embedded-demo__title text-gradient-soft">Embedded walkthrough: CGL ↔ CPFT dual-pathway continuity</h3>
+    <p class="fs-embedded-demo__sub">This chapter stays inside the page. Scroll the panel to walk the operational sequence exactly as Stage 1 is framed.</p>
+    <div class="fs-embedded-demo__viewport">
+      <div class="fs-embedded-demo__scroller">
+        <article class="fs-embedded-demo__card">
+          <h4>1. First contact is logged by the pathway owner</h4>
+          <p>A CGL or CPFT contact is logged as an anonymised continuity event with the shared token. No EPR write-back.</p>
+        </article>
+        <article class="fs-embedded-demo__card">
+          <h4>2. Partner view updates in the same continuity thread</h4>
+          <p>The opposite silo sees status updates and handoff receipts on the token, not each other&rsquo;s notes.</p>
+        </article>
+        <article class="fs-embedded-demo__card">
+          <h4>3. Drift is visible before someone fully disappears</h4>
+          <p>Missed follow-through, delayed callbacks, and stalled next-steps are surfaced as governance-safe signals.</p>
+        </article>
+        <article class="fs-embedded-demo__card">
+          <h4>4. Human decisions remain with each service team</h4>
+          <p>OTOS flags continuity state; clinicians and partner workers decide escalation, outreach, and next action.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fs-demo-expansion" class="fs-embedded-demo" aria-label="Embedded demo — expansion routes">
+  <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="Expansion demo"></span>
+  <div class="fs-embedded-demo__inner">
+    <span class="fs-stage-chip">Stage 2 / Stage 3 expansion framing</span>
+    <h3 class="fs-embedded-demo__title text-gradient-soft">Expansion routes after Stage 1 stabilises</h3>
+    <p class="fs-embedded-demo__sub">Community and GP/Joy/WorkWell pathways stay in scope, but are positioned as expansion beyond the bilateral CGL&ndash;CPFT proof.</p>
+    <div class="fs-embedded-demo__viewport">
+      <div class="fs-embedded-demo__scroller">
+        <article class="fs-embedded-demo__card">
+          <h4>Stage 2: Community continuation</h4>
+          <p>Drop-in and VCSE routes pick up the same thread without creating another intake system.</p>
+        </article>
+        <article class="fs-embedded-demo__card">
+          <h4>Stage 2: Counselling / therapist continuity</h4>
+          <p>Block-end drift is visible as a signal so transitions out of counselling are not silent.</p>
+        </article>
+        <article class="fs-embedded-demo__card">
+          <h4>Stage 3: GP / Joy / WorkWell scaling</h4>
+          <p>Primary-care signpost routes are treated as later-network expansion, not equal to Stage 1 proof.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fs-demos" class="fs-demos-section" aria-label="Guided demos — staged routes">
   <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="Demos"></span>
   <header class="fs-demos-intro">
-    <p class="fs-demos-intro__strap">Four routes. Four scenarios &mdash; bedside, community hub, GP&ndash;WorkWell (Joy / CPSL Mind), and the CGL&ndash;CPFT dual pathway. Each shows what OTOS looks like in practice.</p>
+    <p class="fs-demos-intro__strap">Staged routes, aligned to delivery logic: <strong>Stage 1 core proof</strong> (CGL&ndash;CPFT), then <strong>Stage 2</strong> community continuation, then <strong>Stage 3</strong> GP/Joy/WorkWell expansion.</p>
   </header>
   <div class="fs-demos-stack">
     <article class="fs-demo-split" aria-label="Route A — Addenbrooke’s discharge">
@@ -3277,6 +3429,7 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
         </div>
       </div>
       <div class="fs-demo-split__copy">
+        <span class="fs-stage-chip">Stage 2 route</span>
         <div class="fs-route">ROUTE A &mdash; ADDENBROOKE&rsquo;S DISCHARGE</div>
         <p class="fs-demo-strap--head text-gradient-soft">When someone is at their lowest &mdash; OTOS is already there.</p>
         <p class="fs-demo-strap--sub">Frontline staff log a touchpoint in seconds. The system does the rest.</p>
@@ -3296,7 +3449,7 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
           <li><span class="text-gradient-soft">No EPR write-back</span></li>
           <li><span class="text-gradient-soft">No extra paperwork</span></li>
         </ul>
-        <a class="fs-demo-wf" href="#" onclick="return false;">See step-by-step →</a>
+        <a class="fs-demo-wf" href="#fs-demo-expansion">View Stage 2 flow in-page →</a>
       </div>
     </article>
     <article class="fs-demo-split fs-demo-split--reverse" aria-label="Route B — Community referral">
@@ -3309,6 +3462,7 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
         </div>
       </div>
       <div class="fs-demo-split__copy">
+        <span class="fs-stage-chip">Stage 2 route</span>
         <div class="fs-route">ROUTE B &mdash; COMMUNITY REFERRAL</div>
         <p class="fs-demo-strap--head text-gradient-soft">The thread picks up where it left off.</p>
         <p class="fs-demo-strap--sub">Same anonymous journey ID &mdash; new touchpoint, no new paperwork.</p>
@@ -3328,7 +3482,7 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
           <li><span class="text-gradient-soft">Service manager alerted to pattern</span></li>
           <li><span class="text-gradient-soft">Nothing changes in Martina&rsquo;s workflow</span></li>
         </ul>
-        <a class="fs-demo-wf" href="#" onclick="return false;">See step-by-step →</a>
+        <a class="fs-demo-wf" href="#fs-demo-expansion">View Stage 2 flow in-page →</a>
       </div>
     </article>
     <article class="fs-demo-split" aria-label="Route C — GP referral to WorkWell Cambridge City (Joy, CPSL Mind)">
@@ -3341,6 +3495,7 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
         </div>
       </div>
       <div class="fs-demo-split__copy">
+        <span class="fs-stage-chip">Stage 3 expansion</span>
         <div class="fs-route">ROUTE C &mdash; GP &rarr; WORKWELL (JOY · CPSL MIND)</div>
         <p class="fs-demo-strap--head text-gradient-soft">Official referral, informal handoffs &mdash; continuity still has to hold.</p>
         <p class="fs-demo-strap--sub">Signed off on a fit note with mental-health and addiction needs: primary care signposts into <strong>WorkWell Cambridge City</strong> via <strong>Joy</strong>; <strong>CPSL Mind</strong> Work and Health Coaches help people access the right mix of support (including recovery coaching and connections to counselling and substance-misuse services). OTOS carries <strong>anonymous signals</strong> when blocks of support end but the thread doesn&rsquo;t.</p>
@@ -3363,7 +3518,7 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
           <li><span class="text-gradient-soft"><strong>Raise a structured concern</strong> (e.g. safeguarding, missed handoff, co-occurring risk) &mdash; non-diagnostic tag to the <strong>agreed reviewer</strong> (pilot ops / CPFT / addiction route), not a generic GP inbox.</span></li>
           <li><span class="text-gradient-soft"><strong>Request a handoff receipt</strong> when someone is referred onwards (e.g. shared-care discussion, addiction service, talking therapies, ADHD pathway).</span></li>
         </ul>
-        <a class="fs-demo-wf" href="#" onclick="return false;">See therapist flow →</a>
+        <a class="fs-demo-wf" href="#fs-demo-expansion">View Stage 3 flow in-page →</a>
       </div>
     </article>
     <article class="fs-demo-split fs-demo-split--reverse" aria-label="Route D — CGL and CPFT dual pathway">
@@ -3376,6 +3531,7 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
         </div>
       </div>
       <div class="fs-demo-split__copy">
+        <span class="fs-stage-chip fs-stage-chip--core">Stage 1 core proof</span>
         <div class="fs-route">ROUTE D &mdash; DUAL PATHWAY (CGL &middot; CPFT)</div>
         <p class="fs-demo-strap--head text-gradient-soft">Same person. Two silos. One continuity thread.</p>
         <p class="fs-demo-strap--sub">Addiction and mental health often meet the same life at different doors &mdash; without a shared record. OTOS does not merge EPRs; it carries an <strong>encrypted, anonymised journey token</strong> in the continuity layer so both sides can see follow-through, not each other&rsquo;s notes.</p>
@@ -3396,8 +3552,8 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
           <li><span class="text-gradient-soft"><strong>Escalation</strong> stays human-gated; diagnostic claims stay with the owning clinical team.</span></li>
         </ul>
         <div style="display:flex;flex-wrap:wrap;gap:0.65rem 1.25rem;margin-top:0.25rem;align-items:center;">
-          <a class="fs-demo-wf" href="#" onclick="return false;">CGL pathway dashboard (fixture) →</a>
-          <a class="fs-demo-wf" href="#" onclick="return false;">CPFT pathway dashboard (fixture) →</a>
+          <a class="fs-demo-wf" href="#fs-demo-core">CGL pathway walkthrough (in-page) →</a>
+          <a class="fs-demo-wf" href="#fs-demo-core">CPFT pathway walkthrough (in-page) →</a>
         </div>
         <p style="margin:0.85rem 0 0;font-size:clamp(12px,1.15vw,13px);color:var(--muted);line-height:1.5;"><a href="#" onclick="return false;" style="color:var(--amber);font-weight:600;">Overview: dual-silo fixtures on reporting →</a>
         &nbsp;&middot;&nbsp;<a href="#" onclick="return false;" style="color:var(--amber);font-weight:600;">Coordinator dashboard wireframe →</a></p>
@@ -4120,7 +4276,7 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
   initInviewObserver('[data-fs-statement]');
 
   (function initFsSectionRailSpy() {
-    var ids = ['fs-home', 'fs-how', 'fs-demos', 'fs-dual', 'fs-infra', 'fs-architecture', 'fs-controls', 'fs-reporting', 'fs-refs', 'fs-founder'];
+    var ids = ['fs-home', 'fs-dual', 'fs-how', 'fs-demo-core', 'fs-demos', 'fs-controls', 'fs-architecture', 'fs-reporting', 'fs-refs', 'fs-founder'];
     var links = document.querySelectorAll('.fs-section-rail a[data-fs-jump]');
     if (!links.length) return;
     var els = ids.map(function (id) { return document.getElementById(id); }).filter(Boolean);
