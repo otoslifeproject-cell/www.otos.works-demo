@@ -25,15 +25,51 @@
       width: 100%;
       height: 100%;
     }
+
+    .ripple-controls {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .ripple-btn {
+      appearance: none;
+      border: 1px solid rgba(193, 127, 36, 0.45);
+      border-radius: 10px;
+      background: rgba(20, 16, 9, 0.78);
+      color: rgba(245, 230, 212, 0.95);
+      font: 600 12px/1.2 Inter, system-ui, sans-serif;
+      letter-spacing: 0.02em;
+      padding: 8px 11px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+
+    .ripple-btn:hover {
+      background: rgba(36, 27, 14, 0.84);
+    }
   </style>
 </head>
 <body>
+  <div class="ripple-controls">
+    <button id="ripple-replay-btn" class="ripple-btn" type="button" aria-label="Replay ripple story">Reset / Replay</button>
+  </div>
   <canvas id="rippleCanvas"></canvas>
   <script>
     // ============================================================
     // OTOS RIPPLE CASCADE — CPFT map frame + centre cost + narrative below frame
     // Rings bleed outside region (dimmed); nodes emphasised; inward burst → freeze/breeding → chaos → ???
     // OTOS Digital Ltd — All values sourced from OTOS Evidence Ledger V1.1
+    //
+    // Design intent (2026 readability pass):
+    // - Keep the narrative legible for policy/NHS audiences by limiting on-screen density.
+    // - Favour sequence over simultaneity (especially in Act 5).
+    // - Bound visual growth with hard caps + decay so each cycle clears cleanly.
+    // Tunables for pacing/density are in CONFIG under "Readability and density controls".
     // ============================================================
 
     // ============================================================
@@ -257,6 +293,16 @@
       ACT5_CHAOS_SPIRAL_MS:     4500,
       ACT5_CHAOS_HOLD_QUESTION_MS: 2800,
       ACT5_FINAL_NARRATOR: 'Who knows the true end cost — and impact — of this deadly combination?',
+
+      // Readability and density controls (policy-facing calm over visual noise)
+      MAX_ACTIVE_RINGS: 14,
+      MAX_ACTIVE_PULSES: 10,
+      MAX_GHOST_TRACES: 12,
+      GHOST_TRACE_HALF_LIFE_MS: 5000,
+      GHOST_TRACE_MAX_AGE_MS: 12000,
+      ACT5_NODE_BURST_MAX_NODES: 6,
+      ACT5_NODE_BURST_STAGGER_MS: 220,
+      ACT5_NODE_BURST_GEN2_DELAY_MS: 240,
     };
 
     // ============================================================
@@ -1414,18 +1460,27 @@
       ctx.restore();
     }
 
-    // Draw all accumulated ghost traces beneath active rings
-    function drawGhostTraces() {
+    // Draw accumulated ghost traces beneath active rings with decay + hard cap.
+    function drawGhostTraces(timestamp) {
+      state.ghostTraces = state.ghostTraces
+        .filter(trace => timestamp - trace.createdAt <= CONFIG.GHOST_TRACE_MAX_AGE_MS)
+        .sort((a, b) => b.createdAt - a.createdAt)
+        .slice(0, CONFIG.MAX_GHOST_TRACES);
+
       state.ghostTraces.forEach(trace => {
+        const age = Math.max(0, timestamp - trace.createdAt);
+        const decay = Math.exp(-age / CONFIG.GHOST_TRACE_HALF_LIFE_MS);
+        const baseAlpha = CONFIG.GHOST_TRACE_ALPHA * decay;
+        if (baseAlpha <= 0.004) return;
         ctx.save();
         ctx.beginPath();
         ctx.arc(trace.x, trace.y, trace.radius, 0, Math.PI * 2);
         if (trace.generation === 1) {
-          ctx.strokeStyle = `rgba(255,138,0,${CONFIG.GHOST_TRACE_ALPHA})`;
+          ctx.strokeStyle = `rgba(255,138,0,${baseAlpha})`;
         } else if (trace.generation === 2) {
-          ctx.strokeStyle = `rgba(200,146,42,${CONFIG.GHOST_TRACE_ALPHA})`;
+          ctx.strokeStyle = `rgba(200,146,42,${baseAlpha})`;
         } else {
-          ctx.strokeStyle = `rgba(255,255,255,${CONFIG.GHOST_TRACE_ALPHA * 0.6})`;
+          ctx.strokeStyle = `rgba(255,255,255,${baseAlpha * 0.6})`;
         }
         ctx.lineWidth   = scaled(CONFIG.GHOST_TRACE_LINE_WIDTH);
         ctx.globalAlpha = 1;
@@ -1494,7 +1549,7 @@
     function updateAndDrawRings(timestamp) {
       // During freeze: draw rings at reduced alpha only, no position updates
       if (state.cinematicFreeze) {
-        drawGhostTraces();
+        drawGhostTraces(timestamp);
         state.rings.forEach(ring => {
           const frozenRing = { ...ring, currentAlpha: ring.currentAlpha * 0.15 };
           drawGlowRing(frozenRing);
@@ -1502,7 +1557,7 @@
         return;
       }
 
-      drawGhostTraces();
+      drawGhostTraces(timestamp);
 
       state.rings = state.rings.filter(ring => {
         if (!ring.active) return false;
@@ -1539,7 +1594,8 @@
             x:          ring.x,
             y:          ring.y,
             radius:     ring.currentRadius,
-            generation: ring.generation
+            generation: ring.generation,
+            createdAt:  timestamp,
           });
           ring.ghostTraceCreated = true;
         }
@@ -1574,13 +1630,31 @@
         }
         return false;
       });
+
+      // Hard cap pulse pool to keep highlights readable.
+      if (state.pulses.length > CONFIG.MAX_ACTIVE_PULSES) {
+        state.pulses = state.pulses.slice(-CONFIG.MAX_ACTIVE_PULSES);
+      }
     }
 
     // Spawn a new ring into the pool — Layer 2 corrected maxRadius and alpha for gen 2/3
     function spawnRing(x, y, generation, triggerPoints, timestamp) {
-      if (state.rings.length >= 24) {
-        console.warn('OTOS Ripple: ring pool limit reached, skipping spawn');
-        return;
+      if (state.rings.length >= CONFIG.MAX_ACTIVE_RINGS) {
+        // Keep strongest/newest rings; evict weakest old ring so narrative can continue.
+        let evictIndex = -1;
+        let weakestScore = Number.POSITIVE_INFINITY;
+        for (let i = 0; i < state.rings.length; i++) {
+          const r = state.rings[i];
+          const age = Math.max(1, timestamp - r.startTime);
+          const score = (r.currentAlpha + 0.03) / age;
+          if (score < weakestScore) {
+            weakestScore = score;
+            evictIndex = i;
+          }
+        }
+        if (evictIndex >= 0) {
+          state.rings.splice(evictIndex, 1);
+        }
       }
 
       let genConfig;
@@ -1633,7 +1707,7 @@
         Math.max(canvas.width, canvas.height) * CONFIG.ACT4_INWARD_MAX_RADIUS_RATIO * 0.48;
       const n = CONFIG.ACT4_INWARD_RING_COUNT;
       for (let i = 0; i < n; i++) {
-        if (state.rings.length >= 48) break;
+        if (state.rings.length >= CONFIG.MAX_ACTIVE_RINGS) break;
         state.rings.push({
           id:                ringIdCounter++,
           x:                 c.x,
@@ -1657,10 +1731,22 @@
     function spawnAct5ExplosiveRings(ts) {
       if (state.act5ExplosiveFired) return;
       state.act5ExplosiveFired = true;
-      CONFIG.CPFT_NODES.forEach((n, i) => {
-        const p = mapNormToCanvas(n.nx, n.ny);
-        if (state.rings.length < 46) spawnRing(p.x, p.y, 1, [], ts + i * 65);
-        if (state.rings.length < 46) spawnRing(p.x, p.y, 2, [], ts + 140 + i * 65);
+      const ordered = CONFIG.CPFT_NODES
+        .map(n => {
+          const p = mapNormToCanvas(n.nx, n.ny);
+          const dx = p.x - state.origin.x;
+          const dy = p.y - state.origin.y;
+          return { p, d2: dx * dx + dy * dy };
+        })
+        .sort((a, b) => a.d2 - b.d2)
+        .slice(0, CONFIG.ACT5_NODE_BURST_MAX_NODES);
+
+      ordered.forEach((entry, i) => {
+        const delay = i * CONFIG.ACT5_NODE_BURST_STAGGER_MS;
+        spawnRing(entry.p.x, entry.p.y, 1, [], ts + delay);
+        if (i % 2 === 0) {
+          spawnRing(entry.p.x, entry.p.y, 2, [], ts + delay + CONFIG.ACT5_NODE_BURST_GEN2_DELAY_MS);
+        }
       });
     }
 
@@ -2311,6 +2397,14 @@
       state.freezeLines.forEach(line => { line.alpha = 0; line.triggered = false; });
     }
 
+    function attachUiControls() {
+      const replayBtn = document.getElementById('ripple-replay-btn');
+      if (!replayBtn) return;
+      replayBtn.addEventListener('click', () => {
+        resetAllState();
+      });
+    }
+
     // ============================================================
     // Main animation loop — Layer 2 call order
     // ============================================================
@@ -2377,6 +2471,7 @@
     function init() {
       resizeCanvas();
       loadCpftMap();
+      attachUiControls();
       requestAnimationFrame(animate);
     }
 

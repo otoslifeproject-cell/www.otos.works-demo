@@ -115,6 +115,49 @@ img, svg { max-width: 100%; height: auto; }
   margin: 0 auto;
 }
 
+.partner-keystrip { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 28px) clamp(1.25rem, 3vw, 2rem); }
+.partner-keystrip__box {
+  position: relative;
+  margin-top: clamp(3rem, 8vw, 4.75rem);
+  padding: clamp(1.75rem, 3.2vw, 2.5rem) clamp(1.25rem, 2.5vw, 1.75rem) clamp(1.1rem, 2vw, 1.5rem);
+  border-radius: 22px;
+  border: 1px solid rgba(193, 127, 36, 0.24);
+  background: linear-gradient(168deg, rgba(255, 252, 248, 0.97) 0%, rgba(248, 241, 230, 0.94) 52%, rgba(255, 255, 255, 0.91) 100%);
+  box-shadow: 0 24px 60px rgba(26, 20, 16, 0.1), 0 0 0 1px rgba(255, 252, 248, 0.8) inset;
+  overflow: visible;
+}
+.partner-keystrip__logos {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 3.5vw, 2.25rem);
+  width: min(calc(100% - 8px), 920px);
+  padding: 0 8px;
+  z-index: 2;
+}
+.partner-keystrip__logos img {
+  height: clamp(52px, 12vw, 100px);
+  width: auto;
+  max-width: min(300px, 38vw);
+  object-fit: contain;
+  filter: drop-shadow(0 12px 28px rgba(26, 20, 16, 0.16));
+}
+.partner-keystrip__caption {
+  margin: 0;
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(90, 78, 64, 0.62);
+  line-height: 1.45;
+}
+
 .partners-intro {
   text-align: center;
   max-width: 1100px;
@@ -464,6 +507,17 @@ img, svg { max-width: 100%; height: auto; }
   <span class="page-kicker">Infrastructure Partners</span>
   <h1>The infrastructure already exists.<br>OTOS connects it.</h1>
   <p class="page-intro">Three strategic relationships. Each one strengthening a different dimension of the OTOS proposition.</p>
+</div>
+
+<div class="partner-keystrip" aria-label="Key delivery partners">
+  <div class="partner-keystrip__box">
+    <div class="partner-keystrip__logos">
+      <img src="images/The_Sun_Network_Logo.png" alt="The SUN Network" width="360" height="120" loading="lazy" decoding="async" />
+      <img src="../assets/partners/CGL_Logo.png" alt="Change Grow Live (CGL)" width="280" height="100" loading="lazy" decoding="async" />
+      <img src="../assets/partners/NHS_CPFT_Logo.png" alt="Cambridgeshire and Peterborough NHS Foundation Trust (CPFT)" width="280" height="100" loading="lazy" decoding="async" />
+    </div>
+    <p class="partner-keystrip__caption">SUN co-production &middot; CGL &middot; CPFT &mdash; dual-pathway &amp; lived experience</p>
+  </div>
 </div>
 
 <main class="infra-main">

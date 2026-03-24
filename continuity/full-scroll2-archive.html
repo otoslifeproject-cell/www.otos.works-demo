@@ -7,12 +7,12 @@
 <meta name="description" content="OTOS Continuity™ — single-page pilot narrative: how it works, demos, infrastructure, reporting, and references.">
 <meta name="theme-color" content="#0a0806">
 <!-- Deploy / cache check: if this rev doesn’t match GitHub, the host is serving a stale file -->
-<meta name="otos-scroll2-rev" content="20260324-brain-kicker-space">
+<meta name="otos-scroll2-rev" content="20260324-partner-keystrip">
 <meta http-equiv="Cache-Control" content="max-age=0, must-revalidate">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="otos-shared.css?v=20260324-brain-kicker-space">
+<link rel="stylesheet" href="otos-shared.css?v=20260324-partner-keystrip">
 <style>
 /* full-scroll2.html — OTOS Continuity single-page; long-form (no fixed top nav). How-it-works is a static section (#fs-how). */
 :root {
@@ -338,6 +338,8 @@ a { color: var(--amber); }
   margin-left: 0;
   margin-right: auto;
   max-width: 680px;
+  font-size: clamp(32px, 3.5vw, 44px);
+  text-align: left;
 }
 .fs-how-layout__intro .fs-how-static__sub {
   max-width: 680px;
@@ -349,15 +351,21 @@ a { color: var(--amber); }
   color: rgba(58, 48, 38, 0.78);
 }
 .fs-how-layout__grid {
-  display: grid;
-  gap: clamp(1.75rem, 4vw, 2.75rem);
+  display: block;
+  position: relative;
   margin-top: clamp(1.75rem, 4vw, 2.5rem);
-  align-items: start;
 }
 @media (min-width: 1024px) {
   .fs-how-layout__grid {
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 34%);
-    gap: clamp(1.5rem, 3vw, 2.25rem);
+    min-height: 100%;
+  }
+  .fs-how-steps {
+    padding-right: 340px;
+  }
+}
+@media (max-width: 1023px) {
+  .fs-how-steps {
+    padding-right: 0;
   }
 }
 .fs-how-steps {
@@ -429,16 +437,11 @@ a { color: var(--amber); }
   display: block;
 }
 .fs-how-step__panel {
-  padding: clamp(1.15rem, 2.8vw, 1.5rem) clamp(1.2rem, 3vw, 1.65rem);
-  border-radius: 20px;
-  background: rgba(255, 252, 248, 0.38);
-  backdrop-filter: blur(22px) saturate(145%);
-  -webkit-backdrop-filter: blur(22px) saturate(145%);
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  box-shadow:
-    0 16px 48px rgba(26, 20, 16, 0.08),
-    0 0 0 1px rgba(193, 127, 36, 0.1) inset,
-    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  padding: 28px;
+  border-radius: 8px;
+  background: rgba(44, 26, 14, 0.05);
+  border: none;
+  box-shadow: none;
 }
 .fs-how-step__tag {
   display: inline-block;
@@ -480,12 +483,6 @@ a { color: var(--amber); }
   margin: 0;
   text-align: center;
 }
-@media (min-width: 1024px) {
-  .fs-how-visual {
-    position: sticky;
-    top: 1.25rem;
-  }
-}
 .fs-how-visual__frame {
   border-radius: 20px;
   overflow: hidden;
@@ -500,16 +497,16 @@ a { color: var(--amber); }
   vertical-align: middle;
 }
 .fs-how-visual figcaption {
-  margin-top: 0.75rem;
-  font-size: 0.78rem;
-  line-height: 1.45;
-  color: rgba(90, 78, 64, 0.78);
-  text-align: left;
-  padding: 0 0.15rem;
+  display: none;
 }
 /* How: small warm insert (distinct from SUN multi-device hero elsewhere) */
 .fs-how-visual--insert {
   text-align: right;
+  position: absolute;
+  right: 40px;
+  bottom: 18px;
+  margin: 0;
+  z-index: 3;
 }
 .fs-how-visual--insert .fs-how-visual__frame--insert {
   max-width: 280px;
@@ -537,7 +534,13 @@ a { color: var(--amber); }
   margin-right: 0;
 }
 @media (max-width: 1023px) {
-  .fs-how-visual--insert { text-align: left; }
+  .fs-how-visual--insert {
+    position: static;
+    right: auto;
+    bottom: auto;
+    margin-top: 1.1rem;
+    text-align: left;
+  }
   .fs-how-visual--insert .fs-how-visual__frame--insert,
   .fs-how-visual--insert figcaption {
     margin-left: 0;
@@ -1145,6 +1148,51 @@ a { color: var(--amber); }
   width: calc(100% + 2 * clamp(16px, 3vw, 40px));
   max-width: none;
   margin-top: calc(-1 * clamp(1rem, 3vw, 2rem));
+}
+.fs-photo-moment {
+  position: relative;
+  min-height: 100vh;
+  background: #1a1410 center / cover no-repeat;
+  overflow: hidden;
+}
+.fs-photo-moment::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(10, 8, 6, 0.15) 0%, rgba(10, 8, 6, 0.65) 70%, rgba(10, 8, 6, 0.88) 100%);
+  pointer-events: none;
+}
+.fs-photo-moment__line-wrap {
+  position: absolute;
+  left: 60px;
+  bottom: 80px;
+  z-index: 2;
+  max-width: 640px;
+}
+.fs-photo-moment__line {
+  margin: 0;
+  font-family: var(--font-h);
+  font-weight: 800;
+  font-style: italic;
+  font-size: clamp(38px, 4vw, 58px);
+  line-height: 1.1;
+  color: rgba(255, 252, 248, 0.97);
+}
+.fs-photo-moment__sub {
+  margin: 0.7rem 0 0;
+  font-family: var(--font-h);
+  font-style: italic;
+  font-size: clamp(18px, 2vw, 24px);
+  line-height: 1.2;
+  color: rgba(255, 252, 248, 0.82);
+}
+@media (max-width: 900px) {
+  .fs-photo-moment__line-wrap {
+    left: 20px;
+    right: 20px;
+    bottom: 42px;
+    max-width: none;
+  }
 }
 .fs-band--white .fs-quote { position: relative; z-index: 1; }
 .fs-split {
@@ -2049,46 +2097,67 @@ a { color: var(--amber); }
   z-index: 0;
   filter: sepia(0.12) brightness(1.04) saturate(1.02);
 }
+/* One clear-glass panel, bottom-right, stats stacked (not three separate tiles) */
 .fs-demo-split__stats {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 28px 10px 12px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  background: linear-gradient(180deg, transparent 0%, rgba(6, 5, 4, 0.06) 40%, rgba(8, 6, 5, 0.42) 100%);
+  left: auto;
+  right: clamp(10px, 2.2vw, 20px);
+  bottom: clamp(10px, 2.2vw, 20px);
+  top: auto;
+  width: auto;
+  max-width: min(220px, 46vw);
+  padding: 11px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: rgba(255, 252, 248, 0.07);
+  backdrop-filter: blur(22px) saturate(170%);
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 16px;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
   pointer-events: none;
   z-index: 2;
 }
 .fs-demo-stat {
-  text-align: center;
-  padding: 10px 6px 8px;
-  border-radius: 14px;
-  background: rgba(12, 10, 8, 0.28);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-  border: 1px solid rgba(245, 240, 232, 0.14);
+  text-align: left;
+  padding: 9px 0;
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+.fs-demo-stat:last-child {
+  border-bottom: none;
+  padding-bottom: 2px;
+}
+.fs-demo-stat:first-child {
+  padding-top: 2px;
 }
 .fs-demo-stat__n {
   display: block;
   font-family: var(--font-h);
-  font-size: clamp(1.2rem, 2.4vw, 1.55rem);
+  font-size: clamp(1.05rem, 2.1vw, 1.38rem);
   font-weight: 700;
-  color: var(--amber);
-  line-height: 1.05;
+  color: #e8c27a;
+  line-height: 1.08;
   letter-spacing: -0.02em;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
 }
 .fs-demo-stat__l {
   display: block;
-  margin-top: 4px;
-  font-size: 9px;
+  margin-top: 3px;
+  font-size: 8px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
-  color: rgba(245, 240, 232, 0.82);
-  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.4;
 }
 .fs-demo-split__copy {
   padding: clamp(1.35rem, 2.8vw, 2.25rem) clamp(1.25rem, 3vw, 2.5rem);
@@ -2196,7 +2265,12 @@ a { color: var(--amber); }
   .fs-demo-split--reverse .fs-demo-split__media { order: -1; }
   .fs-demo-split--reverse .fs-demo-split__copy { order: 0; }
   .fs-demo-split__img { min-height: min(30vh, 220px); }
-  .fs-demo-split__stats { grid-template-columns: repeat(3, 1fr); padding-top: 20px; }
+  .fs-demo-split__stats {
+    right: clamp(8px, 2.5vw, 14px);
+    bottom: clamp(8px, 2.5vw, 14px);
+    max-width: min(200px, 52vw);
+    padding: 9px 12px 10px;
+  }
 }
 
 /* How slides: compact lists */
@@ -2286,6 +2360,67 @@ a { color: var(--amber); }
   opacity: 0.72;
 }
 
+/* Key delivery partners — large logos half above / half on the glass box (depth) */
+.fs-partner-keystrip {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 clamp(12px, 2vw, 20px);
+  margin-bottom: clamp(1rem, 2.5vw, 1.85rem);
+}
+.fs-partner-keystrip__box {
+  position: relative;
+  margin-top: clamp(3.25rem, 8.5vw, 5rem);
+  padding: clamp(1.85rem, 3.6vw, 2.65rem) clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 2.4vw, 1.75rem);
+  border-radius: 22px;
+  border: 1px solid rgba(193, 127, 36, 0.24);
+  background: linear-gradient(168deg, rgba(255, 252, 248, 0.97) 0%, rgba(248, 241, 230, 0.94) 52%, rgba(255, 255, 255, 0.91) 100%);
+  box-shadow:
+    0 24px 60px rgba(26, 20, 16, 0.11),
+    0 0 0 1px rgba(255, 252, 248, 0.8) inset;
+  overflow: visible;
+}
+.fs-partner-keystrip__logos {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.1rem, 4vw, 2.5rem);
+  width: min(calc(100% - 8px), 940px);
+  padding: 0 10px;
+  z-index: 2;
+}
+.fs-partner-keystrip__logos img {
+  height: clamp(56px, 13vw, 108px);
+  width: auto;
+  max-width: min(320px, 40vw);
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 12px 32px rgba(26, 20, 16, 0.18));
+}
+.fs-partner-keystrip__caption {
+  margin: 0;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(90, 78, 64, 0.62);
+  line-height: 1.45;
+}
+@media (max-width: 520px) {
+  .fs-partner-keystrip__logos {
+    gap: 0.75rem 1.25rem;
+  }
+  .fs-partner-keystrip__logos img {
+    max-width: min(260px, 88vw);
+    height: clamp(48px, 16vw, 72px);
+  }
+}
+
 /* Partners — editorial cards + SUN visual */
 .fs-partner-showcase {
   max-width: 1140px;
@@ -2371,7 +2506,7 @@ a { color: var(--amber); }
 }
 .fs-partner__brand {
   margin: 0 0 1rem;
-  min-height: 56px;
+  min-height: 64px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -2387,8 +2522,8 @@ a { color: var(--amber); }
   object-position: center center;
 }
 .fs-partner__logo--sun {
-  max-height: 52px;
-  max-width: min(280px, 94%);
+  max-height: 64px;
+  max-width: min(340px, 96%);
 }
 .fs-partner__logo--qb {
   max-height: 52px;
@@ -2841,12 +2976,13 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
   <a href="#fs-home" data-fs-jump><span class="fs-section-rail__glyph">A</span><span class="fs-section-rail__hint">Home</span></a>
   <a href="#fs-how" data-fs-jump><span class="fs-section-rail__glyph">B</span><span class="fs-section-rail__hint">How</span></a>
   <a href="#fs-demos" data-fs-jump><span class="fs-section-rail__glyph">C</span><span class="fs-section-rail__hint">Demos</span></a>
-  <a href="#fs-infra" data-fs-jump><span class="fs-section-rail__glyph">D</span><span class="fs-section-rail__hint">Infra</span></a>
-  <a href="#fs-architecture" data-fs-jump><span class="fs-section-rail__glyph">E</span><span class="fs-section-rail__hint">Map</span></a>
-  <a href="#fs-controls" data-fs-jump><span class="fs-section-rail__glyph">F</span><span class="fs-section-rail__hint">Controls</span></a>
-  <a href="#fs-reporting" data-fs-jump><span class="fs-section-rail__glyph">G</span><span class="fs-section-rail__hint">Reporting</span></a>
-  <a href="#fs-refs" data-fs-jump><span class="fs-section-rail__glyph">H</span><span class="fs-section-rail__hint">Refs</span></a>
-  <a href="#fs-founder" data-fs-jump><span class="fs-section-rail__glyph">I</span><span class="fs-section-rail__hint">Founder</span></a>
+  <a href="#fs-dual" data-fs-jump><span class="fs-section-rail__glyph">D</span><span class="fs-section-rail__hint">Dual</span></a>
+  <a href="#fs-infra" data-fs-jump><span class="fs-section-rail__glyph">E</span><span class="fs-section-rail__hint">Infra</span></a>
+  <a href="#fs-architecture" data-fs-jump><span class="fs-section-rail__glyph">F</span><span class="fs-section-rail__hint">Map</span></a>
+  <a href="#fs-controls" data-fs-jump><span class="fs-section-rail__glyph">G</span><span class="fs-section-rail__hint">Controls</span></a>
+  <a href="#fs-reporting" data-fs-jump><span class="fs-section-rail__glyph">H</span><span class="fs-section-rail__hint">Reporting</span></a>
+  <a href="#fs-refs" data-fs-jump><span class="fs-section-rail__glyph">I</span><span class="fs-section-rail__hint">Refs</span></a>
+  <a href="#fs-founder" data-fs-jump><span class="fs-section-rail__glyph">J</span><span class="fs-section-rail__hint">Founder</span></a>
 </nav>
 
 <main class="fs-main">
@@ -2961,21 +3097,10 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
   </div>
 </section>
 
-<section class="fs-photo-band fs-photo-band--quote-bottom" style="background-image:url('images/Engaging conversation at NHS Community Hub.png');">
-  <div class="fs-photo-band__shade" aria-hidden="true"></div>
-  <div class="fs-photo-band__inner">
-    <div class="fs-photo-band__lead">
-      <div class="fs-reveal" data-fs-reveal>
-        <h2 class="fs-strapline-xl text-gradient-soft">The space between services is where people get lost.</h2>
-        <p class="fs-strapline-sub">OTOS lights that gap &mdash; without touching the record, without slowing the ward round.</p>
-      </div>
-    </div>
-    <div class="fs-photo-band__quote">
-      <div class="fs-statement fs-statement--on-photo fs-statement--left fs-statement--wide fs-statement--mix" data-fs-statement data-fs-cm-photo-quote-wrap>
-        <p class="fs-statement__line text-gradient-soft">&ldquo;The gap has a name now.&rdquo;</p>
-        <p class="fs-statement__line fs-statement__line--cite" data-fs-cm-photo-cite>OTOS continuity framing</p>
-      </div>
-    </div>
+<section class="fs-photo-moment" style="background-image:url('images/Engaging conversation at NHS Community Hub.png'); background-position:50% 44%;" aria-label="Continuity gap moment">
+  <span class="fs-sec-label fs-sec-label--dark fs-sec-label--brain" role="img" aria-label="Moment"></span>
+  <div class="fs-photo-moment__line-wrap">
+    <h2 class="fs-photo-moment__line">The space between services is where people get lost.</h2>
   </div>
 </section>
 
@@ -2989,10 +3114,10 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
     <article class="fs-demo-split" aria-label="Route A — Addenbrooke’s discharge">
       <div class="fs-demo-split__media">
         <img class="fs-demo-split__img" src="images/Waiting for consultation in the corridor.png" alt="NHS corridor: someone waiting for consultation — warm, everyday continuity context">
-        <div class="fs-demo-split__stats" aria-label="Route A highlights">
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">10s</span><span class="fs-demo-stat__l">At bedside</span></div>
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Thread before discharge</span></div>
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">EPR write-back</span></div>
+        <div class="fs-demo-split__stats" aria-label="Route A highlights — person waiting in corridor">
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">10s</span><span class="fs-demo-stat__l">Log at triage / corridor</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Journey thread before they leave</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">Data pushed into the EPR</span></div>
         </div>
       </div>
       <div class="fs-demo-split__copy">
@@ -3021,10 +3146,10 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
     <article class="fs-demo-split fs-demo-split--reverse" aria-label="Route B — Community referral">
       <div class="fs-demo-split__media">
         <img class="fs-demo-split__img" src="images/Community%20conversation%20in%20a%20circle.png" alt="Martina at a community hub: two people in conversation around a circle">
-        <div class="fs-demo-split__stats" aria-label="Route B highlights">
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">10s</span><span class="fs-demo-stat__l">Touchpoint log</span></div>
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Thread continued</span></div>
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">Extra forms</span></div>
+        <div class="fs-demo-split__stats" aria-label="Route B highlights — Martina at community circle">
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">10s</span><span class="fs-demo-stat__l">Martina&rsquo;s hub touchpoint</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Same person, same thread</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">New intake paperwork</span></div>
         </div>
       </div>
       <div class="fs-demo-split__copy">
@@ -3053,10 +3178,10 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
     <article class="fs-demo-split" aria-label="Route C — GP referral to WorkWell Cambridge City (Joy, CPSL Mind)">
       <div class="fs-demo-split__media">
         <img class="fs-demo-split__img" src="images/A breakthrough moment in therapy.png" alt="Counselling session: a breakthrough moment &mdash; distinct from other demo routes on this page">
-        <div class="fs-demo-split__stats" aria-label="Route C highlights">
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">GP</span><span class="fs-demo-stat__l">Fit-note route</span></div>
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">Joy</span><span class="fs-demo-stat__l">→ WorkWell</span></div>
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">Merged records</span></div>
+        <div class="fs-demo-split__stats" aria-label="Route C highlights — counselling / WorkWell handoff">
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">GP / fit-note into support</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">Joy</span><span class="fs-demo-stat__l">WorkWell Cambridge City door</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">Counselling notes merged raw</span></div>
         </div>
       </div>
       <div class="fs-demo-split__copy">
@@ -3088,10 +3213,10 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
     <article class="fs-demo-split fs-demo-split--reverse" aria-label="Route D — CGL and CPFT dual pathway">
       <div class="fs-demo-split__media">
         <img class="fs-demo-split__img" src="images/Woman%20reviewing%20NHS%20data%20dashboard.png" alt="Coordinator reviewing continuity signals on an NHS-style data dashboard">
-        <div class="fs-demo-split__stats" aria-label="Route D highlights">
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">2</span><span class="fs-demo-stat__l">Silo lenses</span></div>
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Journey token</span></div>
-          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">Merged records</span></div>
+        <div class="fs-demo-split__stats" aria-label="Route D highlights — coordinator on dashboard">
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">2</span><span class="fs-demo-stat__l">CGL &amp; CPFT dashboard lenses</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">1</span><span class="fs-demo-stat__l">Encrypted journey token</span></div>
+          <div class="fs-demo-stat"><span class="fs-demo-stat__n">0</span><span class="fs-demo-stat__l">Shared clinical record</span></div>
         </div>
       </div>
       <div class="fs-demo-split__copy">
@@ -3137,10 +3262,53 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
   </div>
 </div>
 
+<section id="fs-dual" aria-label="CGL and CPFT dual diagnosis continuity section">
+  <section class="fs-section fs-dual-panel" style="height:100vh;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 60px;position:relative;overflow:hidden;box-sizing:border-box;background:#1A1208;text-align:left;">
+    <span style="font-family:Inter,sans-serif;font-weight:500;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,252,248,0.72);margin-bottom:30px;">CGL × CPFT</span>
+    <div style="display:flex;align-items:center;gap:40px;margin-bottom:48px;">
+      <span class="org-logo-text" style="font-family:Inter,sans-serif;font-weight:700;font-size:18px;letter-spacing:0.12em;color:rgba(255,252,248,0.75);">CGL</span>
+      <span class="org-logo-text" style="font-family:Inter,sans-serif;font-weight:700;font-size:18px;letter-spacing:0.12em;color:rgba(255,252,248,0.75);">CPFT</span>
+    </div>
+    <h2 style="margin:0;max-width:620px;font-family:'Playfair Display',serif;font-style:italic;font-weight:800;font-size:clamp(38px,4.2vw,58px);line-height:1.08;background:linear-gradient(90deg,#C8922A 0%,#F0C060 52%,#FAF7F2 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">Same person. Two silos.<br>One continuity thread.</h2>
+    <p style="margin:24px 0 0;max-width:560px;font-family:Inter,sans-serif;font-weight:300;font-size:20px;line-height:1.7;color:rgba(255,252,248,0.72);">Addiction and mental health meeting the same life at different doors &mdash; without a shared record.</p>
+  </section>
+  <section class="fs-section fs-dual-panel" style="height:100vh;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 60px;position:relative;overflow:hidden;box-sizing:border-box;background:#FAF7F2;text-align:left;">
+    <span style="font-family:Inter,sans-serif;font-weight:500;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#2C1A0E;margin-bottom:30px;">The problem</span>
+    <h2 style="margin:0;max-width:620px;font-family:'Playfair Display',serif;font-style:italic;font-weight:800;font-size:clamp(38px,4.2vw,58px);line-height:1.08;color:#2C1A0E;">Two doors. One person.<br>No connection between them.</h2>
+    <p style="margin:28px 0 0;max-width:580px;font-family:Inter,sans-serif;font-weight:300;font-size:20px;line-height:1.8;color:#4A3728;">Someone in addiction treatment where ADHD is suspected. Someone in mental health care where substance use is escalating. Too often that means duplicated appointments, duplicated contacts, and overload for the person in the middle.</p>
+  </section>
+  <section class="fs-section fs-dual-panel" style="height:100vh;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 60px;position:relative;overflow:hidden;box-sizing:border-box;background:#1A1208;text-align:left;">
+    <span style="font-family:Inter,sans-serif;font-weight:500;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,252,248,0.72);margin-bottom:30px;">The solution</span>
+    <h2 style="margin:0;max-width:640px;font-family:'Playfair Display',serif;font-style:italic;font-weight:800;font-size:clamp(38px,4.2vw,58px);line-height:1.08;background:linear-gradient(90deg,#C8922A 0%,#F0C060 52%,#FAF7F2 100%);-webkit-background-clip:text;background-clip:text;color:transparent;">OTOS unites the silos at<br>the continuity layer only.</h2>
+    <p style="margin:28px 0 0;max-width:560px;font-family:Inter,sans-serif;font-weight:300;font-size:20px;line-height:1.7;color:rgba(255,252,248,0.72);">Touchpoints and handoff receipts on the same encrypted, anonymised token. No merged EPRs. No shared clinical notes. Human review and governance agreed in the pilot.</p>
+    <p style="position:absolute;bottom:60px;left:60px;margin:0;font-family:Inter,sans-serif;font-weight:400;font-size:13px;letter-spacing:0.08em;color:rgba(200,146,42,0.75);">No EPR write-back &middot; No diagnostic claims &middot; Human decisions only</p>
+  </section>
+  <section class="fs-section fs-dual-panel" style="height:100vh;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 60px;position:relative;overflow:hidden;box-sizing:border-box;background:#FAF7F2;text-align:left;">
+    <span style="font-family:Inter,sans-serif;font-weight:500;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#2C1A0E;margin-bottom:30px;">Pilot framing</span>
+    <div style="display:flex;align-items:center;gap:40px;margin-bottom:48px;">
+      <span class="org-logo-text" style="font-family:Inter,sans-serif;font-weight:700;font-size:18px;letter-spacing:0.12em;color:#2C1A0E;">CGL</span>
+      <span class="org-logo-text" style="font-family:Inter,sans-serif;font-weight:700;font-size:18px;letter-spacing:0.12em;color:#2C1A0E;">CPFT</span>
+    </div>
+    <h2 style="margin:0;max-width:620px;font-family:'Playfair Display',serif;font-style:italic;font-weight:800;font-size:clamp(38px,4.2vw,58px);line-height:1.08;color:#2C1A0E;">An express gateway between<br>two willing partners.</h2>
+    <p style="margin:28px 0 0;max-width:560px;font-family:Inter,sans-serif;font-weight:300;font-size:20px;line-height:1.75;color:#4A3728;">Phase 1 establishes the bilateral connection between CGL and CPFT only. The mental health silo and the addiction silo. Dual diagnosis in the middle. Both can surface correlation without either seeing the other&rsquo;s records.</p>
+    <a href="#" onclick="return false;" style="display:block;margin-top:40px;font-family:Inter,sans-serif;font-weight:500;font-size:15px;letter-spacing:0.06em;color:#C8922A;text-decoration:none;">See how the gateway works &rarr;</a>
+  </section>
+</section>
+
 <!-- INFRASTRUCTURE -->
 <section id="fs-infra" class="fs-band fs-band--cream">
   <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="Infrastructure"></span>
   <span class="fs-brain-inline fs-brain-inline--tr" aria-hidden="true"></span>
+  <div class="fs-partner-keystrip" aria-label="Key delivery partners">
+    <div class="fs-partner-keystrip__box">
+      <div class="fs-partner-keystrip__logos">
+        <img src="images/The_Sun_Network_Logo.png" alt="The SUN Network" width="360" height="120" loading="lazy" decoding="async" />
+        <img src="../assets/partners/CGL_Logo.png" alt="Change Grow Live (CGL)" width="280" height="100" loading="lazy" decoding="async" />
+        <img src="../assets/partners/NHS_CPFT_Logo.png" alt="Cambridgeshire and Peterborough NHS Foundation Trust (CPFT)" width="280" height="100" loading="lazy" decoding="async" />
+      </div>
+      <p class="fs-partner-keystrip__caption">SUN co-production &middot; CGL &middot; CPFT &mdash; dual-pathway &amp; lived experience</p>
+    </div>
+  </div>
   <div class="fs-center">
     <span class="fs-kicker">Infrastructure Partners</span>
     <div class="fs-reveal" data-fs-reveal>
@@ -3159,7 +3327,7 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
     <div class="fs-partner">
       <div class="fs-phase">Phase 1 — Active</div>
       <div class="fs-partner__brand">
-        <img class="fs-partner__logo fs-partner__logo--sun" src="images/sun_logo.svg" alt="SUN Network" width="320" height="56" loading="lazy" decoding="async" />
+        <img class="fs-partner__logo fs-partner__logo--sun" src="images/The_Sun_Network_Logo.png" alt="The SUN Network" width="360" height="120" loading="lazy" decoding="async" />
       </div>
       <p>Co-production lead. Service user voice, participant-facing language design, and evaluation credibility. SUN's involvement is budgeted, structured, and produces a named deliverable in the evaluation report.</p>
       <ul>
@@ -3328,9 +3496,12 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
       </div>
     </div>
   </div>
-  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--fade fs-statement--pullquote" data-fs-statement style="margin:2rem auto 0;">
-    <p class="fs-statement__line text-gradient-soft">Low integration. Low disruption. High clarity.</p>
-    <p class="fs-statement__line fs-statement__line--sub">Governance you can stand in front of on day one.</p>
+</section>
+
+<section class="fs-photo-moment" style="background-image:url('images/Woman showing OTOS app at community centre.png'); background-position:50% 40%;" aria-label="Handoff visibility moment">
+  <span class="fs-sec-label fs-sec-label--dark fs-sec-label--brain" role="img" aria-label="Moment"></span>
+  <div class="fs-photo-moment__line-wrap">
+    <h2 class="fs-photo-moment__line">For the first time, you can see whether the handoffs are actually landing.</h2>
   </div>
 </section>
 
@@ -3367,9 +3538,8 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
 </section>
 
 <section class="fs-band fs-band--cream fs-band--statement" aria-label="Connection and continuity">
-  <div class="fs-statement fs-statement--center fs-statement--wide fs-statement--mix fs-statement--pullquote" data-fs-statement>
+  <div class="fs-statement fs-statement--left fs-statement--wide fs-statement--mix fs-statement--pullquote" data-fs-statement style="max-width:680px; margin-left:40px; margin-right:auto; text-align:left;">
     <p class="fs-statement__line text-gradient-soft">The opposite of addiction is connection. But connection needs continuity.</p>
-    <p class="fs-statement__line fs-statement__line--sub">Framing line &mdash; not a clinical claim.</p>
   </div>
 </section>
 
@@ -3377,7 +3547,7 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
 <section id="fs-refs" class="fs-band fs-band--alt">
   <span class="fs-sec-label fs-sec-label--light fs-sec-label--brain" role="img" aria-label="References"></span>
   <span class="fs-brain-inline fs-brain-inline--tr" aria-hidden="true"></span>
-  <div class="fs-center" style="max-width:var(--otos-container-max); margin:0 auto; text-align:center;">
+  <div class="fs-center" style="max-width:var(--otos-container-max); margin:0 auto;">
     <div class="fs-reveal" data-fs-reveal>
       <p class="fs-strapline-xl text-gradient-soft" style="font-size:clamp(1.35rem,3vw,2rem); margin-bottom:1rem;">Evidence you can trace. Claims you can defend.</p>
     </div>
@@ -3389,6 +3559,14 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
       <li><strong>DTAC / NHS Digital standards</strong> &mdash; referenced in assurance conversations; we do not claim certification unless evidenced.</li>
     </ul>
     <p style="margin:0;"><a href="#" onclick="return false;" style="font-weight:700; font-size:1.05rem;">Open full references &amp; links →</a></p>
+  </div>
+</section>
+
+<section class="fs-photo-moment" style="background-image:url('images/A warm handshake at sunset.png'); background-position:50% 42%;" aria-label="Founder origin moment">
+  <span class="fs-sec-label fs-sec-label--dark fs-sec-label--brain" role="img" aria-label="Moment"></span>
+  <div class="fs-photo-moment__line-wrap">
+    <h2 class="fs-photo-moment__line">Built from the gap &mdash; not from a slide deck.</h2>
+    <p class="fs-photo-moment__sub">The lived arc behind OTOS Continuity.</p>
   </div>
 </section>
 
@@ -3444,8 +3622,8 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
     ctaSize: 14,
     kickerSize: 11,
     quoteSize: 14,
-    quote_photo_band: '\u201cThe gap has a name now.\u201d',
-    quote_photo_band_cite: 'OTOS continuity framing',
+    quote_photo_band: '',
+    quote_photo_band_cite: '',
     quote_photo_band_size: 18,
     apply_colourwork_headline: false,
     apply_colourwork_quote: false,
@@ -3874,7 +4052,7 @@ section.fs-band.fs-band--cream.fs-band--statement[aria-label="Connection and con
   initInviewObserver('[data-fs-statement]');
 
   (function initFsSectionRailSpy() {
-    var ids = ['fs-home', 'fs-how', 'fs-demos', 'fs-infra', 'fs-architecture', 'fs-controls', 'fs-reporting', 'fs-refs', 'fs-founder'];
+    var ids = ['fs-home', 'fs-how', 'fs-demos', 'fs-dual', 'fs-infra', 'fs-architecture', 'fs-controls', 'fs-reporting', 'fs-refs', 'fs-founder'];
     var links = document.querySelectorAll('.fs-section-rail a[data-fs-jump]');
     if (!links.length) return;
     var els = ids.map(function (id) { return document.getElementById(id); }).filter(Boolean);

@@ -1,5 +1,5 @@
 # If the site publish root is the continuity/ folder, use these paths:
-/full-scroll2.html
+/full-scroll3.html
   Cache-Control: public, max-age=0, must-revalidate
 
 /content-manager.html
