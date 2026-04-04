@@ -1,5 +1,4 @@
-@@ -100,55 +100,55 @@ html, body{
-  font-size: 1rem;
+font-size: 1rem;
   letter-spacing: 0.04em;
   cursor: pointer;
   box-shadow: 0 0 0 1px rgba(244,185,66,0.25) inset;
@@ -132,3 +131,4 @@
   color: var(--muted2);
   font-size: 12px;
   line-height: 1.6;
+}
