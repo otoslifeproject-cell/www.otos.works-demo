@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OTOS Ripple Effect — Premium (v4)</title>
+
+  <!-- v4 dedicated stylesheet -->
+  <link rel="stylesheet" href="/continuity/otos-ripple-effect-premium-v4.css?v=20260404a" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="ripple-premium-page">
+    <div class="ripple-top">
+      <div>
+        <h1 class="ripple-title">OTOS Ripple Effect Diagram (Premium v4)</h1>
+        <p class="ripple-subtitle">
+          One person. One year. Every service touched — once.
+          Conservative cost to the state: <span style="color:var(--gold);font-weight:950">£40,070</span>.
+          With repeat cycles (the norm): <span style="color:var(--gold);font-weight:950">£100,000+</span>.
+          And because ADHD is inherited — the waveform doubles.
+        </p>
+      </div>
+
+      <div class="ripple-controls" aria-label="Diagram controls">
+        <div class="ripple-controlRow">
+          <div class="ripple-toggle" role="group" aria-label="Cost view toggle">
+            <button type="button" data-view="conservative" aria-pressed="true">Conservative</button>
+            <button type="button" data-view="upper" aria-pressed="false">Upper Bound</button>
+          </div>
+        </div>
+
+        <div class="ripple-controlRow">
+          <div class="ripple-toggle" role="group" aria-label="Layout mode toggle">
+            <button type="button" data-mode="animated" aria-pressed="true">Animated</button>
+            <button type="button" data-mode="static" aria-pressed="false">Static Export</button>
+          </div>
+        </div>
+
+        <div class="ripple-controlRow ripple-controlRow--play">
+          <button type="button" class="ripple-playBtn" id="ripple-play-intro" aria-label="Replay intro animation">▶ Play intro</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ripple-stage">
+      <div>
+        <div class="ripple-svgWrap">
+          <div class="ripple-svg-inner">
+            <div id="ripple-campaign-intro" class="ripple-campaign-intro" aria-hidden="true"></div>
+            <div id="ripple-svg-target" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <p class="ripple-caption">
+          One person. One year. Every service touched — once.
+          Conservative cost to the state: £40,070.
+          With repeat cycles (the norm): £100,000+.
+          And because ADHD is inherited — the waveform doubles.
+        </p>
+      </div>
+
+      <aside class="ripple-aside" aria-label="Selected ring breakdown panel">
+        <h3>Click-to-expand breakdown</h3>
+        <div class="ripple-ringDetailTitle">
+          <strong id="selected-ring-title">Hover a ring</strong>
+          <span id="selected-ring-badge" class="ripple-badge">—</span>
+        </div>
+        <ul id="selected-ring-items" class="ripple-itemList" aria-live="polite"></ul>
+
+        <div style="margin-top:12px;color:rgba(234,242,255,0.6);font-size:12px;line-height:1.5">
+          Hover shows an itemised tooltip. Click locks the panel to that ring.
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div id="ripple-tooltip" class="ripple-tip" role="tooltip" aria-hidden="true"></div>
+
+  <!-- v4 bootstrap (loads export + core script robustly) -->
+  <script src="/continuity/otos-ripple-effect-premium-v4.js?v=20260404a"></script>
+</body>
+</html>
