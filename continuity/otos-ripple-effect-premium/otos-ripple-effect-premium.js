@@ -25,6 +25,134 @@
   }
   if (!getBuildRippleSvgString()) {
     svgTarget.innerHTML = '<div class="ripple-error" style="padding:2rem;color:rgba(255,255,255,0.9);font-size:1rem;">Diagram script failed to load. Ensure <code>rippleSvgExport.js</code> loads before this file.</div>';
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const existing = Array.from(document.querySelectorAll('script[src]')).find((script) => {
+        try {
+          return new URL(script.src, window.location.href).href === new URL(src, window.location.href).href;
+        } catch {
+          return false;
+        }
+      });
+
+      if (existing) {
+        // Script already present and parsed.
+        if (getBuildRippleSvgString()) {
+          resolve(src);
+        } else {
+          reject(new Error(`Script present but API missing: ${src}`));
+        }
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.addEventListener('load', () => resolve(src), { once: true });
+      script.addEventListener('error', () => reject(new Error(`Failed to load ${src}`)), { once: true });
+      document.head.appendChild(script);
+    });
+  }
+
+  async function ensureSvgBuilderLoaded() {
+    if (getBuildRippleSvgString()) return true;
+
+    const candidates = [
+      'rippleSvgExport.js',
+      './rippleSvgExport.js',
+      '/continuity/otos-ripple-effect-premium/rippleSvgExport.js',
+    ];
+
+    for (const src of candidates) {
+      try {
+        await loadScript(src);
+        if (getBuildRippleSvgString()) return true;
+      } catch {
+        // Try next candidate path.
+      }
+    }
+
+    return false;
+  }
+  const tooltip = document.getElementById('ripple-tooltip');
+
+  const selectedRingTitle = document.getElementById('selected-ring-title');
+  const selectedRingBadge = document.getElementById('selected-ring-badge');
+  const selectedRingItems = document.getElementById('selected-ring-items');
+
+  const GBP = new Intl.NumberFormat('en-GB', { maximumFractionDigits: 0 });
+  const fmtGBP = (n) => `£${GBP.format(Math.round(n))}`;
+
+  const ringTotals = {
+    conservative: { 0: 40070, 1: 9080, 2: 1900, 3: 16350, 4: 11000, 5: 3000, 6: 0, 7: 250 },
+    upper: { 0: 86500, 1: 15800, 2: 5700, 3: 27250, 4: 28450, 5: 11000, 6: 0, 7: 700 },
+  };
+
+  const ringDetails = {
+    0: {
+      title: 'NIA Individual — Undiagnosed ADHD + Crack/Heroin',
+      items: [
+        {
+          name: 'Base system burden (high-harm users)',
+          min: 40070,
+          max: 86500,
+          rangeText: '£40,070 (conservative) to £78k–£95k+ (upper bound)',
+          sourceUrl: 'https://www.gov.uk/government/publications/life-sciences-healthcare-goals/addiction-healthcare-goals',
+@@ -425,30 +472,40 @@
+      btn.addEventListener('click', () => {
+        currentMode = btn.dataset.mode;
+        lockedRingIndex = null;
+        setTogglesPressed();
+        renderSvg();
+      });
+    });
+
+    const playBtn = document.getElementById('ripple-play-intro');
+    if (playBtn) {
+      playBtn.addEventListener('click', () => {
+        currentMode = 'animated';
+        lockedRingIndex = null;
+        setTogglesPressed();
+        svgTarget.innerHTML = '';
+        requestAnimationFrame(() => {
+          renderSvg();
+          requestAnimationFrame(() => {
+            startCampaignIntro();
+          });
+        });
+      });
+    }
+  }
+
+  setTogglesPressed();
+  initToggles();
+  renderSvg();
+})();
+  async function boot() {
+    const loaded = await ensureSvgBuilderLoaded();
+    if (!loaded) {
+      svgTarget.innerHTML =
+        '<div class="ripple-error" style="padding:2rem;color:rgba(255,255,255,0.9);font-size:1rem;">Diagram script failed to load. Tried <code>rippleSvgExport.js</code> in local and <code>/continuity/otos-ripple-effect-premium/</code> paths.</div>';
+      return;
+    }
+
+    setTogglesPressed();
+    initToggles();
+    renderSvg();
+  }
+
+  boot();
+})();ue');
+    }
+  }
+
+  function getBuildRippleSvgString() {
+    const api = window.OTSRippleSvgExport;
+    return api && typeof api.buildRippleSvgString === 'function' ? api.buildRippleSvgString : null;
+  }
+  if (!getBuildRippleSvgString()) {
+    svgTarget.innerHTML = '<div class="ripple-error" style="padding:2rem;color:rgba(255,255,255,0.9);font-size:1rem;">Diagram script failed to load. Ensure <code>rippleSvgExport.js</code> loads before this file.</div>';
   }
   const tooltip = document.getElementById('ripple-tooltip');
 
