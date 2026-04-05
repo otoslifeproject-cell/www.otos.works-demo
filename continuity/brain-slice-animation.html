@@ -96,6 +96,7 @@
       transform-style: preserve-3d;
       will-change: transform;
       transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+      z-index: 3;
     }
 
     /* Real 3D slab: front/back carry the brain form, cut face reveals thickness */
@@ -218,6 +219,7 @@
       opacity: 1;
       will-change: transform;
       transition: transform var(--dur-split) ease-in-out;
+      z-index: 2;
     }
 
     .band--nhs {
@@ -313,6 +315,7 @@
     /* 6. PRINT: OTOS Continuity™ appears on the cut face */
     .scene-root.step-6-logo .brain-cutface { opacity: 1; }
     .scene-root.step-6-logo .cut-wordmark { animation: cutWordmarkIn var(--dur-logo) ease-in-out forwards; }
+    .scene-root.step-6-logo .cut-logo { animation: cutLogoIn var(--dur-logo) ease-in-out forwards; }
 
     /* Keep cut face visible while docked (end state is the slab side) */
     .scene-root.step-5-retract .cut-wordmark { opacity: 0; transform: translate(-50%, -50%) translateY(6px); }
@@ -340,7 +343,7 @@
         transform: translate3d(0, 0, 320px) scale(1.6) rotateY(90deg);
       }
       100% {
-        transform: translate3d(0, 0, 0) scale(1) rotateY(90deg);
+        transform: translate3d(0, -34px, 0) scale(1) rotateY(90deg);
       }
     }
 
@@ -356,6 +359,24 @@
     @keyframes cutWordmarkIn {
       0% { opacity: 0; transform: translate(-50%, -50%) translateY(6px); }
       100% { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
+    }
+
+    @keyframes cutLogoIn {
+      0% { opacity: 0; transform: translate(-50%, -50%) translateY(10px) scale(0.92); }
+      100% { opacity: 1; transform: translate(-50%, -50%) translateY(0) scale(1); }
+    }
+
+    .cut-logo {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 138px;
+      height: auto;
+      opacity: 0;
+      z-index: 6;
+      pointer-events: none;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.2));
     }
 
     .frame {
@@ -429,6 +450,7 @@
               <div class="brain-face brain-face--front"></div>
               <div class="brain-face brain-face--back"></div>
               <div class="brain-cutface">
+                <img class="cut-logo" src="../assets/logos/otos-continuity-lockup.png" alt="OTOS Continuity logo">
                 <div class="cut-wordmark" id="cutWordmark">OTOS Continuity™</div>
               </div>
             </div>
@@ -538,6 +560,8 @@
           stepStartTime = now;
           if (currentStepIndex < STEPS.length - 1) {
             advanceStep();
+          } else {
+            playing = false;
           }
         }
 
