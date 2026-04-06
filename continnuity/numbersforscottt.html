@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CPFT overlap and uplift — one-slide summary</title>
+  <style>
+    :root{
+      --bg:#081426;
+      --panel:#0f2138;
+      --line:rgba(255,255,255,0.14);
+      --txt:#eaf2ff;
+      --muted:rgba(234,242,255,0.75);
+      --accent:#f4b942;
+      --ok:#5be7b4;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);font-family:Inter,Segoe UI,Arial,sans-serif}
+    .slide{
+      width:min(1280px,100%);
+      min-height:720px;
+      margin:0 auto;
+      padding:28px;
+      display:grid;
+      grid-template-rows:auto auto 1fr auto;
+      gap:18px;
+    }
+    h1{margin:0;font-size:34px;line-height:1.15;letter-spacing:-0.02em}
+    .subtitle{margin:8px 0 0;color:var(--muted);font-size:18px}
+    .banner{
+      border:1px solid var(--line);
+      background:linear-gradient(90deg, rgba(244,185,66,0.14), rgba(91,231,180,0.08));
+      border-radius:14px;
+      padding:12px 14px;
+      color:#fff;
+      font-weight:700;
+      font-size:16px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      align-content:start;
+    }
+    .card{
+      border:1px solid var(--line);
+      background:var(--panel);
+      border-radius:14px;
+      padding:14px;
+      min-height:145px;
+    }
+    .k{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .v{margin-top:8px;font-size:46px;line-height:1;font-weight:900;color:var(--accent)}
+    .d{margin-top:8px;font-size:14px;line-height:1.4;color:var(--txt)}
+    .card--impact .v{color:var(--ok)}
+    .foot{
+      border-top:1px solid var(--line);
+      padding-top:12px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+    .foot strong{color:#fff}
+    @media (max-width:1100px){
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:720px){
+      .slide{padding:16px;min-height:auto}
+      h1{font-size:26px}
+      .subtitle{font-size:15px}
+      .grid{grid-template-columns:1fr}
+      .v{font-size:38px}
+    }
+  </style>
+</head>
+<body>
+  <main class="slide" role="main">
+    <header>
+      <h1>CPFT footprint: ADHD + addiction overlap and illustrative uplift</h1>
+      <p class="subtitle">One-page board slide for NHS discussion (Cambridgeshire + Peterborough proxy).</p>
+    </header>
+
+    <div class="banner">
+      Decision headline: planning overlap case is <strong>1,044</strong> people, with illustrative impact range of <strong>157 / 261 / 640*</strong>.
+    </div>
+
+    <section class="grid" aria-label="Number stack">
+      <article class="card">
+        <div class="k">Box 1 — observed local denominator</div>
+        <div class="v">4,175</div>
+        <div class="d">Adults in addiction treatment (Cambridgeshire + Peterborough, 2022/23).</div>
+      </article>
+      <article class="card">
+        <div class="k">Box 2 — pooled evidence overlap</div>
+        <div class="v">877</div>
+        <div class="d">ADHD + addiction overlap at 21% pooled evidence.</div>
+      </article>
+      <article class="card">
+        <div class="k">Box 3 — planning case</div>
+        <div class="v">1,044</div>
+        <div class="d">ADHD + addiction overlap at 25% planning prevalence.</div>
+      </article>
+      <article class="card">
+        <div class="k">Box 4 — high comparator</div>
+        <div class="v">2,735</div>
+        <div class="d">ADHD + addiction overlap at 65.5% high comparator.</div>
+      </article>
+      <article class="card card--impact">
+        <div class="k">Box 5 — low impact (external)</div>
+        <div class="v">157</div>
+        <div class="d">15% reduction applied to planning cohort (1,044 × 15%).</div>
+      </article>
+      <article class="card card--impact">
+        <div class="k">Box 6 — base impact (external)</div>
+        <div class="v">261</div>
+        <div class="d">25% reduction applied to planning cohort (1,044 × 25%).</div>
+      </article>
+      <article class="card card--impact">
+        <div class="k">Box 7 — best case* (external)</div>
+        <div class="v">640</div>
+        <div class="d">START comparator: 61.3% applied to planning cohort (1,044 × 61.3%).</div>
+      </article>
+    </section>
+
+    <footer class="foot">
+      <strong>Important:</strong> *External comparator outcomes are not CPFT observed outcomes.  
+      This slide intentionally excludes unsourced strips and assumption-only £m totals to protect credibility in NHS review.
+    </footer>
+  </main>
+</body>
+</html>
