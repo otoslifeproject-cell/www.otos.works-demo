@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CPFT ADHD + Addiction Scenario Calculator</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 24px; line-height: 1.35; color:#1f2937; }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  h1 { margin: 0 0 8px 0; font-size: 32px; }
+  .sub { color:#4b5563; margin-bottom: 22px; }
+  .card { border:1px solid #d1d5db; border-radius: 14px; padding: 18px; margin: 14px 0; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .big { font-size: 42px; font-weight: 700; }
+  .label { color:#4b5563; font-size: 14px; }
+  input[type=range] { width: 100%; }
+  .pill { display:inline-block; padding:8px 12px; margin:4px 6px 0 0; border-radius:999px; border:1px solid #cbd5e1; cursor:pointer; background:#f8fafc; }
+  .pill:hover { background:#eef2ff; }
+  table { border-collapse: collapse; width:100%; }
+  th, td { border:1px solid #e5e7eb; padding:10px; text-align:left; vertical-align: top; }
+  th { background:#f8fafc; }
+  .muted { color:#6b7280; }
+  .warn { color:#92400e; background:#fffbeb; border:1px solid #fcd34d; border-radius:10px; padding:12px; }
+  .small { font-size: 13px; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>CPFT ADHD + Addiction Scenario Calculator</h1>
+  <div class="sub">Offline tool. Fixed local denominator: <strong>4,175 adults in addiction treatment</strong> for the Cambridgeshire + Peterborough local-authority footprint (used here as the public proxy for CPFT footprint).</div>
+
+  <div class="card">
+    <div class="grid">
+      <div>
+        <div><strong>Slider 1 — ADHD prevalence within addiction treatment</strong></div>
+        <div class="muted small">Use 5%, 21%, 25%, 31%, 61.3% or 65.5% if you want quick presets.</div>
+        <input id="prev" type="range" min="0" max="70" step="0.1" value="25">
+        <div><span class="big" id="prevVal">25.0%</span></div>
+      </div>
+      <div>
+        <div><strong>Slider 2 — Outcome uplift / reduction applied to the overlap cohort</strong></div>
+        <div class="muted small">Examples: 15% first-event reduction, 25% recurrent-event reduction, 31% lower substance-related problems, 61.3% French START study improvement.</div>
+        <input id="uplift" type="range" min="0" max="70" step="0.1" value="25">
+        <div><span class="big" id="upliftVal">25.0%</span></div>
+      </div>
+    </div>
+    <div style="margin-top:12px;">
+      <button class="pill" onclick="setPrev(5)">Prev 5%</button>
+      <button class="pill" onclick="setPrev(21)">Prev 21%</button>
+      <button class="pill" onclick="setPrev(25)">Prev 25%</button>
+      <button class="pill" onclick="setPrev(65.5)">Prev 65.5%</button>
+      <button class="pill" onclick="setUplift(15)">Impact 15%</button>
+      <button class="pill" onclick="setUplift(25)">Impact 25%</button>
+      <button class="pill" onclick="setUplift(31)">Impact 31%</button>
+      <button class="pill" onclick="setUplift(61.3)">Impact 61.3%</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Modelled overlap cohort</div>
+      <div class="big" id="overlap">1,044</div>
+      <div class="small muted mono" id="overlapCalc">4,175 × 25.0% = 1,043.75 → 1,044</div>
+    </div>
+    <div class="card">
+      <div class="label">Illustrative number affected / improved</div>
+      <div class="big" id="affected">261</div>
+      <div class="small muted mono" id="affectedCalc">1,043.75 × 25.0% = 260.94 → 261</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div><strong>Optional avoided-cost input</strong></div>
+    <div class="small muted">Leave blank if you do not want to show money. This is for your own offline play only.</div>
+    <div style="margin-top:10px;">
+      <label>£ avoided cost per affected case: <input id="cost" type="number" value="" placeholder="e.g. 10000" style="padding:8px; width:180px;"></label>
+    </div>
+    <div style="margin-top:12px;">
+      <div class="label">Illustrative gross value</div>
+      <div class="big" id="money">—</div>
+      <div class="small muted mono" id="moneyCalc">Enter a cost assumption to calculate this line.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr><th>Truth table</th><th>Figure</th><th>Use</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Observed local denominator</td><td><strong>4,175</strong></td><td>Adults in addiction treatment, Cambridgeshire + Peterborough, 2022/23</td></tr>
+        <tr><td>Low overlap scenario</td><td><strong>209</strong></td><td>4,175 × 5%</td></tr>
+        <tr><td>Meta pooled overall comparator</td><td><strong>877</strong></td><td>4,175 × 21%</td></tr>
+        <tr><td>Planning scenario</td><td><strong>1,044</strong></td><td>4,175 × 25%</td></tr>
+        <tr><td>High comparator</td><td><strong>2,735</strong></td><td>4,175 × 65.5%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warn small">
+    <strong>Important:</strong> this tool applies published comparator percentages to a local observed treatment denominator. It does <em>not</em> create a local observed outcome. If you use 61.3%, label it clearly as the <strong>French START study six-month improvement in addictive disorders after ADHD diagnosis</strong>, not a CPFT outcome.
+  </div>
+</div>
+
+<script>
+  const denominator = 4175;
+
+  function fmt(n) {
+    return new Intl.NumberFormat('en-GB', {maximumFractionDigits: 0}).format(Math.round(n));
+  }
+  function fmtMoney(n) {
+    return new Intl.NumberFormat('en-GB', {style:'currency', currency:'GBP', maximumFractionDigits:0}).format(n);
+  }
+  function setPrev(v){ document.getElementById('prev').value = v; update(); }
+  function setUplift(v){ document.getElementById('uplift').value = v; update(); }
+
+  function update(){
+    const prev = parseFloat(document.getElementById('prev').value);
+    const uplift = parseFloat(document.getElementById('uplift').value);
+    const cost = parseFloat(document.getElementById('cost').value);
+
+    const overlap = denominator * prev / 100.0;
+    const affected = overlap * uplift / 100.0;
+
+    document.getElementById('prevVal').textContent = prev.toFixed(1) + '%';
+    document.getElementById('upliftVal').textContent = uplift.toFixed(1) + '%';
+
+    document.getElementById('overlap').textContent = fmt(overlap);
+    document.getElementById('affected').textContent = fmt(affected);
+
+    document.getElementById('overlapCalc').textContent =
+      '4,175 × ' + prev.toFixed(1) + '% = ' + overlap.toFixed(2) + ' → ' + fmt(overlap);
+
+    document.getElementById('affectedCalc').textContent =
+      overlap.toFixed(2) + ' × ' + uplift.toFixed(1) + '% = ' + affected.toFixed(2) + ' → ' + fmt(affected);
+
+    if (!isNaN(cost) && cost >= 0){
+      const money = Math.round(affected) * cost;
+      document.getElementById('money').textContent = fmtMoney(money);
+      document.getElementById('moneyCalc').textContent =
+        fmt(affected) + ' × ' + fmtMoney(cost) + ' = ' + fmtMoney(money) + ' (illustrative assumption-based line)';
+    } else {
+      document.getElementById('money').textContent = '—';
+      document.getElementById('moneyCalc').textContent = 'Enter a cost assumption to calculate this line.';
+    }
+  }
+
+  document.getElementById('prev').addEventListener('input', update);
+  document.getElementById('uplift').addEventListener('input', update);
+  document.getElementById('cost').addEventListener('input', update);
+  update();
+</script>
+</body>
+</html>
