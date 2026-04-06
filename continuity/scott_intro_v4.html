@@ -6,15 +6,18 @@
   <title>Scott Intro V4 · OTOS</title>
   <style>
     :root {
-      --paper: #f7f1e7;
+      --paper: #f5efe4;
       --ink: #2c2018;
       --ink-soft: #5a4435;
       --line: rgba(70, 50, 37, 0.2);
       --card: #fffaf1;
       --dark: #111111;
-      --dark-2: #1b1b1b;
+      --dark-2: #1a1a1a;
       --light: #f8f5f0;
-      --max: 1140px;
+      --max: 1180px;
+      --s1: 0px;
+      --s2: 0px;
+      --s3: 0px;
     }
 
     * { box-sizing: border-box; }
@@ -27,55 +30,90 @@
       line-height: 1.62;
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
-    .otos-logo {
+    .brain-layer {
       position: fixed;
-      top: 16px;
-      right: 20px;
-      width: 120px;
-      max-width: 22vw;
-      z-index: 9999;
-      opacity: 0.95;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      white-space: nowrap;
+      letter-spacing: 2.1rem;
+      opacity: 0.05;
+      font-size: clamp(2rem, 3.8vw, 4rem);
+      user-select: none;
+      transform: translateY(0);
+      will-change: transform;
     }
+
+    .brain-layer span { position: absolute; left: -3rem; right: -3rem; }
+    .brain-layer.layer-1 { color: #b78c41; transform: translateY(var(--s1)); }
+    .brain-layer.layer-2 { color: #848a69; opacity: 0.04; transform: translateY(var(--s2)); font-size: clamp(1.6rem, 3.1vw, 3.2rem); }
+    .brain-layer.layer-3 { color: #9a7558; opacity: 0.03; transform: translateY(var(--s3)); font-size: clamp(1.3rem, 2.6vw, 2.6rem); }
+
+    .brain-layer.layer-1 span:nth-child(1) { top: 11%; }
+    .brain-layer.layer-1 span:nth-child(2) { top: 43%; }
+    .brain-layer.layer-1 span:nth-child(3) { top: 76%; }
+    .brain-layer.layer-2 span:nth-child(1) { top: 24%; }
+    .brain-layer.layer-2 span:nth-child(2) { top: 57%; }
+    .brain-layer.layer-3 span:nth-child(1) { top: 34%; }
+    .brain-layer.layer-3 span:nth-child(2) { top: 87%; }
 
     .section {
-      padding: clamp(3.5rem, 7.5vw, 7rem) 1.4rem;
+      position: relative;
+      padding: clamp(3.9rem, 7.8vw, 7.5rem) 1.5rem;
       border-bottom: 1px solid var(--line);
     }
 
     .wrap {
       width: min(100%, var(--max));
       margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
 
-    .stack > * + * { margin-top: 1.15rem; }
+    .stack > * + * { margin-top: 1.12rem; }
 
     .eyebrow {
       margin: 0;
       font-size: 0.74rem;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 600;
-      color: #7a614f;
+      letter-spacing: 0.11em;
+      font-weight: 700;
+      color: #a06f26;
+    }
+
+    .eyebrow::before {
+      content: "🧠 ";
+      font-size: 0.85rem;
+      opacity: 0.85;
+      margin-right: 0.2rem;
     }
 
     h1, h2 {
       margin: 0;
       font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
       font-weight: 600;
-      line-height: 1.08;
-      letter-spacing: -0.01em;
+      line-height: 1.03;
+      letter-spacing: -0.015em;
       text-wrap: balance;
     }
 
-    h1 { font-size: clamp(2.2rem, 5.6vw, 4.7rem); }
-    h2 { font-size: clamp(1.75rem, 4vw, 3rem); }
+    h1 { font-size: clamp(2.4rem, 5.8vw, 5rem); }
+    h2 { font-size: clamp(1.9rem, 4vw, 3.35rem); }
+
+    .tone {
+      background: linear-gradient(95deg, #4f3a2e 0%, #7e6044 46%, #b29059 76%, #7d8864 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
 
     p {
       margin: 0;
-      font-size: clamp(1rem, 1.2vw, 1.15rem);
-      max-width: 72ch;
+      font-size: clamp(1rem, 1.2vw, 1.16rem);
+      max-width: 74ch;
     }
 
     .hero {
@@ -84,30 +122,35 @@
       align-items: flex-end;
       border-bottom: none;
       background:
-        linear-gradient(0deg, rgba(18, 12, 9, 0.78) 14%, rgba(18, 12, 9, 0.2) 62%),
-        url('/images/scott-images/candidates/01-hero-waiting-corridor.png') center/cover no-repeat;
+        linear-gradient(0deg, rgba(16, 12, 10, 0.82) 12%, rgba(16, 12, 10, 0.24) 63%),
+        url('../assets/scott-images/candidates/01-hero-waiting-corridor.png') center/cover no-repeat;
       color: var(--light);
     }
 
     .hero .eyebrow,
     .hero h1,
-    .hero p { color: var(--light); }
+    .hero p { color: var(--light); background: none; -webkit-text-fill-color: initial; }
 
-    .hero .wrap { padding-bottom: clamp(1.1rem, 3vw, 2.1rem); }
+    .hero .wrap { padding-bottom: clamp(1rem, 3vw, 2.2rem); }
 
     .split {
       display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: clamp(1.2rem, 3.5vw, 2.4rem);
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: clamp(1.3rem, 3.8vw, 2.8rem);
       align-items: stretch;
     }
 
+    .split.tight-right { grid-template-columns: 1.16fr 0.84fr; }
+
     .image {
-      min-height: 360px;
-      border-radius: 1.1rem;
+      border-radius: 1.2rem;
       overflow: hidden;
       border: 1px solid rgba(70, 50, 37, 0.16);
-      box-shadow: 0 16px 38px rgba(38, 27, 20, 0.14);
+      box-shadow: 0 20px 46px rgba(38, 27, 20, 0.14);
+      min-height: 360px;
+      background: #ece4d8;
+      display: grid;
+      place-items: center;
     }
 
     .image img {
@@ -117,42 +160,79 @@
       display: block;
     }
 
-    .callout {
-      border-left: 3px solid #7a614f;
-      padding-left: 1rem;
-      font-weight: 600;
-      color: #3f2e22;
+    .image.screen img {
+      object-fit: contain;
+      width: calc(100% - 1rem);
+      height: calc(100% - 1rem);
+      margin: 0.5rem;
+      border-radius: 0.85rem;
+      background: #f5efe4;
     }
 
-    .cards {
-      margin-top: 1.25rem;
+    .image.small-third {
+      min-height: 280px;
+      max-height: 420px;
+      align-self: start;
+    }
+
+    .callout {
+      border-left: 3px solid #8b6b42;
+      padding-left: 1rem;
+      font-weight: 600;
+      color: #3f2f24;
+    }
+
+    .cards,
+    .three-col,
+    .ask-grid {
+      margin-top: 1.35rem;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.85rem;
+      gap: 0.9rem;
+    }
+
+    .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .three-col { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .ask-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .card,
+    .box,
+    .ask {
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      padding: 1rem;
+      background: linear-gradient(180deg, #fffdf8, var(--card));
+      box-shadow: 0 8px 22px rgba(42, 31, 23, 0.05);
     }
 
     .card {
-      border: 1px solid var(--line);
-      border-radius: 0.95rem;
-      padding: 1rem;
-      background: linear-gradient(180deg, #fffdf7, var(--card));
-      box-shadow: 0 8px 22px rgba(42, 31, 23, 0.06);
       color: var(--ink-soft);
-      font-weight: 600;
+      font-weight: 650;
       font-size: 0.96rem;
     }
+
+    .box h3,
+    .ask strong {
+      margin: 0 0 0.44rem;
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
+      font-size: 1.12rem;
+      color: var(--ink);
+    }
+
+    .box p,
+    .ask { color: var(--ink-soft); font-size: 0.96rem; }
 
     .economics {
       background: linear-gradient(180deg, var(--dark-2), var(--dark));
       border-bottom-color: rgba(255, 255, 255, 0.16);
     }
 
-    .economics .eyebrow { color: #c8b8a2; }
+    .economics .eyebrow { color: #d3b06f; }
     .economics h2,
-    .economics p { color: var(--light); }
+    .economics p,
+    .economics .tone { color: var(--light); background: none; -webkit-text-fill-color: initial; }
 
     .economics .callout {
-      border-left-color: #c8b8a2;
+      border-left-color: #cfab6d;
       color: rgba(248, 245, 240, 0.9);
     }
 
@@ -167,84 +247,43 @@
       border: 1px solid var(--line);
       border-radius: 999px;
       padding: 0.38rem 0.78rem;
-      background: linear-gradient(180deg, #fffdf7, var(--card));
+      background: linear-gradient(180deg, #fffdf8, var(--card));
       color: var(--ink-soft);
       font-size: 0.82rem;
-      font-weight: 600;
-    }
-
-    .three-col {
-      margin-top: 1.35rem;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.9rem;
-    }
-
-    .box {
-      border: 1px solid var(--line);
-      border-radius: 1rem;
-      padding: 1rem;
-      background: linear-gradient(180deg, #fffdf7, var(--card));
-      box-shadow: 0 8px 22px rgba(42, 31, 23, 0.05);
-    }
-
-    .box h3 {
-      margin: 0 0 0.5rem;
-      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
-      font-size: 1.1rem;
-      color: var(--ink);
-    }
-
-    .box p {
-      margin: 0;
-      color: var(--ink-soft);
-      font-size: 0.96rem;
-    }
-
-    .ask-grid {
-      margin-top: 1.35rem;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.9rem;
-    }
-
-    .ask {
-      border: 1px solid var(--line);
-      border-radius: 0.95rem;
-      padding: 1rem;
-      background: linear-gradient(180deg, #fffdf7, var(--card));
-      box-shadow: 0 8px 22px rgba(42, 31, 23, 0.05);
-    }
-
-    .ask strong {
-      display: block;
-      margin-bottom: 0.35rem;
-      color: var(--ink);
-      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
-      font-size: 1.06rem;
+      font-weight: 650;
     }
 
     .bottom {
-      margin-top: 1.25rem;
+      margin-top: 1.3rem;
       padding-top: 1rem;
       border-top: 1px solid var(--line);
-      color: #4a382b;
-      font-weight: 600;
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
+      font-size: clamp(1.65rem, 3.6vw, 3.1rem);
+      line-height: 1.08;
+      font-weight: 700;
     }
 
-    @media (max-width: 940px) {
-      .otos-logo { width: 84px; right: 12px; top: 10px; }
+    @media (max-width: 980px) {
       .split,
+      .split.tight-right,
       .cards,
       .three-col,
       .ask-grid { grid-template-columns: 1fr; }
       .hero { min-height: 86svh; }
-      .image { min-height: 310px; }
+      .image,
+      .image.small-third { min-height: 300px; max-height: none; }
+      .brain-layer { letter-spacing: 1rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .brain-layer { display: none; }
     }
   </style>
 </head>
 <body>
-  <img class="otos-logo" src="/logos/OTOS_Continuity_Logo_Transparent.png" alt="OTOS Continuity logo" />
+  <div class="brain-layer layer-1" aria-hidden="true"><span>🧠 🧠 🧠 🧠 🧠 🧠 🧠 🧠</span><span>🧠 🧠 🧠 🧠 🧠 🧠 🧠 🧠</span><span>🧠 🧠 🧠 🧠 🧠 🧠 🧠 🧠</span></div>
+  <div class="brain-layer layer-2" aria-hidden="true"><span>🧠 🧠 🧠 🧠 🧠 🧠 🧠</span><span>🧠 🧠 🧠 🧠 🧠 🧠 🧠</span></div>
+  <div class="brain-layer layer-3" aria-hidden="true"><span>🧠 🧠 🧠 🧠 🧠 🧠</span><span>🧠 🧠 🧠 🧠 🧠 🧠</span></div>
 
   <section class="section hero">
     <div class="wrap stack">
@@ -258,12 +297,12 @@
     <div class="wrap split">
       <div class="stack">
         <p class="eyebrow">Slide 2 · The chaos</p>
-        <h2>This is what waiting can become.</h2>
+        <h2><span class="tone">This is what waiting can become.</span></h2>
         <p>When ADHD is left untreated for too long, addiction can emerge as a way of coping with overwhelm, under-stimulation, emotional intensity, and executive dysfunction. It does not solve those problems; it compounds them. Sleep becomes erratic, routines collapse, money becomes harder to manage, work becomes unstable, relationships come under strain, and shame drives further secrecy and isolation. What begins as self-medication can quickly become a cycle of short-term relief followed by longer-term damage.</p>
         <p class="callout">The system keeps treating the crisis, but not always the condition driving it.</p>
       </div>
-      <figure class="image" aria-hidden="true">
-        <img src="/images/scott-images/candidates/02-chaos-tunnel.png" alt="" />
+      <figure class="image screen" aria-hidden="true">
+        <img src="../assets/scott-images/candidates/02-chaos-tunnel.png" alt="" />
       </figure>
     </div>
   </section>
@@ -271,7 +310,7 @@
   <section class="section">
     <div class="wrap stack">
       <p class="eyebrow">Slide 3 · Founder truth</p>
-      <h2>I am not adjacent to this problem. I lived it.</h2>
+      <h2><span class="tone">I am not adjacent to this problem. I lived it.</span></h2>
       <p>Six years in the system. Residential rehab. Re-presentation. Still waiting for the medication review that never came. The turning point came only after the right condition was treated. OTOS was built from what that journey exposed: nobody could see the whole thread, and nothing held it between services.</p>
       <div class="cards">
         <div class="card">Three months in residential rehab cost £90,000.</div>
@@ -295,7 +334,7 @@
     <div class="wrap split">
       <div class="stack">
         <p class="eyebrow">Slide 5 · What OTOS is</p>
-        <h2>A non-clinical continuity layer for the people most likely to be lost in the gap.</h2>
+        <h2><span class="tone">A non-clinical continuity layer for the people most likely to be lost in the gap.</span></h2>
         <p>OTOS sits around existing services. It logs touchpoints, generates transition receipts, monitors continuity status, and surfaces early drift for human review. The clinical action stays with the service. OTOS holds the thread.</p>
         <p><strong>Same person. Two silos. One continuity thread.</strong></p>
         <div class="chips">
@@ -320,17 +359,17 @@
           </article>
         </div>
       </div>
-      <figure class="image" aria-hidden="true">
-        <img src="/images/scott-images/candidates/05-solution-community-centre.png" alt="" />
+      <figure class="image screen" aria-hidden="true">
+        <img src="../assets/scott-images/candidates/05-solution-community-centre.png" alt="" />
       </figure>
     </div>
   </section>
 
   <section class="section">
-    <div class="wrap split">
+    <div class="wrap split tight-right">
       <div class="stack">
         <p class="eyebrow">Slide 6 · The ask</p>
-        <h2>Help move this forward the right way.</h2>
+        <h2><span class="tone">Help move this forward the right way.</span></h2>
         <p>I am not asking you to buy a national solution. I am asking for your advice and support on the cleanest route to move a small, governed, low-integration local demonstrator forward.</p>
         <div class="ask-grid">
           <div class="ask">
@@ -350,12 +389,27 @@
             What is the most realistic in-year or innovation route for testing a continuity intervention of this size without making it bigger than it needs to be?
           </div>
         </div>
-        <p class="bottom">OTOS does not replace treatment. It helps existing services hold the thread between them.</p>
+        <p class="bottom"><span class="tone">OTOS does not replace treatment. It helps existing services hold the thread between them.</span></p>
       </div>
-      <figure class="image" aria-hidden="true">
-        <img src="/images/scott-images/candidates/06-close-nurse-bedside.png" alt="" />
+      <figure class="image screen small-third" aria-hidden="true">
+        <img src="../assets/scott-images/candidates/06-close-nurse-bedside.png" alt="" />
       </figure>
     </div>
   </section>
+
+  <script>
+    (() => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const root = document.documentElement;
+      const onScroll = () => {
+        const y = window.scrollY || window.pageYOffset;
+        root.style.setProperty('--s1', `${y * 0.06}px`);
+        root.style.setProperty('--s2', `${y * 0.03}px`);
+        root.style.setProperty('--s3', `${y * 0.014}px`);
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    })();
+  </script>
 </body>
 </html>
