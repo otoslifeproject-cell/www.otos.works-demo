@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CPFT overlap and uplift — one-slide summary</title>
+  <title>CPFT overlap, costs, and savings — one-page summary</title>
   <style>
     :root{
       --bg:#081426;
@@ -18,12 +18,12 @@
     html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);font-family:Inter,Segoe UI,Arial,sans-serif}
     .slide{
       width:min(1280px,100%);
-      min-height:720px;
+      min-height:760px;
       margin:0 auto;
       padding:28px;
-      display:grid;
-      grid-template-rows:auto auto 1fr auto;
-      gap:18px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
     }
     h1{margin:0;font-size:34px;line-height:1.15;letter-spacing:-0.02em}
     .subtitle{margin:8px 0 0;color:var(--muted);font-size:18px}
@@ -35,6 +35,9 @@
       color:#fff;
       font-weight:700;
       font-size:16px;
+    }
+    .banner--cost{
+      background:linear-gradient(90deg, rgba(91,231,180,0.15), rgba(244,185,66,0.12));
     }
     .grid{
       display:grid;
@@ -53,6 +56,19 @@
     .v{margin-top:8px;font-size:46px;line-height:1;font-weight:900;color:var(--accent)}
     .d{margin-top:8px;font-size:14px;line-height:1.4;color:var(--txt)}
     .card--impact .v{color:var(--ok)}
+    .savings{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+    .save{
+      border:1px solid rgba(91,231,180,0.45);
+      background:rgba(14,45,56,0.68);
+      border-radius:14px;
+      padding:14px;
+    }
+    .save .k{color:rgba(255,255,255,0.84)}
+    .save .v{color:#8af7cf;font-size:42px}
     .foot{
       border-top:1px solid var(--line);
       padding-top:12px;
@@ -63,6 +79,7 @@
     .foot strong{color:#fff}
     @media (max-width:1100px){
       .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .savings{grid-template-columns:1fr}
     }
     @media (max-width:720px){
       .slide{padding:16px;min-height:auto}
@@ -76,12 +93,12 @@
 <body>
   <main class="slide" role="main">
     <header>
-      <h1>CPFT footprint: ADHD + addiction overlap and illustrative uplift</h1>
-      <p class="subtitle">One-page board slide for NHS discussion (Cambridgeshire + Peterborough proxy).</p>
+      <h1>CPFT footprint: overlap, annual burden, and potential savings</h1>
+      <p class="subtitle">One-page NHS board summary (Cambridgeshire + Peterborough proxy).</p>
     </header>
 
     <div class="banner">
-      Decision headline: planning overlap case is <strong>1,044</strong> people, with illustrative impact range of <strong>157 / 261 / 640*</strong>.
+      Decision headline: planning overlap case is <strong>1,044</strong> people, with illustrative impact range of <strong>157 / 261 / 640*</strong> improved.
     </div>
 
     <section class="grid" aria-label="Number stack">
@@ -122,9 +139,32 @@
       </article>
     </section>
 
+    <div class="banner banner--cost">
+      Cost basis used for this slide: <strong>£40,070 per person/year</strong> (conservative burden from OTOS ripple model).  
+      Annual gross burden at planning cohort (1,044): <strong>£41,833,080</strong>.
+    </div>
+
+    <section class="savings" aria-label="Potential annual savings">
+      <article class="save">
+        <div class="k">Low success scenario (15%)</div>
+        <div class="v">£6.29m</div>
+        <div class="d">157 improved × £40,070 = <strong>£6,290,990</strong> annual gross savings.</div>
+      </article>
+      <article class="save">
+        <div class="k">Base success scenario (25%)</div>
+        <div class="v">£10.46m</div>
+        <div class="d">261 improved × £40,070 = <strong>£10,458,270</strong> annual gross savings.</div>
+      </article>
+      <article class="save">
+        <div class="k">High success scenario* (61.3%)</div>
+        <div class="v">£25.64m</div>
+        <div class="d">640 improved × £40,070 = <strong>£25,644,800</strong> annual gross savings.</div>
+      </article>
+    </section>
+
     <footer class="foot">
       <strong>Important:</strong> *External comparator outcomes are not CPFT observed outcomes.  
-      This slide intentionally excludes unsourced strips and assumption-only £m totals to protect credibility in NHS review.
+      Savings are gross modelled values using the conservative per-person burden and do not yet net off programme delivery cost.
     </footer>
   </main>
 </body>
