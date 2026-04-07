@@ -3,10 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scott Intro V3 · OTOS</title>
   <title>Scott pre‑meeting · 8‑slide elevator deck</title>
   <link rel="stylesheet" href="otos-shared.css" />
   <style>
     :root {
+      --paper: #f7f1e6;
+      --ink: #2c2018;
+      --ink-soft: #5a4435;
+      --line: rgba(70, 50, 37, 0.2);
+      --card: #fffaf1;
+      --dark: #111111;
+      --dark-2: #1b1b1b;
+      --light: #f8f5f0;
+      --max: 1140px;
       --cream-1: #f6efe2;
       --cream-2: #efe3d1;
       --ink-1: #2f2218;
@@ -20,29 +30,83 @@
 
     * { box-sizing: border-box; }
 
+    body {
     html, body {
       margin: 0;
+      background: var(--paper);
+      color: var(--ink);
       color: var(--ink-1);
       font-family: "Inter", "Avenir Next", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.62;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .section {
+      padding: clamp(3.5rem, 7.5vw, 7rem) 1.4rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wrap {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+    }
+
+    .stack > * + * { margin-top: 1.15rem; }
+
+    .eyebrow {
+      margin: 0;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      color: #7a614f;
+    }
+
+    h1, h2 {
+      margin: 0;
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      text-wrap: balance;
       line-height: 1.6;
       background:
         radial-gradient(circle at 10% 8%, rgba(255,138,0,0.15), transparent 30%),
         linear-gradient(180deg, var(--cream-1) 0%, var(--cream-2) 100%);
     }
 
+    h1 { font-size: clamp(2.2rem, 5.6vw, 4.7rem); }
+    h2 { font-size: clamp(1.75rem, 4vw, 3rem); }
     body { scroll-snap-type: y mandatory; }
 
+    p {
+      margin: 0;
+      font-size: clamp(1rem, 1.2vw, 1.15rem);
+      max-width: 72ch;
+    }
+
+    .hero {
     .slide {
       min-height: 100svh;
       scroll-snap-align: start;
       padding: clamp(2rem, 5vw, 4.25rem) 1.2rem;
       border-bottom: 1px solid rgba(120, 86, 58, 0.2);
       display: flex;
+      align-items: flex-end;
+      border-bottom: none;
+      background:
+        linear-gradient(0deg, rgba(18, 12, 9, 0.78) 14%, rgba(18, 12, 9, 0.2) 62%),
+        url('../assets/scott-images/candidates/01-hero-waiting-corridor.png') center/cover no-repeat;
+      color: var(--light);
       align-items: flex-start;
       position: relative;
       overflow: hidden;
     }
 
+    .hero .eyebrow,
+    .hero h1,
+    .hero p { color: var(--light); }
     .slide::before {
       content: "";
       position: absolute;
@@ -51,10 +115,16 @@
       pointer-events: none;
     }
 
+    .hero .wrap { padding-bottom: clamp(1.1rem, 3vw, 2.1rem); }
     .slide:nth-of-type(even) {
       background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0));
     }
 
+    .split {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: clamp(1.2rem, 3.5vw, 2.4rem);
+      align-items: stretch;
     .shell {
       width: min(100%, var(--max));
       margin: 0 auto;
@@ -62,6 +132,12 @@
       z-index: 1;
     }
 
+    .image {
+      min-height: 360px;
+      border-radius: 1.1rem;
+      overflow: hidden;
+      border: 1px solid rgba(70, 50, 37, 0.16);
+      box-shadow: 0 16px 38px rgba(38, 27, 20, 0.14);
     .card {
       background: linear-gradient(180deg, var(--panel-strong) 0%, var(--panel) 100%);
       border: 1px solid var(--stroke);
@@ -72,6 +148,11 @@
       -webkit-backdrop-filter: blur(6px);
     }
 
+    .image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     .slide-head {
       display: flex;
       align-items: center;
@@ -80,6 +161,11 @@
       margin-bottom: .8rem;
     }
 
+    .callout {
+      border-left: 3px solid #7a614f;
+      padding-left: 1rem;
+      font-weight: 600;
+      color: #3f2e22;
     .logo-chip {
       display: inline-flex;
       align-items: center;
@@ -91,12 +177,24 @@
       font-weight: 500;
     }
 
+    .cards {
+      margin-top: 1.25rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.85rem;
     .logo-chip img {
       width: 28px;
       height: 28px;
       filter: drop-shadow(0 3px 8px rgba(0,0,0,.12));
     }
 
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 0.95rem;
+      padding: 1rem;
+      background: linear-gradient(180deg, #fffdf7, var(--card));
+      box-shadow: 0 8px 22px rgba(42, 31, 23, 0.06);
+      color: var(--ink-soft);
     .kicker {
       margin: 0;
       color: #7a5a43;
@@ -104,8 +202,12 @@
       text-transform: uppercase;
       font-size: .74rem;
       font-weight: 600;
+      font-size: 0.96rem;
     }
 
+    .economics {
+      background: linear-gradient(180deg, var(--dark-2), var(--dark));
+      border-bottom-color: rgba(255, 255, 255, 0.16);
     h1, h2 {
       margin: 0;
       color: var(--ink-1);
@@ -115,9 +217,21 @@
       text-wrap: balance;
     }
 
+    .economics .eyebrow { color: #c8b8a2; }
+    .economics h2,
+    .economics p { color: var(--light); }
+    .economics .callout {
+      border-left-color: #c8b8a2;
+      color: rgba(248, 245, 240, 0.9);
+    }
     h1 { font-size: clamp(2rem, 5.2vw, 3.8rem); }
     h2 { font-size: clamp(1.52rem, 4vw, 2.6rem); }
 
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.56rem;
+      margin-top: 1.2rem;
     p {
       margin: .82rem 0 0;
       max-width: 82ch;
@@ -126,8 +240,22 @@
       color: #3a2a1f;
     }
 
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.38rem 0.78rem;
+      background: linear-gradient(180deg, #fffdf7, var(--card));
+      color: var(--ink-soft);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
     strong { font-weight: 600; }
 
+    .three-col {
+      margin-top: 1.35rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
     ul {
       margin: .88rem 0 0;
       padding-left: 1.2rem;
@@ -135,8 +263,20 @@
       color: #3a2a1f;
     }
 
+    .box {
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      padding: 1rem;
+      background: linear-gradient(180deg, #fffdf7, var(--card));
+      box-shadow: 0 8px 22px rgba(42, 31, 23, 0.05);
+    }
     li { margin: .45rem 0; }
 
+    .box h3 {
+      margin: 0 0 0.5rem;
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
+      font-size: 1.1rem;
+      color: var(--ink);
     blockquote {
       margin: 1rem 0 0;
       padding: .1rem 0 .1rem .95rem;
@@ -144,6 +284,10 @@
       color: var(--ink-2);
     }
 
+    .box p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 0.96rem;
     .brain-media {
       margin-top: 1rem;
       border-radius: 18px;
@@ -153,6 +297,11 @@
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
     }
 
+    .ask-grid {
+      margin-top: 1.35rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
     .brain-media img {
       width: 100%;
       border-radius: 12px;
@@ -160,6 +309,12 @@
       height: auto;
     }
 
+    .ask {
+      border: 1px solid var(--line);
+      border-radius: 0.95rem;
+      padding: 1rem;
+      background: linear-gradient(180deg, #fffdf7, var(--card));
+      box-shadow: 0 8px 22px rgba(42, 31, 23, 0.05);
     .brain-icon-row {
       margin-top: 1rem;
       display: flex;
@@ -167,6 +322,12 @@
       flex-wrap: wrap;
     }
 
+    .ask strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--ink);
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
+      font-size: 1.06rem;
     .brain-pill {
       display: inline-flex;
       align-items: center;
@@ -179,11 +340,24 @@
       color: #5f4737;
     }
 
+    .bottom {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+      color: #4a382b;
+      font-weight: 600;
     .brain-pill img {
       width: 14px;
       height: 14px;
     }
 
+    @media (max-width: 940px) {
+      .split,
+      .cards,
+      .three-col,
+      .ask-grid { grid-template-columns: 1fr; }
+      .hero { min-height: 86svh; }
+      .image { min-height: 310px; }
     @media (max-width: 900px) {
       .slide { padding: 1.4rem .9rem; }
       .slide-head { align-items: flex-start; flex-direction: column; }
@@ -191,6 +365,11 @@
   </style>
 </head>
 <body>
+  <section class="section hero">
+    <div class="wrap stack">
+      <p class="eyebrow">Slide 1 · ADHD opener</p>
+      <h1>When ADHD is left waiting, addiction does not arrive quietly — it brings chaos with it.</h1>
+      <p>For a significant and identifiable group of adults, addiction is not the whole clinical picture. The crisis often grows while the real condition remains unresolved.</p>
   <section class="slide">
     <div class="shell card">
       <div class="slide-head">
@@ -252,12 +431,22 @@
     </div>
   </section>
 
+  <section class="section">
+    <div class="wrap split">
+      <div class="stack">
+        <p class="eyebrow">Slide 2 · The chaos</p>
+        <h2>This is what waiting can become.</h2>
+        <p>When ADHD is left untreated for too long, addiction can emerge as a way of coping with overwhelm, under-stimulation, emotional intensity, and executive dysfunction. It does not solve those problems; it compounds them. Sleep becomes erratic, routines collapse, money becomes harder to manage, work becomes unstable, relationships come under strain, and shame drives further secrecy and isolation. What begins as self-medication can quickly become a cycle of short-term relief followed by longer-term damage.</p>
+        <p class="callout">The system keeps treating the crisis, but not always the condition driving it.</p>
   <section class="slide">
     <div class="shell card">
       <div class="slide-head">
         <div class="logo-chip"><img src="images/brain-logo.svg" alt="OTOS brain icon" /> OTOS Continuity™</div>
         <p class="kicker">Definition</p>
       </div>
+      <figure class="image" aria-hidden="true">
+        <img src="../assets/scott-images/candidates/02-chaos-tunnel.png" alt="" />
+      </figure>
       <h2>Slide 4 · What OTOS Continuity™ is (and is not)</h2>
       <p><strong>OTOS is infrastructure, not another app.</strong></p>
       <ul>
@@ -286,6 +475,15 @@
     </div>
   </section>
 
+  <section class="section">
+    <div class="wrap stack">
+      <p class="eyebrow">Slide 3 · Founder truth</p>
+      <h2>I am not adjacent to this problem. I lived it.</h2>
+      <p>Six years in the system. Residential rehab. Re-presentation. Still waiting for the medication review that never came. The turning point came only after the right condition was treated. OTOS was built from what that journey exposed: nobody could see the whole thread, and nothing held it between services.</p>
+      <div class="cards">
+        <div class="card">Three months in residential rehab cost £90,000.</div>
+        <div class="card">The turning point came after the system.</div>
+        <div class="card">This is why the continuity engine exists.</div>
   <section class="slide">
     <div class="shell card">
       <div class="slide-head">
@@ -305,6 +503,13 @@
     </div>
   </section>
 
+  <section class="section economics">
+    <div class="wrap stack">
+      <p class="eyebrow">Slide 4 · Economic rationale</p>
+      <h2>£90,000 spent late on one person. £91,520 to test earlier continuity for fifty.</h2>
+      <p>This is not a request to fund a rollout. It is a request to fund the question: can a small, governed continuity layer reduce costly late failure across a high-risk local cohort before crisis returns?</p>
+      <p class="callout">This is not a claim of guaranteed savings. It is a bounded local test of whether earlier continuity can reduce downstream cost across health, addiction, and wider public-service demand.</p>
+      <p>I am not asking the system to fund a rollout. I am asking it to fund the question.</p>
   <section class="slide">
     <div class="shell card">
       <div class="slide-head">
@@ -323,6 +528,34 @@
     </div>
   </section>
 
+  <section class="section">
+    <div class="wrap split">
+      <div class="stack">
+        <p class="eyebrow">Slide 5 · What OTOS is</p>
+        <h2>A non-clinical continuity layer for the people most likely to be lost in the gap.</h2>
+        <p>OTOS sits around existing services. It logs touchpoints, generates transition receipts, monitors continuity status, and surfaces early drift for human review. The clinical action stays with the service. OTOS holds the thread.</p>
+        <p><strong>Same person. Two silos. One continuity thread.</strong></p>
+        <div class="chips">
+          <span class="chip">Not an EPR</span>
+          <span class="chip">Not diagnosis</span>
+          <span class="chip">Not prescribing</span>
+          <span class="chip">No EPR write-back</span>
+          <span class="chip">Human-in-control throughout</span>
+        </div>
+        <div class="three-col">
+          <article class="box">
+            <h3>Cohort design</h3>
+            <p>Up to 50 adults already touching addiction or mental-health services whose pathway is vulnerable to silent disengagement.</p>
+          </article>
+          <article class="box">
+            <h3>What gets tested</h3>
+            <p>QR or link entry, tokenised ID, short non-clinical micro check-ins, transition receipts, drift detection, and human review.</p>
+          </article>
+          <article class="box">
+            <h3>What this produces</h3>
+            <p>Decision-grade evidence on follow-through visibility, early drift detection, service burden, and whether a continuity layer is worth scaling.</p>
+          </article>
+        </div>
   <section class="slide">
     <div class="shell card">
       <div class="slide-head">
@@ -341,9 +574,37 @@
       <div class="brain-media">
         <img src="images/pp.png" alt="Partners Pathway Brain diagram" />
       </div>
+      <figure class="image" aria-hidden="true">
+        <img src="../assets/scott-images/candidates/05-solution-community-centre.png" alt="" />
+      </figure>
     </div>
   </section>
 
+  <section class="section">
+    <div class="wrap split">
+      <div class="stack">
+        <p class="eyebrow">Slide 6 · The ask</p>
+        <h2>Help move this forward the right way.</h2>
+        <p>I am not asking you to buy a national solution. I am asking for your advice and support on the cleanest route to move a small, governed, low-integration local demonstrator forward.</p>
+        <div class="ask-grid">
+          <div class="ask">
+            <strong>Route</strong>
+            What is the cleanest route through Public Health, ICB innovation, joint sponsorship, or another practical path?
+          </div>
+          <div class="ask">
+            <strong>Host</strong>
+            What is the cleanest host and governance wrapper for a 12-week demonstrator that proves or disproves the model properly?
+          </div>
+          <div class="ask">
+            <strong>People</strong>
+            Who are the minimum decision-makers who need to be in the next room to make a scoped pre-pilot real?
+          </div>
+          <div class="ask">
+            <strong>Funding logic</strong>
+            What is the most realistic in-year or innovation route for testing a continuity intervention of this size without making it bigger than it needs to be?
+          </div>
+        </div>
+        <p class="bottom">OTOS does not replace treatment. It helps existing services hold the thread between them.</p>
   <section class="slide">
     <div class="shell card">
       <div class="slide-head">
@@ -364,6 +625,9 @@
       <div class="brain-media">
         <img src="images/pp.png" alt="Partners Pathway Brain diagram" />
       </div>
+      <figure class="image" aria-hidden="true">
+        <img src="../assets/scott-images/candidates/06-close-nurse-bedside.png" alt="" />
+      </figure>
     </div>
   </section>
 </body>
