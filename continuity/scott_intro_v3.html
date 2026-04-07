@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Scott Intro V3 · OTOS</title>
+  <title>Scott pre‑meeting · 8‑slide elevator deck</title>
   <style>
     :root {
       --paper: #f7f1e6;
@@ -15,28 +16,56 @@
       --dark-2: #1b1b1b;
       --light: #f8f5f0;
       --max: 1140px;
+      --creme: #f7f1e6;
+      --brown: #2f2218;
+      --brown-soft: #5b4435;
+      --stroke: rgba(73, 50, 34, 0.24);
+      --card: #fffaf2;
+      --accent: #d67e2f;
+      --max: 1120px;
     }
 
     * { box-sizing: border-box; }
 
     body {
+    html, body {
       margin: 0;
       background: var(--paper);
       color: var(--ink);
+      background: var(--creme);
+      color: var(--brown);
       font-family: "Inter", "Avenir Next", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       line-height: 1.62;
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
+      line-height: 1.55;
+    }
+
+    body {
+      scroll-snap-type: y mandatory;
     }
 
     .section {
       padding: clamp(3.5rem, 7.5vw, 7rem) 1.4rem;
       border-bottom: 1px solid var(--line);
+    .slide {
+      min-height: 100svh;
+      scroll-snap-align: start;
+      border-bottom: 1px solid var(--stroke);
+      padding: clamp(2rem, 5vw, 4rem) 1.25rem;
+      display: flex;
+      align-items: center;
     }
 
     .wrap {
+    .inner {
       width: min(100%, var(--max));
       margin: 0 auto;
+      background: linear-gradient(180deg, rgba(255,255,255,.64), rgba(255,255,255,.42));
+      border: 1px solid var(--stroke);
+      border-radius: 22px;
+      padding: clamp(1.2rem, 3vw, 2rem);
+      box-shadow: 0 18px 38px rgba(46, 31, 20, 0.08);
     }
 
     .stack > * + * { margin-top: 1.15rem; }
@@ -44,10 +73,16 @@
     .eyebrow {
       margin: 0;
       font-size: 0.74rem;
+    .kicker {
+      margin: 0 0 .65rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       font-weight: 600;
       color: #7a614f;
+      letter-spacing: .09em;
+      font-weight: 700;
+      font-size: .74rem;
+      color: var(--brown-soft);
     }
 
     h1, h2 {
@@ -56,16 +91,24 @@
       font-weight: 600;
       line-height: 1.08;
       letter-spacing: -0.01em;
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
       text-wrap: balance;
+      letter-spacing: -.01em;
+      color: var(--brown);
     }
 
     h1 { font-size: clamp(2.2rem, 5.6vw, 4.7rem); }
     h2 { font-size: clamp(1.75rem, 4vw, 3rem); }
+    h1 { font-size: clamp(2rem, 5vw, 3.8rem); }
+    h2 { font-size: clamp(1.45rem, 3.8vw, 2.65rem); }
 
     p {
       margin: 0;
       font-size: clamp(1rem, 1.2vw, 1.15rem);
       max-width: 72ch;
+      margin: .8rem 0 0;
+      max-width: 78ch;
+      font-size: clamp(1rem, 1.3vw, 1.16rem);
     }
 
     .hero {
@@ -77,34 +120,55 @@
         linear-gradient(0deg, rgba(18, 12, 9, 0.78) 14%, rgba(18, 12, 9, 0.2) 62%),
         url('../assets/scott-images/candidates/01-hero-waiting-corridor.png') center/cover no-repeat;
       color: var(--light);
+    ul {
+      margin: .9rem 0 0;
+      padding-left: 1.15rem;
+      max-width: 78ch;
     }
 
     .hero .eyebrow,
     .hero h1,
     .hero p { color: var(--light); }
+    li { margin: .45rem 0; }
 
     .hero .wrap { padding-bottom: clamp(1.1rem, 3vw, 2.1rem); }
+    blockquote {
+      margin: 1rem 0 0;
+      border-left: 3px solid var(--accent);
+      padding: .2rem 0 .2rem .9rem;
+      color: var(--brown-soft);
+    }
 
     .split {
       display: grid;
       grid-template-columns: 1.05fr 0.95fr;
       gap: clamp(1.2rem, 3.5vw, 2.4rem);
       align-items: stretch;
+    .hero {
+      background: radial-gradient(circle at 20% 8%, rgba(214,126,47,.18), transparent 45%), var(--creme);
     }
 
     .image {
       min-height: 360px;
       border-radius: 1.1rem;
+    .media {
+      margin-top: 1rem;
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: #f2e9d9;
       overflow: hidden;
       border: 1px solid rgba(70, 50, 37, 0.16);
       box-shadow: 0 16px 38px rgba(38, 27, 20, 0.14);
     }
 
     .image img {
+    .media img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
+      height: auto;
     }
 
     .callout {
@@ -192,9 +256,13 @@
 
     .ask-grid {
       margin-top: 1.35rem;
+    .closing {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0.9rem;
+      gap: 1rem;
+      grid-template-columns: 1.2fr .8fr;
+      align-items: start;
     }
 
     .ask {
@@ -228,6 +296,8 @@
       .ask-grid { grid-template-columns: 1fr; }
       .hero { min-height: 86svh; }
       .image { min-height: 310px; }
+    @media (max-width: 900px) {
+      .closing { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -237,6 +307,17 @@
       <p class="eyebrow">Slide 1 · ADHD opener</p>
       <h1>When ADHD is left waiting, addiction does not arrive quietly — it brings chaos with it.</h1>
       <p>For a significant and identifiable group of adults, addiction is not the whole clinical picture. The crisis often grows while the real condition remains unresolved.</p>
+  <section class="slide hero">
+    <div class="inner">
+      <p class="kicker">Scott pre‑meeting · 8‑slide elevator deck (single best output)</p>
+      <h1>Slide 1 · Why I built this (founder background)</h1>
+      <p>OTOS Continuity™ is <strong>infrastructure</strong>: a non-clinical continuity layer that runs <em>between</em> services.</p>
+      <p><strong>Low disruption. No integration. Human decisions only.</strong></p>
+      <p>OTOS exists because of what happened to me: I moved through rehab, A&amp;E, CGL, CPFT and probation while the right condition stayed unresolved — and there was no real continuity holding me between services and the waiting list. I didn’t recover by waiting my turn; I recovered by navigating a fragmented system fast enough to reach the intervention that changed my life. OTOS was built from that gap: to make handoffs visible, drift visible and continuity real while the right intervention is still unresolved.</p>
+      <p><strong>When ADHD is left waiting, addiction does not arrive quietly — it brings chaos with it.</strong></p>
+      <blockquote>
+        <p><em>“ADHD, when unsupported, is a potent route into … substance misuse … Economic costs … are avoidable as, when appropriately supported, individuals with ADHD can thrive.”</em><br /><strong>— NHS Independent ADHD Taskforce</strong></p>
+      </blockquote>
     </div>
   </section>
 
@@ -251,6 +332,21 @@
       <figure class="image" aria-hidden="true">
         <img src="../assets/scott-images/candidates/02-chaos-tunnel.png" alt="" />
       </figure>
+  <section class="slide">
+    <div class="inner">
+      <h2>Slide 2 · The blunt truth (system failure)</h2>
+      <blockquote>
+        <p><strong>A joined-up pathway, before crisis becomes consequence.</strong></p>
+        <p><strong>Earlier visibility. Better coordination. Fewer people lost between services.</strong></p>
+      </blockquote>
+      <p><strong>What’s going wrong:</strong></p>
+      <ul>
+        <li>People can be clinically known and still operationally lost.</li>
+        <li>Continuity is not a nice-to-have. It is where prevention must start.</li>
+      </ul>
+      <p>The issue is not the absence of services — it is what happens between them.</p>
+      <p>People are assessed, signposted, discharged or referred but <strong>the space between services is where people get lost</strong> and the thread of engagement breaks.</p>
+      <p>The cost shows up later in the worst places: A&amp;E, detox, inpatient, policing, housing instability — and then it ripples outward into families, workplaces and communities, affecting everyone around the person.</p>
     </div>
   </section>
 
@@ -263,7 +359,13 @@
         <div class="card">Three months in residential rehab cost £90,000.</div>
         <div class="card">The turning point came after the system.</div>
         <div class="card">This is why the continuity engine exists.</div>
+  <section class="slide">
+    <div class="inner">
+      <h2>Slide 3 · Who we’re speaking to (diagram)</h2>
+      <div class="media">
+        <img src="brain.png" alt="OTOS pathway relationships diagram" />
       </div>
+      <p><strong>I have direct relationships with all of the organisations shown, and each has been open to talking further</strong> (subject to governance and internal approvals).</p>
     </div>
   </section>
 
@@ -274,6 +376,33 @@
       <p>This is not a request to fund a rollout. It is a request to fund the question: can a small, governed continuity layer reduce costly late failure across a high-risk local cohort before crisis returns?</p>
       <p class="callout">This is not a claim of guaranteed savings. It is a bounded local test of whether earlier continuity can reduce downstream cost across health, addiction, and wider public-service demand.</p>
       <p>I am not asking the system to fund a rollout. I am asking it to fund the question.</p>
+  <section class="slide">
+    <div class="inner">
+      <h2>Slide 4 · What OTOS Continuity™ is (and is not)</h2>
+      <p><strong>OTOS is infrastructure, not another app.</strong></p>
+      <ul>
+        <li>The silent layer that connects the pathway.</li>
+        <li>No merged records. No added burden. Clearer continuity.</li>
+        <li>OTOS carries continuity through the pathway.</li>
+        <li>Low integration. Low disruption. High clarity.</li>
+      </ul>
+      <p><strong>OTOS Continuity™ is a non-clinical continuity infrastructure layer that makes follow-through visible between services.</strong></p>
+      <p><strong>What it does:</strong></p>
+      <ul>
+        <li>Logs touchpoints and handoffs</li>
+        <li>Creates transition receipts (who/when/what next)</li>
+        <li>Surfaces early drift signals for human review</li>
+        <li>Maintains an audit trail (timestamped; commissioner-grade)</li>
+      </ul>
+      <p><strong>What it is not:</strong></p>
+      <ul>
+        <li>Not an EPR</li>
+        <li>Not diagnosis</li>
+        <li>Not prescribing</li>
+        <li>No EPR write-back</li>
+        <li>Human-in-control throughout</li>
+      </ul>
+      <p><strong>Nothing changes in how service providers work. What changes is what they can see.</strong></p>
     </div>
   </section>
 
@@ -309,6 +438,15 @@
       <figure class="image" aria-hidden="true">
         <img src="../assets/scott-images/candidates/05-solution-community-centre.png" alt="" />
       </figure>
+  <section class="slide">
+    <div class="inner">
+      <h2>Slide 5 · What we are proposing (12-week demonstrator)</h2>
+      <blockquote>
+        <p><strong>OTOS surfaces signals. The partner teams make the decisions.</strong></p>
+      </blockquote>
+      <p>A <strong>12-week pre-pilot demonstrator</strong> in Cambridgeshire and Peterborough for <strong>up to 50 adults</strong> with co-occurring ADHD and substance misuse.</p>
+      <p>Phase 1 starts with a single, governed use case: an ADHD continuity pathway for adults in addiction services who are diagnosed, suspected, waiting, or stuck between steps.</p>
+      <p>OTOS is not proposing to diagnose ADHD, and it is not asking keyworkers to become diagnosticians. It connects people to existing ADHD routes and support options (including early “holding” support via the RCE Hub), then keeps the whole-person journey visible across referral, RTC/QbTest-enabled assessment support (where governed by clinical leadership), medication review, handoff, and follow-through — so people actually reach what already exists, rather than being lost in the gap.</p>
     </div>
   </section>
 
@@ -337,6 +475,47 @@
           </div>
         </div>
         <p class="bottom">OTOS does not replace treatment. It helps existing services hold the thread between them.</p>
+  <section class="slide">
+    <div class="inner">
+      <h2>Slide 6 · Pilot ambition (explicit) + why it saves money</h2>
+      <p><strong>Pilot ambition (explicit):</strong> for a defined cohort of up to 50, we want people to progress through assessment and, where clinically indicated, onto treatment including medication, using existing routes (e.g., RTC/QbTest) under clinical leadership.</p>
+      <p>Waiting does not hold this cohort safely or cost-effectively.</p>
+      <p>This cohort often does not disengage loudly. It drifts silently between services. By the time risk becomes visible again, it is often visible as crisis.</p>
+      <p><strong>Boundary (non-negotiable):</strong> OTOS remains non-clinical: it provides continuity and receipted follow-through so the handoff actually lands. Clinical responsibility stays with the clinical team.</p>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="inner">
+      <h2>Slide 7 · What a short demonstrator would prove (12 weeks)</h2>
+      <p>Decision-grade evidence on feasibility and value:</p>
+      <ul>
+        <li>Follow‑through visibility (handoff receipts)</li>
+        <li>Drift detection lead time</li>
+        <li>Human review loop (decisions + timestamps)</li>
+        <li>Partner burden (measured)</li>
+        <li>Clear recommendation: proceed / adjust / stop</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="inner closing">
+      <div>
+        <h2>Slide 8 · Pre‑meeting close (interest + route)</h2>
+        <blockquote>
+          <p><strong>If earlier continuity reduces relapse, re-presentation, and silent disengagement even marginally, the savings case becomes serious very quickly.</strong></p>
+        </blockquote>
+        <p><strong>What I’m asking for in this pre‑meeting:</strong></p>
+        <ul>
+          <li>Your view: does this “continuity infrastructure” approach fit Cambridge’s public health priorities?</li>
+          <li>Your advice: who should shape the route (Council / ICB / CPFT / CGL / SUN) so it’s governed properly?</li>
+          <li>If it’s worth exploring: help identifying the <strong>right local budget route</strong> to test it as a small, bounded demonstrator.</li>
+        </ul>
+        <p><strong>Close line:</strong> We are not asking the NHS to change — only to connect. OTOS runs between what already exists.</p>
+      </div>
+      <div class="media">
+        <img src="images/06-close-nurse-bedside.png" alt="Nurse image close" />
       </div>
       <figure class="image" aria-hidden="true">
         <img src="../assets/scott-images/candidates/06-close-nurse-bedside.png" alt="" />
