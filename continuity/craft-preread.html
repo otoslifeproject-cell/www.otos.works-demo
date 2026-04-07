@@ -18,7 +18,7 @@
       --accent-2: #48615C;
       --border: #DDD3C4;
       --radius: 12px;
-      --max: 1080px;
+      --max: 1120px;
     }
 
     * { box-sizing: border-box; }
@@ -47,27 +47,31 @@
 
     main {
       width: min(var(--max), calc(100% - 2.5rem));
-      margin: 5rem auto 4rem;
+      margin: 5.2rem auto 4.2rem;
       display: grid;
-      gap: 1.2rem;
+      gap: 1.35rem;
     }
 
     section {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: clamp(1.25rem, 1.6vw + 1rem, 2.2rem);
+      padding: clamp(1.4rem, 1.8vw + 1rem, 2.45rem);
+    }
+
+    section:nth-of-type(2n) {
+      background: color-mix(in srgb, var(--surface), var(--surface-alt) 22%);
     }
 
     h2 {
       margin: 0 0 1rem;
       font-family: "Source Serif 4", Georgia, serif;
       font-size: clamp(1.45rem, 1.4vw + 1rem, 2rem);
-      line-height: 1.25;
+      line-height: 1.28;
       font-weight: 600;
     }
 
-    p { margin: 0 0 0.95rem; }
+    p { margin: 0 0 0.9rem; max-width: 72ch; }
 
     strong { font-weight: 700; }
     em { font-style: italic; }
@@ -80,7 +84,7 @@
       border-radius: 8px;
     }
 
-    ul { margin: 0.2rem 0 1rem 1.1rem; padding: 0; }
+    ul { margin: 0.25rem 0 1rem 1.15rem; padding: 0; max-width: 72ch; }
     li { margin: 0.3rem 0; }
 
     hr {
@@ -97,12 +101,12 @@
       text-align: center;
       padding: 0.75rem;
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 12px;
       background: var(--surface-alt);
     }
 
     .diagram-wrap img {
-      width: min(100%, 840px);
+      width: min(100%, 860px);
       height: auto;
       border-radius: 8px;
       border: 1px solid var(--border);
@@ -110,7 +114,7 @@
     }
 
     @media (max-width: 780px) {
-      main { width: min(var(--max), calc(100% - 1.2rem)); margin-top: 4rem; }
+      main { width: min(var(--max), calc(100% - 1.1rem)); margin-top: 4rem; gap: 1rem; }
       .corner-logo { width: 74px; opacity: 0.82; }
       .corner-logo.left { left: 8px; top: 8px; }
       .corner-logo.right { right: 8px; top: 8px; }
@@ -125,8 +129,8 @@
   </style>
 </head>
 <body>
-  <img class="corner-logo left" src="assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
-  <img class="corner-logo right" src="assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+  <img class="corner-logo left" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+  <img class="corner-logo right" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
 
   <main>
     <section id="slide-1">
@@ -161,7 +165,7 @@
       <h2>Slide 3 · Who we’re speaking to (diagram)</h2>
       <div class="diagram-wrap">
         <p>(Insert diagram image when exporting.)</p>
-        <img src="assets/OTOS_Continuity_Brain_Partner_Pathway.png" alt="{{DIAGRAM_PATH}}" />
+        <img src="/continuity/images/OTOS_Continuity_Brain_Partner_Pathway.png" alt="{{DIAGRAM_PATH}}" />
       </div>
       <hr />
     </section>
