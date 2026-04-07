@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OTOS Continuity™ Pre-read</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F7F4EE;
+      --surface: #FFFFFF;
+      --surface-alt: #F1ECE3;
+      --text: #1E1C18;
+      --muted: #5E5A53;
+      --accent: #8B6B2E;
+      --accent-2: #48615C;
+      --border: #DDD3C4;
+      --radius: 12px;
+      --max: 1080px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+    }
+
+    .corner-logo {
+      position: fixed;
+      z-index: 20;
+      width: clamp(80px, 8vw, 124px);
+      opacity: 0.9;
+      pointer-events: none;
+      filter: saturate(0.95);
+    }
+
+    .corner-logo.left { top: 14px; left: 14px; }
+    .corner-logo.right { top: 14px; right: 14px; transform: scaleX(-1); }
+
+    main {
+      width: min(var(--max), calc(100% - 2.5rem));
+      margin: 5rem auto 4rem;
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: clamp(1.25rem, 1.6vw + 1rem, 2.2rem);
+    }
+
+    h2 {
+      margin: 0 0 1rem;
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(1.45rem, 1.4vw + 1rem, 2rem);
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    p { margin: 0 0 0.95rem; }
+
+    strong { font-weight: 700; }
+    em { font-style: italic; }
+
+    blockquote {
+      margin: 0 0 1rem;
+      padding: 0.85rem 1rem;
+      border-left: 3px solid var(--accent);
+      background: color-mix(in srgb, var(--surface-alt), white 32%);
+      border-radius: 8px;
+    }
+
+    ul { margin: 0.2rem 0 1rem 1.1rem; padding: 0; }
+    li { margin: 0.3rem 0; }
+
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 1.2rem 0 0;
+    }
+
+    .diagram-wrap {
+      display: grid;
+      gap: 1rem;
+      justify-items: center;
+      align-items: center;
+      text-align: center;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-alt);
+    }
+
+    .diagram-wrap img {
+      width: min(100%, 840px);
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    @media (max-width: 780px) {
+      main { width: min(var(--max), calc(100% - 1.2rem)); margin-top: 4rem; }
+      .corner-logo { width: 74px; opacity: 0.82; }
+      .corner-logo.left { left: 8px; top: 8px; }
+      .corner-logo.right { right: 8px; top: 8px; }
+    }
+
+    @media print {
+      .corner-logo { position: absolute; opacity: 0.88; }
+      section { break-inside: avoid; box-shadow: none; }
+      body { background: #fff; }
+      main { width: 100%; margin: 0; gap: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+  <img class="corner-logo left" src="assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+  <img class="corner-logo right" src="assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+
+  <main>
+    <section id="slide-1">
+      <h2>Slide 1 · Why I built this (founder background)</h2>
+      <p>OTOS Continuity™ is <strong>infrastructure</strong>: a non-clinical continuity layer that runs <em>between existing</em> services.</p>
+      <p><strong>Low disruption. No integration. Human decisions only.</strong></p>
+      <p>OTOS exists because of what happened to me: I moved through dayhabs, probation, CGL, rehab, A&amp;E and various CPFT therapies while my ADHD stayed unresolved — and there was no real continuity holding me between services and the waiting list. I didn’t recover by waiting my turn; I recovered by navigating a fragmented system fast enough to reach the intervention that changed my life: the correct medication for my ADHD.</p>
+      <p>OTOS was built from that gap: to make handoffs visible, share whole-person knowledge, ensure drift is visible, and continuity is maintained while the right intervention is still unresolved.</p>
+      <p><strong>When ADHD is left waiting, addiction does not arrive quietly — it brings chaos with it.</strong></p>
+      <p>For a significant and identifiable group of adults, addiction is not the whole clinical picture. The crisis often grows while the real condition remains unresolved.</p>
+      <hr />
+    </section>
+
+    <section id="slide-2">
+      <h2>Slide 2 · The blunt truth (system failure)</h2>
+      <blockquote>
+        <p><strong>A joined-up pathway, before crisis becomes consequence.</strong><br />
+        <strong>Earlier visibility. Better coordination. Fewer people lost between services.</strong></p>
+      </blockquote>
+      <p><strong>What’s going wrong:</strong></p>
+      <ul>
+        <li>People can be clinically known and still operationally lost.</li>
+        <li>Continuity is not a nice-to-have. It is where prevention must start.</li>
+      </ul>
+      <p>The issue is not the absence of services — it is what happens between them.</p>
+      <p>People are assessed, signposted, discharged or referred but <strong>the space between services is where people get lost</strong> and the thread of engagement breaks.</p>
+      <p>The cost shows up later in the worst places: A&amp;E, detox, inpatient, policing, housing instability — and then it ripples outward into families, workplaces and communities.</p>
+      <hr />
+    </section>
+
+    <section id="slide-3">
+      <h2>Slide 3 · Who we’re speaking to (diagram)</h2>
+      <div class="diagram-wrap">
+        <p>(Insert diagram image when exporting.)</p>
+        <img src="assets/OTOS_Continuity_Brain_Partner_Pathway.png" alt="{{DIAGRAM_PATH}}" />
+      </div>
+      <hr />
+    </section>
+
+    <section id="slide-4">
+      <h2>Slide 4 · What OTOS Continuity™ is (and is not)</h2>
+      <p><strong>OTOS is infrastructure, not another app.</strong></p>
+      <ul>
+        <li>The silent layer that connects the pathway.</li>
+        <li>No merged records. No added burden. Clearer continuity.</li>
+        <li>OTOS carries continuity through the pathway.</li>
+        <li>Low integration. Low disruption. High clarity.</li>
+      </ul>
+      <p><strong>OTOS Continuity™ is a non-clinical continuity infrastructure layer that makes follow-through visible between services.</strong></p>
+      <p><strong>What it does:</strong></p>
+      <ul>
+        <li>Logs touchpoints and handoffs</li>
+        <li>Creates transition receipts (who/when/what next)</li>
+        <li>Surfaces early drift signals for human review</li>
+        <li>Maintains an audit trail (timestamped; commissioner-grade)</li>
+      </ul>
+      <p><strong>What it is not:</strong></p>
+      <ul>
+        <li>Not an EPR</li>
+        <li>Not diagnosis</li>
+        <li>Not prescribing</li>
+        <li>No EPR write-back</li>
+        <li>Human-in-control throughout</li>
+      </ul>
+      <p><strong>Nothing changes in how service providers work. What changes is what they can see.</strong></p>
+      <hr />
+    </section>
+
+    <section id="slide-5">
+      <h2>Slide 5 · What we are proposing (12-week demonstrator)</h2>
+      <blockquote>
+        <p><strong>OTOS surfaces signals. The partner teams make the decisions.</strong></p>
+      </blockquote>
+      <p>A <strong>12-week pre-pilot demonstrator</strong> in Cambridgeshire and Peterborough for <strong>up to 50 adults</strong> with co-occurring ADHD and substance misuse.</p>
+      <p>Phase 1 starts with a single, governed use case: an ADHD continuity pathway for adults in addiction services who are diagnosed, suspected, waiting, or stuck between steps.</p>
+      <p>OTOS is not proposing to diagnose ADHD and it is not asking keyworkers to become diagnosticians. It connects people to existing ADHD routes and support options (including early “holding” support via the RCE Hub), then keeps the whole-person journey visible across referral, RTC/QbTest-enabled assessment support (where governed by clinical leadership), medication review, handoff, and follow-through — so people actually reach what already exists, rather than being lost in the gap.</p>
+      <hr />
+    </section>
+
+    <section id="slide-6">
+      <h2>Slide 6 · Pilot ambition (explicit) + why it saves money</h2>
+      <p><strong>Pilot ambition (explicit):</strong> for a defined cohort of up to 50, we want people to progress through assessment and, where clinically indicated, onto treatment including medication, using existing routes (e.g., RTC/QbTest) under clinical leadership.</p>
+      <p>Waiting does not hold this cohort safely or cost-effectively.</p>
+      <p>This cohort often does not disengage loudly. It drifts silently between services. By the time risk becomes visible again, it is often visible as crisis.</p>
+      <p><strong>The local pressure (CPFT published):</strong></p>
+      <ul>
+        <li>Over <strong>6,000</strong> people in triage / pre-assessment screening</li>
+        <li><strong>380</strong> waiting for an assessment</li>
+        <li>Nearly <strong>1,000</strong> awaiting a medication review or titration</li>
+        <li>Over <strong>1,000</strong> requiring annual reviews</li>
+        <li><strong>2,973</strong> referrals received (1 Jan 2024 → 30 Jun 2025)</li>
+      </ul>
+      <p><strong>The cohort size (our Cambridge planning estimate):</strong></p>
+      <ul>
+        <li><strong>≈ 877</strong> adults in the CPFT footprint with co-occurring <strong>ADHD + addiction</strong> (planning estimate; not a CPFT reported figure).</li>
+      </ul>
+      <p><strong>Savings headline (from our model):</strong></p>
+      <ul>
+        <li><strong>≈ £18m / year</strong> potential avoidable demand in Cambridge if continuity improves outcomes for this cohort (modelled estimate; assumptions available on request).</li>
+      </ul>
+      <p><strong>Why this saves money (commissioner-safe):</strong> if a continuity layer increases follow-through and reduces silent disengagement even modestly for a high-cost cohort, downstream demand and re-presentation costs reduce.</p>
+      <p><strong>Boundary (non-negotiable):</strong> OTOS remains non-clinical: it provides continuity and receipted follow-through so the handoff actually lands. Clinical responsibility stays with the clinical team.</p>
+      <hr />
+    </section>
+
+    <section id="slide-7">
+      <h2>Slide 7 · What a short demonstrator would prove (12 weeks)</h2>
+      <p>Decision-grade evidence on feasibility and value:</p>
+      <p><strong>Success measures (what we will actually measure):</strong></p>
+      <ul>
+        <li>Follow-through visibility (handoff receipts)</li>
+        <li>Follow-through completion rate (transition receipts reaching the next touchpoint)</li>
+        <li>Comparator signal (evidence context): in the START study, <strong>61.3%</strong> of patients showed improvement in addictive disorders at 6 months after ADHD diagnosis (context signal, not a pilot target).</li>
+        <li>Drift detection lead time (how much earlier risk becomes visible)</li>
+        <li>Human review loop performance (decisions + timestamps)</li>
+        <li>Partner burden (time cost, measured)</li>
+      </ul>
+      <p><strong>Outputs:</strong></p>
+      <ul>
+        <li>Commissioner-grade audit trail + evaluation pack</li>
+        <li>Clear recommendation: proceed / adjust / stop</li>
+      </ul>
+      <hr />
+    </section>
+
+    <section id="slide-8">
+      <h2>Slide 8 · Pre-meeting close (interest + route)</h2>
+      <blockquote>
+        <p><strong>If earlier continuity reduces relapse, re-presentation and silent disengagement even marginally, the savings case becomes serious very quickly.</strong></p>
+      </blockquote>
+      <p><strong>What I’m asking for in this pre-meeting:</strong></p>
+      <ul>
+        <li>Your view: does this “continuity infrastructure” approach fit Cambridge’s public health priorities?</li>
+        <li>Your advice: who should shape the route (Council / ICB / CPFT / CGL / SUN) so it’s governed properly?</li>
+        <li>If it’s worth exploring: help identifying the <strong>right local budget route</strong> to test it as a small, bounded demonstrator.</li>
+      </ul>
+      <p><strong>Close line:</strong> We are not asking the NHS to change — only to connect. OTOS runs between what already exists.</p>
+    </section>
+  </main>
+</body>
+</html>
