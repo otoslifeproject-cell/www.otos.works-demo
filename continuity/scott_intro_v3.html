@@ -7,129 +7,196 @@
   <link rel="stylesheet" href="otos-shared.css" />
   <style>
     :root {
-      --creme: #f3eadc;
-      --brown: #3a2718;
-      --brown-soft: #5b4435;
-      --stroke: rgba(73, 50, 34, 0.24);
-      --card: #fff8ee;
-      --accent: var(--otos-orange);
-      --max: 1120px;
+      --cream-1: #f6efe2;
+      --cream-2: #efe3d1;
+      --ink-1: #2f2218;
+      --ink-2: #5b4435;
+      --stroke: rgba(113, 80, 52, 0.28);
+      --panel: rgba(255, 249, 239, 0.84);
+      --panel-strong: rgba(255, 246, 232, 0.94);
+      --brain-gold: #ffb347;
+      --max: 1160px;
     }
 
     * { box-sizing: border-box; }
 
     html, body {
       margin: 0;
-      background: linear-gradient(180deg, #f6efe3 0%, #efe3d2 100%);
-      color: var(--brown);
+      color: var(--ink-1);
       font-family: "Inter", "Avenir Next", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.55;
+      line-height: 1.6;
+      background:
+        radial-gradient(circle at 10% 8%, rgba(255,138,0,0.15), transparent 30%),
+        linear-gradient(180deg, var(--cream-1) 0%, var(--cream-2) 100%);
     }
 
-    body {
-      scroll-snap-type: y mandatory;
-    }
+    body { scroll-snap-type: y mandatory; }
 
     .slide {
       min-height: 100svh;
       scroll-snap-align: start;
+      padding: clamp(2rem, 5vw, 4.25rem) 1.2rem;
       border-bottom: 1px solid rgba(120, 86, 58, 0.2);
-      padding: clamp(2.25rem, 6vw, 5rem) 1.25rem;
       display: flex;
       align-items: flex-start;
+      position: relative;
+      overflow: hidden;
     }
 
-    .inner {
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(255,255,255,0.28), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+
+    .slide:nth-of-type(even) {
+      background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0));
+    }
+
+    .shell {
       width: min(100%, var(--max));
       margin: 0 auto;
-      background: linear-gradient(180deg, #fffaf2 0%, #fff5e7 100%);
-      border: 1px solid rgba(132, 94, 60, 0.28);
-      border-radius: 22px;
-      padding: clamp(1.25rem, 3.2vw, 2.25rem);
-      box-shadow: 0 18px 36px rgba(46, 31, 20, 0.12);
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--panel-strong) 0%, var(--panel) 100%);
+      border: 1px solid var(--stroke);
+      border-radius: 24px;
+      box-shadow: 0 22px 48px rgba(46, 31, 20, 0.13);
+      padding: clamp(1.2rem, 3.1vw, 2.2rem);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .slide-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: .8rem;
+    }
+
+    .logo-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      font-size: .8rem;
+      color: var(--ink-2);
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .logo-chip img {
+      width: 28px;
+      height: 28px;
+      filter: drop-shadow(0 3px 8px rgba(0,0,0,.12));
     }
 
     .kicker {
-      margin: 0 0 .65rem;
+      margin: 0;
+      color: #7a5a43;
+      letter-spacing: .08em;
       text-transform: uppercase;
-      letter-spacing: .09em;
-      font-weight: 700;
       font-size: .74rem;
-      color: var(--brown-soft);
+      font-weight: 600;
     }
 
     h1, h2 {
       margin: 0;
-      line-height: 1.08;
+      color: var(--ink-1);
+      line-height: 1.1;
+      letter-spacing: -.01em;
       font-family: "Playfair Display", "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
       text-wrap: balance;
-      letter-spacing: -.01em;
-      color: var(--brown);
     }
 
-    h1 { font-size: clamp(2.1rem, 5.5vw, 4.1rem); }
-    h2 { font-size: clamp(1.65rem, 4vw, 2.9rem); }
+    h1 { font-size: clamp(2rem, 5.2vw, 3.8rem); }
+    h2 { font-size: clamp(1.52rem, 4vw, 2.6rem); }
 
     p {
-      margin: .8rem 0 0;
-      max-width: 78ch;
-      font-size: clamp(1rem, 1.3vw, 1.16rem);
+      margin: .82rem 0 0;
+      max-width: 82ch;
+      font-size: clamp(1rem, 1.2vw, 1.13rem);
+      font-weight: 400;
+      color: #3a2a1f;
     }
 
+    strong { font-weight: 600; }
+
     ul {
-      margin: .9rem 0 0;
-      padding-left: 1.15rem;
-      max-width: 78ch;
+      margin: .88rem 0 0;
+      padding-left: 1.2rem;
+      max-width: 82ch;
+      color: #3a2a1f;
     }
 
     li { margin: .45rem 0; }
 
     blockquote {
       margin: 1rem 0 0;
-      border-left: 3px solid var(--accent);
-      padding: .2rem 0 .2rem .9rem;
-      color: var(--brown-soft);
+      padding: .1rem 0 .1rem .95rem;
+      border-left: 3px solid var(--otos-orange);
+      color: var(--ink-2);
     }
 
-    .slide:nth-of-type(even) {
-      background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
-    }
-
-    .hero {
-      background: radial-gradient(circle at 20% 8%, rgba(214,126,47,.28), transparent 45%), linear-gradient(180deg, #f6efe3 0%, #efe3d2 100%);
-    }
-
-    .media {
+    .brain-media {
       margin-top: 1rem;
-      width: 100%;
-      border-radius: 16px;
-      border: 1px solid rgba(132, 94, 60, 0.28);
-      background: #f8eddc;
-      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid var(--stroke);
+      background: #f3ece1;
+      padding: .7rem;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
     }
 
-    .media img {
+    .brain-media img {
       width: 100%;
+      border-radius: 12px;
       display: block;
       height: auto;
     }
 
-    .closing {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: 1.2fr .8fr;
-      align-items: start;
+    .brain-icon-row {
+      margin-top: 1rem;
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+
+    .brain-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .32rem .72rem;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.56);
+      font-size: .78rem;
+      color: #5f4737;
+    }
+
+    .brain-pill img {
+      width: 14px;
+      height: 14px;
     }
 
     @media (max-width: 900px) {
-      .closing { grid-template-columns: 1fr; }
+      .slide { padding: 1.4rem .9rem; }
+      .slide-head { align-items: flex-start; flex-direction: column; }
     }
   </style>
 </head>
 <body>
-  <section class="slide hero">
-    <div class="inner panel">
-      <p class="kicker">Scott pre‑meeting · 8‑slide elevator deck (single best output)</p>
+  <section class="slide">
+    <div class="shell card">
+      <div class="slide-head">
+        <div class="logo-chip"><img src="images/brain-logo.svg" alt="OTOS brain icon" /> OTOS Continuity™</div>
+        <p class="kicker">Scott pre‑meeting · 8‑slide elevator deck (single best output)</p>
+      </div>
       <h1>Slide 1 · Why I built this (founder background)</h1>
       <p>OTOS Continuity™ is <strong>infrastructure</strong>: a non-clinical continuity layer that runs <em>between</em> services.</p>
       <p><strong>Low disruption. No integration. Human decisions only.</strong></p>
@@ -138,11 +205,19 @@
       <blockquote>
         <p><em>“ADHD, when unsupported, is a potent route into … substance misuse … Economic costs … are avoidable as, when appropriately supported, individuals with ADHD can thrive.”</em><br /><strong>— NHS Independent ADHD Taskforce</strong></p>
       </blockquote>
+      <div class="brain-icon-row">
+        <span class="brain-pill"><img src="images/brain-logo.svg" alt="" /> Continuity layer</span>
+        <span class="brain-pill"><img src="images/brain-logo.svg" alt="" /> Human-led decisions</span>
+      </div>
     </div>
   </section>
 
   <section class="slide">
-    <div class="inner panel">
+    <div class="shell card">
+      <div class="slide-head">
+        <div class="logo-chip"><img src="images/brain-logo.svg" alt="OTOS brain icon" /> OTOS Continuity™</div>
+        <p class="kicker">System framing</p>
+      </div>
       <h2>Slide 2 · The blunt truth (system failure)</h2>
       <blockquote>
         <p><strong>A joined-up pathway, before crisis becomes consequence.</strong></p>
@@ -156,21 +231,33 @@
       <p>The issue is not the absence of services — it is what happens between them.</p>
       <p>People are assessed, signposted, discharged or referred but <strong>the space between services is where people get lost</strong> and the thread of engagement breaks.</p>
       <p>The cost shows up later in the worst places: A&amp;E, detox, inpatient, policing, housing instability — and then it ripples outward into families, workplaces and communities, affecting everyone around the person.</p>
+      <div class="brain-icon-row">
+        <span class="brain-pill"><img src="images/brain-logo.svg" alt="" /> Earlier visibility</span>
+        <span class="brain-pill"><img src="images/brain-logo.svg" alt="" /> Lower crisis cost</span>
+      </div>
     </div>
   </section>
 
   <section class="slide">
-    <div class="inner panel">
+    <div class="shell card">
+      <div class="slide-head">
+        <div class="logo-chip"><img src="images/brain-logo.svg" alt="OTOS brain icon" /> OTOS Continuity™</div>
+        <p class="kicker">Partners Pathway</p>
+      </div>
       <h2>Slide 3 · Who we’re speaking to (diagram)</h2>
-      <div class="media">
-        <img src="images/pp.png" alt="OTOS pathway relationships diagram" />
+      <div class="brain-media">
+        <img src="images/pp.png" alt="Partners Pathway Brain diagram" />
       </div>
       <p><strong>I have direct relationships with all of the organisations shown, and each has been open to talking further</strong> (subject to governance and internal approvals).</p>
     </div>
   </section>
 
   <section class="slide">
-    <div class="inner panel">
+    <div class="shell card">
+      <div class="slide-head">
+        <div class="logo-chip"><img src="images/brain-logo.svg" alt="OTOS brain icon" /> OTOS Continuity™</div>
+        <p class="kicker">Definition</p>
+      </div>
       <h2>Slide 4 · What OTOS Continuity™ is (and is not)</h2>
       <p><strong>OTOS is infrastructure, not another app.</strong></p>
       <ul>
@@ -200,7 +287,11 @@
   </section>
 
   <section class="slide">
-    <div class="inner panel">
+    <div class="shell card">
+      <div class="slide-head">
+        <div class="logo-chip"><img src="images/brain-logo.svg" alt="OTOS brain icon" /> OTOS Continuity™</div>
+        <p class="kicker">Demonstrator scope</p>
+      </div>
       <h2>Slide 5 · What we are proposing (12-week demonstrator)</h2>
       <blockquote>
         <p><strong>OTOS surfaces signals. The partner teams make the decisions.</strong></p>
@@ -208,21 +299,36 @@
       <p>A <strong>12-week pre-pilot demonstrator</strong> in Cambridgeshire and Peterborough for <strong>up to 50 adults</strong> with co-occurring ADHD and substance misuse.</p>
       <p>Phase 1 starts with a single, governed use case: an ADHD continuity pathway for adults in addiction services who are diagnosed, suspected, waiting, or stuck between steps.</p>
       <p>OTOS is not proposing to diagnose ADHD, and it is not asking keyworkers to become diagnosticians. It connects people to existing ADHD routes and support options (including early “holding” support via the RCE Hub), then keeps the whole-person journey visible across referral, RTC/QbTest-enabled assessment support (where governed by clinical leadership), medication review, handoff, and follow-through — so people actually reach what already exists, rather than being lost in the gap.</p>
+      <div class="brain-media">
+        <img src="images/pp.png" alt="Partners Pathway Brain diagram" />
+      </div>
     </div>
   </section>
 
   <section class="slide">
-    <div class="inner panel">
+    <div class="shell card">
+      <div class="slide-head">
+        <div class="logo-chip"><img src="images/brain-logo.svg" alt="OTOS brain icon" /> OTOS Continuity™</div>
+        <p class="kicker">Savings logic</p>
+      </div>
       <h2>Slide 6 · Pilot ambition (explicit) + why it saves money</h2>
       <p><strong>Pilot ambition (explicit):</strong> for a defined cohort of up to 50, we want people to progress through assessment and, where clinically indicated, onto treatment including medication, using existing routes (e.g., RTC/QbTest) under clinical leadership.</p>
       <p>Waiting does not hold this cohort safely or cost-effectively.</p>
       <p>This cohort often does not disengage loudly. It drifts silently between services. By the time risk becomes visible again, it is often visible as crisis.</p>
       <p><strong>Boundary (non-negotiable):</strong> OTOS remains non-clinical: it provides continuity and receipted follow-through so the handoff actually lands. Clinical responsibility stays with the clinical team.</p>
+      <div class="brain-icon-row">
+        <span class="brain-pill"><img src="images/brain-logo.svg" alt="" /> Drift detected earlier</span>
+        <span class="brain-pill"><img src="images/brain-logo.svg" alt="" /> Fewer high-cost escalations</span>
+      </div>
     </div>
   </section>
 
   <section class="slide">
-    <div class="inner panel">
+    <div class="shell card">
+      <div class="slide-head">
+        <div class="logo-chip"><img src="images/brain-logo.svg" alt="OTOS brain icon" /> OTOS Continuity™</div>
+        <p class="kicker">Evidence output</p>
+      </div>
       <h2>Slide 7 · What a short demonstrator would prove (12 weeks)</h2>
       <p>Decision-grade evidence on feasibility and value:</p>
       <ul>
@@ -232,26 +338,31 @@
         <li>Partner burden (measured)</li>
         <li>Clear recommendation: proceed / adjust / stop</li>
       </ul>
+      <div class="brain-media">
+        <img src="images/pp.png" alt="Partners Pathway Brain diagram" />
+      </div>
     </div>
   </section>
 
   <section class="slide">
-    <div class="inner panel closing">
-      <div>
-        <h2>Slide 8 · Pre‑meeting close (interest + route)</h2>
-        <blockquote>
-          <p><strong>If earlier continuity reduces relapse, re-presentation, and silent disengagement even marginally, the savings case becomes serious very quickly.</strong></p>
-        </blockquote>
-        <p><strong>What I’m asking for in this pre‑meeting:</strong></p>
-        <ul>
-          <li>Your view: does this “continuity infrastructure” approach fit Cambridge’s public health priorities?</li>
-          <li>Your advice: who should shape the route (Council / ICB / CPFT / CGL / SUN) so it’s governed properly?</li>
-          <li>If it’s worth exploring: help identifying the <strong>right local budget route</strong> to test it as a small, bounded demonstrator.</li>
-        </ul>
-        <p><strong>Close line:</strong> We are not asking the NHS to change — only to connect. OTOS runs between what already exists.</p>
+    <div class="shell card">
+      <div class="slide-head">
+        <div class="logo-chip"><img src="images/brain-logo.svg" alt="OTOS brain icon" /> OTOS Continuity™</div>
+        <p class="kicker">Pre‑meeting close</p>
       </div>
-      <div class="media">
-        <img src="images/06-close-nurse-bedside.png" alt="Nurse image close" />
+      <h2>Slide 8 · Pre‑meeting close (interest + route)</h2>
+      <blockquote>
+        <p><strong>If earlier continuity reduces relapse, re-presentation, and silent disengagement even marginally, the savings case becomes serious very quickly.</strong></p>
+      </blockquote>
+      <p><strong>What I’m asking for in this pre‑meeting:</strong></p>
+      <ul>
+        <li>Your view: does this “continuity infrastructure” approach fit Cambridge’s public health priorities?</li>
+        <li>Your advice: who should shape the route (Council / ICB / CPFT / CGL / SUN) so it’s governed properly?</li>
+        <li>If it’s worth exploring: help identifying the <strong>right local budget route</strong> to test it as a small, bounded demonstrator.</li>
+      </ul>
+      <p><strong>Close line:</strong> We are not asking the NHS to change — only to connect. OTOS runs between what already exists.</p>
+      <div class="brain-media">
+        <img src="images/pp.png" alt="Partners Pathway Brain diagram" />
       </div>
     </div>
   </section>
