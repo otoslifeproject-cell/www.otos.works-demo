@@ -36,7 +36,7 @@
     .deck-logo-wrap {
       display: grid;
       place-items: center;
-      margin: 0.35rem 0 0.15rem;
+      margin: 0.05rem 0 0.02rem;
       position: relative;
       z-index: 3;
     }
@@ -110,7 +110,7 @@
 
     main {
       width: min(var(--max), calc(100% - 1.6rem));
-      margin: 0.2rem auto 4.2rem;
+      margin: 0.05rem auto 4.2rem;
       display: grid;
       gap: 2rem;
     }
@@ -130,13 +130,16 @@
 
     h2 {
       margin: 0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      font-size: clamp(1.18rem, 0.85vw + 1rem, 1.6rem);
-      line-height: 1.25;
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(1.02rem, 0.55vw + 0.92rem, 1.3rem);
+      line-height: 1.18;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.01em;
       color: #8B6B2E;
-      text-transform: uppercase;
+      background: linear-gradient(180deg, #A88743 0%, #6F5A33 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .slide-head {
@@ -234,7 +237,7 @@
 
     @media (max-width: 780px) {
       main { width: min(var(--max), calc(100% - 1rem)); margin-top: 0.35rem; gap: 1.2rem; }
-      .deck-logo-wrap { margin-top: 0.15rem; margin-bottom: 0.1rem; }
+      .deck-logo-wrap { margin-top: 0; margin-bottom: 0; }
       .deck-logo { width: clamp(380px, 92vw, 700px); }
       .slide-brain { width: 34px; }
       .lead-quote { font-size: clamp(1.7rem, 5.6vw, 2.7rem); }
