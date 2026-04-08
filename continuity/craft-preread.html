@@ -33,6 +33,19 @@
       line-height: 1.65;
     }
 
+    .deck-logo-wrap {
+      display: grid;
+      place-items: center;
+      margin: 1.25rem 0 0.5rem;
+      position: relative;
+      z-index: 3;
+    }
+
+    .deck-logo {
+      width: clamp(220px, 22vw, 420px);
+      height: auto;
+    }
+
     .watermark-layer {
       position: fixed;
       inset: 0;
@@ -97,7 +110,7 @@
 
     main {
       width: min(var(--max), calc(100% - 2.5rem));
-      margin: 2.2rem auto 4.2rem;
+      margin: 0.65rem auto 4.2rem;
       display: grid;
       gap: 1.35rem;
     }
@@ -116,23 +129,47 @@
     }
 
     h2 {
-      margin: 0 0 0.35rem;
-      font-family: "Source Serif 4", Georgia, serif;
-      font-size: clamp(1.45rem, 1.4vw + 1rem, 2rem);
-      line-height: 1.28;
-      font-weight: 600;
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-size: clamp(1rem, 0.65vw + 0.9rem, 1.2rem);
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #8B6B2E;
+      text-transform: uppercase;
     }
 
     .slide-head {
-      display: grid;
-      justify-items: start;
-      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.62rem;
+      margin-bottom: 1.1rem;
     }
 
-    .slide-logo {
-      width: clamp(130px, 12vw, 220px);
+    .slide-brain {
+      width: clamp(32px, 2.8vw, 42px);
       height: auto;
-      margin-bottom: 0.45rem;
+      flex: 0 0 auto;
+      border-radius: 8px;
+      padding: 4px;
+    }
+
+    section:nth-of-type(odd) .slide-brain {
+      background: rgba(139, 107, 46, 0.13);
+      filter: saturate(0.65) brightness(0.62);
+    }
+
+    section:nth-of-type(even) .slide-brain {
+      background: rgba(247, 244, 238, 0.92);
+      filter: saturate(0.35) brightness(1.25);
+    }
+
+    .lead-quote {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(2rem, 2.4vw + 1rem, 4rem);
+      line-height: 0.98;
+      letter-spacing: -0.01em;
+      margin: 0 0 1rem;
     }
 
     p { margin: 0 0 0.9rem; max-width: 72ch; }
@@ -179,7 +216,9 @@
 
     @media (max-width: 780px) {
       main { width: min(var(--max), calc(100% - 1.1rem)); margin-top: 1rem; gap: 1rem; }
-      .slide-logo { width: clamp(120px, 32vw, 180px); }
+      .deck-logo { width: clamp(190px, 48vw, 260px); }
+      .slide-brain { width: 34px; }
+      .lead-quote { font-size: clamp(1.7rem, 5.6vw, 2.7rem); }
       .wm-1 { --wm-size: min(40vw, 220px); left: 2vw; top: 14vh; }
       .wm-2 { --wm-size: min(66vw, 360px); right: -22vw; top: 24vh; }
       .wm-3 { --wm-size: min(30vw, 170px); left: 8vw; top: 58vh; }
@@ -206,25 +245,25 @@
     <span class="wm wm-6" data-speed="0.04"></span>
   </div>
 
+  <div class="deck-logo-wrap">
+    <img class="deck-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+  </div>
+
   <main>
     <section id="slide-1">
       <div class="slide-head">
-        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
-        <h2>Slide 1 · Why I built this (founder background)</h2>
+        <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
+        <h2>THE PROBLEM</h2>
       </div>
-      <p>OTOS Continuity™ is <strong>infrastructure</strong>: a non-clinical continuity layer that runs <em>between existing</em> services.</p>
-      <p><strong>Low disruption. No integration. Human decisions only.</strong></p>
-      <p>OTOS exists because of what happened to me: I moved through dayhabs, probation, CGL, rehab, A&amp;E and various CPFT therapies while my ADHD stayed unresolved — and there was no real continuity holding me between services and the waiting list. I didn’t recover by waiting my turn; I recovered by navigating a fragmented system fast enough to reach the intervention that changed my life: the correct medication for my ADHD.</p>
-      <p>OTOS was built from that gap: to make handoffs visible, share whole-person knowledge, ensure drift is visible, and continuity is maintained while the right intervention is still unresolved.</p>
-      <p><strong>When ADHD is left waiting, addiction does not arrive quietly — it brings chaos with it.</strong></p>
-      <p>For a significant and identifiable group of adults, addiction is not the whole clinical picture. The crisis often grows while the real condition remains unresolved.</p>
+      <p class="lead-quote"><strong>When ADHD is left waiting, addiction does not arrive quietly — it brings chaos with it.</strong></p>
+      <p>When ADHD is left untreated for too long, addiction can emerge as a way of coping with overwhelm, under-stimulation, emotional intensity and executive dysfunction. But addiction does not solve those problems; it compounds them. In general terms, it can bring chaos into every part of a person’s life: sleep becomes erratic, routines collapse, money becomes harder to manage, work becomes unstable, relationships come under strain, and shame drives further secrecy and isolation. What may begin as self-medication can quickly become a cycle of short-term relief followed by longer-term damage, where the person is no longer simply waiting for help — they are fighting to stop everything falling apart.</p>
       <hr />
     </section>
 
     <section id="slide-2">
       <div class="slide-head">
-        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
-        <h2>Slide 2 · The blunt truth (system failure)</h2>
+        <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
+        <h2>THE BLUNT TRUTH</h2>
       </div>
       <blockquote>
         <p><strong>A joined-up pathway, before crisis becomes consequence.</strong><br />
@@ -243,8 +282,8 @@
 
     <section id="slide-3">
       <div class="slide-head">
-        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
-        <h2>Slide 3 · Who we’re speaking to (diagram)</h2>
+        <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
+        <h2>WHO WE’RE SPEAKING TO</h2>
       </div>
       <div class="diagram-wrap">
         <p>(Insert diagram image when exporting.)</p>
@@ -255,8 +294,8 @@
 
     <section id="slide-4">
       <div class="slide-head">
-        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
-        <h2>Slide 4 · What OTOS Continuity™ is (and is not)</h2>
+        <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
+        <h2>WHAT OTOS CONTINUITY™ IS (AND IS NOT)</h2>
       </div>
       <p><strong>OTOS is infrastructure, not another app.</strong></p>
       <ul>
@@ -287,8 +326,8 @@
 
     <section id="slide-5">
       <div class="slide-head">
-        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
-        <h2>Slide 5 · What we are proposing (12-week demonstrator)</h2>
+        <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
+        <h2>WHAT WE ARE PROPOSING</h2>
       </div>
       <blockquote>
         <p><strong>OTOS surfaces signals. The partner teams make the decisions.</strong></p>
@@ -301,8 +340,8 @@
 
     <section id="slide-6">
       <div class="slide-head">
-        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
-        <h2>Slide 6 · Pilot ambition (explicit) + why it saves money</h2>
+        <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
+        <h2>PILOT AMBITION + WHY IT SAVES MONEY</h2>
       </div>
       <p><strong>Pilot ambition (explicit):</strong> for a defined cohort of up to 50, we want people to progress through assessment and, where clinically indicated, onto treatment including medication, using existing routes (e.g., RTC/QbTest) under clinical leadership.</p>
       <p>Waiting does not hold this cohort safely or cost-effectively.</p>
@@ -330,8 +369,8 @@
 
     <section id="slide-7">
       <div class="slide-head">
-        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
-        <h2>Slide 7 · What a short demonstrator would prove (12 weeks)</h2>
+        <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
+        <h2>WHAT A SHORT DEMONSTRATOR WOULD PROVE</h2>
       </div>
       <p>Decision-grade evidence on feasibility and value:</p>
       <p><strong>Success measures (what we will actually measure):</strong></p>
@@ -353,8 +392,8 @@
 
     <section id="slide-8">
       <div class="slide-head">
-        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
-        <h2>Slide 8 · Pre-meeting close (interest + route)</h2>
+        <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
+        <h2>PRE-MEETING CLOSE</h2>
       </div>
       <blockquote>
         <p><strong>If earlier continuity reduces relapse, re-presentation and silent disengagement even marginally, the savings case becomes serious very quickly.</strong></p>
