@@ -36,14 +36,14 @@
     .corner-logo {
       position: fixed;
       z-index: 20;
-      width: clamp(80px, 8vw, 124px);
+      width: clamp(118px, 10vw, 176px);
       opacity: 0.9;
       pointer-events: none;
       filter: saturate(0.95);
     }
 
     .corner-logo.left { top: 14px; left: 14px; }
-    .corner-logo.right { top: 14px; right: 14px; transform: scaleX(-1); }
+    .corner-logo.right { top: 14px; right: 14px; }
 
     main {
       width: min(var(--max), calc(100% - 2.5rem));
@@ -115,7 +115,7 @@
 
     @media (max-width: 780px) {
       main { width: min(var(--max), calc(100% - 1.1rem)); margin-top: 4rem; gap: 1rem; }
-      .corner-logo { width: 74px; opacity: 0.82; }
+      .corner-logo { width: 96px; opacity: 0.84; }
       .corner-logo.left { left: 8px; top: 8px; }
       .corner-logo.right { right: 8px; top: 8px; }
     }
