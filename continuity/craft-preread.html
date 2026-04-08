@@ -42,7 +42,7 @@
     }
 
     .deck-logo {
-      width: clamp(220px, 22vw, 420px);
+      width: clamp(440px, 44vw, 840px);
       height: auto;
     }
 
@@ -131,7 +131,7 @@
     h2 {
       margin: 0;
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      font-size: clamp(1rem, 0.65vw + 0.9rem, 1.2rem);
+      font-size: clamp(1.18rem, 0.85vw + 1rem, 1.6rem);
       line-height: 1.25;
       font-weight: 700;
       letter-spacing: 0.04em;
@@ -150,17 +150,13 @@
       width: clamp(32px, 2.8vw, 42px);
       height: auto;
       flex: 0 0 auto;
-      border-radius: 8px;
-      padding: 4px;
     }
 
     section:nth-of-type(odd) .slide-brain {
-      background: rgba(139, 107, 46, 0.13);
       filter: saturate(0.65) brightness(0.62);
     }
 
     section:nth-of-type(even) .slide-brain {
-      background: rgba(247, 244, 238, 0.92);
       filter: saturate(0.35) brightness(1.25);
     }
 
@@ -185,8 +181,34 @@
       border-radius: 8px;
     }
 
-    ul { margin: 0.25rem 0 1rem 1.15rem; padding: 0; max-width: 72ch; }
-    li { margin: 0.3rem 0; }
+    ul {
+      margin: 0.25rem 0 1rem 0;
+      padding: 0;
+      max-width: 72ch;
+      list-style: none;
+    }
+    li {
+      margin: 0.36rem 0;
+      padding-left: 1.55rem;
+      position: relative;
+    }
+    li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.32rem;
+      width: 0.95rem;
+      height: 0.95rem;
+      background: center / contain no-repeat url("/assets/brain.png");
+      filter: saturate(0.5) brightness(0.72);
+      opacity: 0.95;
+    }
+
+    p:has(> strong:only-child) {
+      font-size: clamp(1.08rem, 0.25vw + 1rem, 1.2rem);
+      margin-top: 1.1rem;
+      margin-bottom: 0.55rem;
+    }
 
     hr {
       border: 0;
@@ -196,14 +218,10 @@
 
     .diagram-wrap {
       display: grid;
-      gap: 1rem;
+      gap: 0.4rem;
       justify-items: center;
       align-items: center;
-      text-align: center;
-      padding: 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--surface-alt);
+      padding: 0.15rem 0;
     }
 
     .diagram-wrap img {
@@ -216,7 +234,7 @@
 
     @media (max-width: 780px) {
       main { width: min(var(--max), calc(100% - 1.1rem)); margin-top: 1rem; gap: 1rem; }
-      .deck-logo { width: clamp(190px, 48vw, 260px); }
+      .deck-logo { width: clamp(300px, 76vw, 500px); }
       .slide-brain { width: 34px; }
       .lead-quote { font-size: clamp(1.7rem, 5.6vw, 2.7rem); }
       .wm-1 { --wm-size: min(40vw, 220px); left: 2vw; top: 14vh; }
@@ -253,7 +271,7 @@
     <section id="slide-1">
       <div class="slide-head">
         <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
-        <h2>THE PROBLEM</h2>
+        <h2>The Problem</h2>
       </div>
       <p class="lead-quote"><strong>When ADHD is left waiting, addiction does not arrive quietly — it brings chaos with it.</strong></p>
       <p>When ADHD is left untreated for too long, addiction can emerge as a way of coping with overwhelm, under-stimulation, emotional intensity and executive dysfunction. But addiction does not solve those problems; it compounds them. In general terms, it can bring chaos into every part of a person’s life: sleep becomes erratic, routines collapse, money becomes harder to manage, work becomes unstable, relationships come under strain, and shame drives further secrecy and isolation. What may begin as self-medication can quickly become a cycle of short-term relief followed by longer-term damage, where the person is no longer simply waiting for help — they are fighting to stop everything falling apart.</p>
@@ -263,7 +281,7 @@
     <section id="slide-2">
       <div class="slide-head">
         <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
-        <h2>THE BLUNT TRUTH</h2>
+        <h2>The Blunt Truth</h2>
       </div>
       <blockquote>
         <p><strong>A joined-up pathway, before crisis becomes consequence.</strong><br />
@@ -276,17 +294,16 @@
       </ul>
       <p>The issue is not the absence of services — it is what happens between them.</p>
       <p>People are assessed, signposted, discharged or referred but <strong>the space between services is where people get lost</strong> and the thread of engagement breaks.</p>
-      <p>The cost shows up later in the worst places: A&amp;E, detox, inpatient, policing, housing instability — and then it ripples outward into families, workplaces and communities.</p>
+      <p>The cost shows up later in the worst places: A&amp;E, detox, inpatient, policing, housing instability — then it ripples outward into families, workplaces and communities.</p>
       <hr />
     </section>
 
     <section id="slide-3">
       <div class="slide-head">
         <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
-        <h2>WHO WE’RE SPEAKING TO</h2>
+        <h2>Invited Partners (in discussion)</h2>
       </div>
       <div class="diagram-wrap">
-        <p>(Insert diagram image when exporting.)</p>
         <img src="/continuity/images/OTOS_Continuity_Brain_Partner_Pathway.png" alt="{{DIAGRAM_PATH}}" />
       </div>
       <hr />
@@ -295,9 +312,9 @@
     <section id="slide-4">
       <div class="slide-head">
         <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
-        <h2>WHAT OTOS CONTINUITY™ IS (AND IS NOT)</h2>
+        <h2>Whar OTOS Continuity™ is (and iis not)</h2>
       </div>
-      <p><strong>OTOS is infrastructure, not another app.</strong></p>
+      <p><strong>OTOS is infrastructure, not an app.</strong></p>
       <ul>
         <li>The silent layer that connects the pathway.</li>
         <li>No merged records. No added burden. Clearer continuity.</li>
@@ -327,21 +344,21 @@
     <section id="slide-5">
       <div class="slide-head">
         <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
-        <h2>WHAT WE ARE PROPOSING</h2>
+        <h2>What We Propose</h2>
       </div>
       <blockquote>
         <p><strong>OTOS surfaces signals. The partner teams make the decisions.</strong></p>
       </blockquote>
       <p>A <strong>12-week pre-pilot demonstrator</strong> in Cambridgeshire and Peterborough for <strong>up to 50 adults</strong> with co-occurring ADHD and substance misuse.</p>
       <p>Phase 1 starts with a single, governed use case: an ADHD continuity pathway for adults in addiction services who are diagnosed, suspected, waiting, or stuck between steps.</p>
-      <p>OTOS is not proposing to diagnose ADHD and it is not asking keyworkers to become diagnosticians. It connects people to existing ADHD routes and support options (including early “holding” support via the RCE Hub), then keeps the whole-person journey visible across referral, RTC/QbTest-enabled assessment support (where governed by clinical leadership), medication review, handoff, and follow-through — so people actually reach what already exists, rather than being lost in the gap.</p>
+      <p>OTOS is not proposing to diagnose ADHD and it is not asking keyworkers to become diagnosticians. It connects people to existing ADHD routes and support options (including early “holding” support via the RCE Hub), then keeps the whole-person journey visible across Mental Health, Addiction, onward referral, RTC/QbTest-enabled assessment support (where governed by clinical leadership), medication review, handoff and follow-through — so people actually reach the solution they require rather than being lost in the gap.</p>
       <hr />
     </section>
 
     <section id="slide-6">
       <div class="slide-head">
         <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
-        <h2>PILOT AMBITION + WHY IT SAVES MONEY</h2>
+        <h2>Pilot Ambition & How It Saves Money</h2>
       </div>
       <p><strong>Pilot ambition (explicit):</strong> for a defined cohort of up to 50, we want people to progress through assessment and, where clinically indicated, onto treatment including medication, using existing routes (e.g., RTC/QbTest) under clinical leadership.</p>
       <p>Waiting does not hold this cohort safely or cost-effectively.</p>
@@ -370,7 +387,7 @@
     <section id="slide-7">
       <div class="slide-head">
         <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
-        <h2>WHAT A SHORT DEMONSTRATOR WOULD PROVE</h2>
+        <h2>What The Pre-Pilot Demonstrator Will Show</h2>
       </div>
       <p>Decision-grade evidence on feasibility and value:</p>
       <p><strong>Success measures (what we will actually measure):</strong></p>
@@ -393,10 +410,10 @@
     <section id="slide-8">
       <div class="slide-head">
         <img class="slide-brain" src="/assets/brain.png" alt="" aria-hidden="true" />
-        <h2>PRE-MEETING CLOSE</h2>
+        <h2>In Closing...</h2>
       </div>
       <blockquote>
-        <p><strong>If earlier continuity reduces relapse, re-presentation and silent disengagement even marginally, the savings case becomes serious very quickly.</strong></p>
+        <p><strong>If earlier continuity reduces relapse, re-presentation and silent disengagement—even marginally—the savings case at a whole-system level quickly reaches the multi-million-pound mark.</strong></p>
       </blockquote>
       <p><strong>What I’m asking for in this pre-meeting:</strong></p>
       <ul>
@@ -404,7 +421,7 @@
         <li>Your advice: who should shape the route (Council / ICB / CPFT / CGL / SUN) so it’s governed properly?</li>
         <li>If it’s worth exploring: help identifying the <strong>right local budget route</strong> to test it as a small, bounded demonstrator.</li>
       </ul>
-      <p><strong>Close line:</strong> We are not asking the NHS to change — only to connect. OTOS runs between what already exists.</p>
+      <p><strong>Close line:</strong> We are not asking the NHS to change — only to connect what it has. OTOS runs between what already exists.</p>
     </section>
   </main>
   <script>
