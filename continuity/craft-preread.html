@@ -33,17 +33,58 @@
       line-height: 1.65;
     }
 
-    .corner-logo {
+    .center-logo {
       position: fixed;
       z-index: 20;
-      width: clamp(118px, 10vw, 176px);
-      opacity: 0.9;
+      width: clamp(180px, 16vw, 280px);
+      opacity: 0.94;
       pointer-events: none;
-      filter: saturate(0.95);
+      filter: saturate(0.98);
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
-    .corner-logo.left { top: 14px; left: 14px; }
-    .corner-logo.right { top: 14px; right: 14px; }
+    .watermark-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .wm {
+      position: absolute;
+      display: block;
+      width: var(--wm-size);
+      aspect-ratio: 1 / 1;
+      background: center / contain no-repeat url("/continuity/images/brain-logo.svg");
+      opacity: var(--wm-opacity);
+      filter: sepia(1) saturate(0.5) hue-rotate(350deg) brightness(1.2);
+      transform: translate3d(0, 0, 0);
+      will-change: transform;
+    }
+
+    .wm-1 {
+      --wm-size: min(44vw, 520px);
+      --wm-opacity: 0.08;
+      left: -6vw;
+      top: 16vh;
+    }
+
+    .wm-2 {
+      --wm-size: min(31vw, 360px);
+      --wm-opacity: 0.11;
+      right: 5vw;
+      top: 34vh;
+    }
+
+    .wm-3 {
+      --wm-size: min(54vw, 640px);
+      --wm-opacity: 0.06;
+      right: -14vw;
+      bottom: -6vh;
+    }
 
     main {
       width: min(var(--max), calc(100% - 2.5rem));
@@ -57,6 +98,8 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: clamp(1.4rem, 1.8vw + 1rem, 2.45rem);
+      position: relative;
+      z-index: 2;
     }
 
     section:nth-of-type(2n) {
@@ -115,13 +158,15 @@
 
     @media (max-width: 780px) {
       main { width: min(var(--max), calc(100% - 1.1rem)); margin-top: 4rem; gap: 1rem; }
-      .corner-logo { width: 96px; opacity: 0.84; }
-      .corner-logo.left { left: 8px; top: 8px; }
-      .corner-logo.right { right: 8px; top: 8px; }
+      .center-logo { width: clamp(140px, 34vw, 190px); top: 8px; }
+      .wm-1 { --wm-size: min(56vw, 340px); left: -16vw; top: 22vh; }
+      .wm-2 { --wm-size: min(44vw, 260px); right: -6vw; top: 44vh; }
+      .wm-3 { --wm-size: min(70vw, 420px); right: -26vw; bottom: -8vh; }
     }
 
     @media print {
-      .corner-logo { position: absolute; opacity: 0.88; }
+      .center-logo { position: absolute; opacity: 0.88; }
+      .watermark-layer { display: none; }
       section { break-inside: avoid; box-shadow: none; }
       body { background: #fff; }
       main { width: 100%; margin: 0; gap: 0.7rem; }
@@ -129,8 +174,13 @@
   </style>
 </head>
 <body>
-  <img class="corner-logo left" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
-  <img class="corner-logo right" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+  <div class="watermark-layer" aria-hidden="true">
+    <span class="wm wm-1" data-speed="0.16"></span>
+    <span class="wm wm-2" data-speed="0.27"></span>
+    <span class="wm wm-3" data-speed="0.1"></span>
+  </div>
+
+  <img class="center-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
 
   <main>
     <section id="slide-1">
@@ -270,5 +320,30 @@
       <p><strong>Close line:</strong> We are not asking the NHS to change — only to connect. OTOS runs between what already exists.</p>
     </section>
   </main>
+  <script>
+    (function () {
+      const marks = Array.from(document.querySelectorAll(".wm"));
+      if (!marks.length) return;
+
+      let ticking = false;
+      const update = () => {
+        const y = window.scrollY || window.pageYOffset || 0;
+        marks.forEach((el) => {
+          const speed = parseFloat(el.dataset.speed || "0.15");
+          el.style.transform = `translate3d(0, ${y * speed}px, 0)`;
+        });
+        ticking = false;
+      };
+
+      window.addEventListener("scroll", () => {
+        if (!ticking) {
+          ticking = true;
+          window.requestAnimationFrame(update);
+        }
+      }, { passive: true });
+
+      update();
+    })();
+  </script>
 </body>
 </html>
