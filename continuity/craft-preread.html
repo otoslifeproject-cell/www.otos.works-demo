@@ -33,18 +33,6 @@
       line-height: 1.65;
     }
 
-    .center-logo {
-      position: fixed;
-      z-index: 20;
-      width: clamp(180px, 16vw, 280px);
-      opacity: 0.94;
-      pointer-events: none;
-      filter: saturate(0.98);
-      top: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
     .watermark-layer {
       position: fixed;
       inset: 0;
@@ -58,37 +46,58 @@
       display: block;
       width: var(--wm-size);
       aspect-ratio: 1 / 1;
-      background: center / contain no-repeat url("/continuity/images/brain-logo.svg");
+      background: center / contain no-repeat url("/assets/brain.png");
       opacity: var(--wm-opacity);
-      filter: sepia(1) saturate(0.5) hue-rotate(350deg) brightness(1.2);
+      filter: saturate(0.65) brightness(1.12);
       transform: translate3d(0, 0, 0);
       will-change: transform;
     }
 
     .wm-1 {
-      --wm-size: min(44vw, 520px);
-      --wm-opacity: 0.08;
-      left: -6vw;
-      top: 16vh;
+      --wm-size: min(28vw, 300px);
+      --wm-opacity: 0.05;
+      left: 3vw;
+      top: 9vh;
     }
 
     .wm-2 {
-      --wm-size: min(31vw, 360px);
-      --wm-opacity: 0.11;
-      right: 5vw;
-      top: 34vh;
+      --wm-size: min(47vw, 560px);
+      --wm-opacity: 0.07;
+      right: -8vw;
+      top: 20vh;
     }
 
     .wm-3 {
-      --wm-size: min(54vw, 640px);
+      --wm-size: min(20vw, 230px);
       --wm-opacity: 0.06;
-      right: -14vw;
-      bottom: -6vh;
+      left: 16vw;
+      top: 52vh;
+    }
+
+    .wm-4 {
+      --wm-size: min(36vw, 420px);
+      --wm-opacity: 0.05;
+      right: 14vw;
+      top: 66vh;
+    }
+
+    .wm-5 {
+      --wm-size: min(14vw, 150px);
+      --wm-opacity: 0.06;
+      right: 4vw;
+      top: 43vh;
+    }
+
+    .wm-6 {
+      --wm-size: min(56vw, 700px);
+      --wm-opacity: 0.04;
+      left: -18vw;
+      bottom: -16vh;
     }
 
     main {
       width: min(var(--max), calc(100% - 2.5rem));
-      margin: 5.2rem auto 4.2rem;
+      margin: 2.2rem auto 4.2rem;
       display: grid;
       gap: 1.35rem;
     }
@@ -107,11 +116,23 @@
     }
 
     h2 {
-      margin: 0 0 1rem;
+      margin: 0 0 0.35rem;
       font-family: "Source Serif 4", Georgia, serif;
       font-size: clamp(1.45rem, 1.4vw + 1rem, 2rem);
       line-height: 1.28;
       font-weight: 600;
+    }
+
+    .slide-head {
+      display: grid;
+      justify-items: start;
+      margin-bottom: 1rem;
+    }
+
+    .slide-logo {
+      width: clamp(130px, 12vw, 220px);
+      height: auto;
+      margin-bottom: 0.45rem;
     }
 
     p { margin: 0 0 0.9rem; max-width: 72ch; }
@@ -157,15 +178,17 @@
     }
 
     @media (max-width: 780px) {
-      main { width: min(var(--max), calc(100% - 1.1rem)); margin-top: 4rem; gap: 1rem; }
-      .center-logo { width: clamp(140px, 34vw, 190px); top: 8px; }
-      .wm-1 { --wm-size: min(56vw, 340px); left: -16vw; top: 22vh; }
-      .wm-2 { --wm-size: min(44vw, 260px); right: -6vw; top: 44vh; }
-      .wm-3 { --wm-size: min(70vw, 420px); right: -26vw; bottom: -8vh; }
+      main { width: min(var(--max), calc(100% - 1.1rem)); margin-top: 1rem; gap: 1rem; }
+      .slide-logo { width: clamp(120px, 32vw, 180px); }
+      .wm-1 { --wm-size: min(40vw, 220px); left: 2vw; top: 14vh; }
+      .wm-2 { --wm-size: min(66vw, 360px); right: -22vw; top: 24vh; }
+      .wm-3 { --wm-size: min(30vw, 170px); left: 8vw; top: 58vh; }
+      .wm-4 { --wm-size: min(42vw, 240px); right: -4vw; top: 72vh; }
+      .wm-5 { --wm-size: min(23vw, 120px); right: 2vw; top: 47vh; }
+      .wm-6 { --wm-size: min(78vw, 430px); left: -32vw; bottom: -10vh; }
     }
 
     @media print {
-      .center-logo { position: absolute; opacity: 0.88; }
       .watermark-layer { display: none; }
       section { break-inside: avoid; box-shadow: none; }
       body { background: #fff; }
@@ -175,16 +198,20 @@
 </head>
 <body>
   <div class="watermark-layer" aria-hidden="true">
-    <span class="wm wm-1" data-speed="0.16"></span>
-    <span class="wm wm-2" data-speed="0.27"></span>
-    <span class="wm wm-3" data-speed="0.1"></span>
+    <span class="wm wm-1" data-speed="0.06"></span>
+    <span class="wm wm-2" data-speed="0.14"></span>
+    <span class="wm wm-3" data-speed="0.09"></span>
+    <span class="wm wm-4" data-speed="0.11"></span>
+    <span class="wm wm-5" data-speed="0.18"></span>
+    <span class="wm wm-6" data-speed="0.04"></span>
   </div>
-
-  <img class="center-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
 
   <main>
     <section id="slide-1">
-      <h2>Slide 1 · Why I built this (founder background)</h2>
+      <div class="slide-head">
+        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+        <h2>Slide 1 · Why I built this (founder background)</h2>
+      </div>
       <p>OTOS Continuity™ is <strong>infrastructure</strong>: a non-clinical continuity layer that runs <em>between existing</em> services.</p>
       <p><strong>Low disruption. No integration. Human decisions only.</strong></p>
       <p>OTOS exists because of what happened to me: I moved through dayhabs, probation, CGL, rehab, A&amp;E and various CPFT therapies while my ADHD stayed unresolved — and there was no real continuity holding me between services and the waiting list. I didn’t recover by waiting my turn; I recovered by navigating a fragmented system fast enough to reach the intervention that changed my life: the correct medication for my ADHD.</p>
@@ -195,7 +222,10 @@
     </section>
 
     <section id="slide-2">
-      <h2>Slide 2 · The blunt truth (system failure)</h2>
+      <div class="slide-head">
+        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+        <h2>Slide 2 · The blunt truth (system failure)</h2>
+      </div>
       <blockquote>
         <p><strong>A joined-up pathway, before crisis becomes consequence.</strong><br />
         <strong>Earlier visibility. Better coordination. Fewer people lost between services.</strong></p>
@@ -212,7 +242,10 @@
     </section>
 
     <section id="slide-3">
-      <h2>Slide 3 · Who we’re speaking to (diagram)</h2>
+      <div class="slide-head">
+        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+        <h2>Slide 3 · Who we’re speaking to (diagram)</h2>
+      </div>
       <div class="diagram-wrap">
         <p>(Insert diagram image when exporting.)</p>
         <img src="/continuity/images/OTOS_Continuity_Brain_Partner_Pathway.png" alt="{{DIAGRAM_PATH}}" />
@@ -221,7 +254,10 @@
     </section>
 
     <section id="slide-4">
-      <h2>Slide 4 · What OTOS Continuity™ is (and is not)</h2>
+      <div class="slide-head">
+        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+        <h2>Slide 4 · What OTOS Continuity™ is (and is not)</h2>
+      </div>
       <p><strong>OTOS is infrastructure, not another app.</strong></p>
       <ul>
         <li>The silent layer that connects the pathway.</li>
@@ -250,7 +286,10 @@
     </section>
 
     <section id="slide-5">
-      <h2>Slide 5 · What we are proposing (12-week demonstrator)</h2>
+      <div class="slide-head">
+        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+        <h2>Slide 5 · What we are proposing (12-week demonstrator)</h2>
+      </div>
       <blockquote>
         <p><strong>OTOS surfaces signals. The partner teams make the decisions.</strong></p>
       </blockquote>
@@ -261,7 +300,10 @@
     </section>
 
     <section id="slide-6">
-      <h2>Slide 6 · Pilot ambition (explicit) + why it saves money</h2>
+      <div class="slide-head">
+        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+        <h2>Slide 6 · Pilot ambition (explicit) + why it saves money</h2>
+      </div>
       <p><strong>Pilot ambition (explicit):</strong> for a defined cohort of up to 50, we want people to progress through assessment and, where clinically indicated, onto treatment including medication, using existing routes (e.g., RTC/QbTest) under clinical leadership.</p>
       <p>Waiting does not hold this cohort safely or cost-effectively.</p>
       <p>This cohort often does not disengage loudly. It drifts silently between services. By the time risk becomes visible again, it is often visible as crisis.</p>
@@ -287,7 +329,10 @@
     </section>
 
     <section id="slide-7">
-      <h2>Slide 7 · What a short demonstrator would prove (12 weeks)</h2>
+      <div class="slide-head">
+        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+        <h2>Slide 7 · What a short demonstrator would prove (12 weeks)</h2>
+      </div>
       <p>Decision-grade evidence on feasibility and value:</p>
       <p><strong>Success measures (what we will actually measure):</strong></p>
       <ul>
@@ -307,7 +352,10 @@
     </section>
 
     <section id="slide-8">
-      <h2>Slide 8 · Pre-meeting close (interest + route)</h2>
+      <div class="slide-head">
+        <img class="slide-logo" src="/assets/logos/OTOS_Continuity_Logo_Transparent.png" alt="{{LOGO_PATH}}" />
+        <h2>Slide 8 · Pre-meeting close (interest + route)</h2>
+      </div>
       <blockquote>
         <p><strong>If earlier continuity reduces relapse, re-presentation and silent disengagement even marginally, the savings case becomes serious very quickly.</strong></p>
       </blockquote>
