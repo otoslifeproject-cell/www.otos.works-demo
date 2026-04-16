@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OTOS Continuity — Public Health Briefing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #FF7A00;
+      --orange-light: #FF9D3D;
+      --dark: #0D0F18;
+      --mid: #1A1D2E;
+      --light-bg: #F7F9FC;
+      --border: #E2E6F0;
+      --text: #1A1D2E;
+      --text-sub: #4A5068;
+      --text-muted: #8892A4;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--light-bg); color: var(--text); line-height: 1.6; }
+
+    .print-bar {
+      background: var(--dark); color: #fff; padding: 12px 24px;
+      display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem;
+    }
+    .back-btn { color: rgba(255,255,255,0.65); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .back-btn:hover { color: #fff; }
+    .print-btn {
+      background: var(--orange); color: #fff; border: none; padding: 8px 20px;
+      border-radius: 100px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    }
+    .page { max-width: 840px; margin: 32px auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 40px rgba(0,0,0,0.08); }
+
+    /* Header */
+    .doc-header {
+      background: linear-gradient(135deg, #0D0F18 0%, #1A1D2E 100%);
+      padding: 48px 52px 40px; position: relative; overflow: hidden;
+    }
+    .doc-header::before {
+      content: ''; position: absolute; top: -60px; right: -60px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(255,122,0,0.12), transparent); border-radius: 50%;
+    }
+    .doc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
+    .doc-logo img { height: 52px; width: auto; display: block; background: rgba(255,255,255,0.95); border-radius: 8px; padding: 5px 14px; }
+    .doc-to-tag {
+      background: rgba(255,122,0,0.12); border: 1px solid rgba(255,122,0,0.25);
+      color: #FF9D3D; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 12px; border-radius: 100px;
+    }
+    .doc-title {
+      font-family: 'Sora', sans-serif; font-size: 1.85rem; font-weight: 800;
+      color: #fff; line-height: 1.2; margin-bottom: 14px;
+    }
+    .doc-title span { color: #FF9D3D; }
+    .doc-sub { font-size: 0.95rem; color: rgba(255,255,255,0.6); max-width: 560px; line-height: 1.65; }
+    .doc-meta { margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; gap: 32px; flex-wrap: wrap; }
+    .doc-meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .doc-meta-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+    .doc-meta-value { font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.85); }
+
+    /* Stats strip */
+    .stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--border); }
+    .strip-stat { padding: 20px 24px; border-right: 1px solid var(--border); text-align: center; }
+    .strip-stat:last-child { border-right: none; }
+    .strip-num { font-family: 'Sora', sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--orange); line-height: 1; margin-bottom: 4px; }
+    .strip-label { font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Body */
+    .doc-body { padding: 48px 52px; }
+    .section { margin-bottom: 42px; }
+    .section-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,122,0,0.08); border: 1px solid rgba(255,122,0,0.18);
+      color: var(--orange); font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; margin-bottom: 14px;
+    }
+    .section h2 { font-family: 'Sora', sans-serif; font-size: 1.35rem; font-weight: 800; margin-bottom: 16px; color: var(--text); line-height: 1.3; }
+    .section h2 span { color: var(--orange); }
+    .section p { font-size: 0.93rem; color: var(--text-sub); line-height: 1.78; margin-bottom: 14px; }
+    .section p strong { color: var(--text); }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0 0 42px 0; }
+
+    /* Pull quote */
+    .pull-quote {
+      background: linear-gradient(135deg, rgba(255,122,0,0.07), rgba(255,122,0,0.02));
+      border-left: 3px solid var(--orange); padding: 20px 24px;
+      border-radius: 0 10px 10px 0; margin: 20px 0;
+    }
+    .pull-quote p { font-size: 1rem; font-style: italic; color: var(--text); line-height: 1.7; margin: 0; }
+    .pull-quote cite { display: block; margin-top: 8px; font-size: 0.78rem; color: var(--text-muted); font-style: normal; }
+
+    /* Saving model */
+    .saving-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .saving-card { border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; }
+    .saving-card.highlight { background: linear-gradient(135deg, rgba(255,122,0,0.07), rgba(255,122,0,0.02)); border-color: rgba(255,122,0,0.25); }
+    .saving-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 6px; }
+    .saving-label.orange { color: var(--orange); }
+    .saving-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
+    .saving-desc { font-size: 0.83rem; color: var(--text-sub); line-height: 1.55; }
+
+    /* Brain bullet list */
+    .brain-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+    .brain-list li { display: flex; gap: 12px; align-items: flex-start; font-size: 0.9rem; color: var(--text-sub); line-height: 1.65; }
+    .brain-list li img { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; margin-top: 1px; }
+    .brain-list li span strong { color: var(--text); }
+
+    /* Steps */
+    .steps-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 16px 0; }
+    .step-box { background: var(--light-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .step-n { font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 800; color: rgba(255,122,0,0.2); line-height: 1; margin-bottom: 6px; }
+    .step-t { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }
+    .step-d { font-size: 0.75rem; color: var(--text-muted); line-height: 1.45; }
+
+    /* Partner tags */
+    .partner-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .partner-tag { background: #F0F2F8; border: 1px solid var(--border); color: var(--text-sub); font-size: 0.8rem; font-weight: 500; padding: 5px 12px; border-radius: 100px; }
+
+    /* Not/Is */
+    .not-box { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .not-item { background: var(--light-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+    .not-item-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+    .not-item-label.red { color: #E84040; }
+    .not-item-label.green { color: #22A85A; }
+    .not-item ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .not-item li { font-size: 0.84rem; color: var(--text-sub); display: flex; gap: 8px; align-items: flex-start; }
+    .not-item li .bul { flex-shrink: 0; font-weight: 700; }
+    .not-item li .bul.red { color: #E84040; }
+    .not-item li .bul.green { color: #22A85A; }
+
+    /* Evidence */
+    .ev-strip { background: #F8F9FC; border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; }
+    .ev-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 12px; }
+    .ev-items { display: flex; flex-direction: column; gap: 10px; }
+    .ev-item { display: flex; gap: 10px; align-items: flex-start; }
+    .ev-badge { background: var(--dark); color: #FF9D3D; font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+    .ev-text { font-size: 0.82rem; color: var(--text-sub); font-style: italic; line-height: 1.55; }
+
+    /* Highlight box */
+    .highlight-box { background: rgba(255,122,0,0.06); border: 1px solid rgba(255,122,0,0.18); border-radius: 10px; padding: 20px 24px; }
+    .highlight-box p { font-size: 0.9rem; color: var(--text); line-height: 1.7; margin: 0; }
+
+    /* Footer */
+    .doc-footer {
+      background: var(--mid); padding: 28px 52px;
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    }
+    .doc-footer-left { display: flex; align-items: center; gap: 12px; }
+    .doc-footer-logo { height: 44px; width: auto; display: block; background: rgba(255,255,255,0.9); border-radius: 8px; padding: 4px 12px; opacity: 0.95; }
+    .doc-footer-contact { font-size: 0.82rem; color: rgba(255,255,255,0.45); margin-top: 2px; }
+    .doc-footer-note { text-align: right; font-size: 0.78rem; color: rgba(255,255,255,0.3); }
+
+    @media print {
+      .print-bar { display: none; }
+      body { background: #fff; }
+      .page { box-shadow: none; border-radius: 0; margin: 0; max-width: 100%; }
+    }
+    @media (max-width: 640px) {
+      .doc-header, .doc-body, .doc-footer { padding: 28px 24px; }
+      .doc-top { flex-direction: column; gap: 12px; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .steps-row { grid-template-columns: repeat(2, 1fr); }
+      .not-box, .saving-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-bar">
+    <a href="index.html" class="back-btn">← Back to Website</a>
+    <button class="print-btn" onclick="window.print()">🖨 Print / Save as PDF</button>
+  </div>
+
+  <div class="page">
+
+    <!-- HEADER -->
+    <div class="doc-header">
+      <div class="doc-top">
+        <div class="doc-logo">
+          <img src="images/otos-logo.png" alt="OTOS Continuity" />
+        </div>
+        <div class="doc-to-tag">Public Health Briefing</div>
+      </div>
+      <h1 class="doc-title">A <span>cost-redirection opportunity</span><br />hiding in your current drug &amp; alcohol spend.</h1>
+      <p class="doc-sub">OTOS Continuity is a pre-pilot demonstrator targeting adults with undiagnosed ADHD cycling through addiction services — connecting NHS and partner organisations into one joined-up pathway that reduces cost while transforming outcomes.</p>
+      <div class="doc-meta">
+        <div class="doc-meta-item"><div class="doc-meta-label">Audience</div><div class="doc-meta-value">Public Health — Alcohol &amp; Drugs</div></div>
+        <div class="doc-meta-item"><div class="doc-meta-label">Prepared</div><div class="doc-meta-value">April 2026</div></div>
+        <div class="doc-meta-item"><div class="doc-meta-label">Location</div><div class="doc-meta-value">Cambridge, England</div></div>
+        <div class="doc-meta-item"><div class="doc-meta-label">Contact</div><div class="doc-meta-value">info@otos.life</div></div>
+      </div>
+    </div>
+
+    <!-- STATS STRIP -->
+    <div class="stats-strip">
+      <div class="strip-stat"><div class="strip-num">877</div><div class="strip-label">Individuals already identified in Cambridge</div></div>
+      <div class="strip-stat"><div class="strip-num">50</div><div class="strip-label">Pre-pilot demonstrator target</div></div>
+      <div class="strip-stat"><div class="strip-num">23–45%</div><div class="strip-label">Of addiction patients with undiagnosed ADHD</div></div>
+      <div class="strip-stat"><div class="strip-num">£1.3bn</div><div class="strip-label">Annual NHS spend on addiction services in England</div></div>
+    </div>
+
+    <!-- BODY -->
+    <div class="doc-body">
+
+      <!-- 1. THE ANGLE FOR PUBLIC HEALTH -->
+      <div class="section">
+        <div class="section-badge">The Public Health Angle</div>
+        <h2>This is not a new cost.<br /><span>It is a smarter use of what you already spend.</span></h2>
+        <p>Drug and alcohol commissioning budgets are under sustained pressure. But a significant portion of current spend is <strong>reactive</strong> — managing crisis presentations, revolving-door hospitalisations, and repeat engagement with individuals who never address the root cause of their addiction.</p>
+        <p>OTOS Continuity proposes a <strong>different model</strong>: identify and treat the underlying driver — in this case, undiagnosed ADHD — and watch the reactive spend reduce. Not through cuts. Through <strong>better-connected, earlier, smarter intervention</strong>.</p>
+        <div class="pull-quote">
+          <p>23–45% of adults in addiction treatment have undiagnosed ADHD. Treating it reduces both ADHD symptoms and substance use outcomes. The research is clear. The question is why this cohort is still not being systematically identified.</p>
+          <cite>— Royal College of Psychiatrists, 2022 &amp; NICE NG87</cite>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- 2. WHERE THE MONEY GOES NOW -->
+      <div class="section">
+        <div class="section-badge">The Current Cost Model</div>
+        <h2>Where the <span>money currently goes.</span></h2>
+        <p>The same individuals cycle through multiple budget lines — often year after year, without resolution:</p>
+        <div class="saving-grid">
+          <div class="saving-card">
+            <div class="saving-label">Current spend pattern</div>
+            <div class="saving-title">Reactive &amp; fragmented</div>
+            <div class="saving-desc">A&amp;E presentations. Crisis mental health. Repeat addiction treatment episodes. Police and custody involvement. Housing and homelessness support. Each service sees only its piece — and bills accordingly.</div>
+          </div>
+          <div class="saving-card highlight">
+            <div class="saving-label orange">With OTOS Continuity</div>
+            <div class="saving-title">Connected &amp; preventive</div>
+            <div class="saving-desc">One identification. One coordinated pathway. ADHD assessment, appropriate medication, supported recovery. Fewer crisis episodes. Less revolving-door use. Reduced spend across multiple budget lines simultaneously.</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- 3. WHAT OTOS DOES -->
+      <div class="section">
+        <div class="section-badge">How It Works</div>
+        <h2>Four steps.<br /><span>One connected pathway.</span></h2>
+        <p>OTOS Continuity does not replace existing services — it connects them, and maintains the individual's thread through every organisation they touch.</p>
+        <div class="steps-row">
+          <div class="step-box"><div class="step-n">01</div><div class="step-t">Identify</div><div class="step-d">Screen individuals in addiction and recovery services for likely undiagnosed ADHD</div></div>
+          <div class="step-box"><div class="step-n">02</div><div class="step-t">Connect</div><div class="step-d">Warm-transfer to ADHD assessment, NHS Right to Choose, CPFT, GP, mental health support</div></div>
+          <div class="step-box"><div class="step-n">03</div><div class="step-t">Coordinate</div><div class="step-d">Hold the continuity thread across all services — no gaps, no starting over, no lost referrals</div></div>
+          <div class="step-box"><div class="step-n">04</div><div class="step-t">Sustain</div><div class="step-d">Support medication, ongoing recovery and re-engagement — and measure outcomes for commissioning</div></div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- 4. WHAT IT IS / IS NOT -->
+      <div class="section">
+        <div class="section-badge">Clarity</div>
+        <h2>What OTOS Continuity <span>is and is not.</span></h2>
+        <div class="not-box">
+          <div class="not-item">
+            <div class="not-item-label red">❌ What it is NOT</div>
+            <ul>
+              <li><span class="bul red">✗</span> A new clinical service that replaces existing provision</li>
+              <li><span class="bul red">✗</span> A request for new money from an already-stretched budget</li>
+              <li><span class="bul red">✗</span> A theoretical or unproven concept</li>
+              <li><span class="bul red">✗</span> Another isolated project without evidence</li>
+              <li><span class="bul red">✗</span> A quick fix — this is a structured demonstrator</li>
+            </ul>
+          </div>
+          <div class="not-item">
+            <div class="not-item-label green">✅ What it IS</div>
+            <ul>
+              <li><span class="bul green">✓</span> A connecting layer built on existing services and partners</li>
+              <li><span class="bul green">✓</span> A cost-redirection model within existing drug &amp; alcohol budgets</li>
+              <li><span class="bul green">✓</span> Grounded in NICE guidance and RCPsych evidence</li>
+              <li><span class="bul green">✓</span> 877 real individuals already identified in Cambridge</li>
+              <li><span class="bul green">✓</span> Built by someone with lived experience of this exact journey</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- 5. EVIDENCE -->
+      <div class="section">
+        <div class="section-badge">Evidence Base</div>
+        <h2>The research already <span>says what we know is true.</span></h2>
+        <div class="ev-strip">
+          <div class="ev-title">Key Supporting Evidence</div>
+          <div class="ev-items">
+            <div class="ev-item">
+              <div class="ev-badge">RCPsych 2022</div>
+              <div class="ev-text">"There is more benefit than risk from treating ADHD in patients with substance use disorder — for both ADHD and substance use symptom reduction."</div>
+            </div>
+            <div class="ev-item">
+              <div class="ev-badge">NICE NG87</div>
+              <div class="ev-text">NICE guidance supports ADHD assessment and treatment in the context of active substance misuse — coexisting ADHD is specifically addressed.</div>
+            </div>
+            <div class="ev-item">
+              <div class="ev-badge">Progress in Mind 2022</div>
+              <div class="ev-text">"Lisdexamfetamine appeared to reduce craving in cocaine misuse. No evidence of misuse was found in properly supervised patients."</div>
+            </div>
+            <div class="ev-item">
+              <div class="ev-badge">NCBI 2024</div>
+              <div class="ev-text">"People with ADHD have a significantly raised risk of drug and alcohol misuse — and this complicates ADHD diagnosis and management in standard clinical settings."</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pull-quote" style="margin-top:20px;">
+          <p><strong>CGL Nottingham — a precedent already set.</strong> Change Grow Live, one of OTOS Continuity's core delivery partners, trialled an ADHD identification and referral pathway in Nottingham in 2024–25. The results demonstrated that frontline addiction workers, with light-touch training, could screen for and identify likely ADHD in their existing caseloads — and that warm referral into assessment services produced significantly better engagement than standard referral routes. This is not a new idea being tested from scratch. The groundwork is already being laid by partners already in this ecosystem.</p>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- 6. THE PILOT -->
+      <div class="section">
+        <div class="section-badge">The Pre-Pilot</div>
+        <h2>50 people.<br /><span>A proof point that changes the commissioning conversation.</span></h2>
+        <p>OTOS has already identified 877 individuals in the Cambridge area matching the target cohort profile. The pre-pilot selects 50 high-priority individuals — with partners engaged and referral pathways ready.</p>
+        <p>The aim is a <strong>12-month demonstrator</strong> that produces an outcomes-based evidence report suitable for ICB commissioning consideration. This is how we move from promising model to funded pathway.</p>
+        <div class="partner-tags" style="margin-top: 16px;">
+          <div class="partner-tag">CPFT ADHD Clinic</div>
+          <div class="partner-tag">NHS GP / Right to Choose</div>
+          <div class="partner-tag">Addenbrooke's NHS Trust</div>
+          <div class="partner-tag">Cambridge Recovery Service</div>
+          <div class="partner-tag">Change Grow Live</div>
+          <div class="partner-tag">The Sun Network</div>
+          <div class="partner-tag">QbTech</div>
+          <div class="partner-tag">Mind Cambridge</div>
+          <div class="partner-tag">WorkWell</div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- 7. WHAT WE ARE ASKING -->
+      <div class="section">
+        <div class="section-badge">What We Are Asking For</div>
+        <h2>Five things.<br /><span>Starting with a conversation.</span></h2>
+        <ul class="brain-list">
+          <li>
+            <img src="images/otos-brain-icon.png" alt="" style="filter:saturate(0.5) brightness(0.8) sepia(0.3);opacity:0.72;width:22px;height:22px;" />
+            <span><strong>Guidance on budget alignment</strong> — where within existing drug and alcohol commissioning spend could this model be funded or supported, even partially</span>
+          </li>
+          <li>
+            <img src="images/otos-brain-icon.png" alt="" style="filter:saturate(0.5) brightness(0.8) sepia(0.3);opacity:0.72;width:22px;height:22px;" />
+            <span><strong>Introductions to the right people</strong> — ICB commissioning leads, NHS colleagues, or VCSE partners who can accelerate governance and pathway alignment</span>
+          </li>
+          <li>
+            <img src="images/otos-brain-icon.png" alt="" style="filter:saturate(0.5) brightness(0.8) sepia(0.3);opacity:0.72;width:22px;height:22px;" />
+            <span><strong>Endorsement or support in principle</strong> — from Public Health for the pre-pilot demonstrator, to support conversations with NHS commissioners</span>
+          </li>
+          <li>
+            <img src="images/otos-brain-icon.png" alt="" style="filter:saturate(0.5) brightness(0.8) sepia(0.3);opacity:0.72;width:22px;height:22px;" />
+            <span><strong>Data intelligence</strong> — any data, intelligence or mapping relevant to the identified cohort that could sharpen the pilot targeting</span>
+          </li>
+          <li>
+            <img src="images/otos-brain-icon.png" alt="" style="filter:saturate(0.5) brightness(0.8) sepia(0.3);opacity:0.72;width:22px;height:22px;" />
+            <span><strong>A route to formal commissioning</strong> — the longer-term goal is a permanently funded, joined-up ADHD-addiction pathway. Public Health endorsement is a key step in building that case</span>
+          </li>
+        </ul>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- 8. LIVED EXPERIENCE -->
+      <div class="highlight-box">
+        <p><strong>A note on lived experience:</strong> OTOS Continuity was developed by someone who personally went through addiction services, mental health crisis, and revolving-door care — before finally receiving an ADHD diagnosis privately and being prescribed Elvanse. The transformation was immediate. The model is not theoretical. It is built from direct, lived understanding of exactly where the system fails — and what genuinely joined-up, properly supported care can achieve. That experience informs every aspect of the pathway design.</p>
+      </div>
+
+    </div><!-- /doc-body -->
+
+    <!-- FOOTER -->
+    <div class="doc-footer">
+      <div class="doc-footer-left">
+        <img src="images/otos-logo.png" alt="OTOS Continuity" class="doc-footer-logo" />
+        <div>
+          <div style="font-family:'Sora',sans-serif; font-size:0.9rem; font-weight:700; color:#fff;">OTOS Continuity</div>
+          <div class="doc-footer-contact">info@otos.life · April 2026 · Cambridge, England</div>
+        </div>
+      </div>
+      <div class="doc-footer-note">
+        For Public Health, Local Authority &amp; NHS colleagues.<br />
+        Confidential — not for wider distribution without permission.
+      </div>
+    </div>
+
+  </div><!-- /page -->
+
+</body>
+</html>
