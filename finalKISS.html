@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTOS Continuity™ — Saving Money, Saving Lives</title>
+  <meta name="description" content="OTOS Continuity™ is a non-clinical continuity infrastructure layer helping services hold people safely between touchpoints, handoffs and next steps.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/otos.css">
+
+  <style>
+    /* ---- Index page layout overrides only — all shared styles in css/otos.css ---- */
+    .hero {
+      min-height: 100vh;
+      padding-top: calc(var(--nav-h) + 80px);
+      padding-bottom: 96px;
+    }
+
+    .hero-inner {
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 48px;
+    }
+
+    .hero-visual {
+      align-self: center;
+    }
+
+    .home-route-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 32px;
+    }
+
+    .home-route-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      background: rgba(255,255,255,0.58);
+      text-decoration: none;
+      color: inherit;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+      display: flex;
+      flex-direction: column;
+      min-height: 220px;
+    }
+
+    .home-route-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(217,119,6,0.35);
+      box-shadow: 0 18px 38px rgba(15,23,42,0.08);
+    }
+
+    .route-kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--amber-dark);
+      margin-bottom: 10px;
+    }
+
+    .route-title {
+      font-weight: 850;
+      font-size: 1.04rem;
+      margin-bottom: 10px;
+      color: var(--text-main);
+    }
+
+    .route-copy {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .route-link {
+      margin-top: 18px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--amber-dark);
+    }
+
+    .simple-flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 36px;
+    }
+
+    .simple-flow-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      background: rgba(255,255,255,0.62);
+    }
+
+    .simple-flow-num {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--amber);
+      color: #111827;
+      font-weight: 900;
+      margin-bottom: 14px;
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    .simple-flow-title {
+      font-weight: 850;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .simple-flow-copy {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .mini-proof-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 30px;
+    }
+
+    .mini-proof {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      background: rgba(255,255,255,0.62);
+    }
+
+    .mini-proof strong {
+      display: block;
+      font-size: 1.7rem;
+      color: var(--amber-dark);
+      margin-bottom: 8px;
+      font-weight: 900;
+    }
+
+    .partner-pathway-box img {
+      width: 92%;
+      max-width: 1080px;
+      height: auto;
+      margin: 0 auto;
+      display: block;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .home-route-grid,
+      .simple-flow,
+      .mini-proof-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .home-route-grid,
+      .simple-flow,
+      .mini-proof-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     MAIN ACCESS GATE — redirects to public.html if no session
+     ============================================================ -->
+<script>
+  (function() {
+    if (sessionStorage.getItem('otos_access') !== '1') {
+      window.location.replace('public.html');
+    }
+  })();
+</script>
+
+
+<!-- ============================================================
+     QUOTE OVERLAY
+     ============================================================ -->
+<div id="quote-overlay" class="quote-overlay" role="dialog" aria-modal="true" aria-label="Welcome">
+  <div class="quote-card">
+    <div class="quote-timer-bar"><div class="quote-timer-fill"></div></div>
+    <p class="quote-text">
+      "<em>ADHD, when unsupported, is a potent route into</em> educational failure, long-term unemployment, crime, substance misuse, suicide, mental and physical illness. Economic costs to individuals and the government of <em>at least £17 billion are avoidable</em> as, when appropriately supported, people with ADHD can thrive and fully engage in a working life."
+    </p>
+    <p class="quote-attribution">— NHS ADHD Taskforce 2024</p>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     NAVIGATION
+     ============================================================ -->
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo" aria-label="OTOS Continuity home">
+      <img src="images/brain-icon.png" alt="OTOS Continuity™ logo" onerror="this.style.display='none'">
+      <span class="nav-logo-text">OTOS Continuity™</span>
+    </a>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#problem">Problem</a></li>
+      <li><a href="#solution">Solution</a></li>
+      <li><a href="#pilot">Pilot</a></li>
+      <li><a href="#partners">Partners</a></li>
+      <li><a href="local-authority-public-health.html">Local Authority</a></li>
+      <li><a href="funding-costs.html">Funding</a></li>
+      <li><a href="evidence-sources.html">Evidence</a></li>
+      <li><a href="#get-involved" class="nav-cta">Get Involved</a></li>
+    </ul>
+
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-badge">Continuity™ · Pre-Pilot · Cambridgeshire &amp; Peterborough</div>
+
+      <h1 class="display-1 hero-title">
+        Finally, a joined&#8209;up pathway,<br>
+        <span class="accent">before crisis becomes consequence.</span>
+      </h1>
+
+      <p class="lead hero-lead">
+        OTOS Continuity™ helps services hold people safely between appointments, referrals, discharge, recovery support and next steps — so silence, drift and broken handoffs become visible before they become crisis.
+      </p>
+
+      <p class="hero-lead" style="font-size:1rem;max-width:720px;margin-top:18px;">
+        The first pre-pilot focuses on a defined, high-need group: people moving between addiction, ADHD, mental health, hospital and community support pathways, where the services already exist but the continuity thread keeps breaking.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#solution" class="btn btn-primary">Understand OTOS</a>
+        <a href="#partners" class="btn btn-secondary">See partner routes</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-dashboard">
+        <div class="dash-header">
+          <span class="dash-title">Live Continuity Monitor</span>
+          <span class="dash-live" id="dash-clock">--:--:--</span>
+        </div>
+
+        <div class="dash-body">
+          <div class="dash-kpi-row">
+            <div class="dash-kpi">
+              <div class="dash-kpi-val green">34</div>
+              <div class="dash-kpi-label">Active Journeys</div>
+            </div>
+            <div class="dash-kpi">
+              <div class="dash-kpi-val amber">87%</div>
+              <div class="dash-kpi-label">Receipt Rate</div>
+            </div>
+            <div class="dash-kpi">
+              <div class="dash-kpi-val red">3</div>
+              <div class="dash-kpi-label">Drift Alerts</div>
+            </div>
+            <div class="dash-kpi">
+              <div class="dash-kpi-val">14d</div>
+              <div class="dash-kpi-label">Median Gap</div>
+            </div>
+          </div>
+
+          <div class="mini-chart">
+            <div class="mini-chart-label">Follow-Through This Week</div>
+            <div class="mini-chart-bar"><div class="mini-chart-fill fill-green" style="width:82%"></div></div>
+            <div class="mini-chart-bar"><div class="mini-chart-fill fill-amber" style="width:67%"></div></div>
+            <div class="mini-chart-bar"><div class="mini-chart-fill fill-blue"  style="width:91%"></div></div>
+          </div>
+
+          <div class="dash-alerts" style="margin-top:14px;">
+            <div class="dash-alerts-title">⚠ Alerts Queue</div>
+            <div class="dash-alert-row">
+              <span class="dash-alert-tag">DRIFT</span>
+              <span class="dash-alert-info">Journey #A-041 — no touchpoint 18d</span>
+              <span class="dash-alert-time">09:14</span>
+            </div>
+            <div class="dash-alert-row">
+              <span class="dash-alert-tag">DRIFT</span>
+              <span class="dash-alert-info">Journey #A-029 — handoff unreceipted</span>
+              <span class="dash-alert-time">07:52</span>
+            </div>
+          </div>
+
+          <div class="dash-ticker">
+            <div class="dash-ticker-inner">OTOS Continuity™ · Pre-Pilot · 50 Participants · 12 Weeks · Human-in-control · Tokenised by default · No EPR write-back ·&nbsp;&nbsp;&nbsp;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     TRUST STRIP
+     ============================================================ -->
+<div class="trust-strip">
+  <div class="trust-inner">
+    <span class="trust-label">Invited / Relevant Partner Ecosystem</span>
+
+    <div class="trust-logos-row">
+      <a href="#partners" class="trust-logo-link">
+        <img src="images/logos/addenbrookes.png" alt="Addenbrooke's NHS Trust" class="trust-logo trust-logo-addenbrookes">
+      </a>
+      <a href="#partners" class="trust-logo-link">
+        <img src="images/logos/nhs-cpft.png" alt="NHS Cambridgeshire and Peterborough" class="trust-logo">
+      </a>
+      <a href="#partners" class="trust-logo-link">
+        <img src="images/logos/nhs-gp.png" alt="NHS GP" class="trust-logo">
+      </a>
+      <a href="#partners" class="trust-logo-link">
+        <img src="images/logos/cgl.png" alt="Change Grow Live" class="trust-logo">
+      </a>
+      <a href="#partners" class="trust-logo-link">
+        <img src="images/logos/crs.png" alt="Cambridgeshire Recovery Service" class="trust-logo">
+      </a>
+      <a href="#partners" class="trust-logo-link">
+        <img src="images/logos/rce.png" alt="RCE Wellbeing Hub" class="trust-logo">
+      </a>
+    </div>
+
+    <div class="trust-logos-row">
+      <a href="#partners" class="trust-logo-link">
+        <img src="images/logos/qbtech.png" alt="QbTest by Qbtech" class="trust-logo">
+      </a>
+      <a href="#partners" class="trust-logo-link">
+        <img src="images/logos/nhs-right-to-choose.png" alt="NHS Right to Choose" class="trust-logo">
+      </a>
+      <a href="#partners" class="trust-logo-link">
+        <img src="images/logos/mind.png" alt="Mind" class="trust-logo">
+      </a>
+      <a href="#partners" class="trust-logo-link">
+        <img src="images/logos/workwell.png" alt="WorkWell" class="trust-logo">
+      </a>
+      <a href="#partners" class="trust-logo-link">
+        <img src="images/logos/jo-fenton.png" alt="Jo Fenton Therapy" class="trust-logo">
+      </a>
+      <a href="local-authority-public-health.html" class="trust-logo-link">
+        <img src="images/logos/cambs-county-council.png" alt="Local Authority / Public Health" class="trust-logo">
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     WHAT THIS IS
+     ============================================================ -->
+<section class="section section-light" id="what-this-is">
+  <div class="section-inner">
+    <div class="chapter-header">
+      <span class="chapter-num">01</span>
+      <div class="section-label">The Simple Explanation</div>
+    </div>
+
+    <h2 class="display-2 fade-in">
+      OTOS does not replace services.<br>
+      <span class="accent">It holds the thread between them.</span>
+    </h2>
+
+    <p class="lead fade-in" style="margin-top:20px;max-width:none;">
+      The care already exists. The buildings exist. The teams exist. The problem is the space between them: referrals that are not receipted, discharges that go quiet, waiting-list support that is not connected, and people who disappear from view until they reappear in crisis.
+    </p>
+
+    <div class="def-box fade-in" style="margin-top:34px;">
+      <div class="def-icon">
+        <img src="images/brain-icon.png" alt="" aria-hidden="true">
+      </div>
+      <div class="def-content">
+        <h3>OTOS Continuity™ is a non-clinical continuity infrastructure layer.</h3>
+        <p>
+          It logs touchpoints, creates transition receipts, surfaces drift signals and maintains a timestamped continuity trail. It does not diagnose, prescribe, replace clinical judgement, or become another clinical record. Partner teams make the decisions. Always.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     PROBLEM
+     ============================================================ -->
+<section class="section section-light section-alt" id="problem">
+  <div class="section-inner">
+    <div class="chapter-header">
+      <span class="chapter-num">02</span>
+      <div class="section-label">The Problem</div>
+    </div>
+
+    <h2 class="display-2 fade-in">
+      When ADHD is left waiting,<br>
+      addiction can become the coping system.<br>
+      <span class="accent">Then the whole system pays.</span>
+    </h2>
+
+    <p class="lead fade-in" style="margin-top:20px;margin-bottom:32px;max-width:none;">
+      Many people are cycling through addiction services, mental health crisis, hospital discharge, post-rehab relapse risk and community support while the underlying driver remains unsupported. What looks like a behaviour problem can be a continuity problem: the person is not held long enough, clearly enough, or consistently enough to reach the next meaningful step.
+    </p>
+
+    <div class="grid-4" style="margin-top:32px;">
+      <div class="card fade-in card-cream">
+        <span class="card-stat">34%</span>
+        <div class="card-title">Median ADHD prevalence in addiction treatment cohorts</div>
+        <div class="card-body">Royal College of Psychiatrists research gives a 23–45% range. ADHD is significantly overrepresented in addiction services and often missed at the point of entry.</div>
+      </div>
+
+      <div class="card fade-in card-cream">
+        <span class="card-stat">£47bn</span>
+        <div class="card-title">Annual UK economic cost of alcohol and drugs</div>
+        <div class="card-body">Reactive spend is repeated when the system treats visible symptoms without reliably holding people through the underlying pathway.</div>
+      </div>
+
+      <div class="card fade-in card-cream">
+        <span class="card-stat">877</span>
+        <div class="card-title">Estimated local cohort in the Cambridge footprint</div>
+        <div class="card-body">OTOS modelling identifies an estimated group matching the ADHD and substance misuse profile. This is a planning estimate, not a reported NHS figure.</div>
+      </div>
+
+      <div class="card fade-in card-cream card-highlight">
+        <span class="card-stat">61.3%</span>
+        <div class="card-title">Improvement comparator after ADHD diagnosis</div>
+        <div class="card-body">START study evidence provides a strong comparator for the pre-pilot: what happens when the underlying ADHD driver is properly addressed?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SOLUTION
+     ============================================================ -->
+<section class="section section-light" id="solution">
+  <div class="section-inner">
+    <div class="chapter-header">
+      <span class="chapter-num">03</span>
+      <div class="section-label">The Solution</div>
+    </div>
+
+    <h2 class="display-2 fade-in">
+      The missing layer is not another service.<br>
+      <span class="accent">It is continuity.</span>
+    </h2>
+
+    <p class="lead fade-in" style="margin-top:20px;margin-bottom:36px;max-width:none;">
+      OTOS sits around existing services and makes follow-through visible. It shows whether the handoff happened, whether the next step was receipted, whether someone has drifted, and whether a human reviewer needs to look again.
+    </p>
+
+    <div class="is-not-grid fade-in">
+      <div class="is-col-yes is-col-card">
+        <div class="is-not-col-head">
+          <img src="images/brain-icon.png" alt="" aria-hidden="true" class="col-icon"> What OTOS <strong>is</strong>
+        </div>
+        <div class="is-row"><span class="tick-mark" aria-hidden="true">✓</span>Non-clinical continuity infrastructure</div>
+        <div class="is-row"><span class="tick-mark" aria-hidden="true">✓</span>Logs touchpoints and handoffs</div>
+        <div class="is-row"><span class="tick-mark" aria-hidden="true">✓</span>Creates transition receipts</div>
+        <div class="is-row"><span class="tick-mark" aria-hidden="true">✓</span>Surfaces drift signals for human review</div>
+        <div class="is-row"><span class="tick-mark" aria-hidden="true">✓</span>Maintains timestamped continuity trail</div>
+        <div class="is-row"><span class="tick-mark" aria-hidden="true">✓</span>Useful where services cannot all share one full record</div>
+      </div>
+
+      <div class="is-col-no is-col-card">
+        <div class="is-not-col-head">
+          <span class="cross-icon" aria-hidden="true">✕</span> What OTOS <strong>is not</strong>
+        </div>
+        <div class="not-row"><span class="cross-mark" aria-hidden="true">✕</span>Not an EPR or clinical record</div>
+        <div class="not-row"><span class="cross-mark" aria-hidden="true">✕</span>Does not diagnose or prescribe</div>
+        <div class="not-row"><span class="cross-mark" aria-hidden="true">✕</span>Does not replace any service</div>
+        <div class="not-row"><span class="cross-mark" aria-hidden="true">✕</span>Does not merge partner records</div>
+        <div class="not-row"><span class="cross-mark" aria-hidden="true">✕</span>Does not automate clinical decisions</div>
+        <div class="not-row"><span class="cross-mark" aria-hidden="true">✕</span>Not surveillance</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     HOW IT WORKS
+     ============================================================ -->
+<section class="section section-light section-alt" id="how-it-works">
+  <div class="section-inner">
+    <div class="chapter-header">
+      <span class="chapter-num">04</span>
+      <div class="section-label">How It Works</div>
+    </div>
+
+    <h2 class="display-2 fade-in">
+      Five steps.<br>
+      <span class="accent">Clear enough for any partner to follow.</span>
+    </h2>
+
+    <p class="lead fade-in" style="margin-top:20px;max-width:none;">
+      OTOS makes the journey visible without asking every organisation to become the same system, use the same record, or take on a heavy new workflow.
+    </p>
+
+    <div class="simple-flow fade-in">
+      <div class="simple-flow-card">
+        <div class="simple-flow-num">1</div>
+        <div class="simple-flow-title">A touchpoint happens</div>
+        <div class="simple-flow-copy">A person is seen, referred, discharged, signposted, checked in, or handed over.</div>
+      </div>
+
+      <div class="simple-flow-card">
+        <div class="simple-flow-num">2</div>
+        <div class="simple-flow-title">The thread is held</div>
+        <div class="simple-flow-copy">The touchpoint is logged against a tokenised continuity journey, not a new clinical record.</div>
+      </div>
+
+      <div class="simple-flow-card">
+        <div class="simple-flow-num">3</div>
+        <div class="simple-flow-title">The handoff is receipted</div>
+        <div class="simple-flow-copy">The next step is acknowledged, unresolved, or waiting for review. Silence becomes visible.</div>
+      </div>
+
+      <div class="simple-flow-card">
+        <div class="simple-flow-num">4</div>
+        <div class="simple-flow-title">Drift is surfaced early</div>
+        <div class="simple-flow-copy">Missed follow-through becomes a drift signal before it turns into crisis or relapse.</div>
+      </div>
+
+      <div class="simple-flow-card">
+        <div class="simple-flow-num">5</div>
+        <div class="simple-flow-title">A human decides</div>
+        <div class="simple-flow-copy">OTOS surfaces the signal. Partner teams decide what happens next. Every time.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     PILOT
+     ============================================================ -->
+<section class="section section-light" id="pilot">
+  <div class="section-inner">
+    <div class="chapter-header">
+      <span class="chapter-num">05</span>
+      <div class="section-label">The Pre-Pilot</div>
+    </div>
+
+    <h2 class="display-2 fade-in">
+      12 weeks. 50 people.<br>
+      <span class="accent">One clear question.</span>
+    </h2>
+
+    <p class="lead fade-in" style="margin-top:20px;margin-bottom:16px;max-width:none;">
+      Does a receipted continuity thread, applied to this targeted cohort, reduce silent disengagement and increase the likelihood that people reach the next meaningful step?
+    </p>
+
+    <p class="fade-in col-muted" style="margin-bottom:38px;">
+      This is not a request to fund a full rollout. It is a bounded demonstrator designed to prove whether continuity changes outcomes before wider scale.
+    </p>
+
+    <div class="grid-3 fade-in">
+      <div class="card card-cream">
+        <div class="card-stat">50</div>
+        <div class="card-title">Participants</div>
+        <div class="card-body">A defined, selected pre-pilot cohort across addiction, ADHD, hospital, community and support touchpoints.</div>
+      </div>
+
+      <div class="card card-cream">
+        <div class="card-stat">12 wks</div>
+        <div class="card-title">Active delivery</div>
+        <div class="card-body">Weekly learning cycles, monthly reporting, partner feedback, and a final evidence pack.</div>
+      </div>
+
+      <div class="card card-cream">
+        <div class="card-stat">£91,520</div>
+        <div class="card-title">Pre-pilot cost</div>
+        <div class="card-body">One-off demonstrator cost covering infrastructure, co-ordination, evaluation and evidence generation.</div>
+      </div>
+    </div>
+
+    <div class="mini-proof-grid fade-in">
+      <div class="mini-proof">
+        <strong>Continuity</strong>
+        Follow-through visibility, receipt completion, drift-detection lead time and median gap between touchpoints.
+      </div>
+
+      <div class="mini-proof">
+        <strong>Burden</strong>
+        Partner time spent, human-review discipline, safe escalation boundaries and whether the workflow stays genuinely light.
+      </div>
+
+      <div class="mini-proof">
+        <strong>Outcome</strong>
+        Whether people reach the next meaningful step more reliably, with local evidence that can be defended.
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     PARTNER PATHWAY
+     ============================================================ -->
+<section class="section section-light section-alt" id="partners">
+  <div class="section-inner">
+    <div class="chapter-header">
+      <span class="chapter-num">06</span>
+      <div class="section-label">Service Providers &amp; Key Partners</div>
+    </div>
+
+    <h2 class="display-2 fade-in">
+      All the support already exists.<br>
+      <span class="accent">OTOS connects it around the person.</span>
+    </h2>
+
+    <p class="lead fade-in" style="margin-top:20px;margin-bottom:32px;max-width:none;">
+      The next step is not to overwhelm every partner with the whole system. It is to show each organisation exactly where it fits, what is needed now, and how a small amount of input can help unlock a safer, funded pathway.
+    </p>
+
+    <div class="partner-pathway-box fade-in" style="border-radius:var(--radius-xl);padding:32px;margin-bottom:40px;text-align:center;border:1px solid var(--border);background:rgba(255,255,255,0.6);">
+      <img src="images/partner-pathway.png" alt="OTOS Continuity™ Partner Pathway Diagram" onerror="this.parentElement.innerHTML='<p style=&quot;color:var(--text-muted);font-size:0.9rem;&quot;>Partner Pathway Diagram</p>'">
+      <p class="col-muted" style="margin-top:16px;font-size:0.82rem;">OTOS Continuity™ Partner Pathway — first demonstrator ecosystem</p>
+    </div>
+
+    <div class="home-route-grid fade-in">
+      <a href="partners-cgl-crs.html" class="home-route-card">
+        <div class="route-kicker">Partner Route</div>
+        <div class="route-title">CGL &amp; CRS</div>
+        <div class="route-copy">Identification, recovery touchpoints, relapse risk, re-engagement and continuity between addiction support and next steps.</div>
+        <div class="route-link">Open tailored page →</div>
+      </a>
+
+      <a href="partners-cpft-adhd-team.html" class="home-route-card">
+        <div class="route-kicker">Partner Route</div>
+        <div class="route-title">CPFT ADHD Team</div>
+        <div class="route-copy">Waiting-list pressure, medication review gaps, ADHD pathway visibility and the role of continuity around assessment and treatment.</div>
+        <div class="route-link">Open tailored page →</div>
+      </a>
+
+      <a href="partners-rce-wellbeing.html" class="home-route-card">
+        <div class="route-kicker">Partner Route</div>
+        <div class="route-title">RCE Wellbeing Hub</div>
+        <div class="route-copy">Support while waiting, ADHD-informed courses, holding content, micro check-ins and community support before clinical movement.</div>
+        <div class="route-link">Open tailored page →</div>
+      </a>
+
+      <a href="partners-addenbrookes.html" class="home-route-card">
+        <div class="route-kicker">Partner Route</div>
+        <div class="route-title">Addenbrooke’s / Alcohol Care Team</div>
+        <div class="route-copy">Bedside handoff, discharge risk, liaison psychiatry, post-detox continuity and ensuring the thread is created before discharge.</div>
+        <div class="route-link">Open tailored page →</div>
+      </a>
+
+      <a href="partners-gp-rtc-qbtech.html" class="home-route-card">
+        <div class="route-kicker">Partner Route</div>
+        <div class="route-title">GP / RTC / QbTech / Shared Care</div>
+        <div class="route-copy">The hardest route to design well: assessment, Right to Choose, QbTest, GP ownership and shared-care realities.</div>
+        <div class="route-link">Open tailored page →</div>
+      </a>
+
+      <a href="partners-mind-workwell-jo-fenton.html" class="home-route-card">
+        <div class="route-kicker">Partner Route</div>
+        <div class="route-title">Mind, WorkWell &amp; Jo Fenton Therapy</div>
+        <div class="route-copy">The wider support ecosystem: charity, employment, therapy and community help that can hold people when statutory care cannot see the whole journey.</div>
+        <div class="route-link">Open tailored page →</div>
+      </a>
+
+      <a href="local-authority-public-health.html" class="home-route-card">
+        <div class="route-kicker">System Route</div>
+        <div class="route-title">Local Authority &amp; Public Health</div>
+        <div class="route-copy">A reusable route for any locality: population need, avoidable demand, public-health logic and local adaptation.</div>
+        <div class="route-link">Open page →</div>
+      </a>
+
+      <a href="evidence-sources.html" class="home-route-card">
+        <div class="route-kicker">Evidence Route</div>
+        <div class="route-title">Evidence, Sources &amp; References</div>
+        <div class="route-copy">Published evidence, modelling caveats, source register, policy alignment and claims that can be traced.</div>
+        <div class="route-link">Open page →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     COMMUNITY / CHARITY ANGLE
+     ============================================================ -->
+<section class="section section-light" id="community-layer">
+  <div class="section-inner">
+    <div class="chapter-header">
+      <span class="chapter-num">07</span>
+      <div class="section-label">Why This Matters Beyond One Service</div>
+    </div>
+
+    <h2 class="display-2 fade-in">
+      Whole-person care needs more than one record.<br>
+      <span class="accent">Especially when charities are part of the journey.</span>
+    </h2>
+
+    <p class="lead fade-in" style="margin-top:20px;margin-bottom:34px;max-width:none;">
+      The NHS and public-sector direction is clear: join up care, reduce repetition, and treat the whole person. But many of the services that actually hold people day to day — charities, recovery groups, employment support, therapy and peer networks — may never have access to a full NHS patient record.
+    </p>
+
+    <div class="grid-3 fade-in">
+      <div class="card card-cream">
+        <div class="card-title">Records stay separate</div>
+        <div class="card-body">OTOS does not require every organisation to see everything. It holds continuity signals around the journey while records remain where they belong.</div>
+      </div>
+
+      <div class="card card-cream">
+        <div class="card-title">Support becomes visible</div>
+        <div class="card-body">A support course, therapy touchpoint, recovery contact or employment step can help hold the thread without becoming a clinical record.</div>
+      </div>
+
+      <div class="card card-cream">
+        <div class="card-title">The person stops repeating themselves</div>
+        <div class="card-body">The system can see follow-through, not private notes. That is enough to reduce drift, duplication and silence between services.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     DEMO / PRODUCT TEASER
+     ============================================================ -->
+<section class="section section-light section-alt" id="demos">
+  <div class="section-inner">
+    <div class="chapter-header">
+      <span class="chapter-num">08</span>
+      <div class="section-label">In Practice</div>
+    </div>
+
+    <h2 class="display-2 fade-in">
+      Same person. Many touchpoints.<br>
+      <span class="accent">One continuity thread.</span>
+    </h2>
+
+    <p class="lead fade-in" style="margin-top:16px;margin-bottom:36px;max-width:none;">
+      The full demo experience will sit on its own page. Home only shows the principle: a keyworker, clinician, support worker or coordinator can log the moment that matters, and the next step becomes visible.
+    </p>
+
+    <div class="grid-3 fade-in">
+      <div class="card card-cream">
+        <div class="card-num">Scenario 01</div>
+        <div class="card-title">Hospital discharge</div>
+        <div class="card-body">A bedside touchpoint creates the continuity thread before someone leaves the ward.</div>
+      </div>
+
+      <div class="card card-cream">
+        <div class="card-num">Scenario 02</div>
+        <div class="card-title">Recovery / community handoff</div>
+        <div class="card-body">A CGL or CRS touchpoint confirms what happened next and whether the journey is still held.</div>
+      </div>
+
+      <div class="card card-cream">
+        <div class="card-num">Scenario 03</div>
+        <div class="card-title">Waiting-list support</div>
+        <div class="card-body">RCE, Mind, WorkWell or therapy support can hold the person while clinical pathways move slowly.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     FUNDING / EVIDENCE TEASER
+     ============================================================ -->
+<section class="section section-light" id="proof">
+  <div class="section-inner">
+    <div class="chapter-header">
+      <span class="chapter-num">09</span>
+      <div class="section-label">Evidence, Costs &amp; Next Step</div>
+    </div>
+
+    <h2 class="display-2 fade-in">
+      The pre-pilot is designed to prove one thing clearly:<br>
+      <span class="accent">whether continuity changes outcomes.</span>
+    </h2>
+
+    <p class="lead fade-in" style="margin-top:20px;margin-bottom:34px;max-width:none;">
+      The evidence route holds the source base. The funding route holds the cost model. The partner routes explain what each organisation is being asked to do. This page is the overview — the deeper pages carry the detail.
+    </p>
+
+    <div class="home-route-grid fade-in">
+      <a href="funding-costs.html" class="home-route-card">
+        <div class="route-kicker">Funding</div>
+        <div class="route-title">Investment, Costs &amp; Delivery</div>
+        <div class="route-copy">Build cost, running cost, staffing, timeline, milestones and what early funding unlocks.</div>
+        <div class="route-link">Open funding page →</div>
+      </a>
+
+      <a href="evidence-sources.html" class="home-route-card">
+        <div class="route-kicker">Evidence</div>
+        <div class="route-title">Sources &amp; Claims</div>
+        <div class="route-copy">ADHD and addiction evidence, continuity evidence, public-health figures, source caveats and modelling notes.</div>
+        <div class="route-link">Open evidence page →</div>
+      </a>
+
+      <a href="local-authority-public-health.html" class="home-route-card">
+        <div class="route-kicker">Public Health</div>
+        <div class="route-title">Local Authority Route</div>
+        <div class="route-copy">A version designed for local authorities and public-health stakeholders, adaptable to future locations.</div>
+        <div class="route-link">Open local authority page →</div>
+      </a>
+
+      <a href="#get-involved" class="home-route-card">
+        <div class="route-kicker">Action</div>
+        <div class="route-title">What We Need Now</div>
+        <div class="route-copy">Partner time, short support statements, pathway feedback and introductions to the right governance or funding route.</div>
+        <div class="route-link">Go to CTA →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     FOUNDER / LIVED ARC TEASER
+     ============================================================ -->
+<section class="section section-light section-alt" id="founder">
+  <div class="section-inner">
+    <div class="chapter-header">
+      <span class="chapter-num">10</span>
+      <div class="section-label">Why This Exists</div>
+    </div>
+
+    <div class="founder-inner fade-in">
+      <div>
+        <h2 class="display-2" style="margin-bottom:24px;">
+          Not a theory.<br>
+          <span class="accent">A lived reality.</span>
+        </h2>
+
+        <p class="founder-p">
+          OTOS was built because the system tried to help — but nothing held the space between services. Addiction support, ADHD care, A&amp;E, private treatment, recovery, referral, waiting and medication review all existed as fragments. The thread kept breaking.
+        </p>
+
+        <div class="founder-quote-block">
+          "The failure is not in the care — it is in the space and continuity between it."
+        </div>
+
+        <p class="founder-p">
+          The pre-pilot turns that lived insight into a bounded, measurable question: if the continuity thread is held properly, do fewer people drift, disengage, relapse or re-present in crisis?
+        </p>
+      </div>
+
+      <div class="founder-img-placeholder">
+        <img src="images/otos-app-keyworker.jpg" alt="Keyworker using the OTOS Continuity app" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-xl);">
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     GET INVOLVED / CTA
+     ============================================================ -->
+<section class="section section-dark" id="get-involved">
+  <div class="section-inner">
+    <div class="cta-block">
+      <p class="section-label" style="margin:0 auto 24px;display:inline-flex;">What Happens Next</p>
+
+      <h2 class="cta-title">
+        The model is clear.<br>
+        <span class="accent">Now the pathway needs shaping with partners.</span>
+      </h2>
+
+      <p class="cta-body">
+        The immediate ask is practical: help confirm the route, identify the right people, give feedback on the role your organisation would play, and provide a short non-committal note of support where appropriate.
+      </p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;max-width:860px;margin:0 auto 32px;text-align:left;">
+        <div class="card">
+          <div class="card-num">01</div>
+          <div class="card-body" style="font-weight:600;">Does the continuity model fit the gap your service already sees?</div>
+        </div>
+
+        <div class="card">
+          <div class="card-num">02</div>
+          <div class="card-body" style="font-weight:600;">What would your organisation need to do, approve or clarify for a 50-person pre-pilot?</div>
+        </div>
+
+        <div class="card">
+          <div class="card-num">03</div>
+          <div class="card-body" style="font-weight:600;">Can you provide feedback, a short support note, or an introduction to the right person?</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <a href="mailto:info@otos.life?subject=OTOS%20Continuity%20-%20Partner%20conversation" class="btn btn-primary">Email OTOS</a>
+        <a href="#partners" class="btn btn-secondary">Choose your route</a>
+        <a href="evidence-sources.html" class="btn btn-secondary">Review evidence</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo">
+        <img src="images/brain-icon.png" alt="OTOS Continuity™" onerror="this.style.display='none'">
+        <span class="nav-logo-text">OTOS Continuity™</span>
+      </a>
+      <p>Non-clinical continuity infrastructure for targeted pathways where people are visible to services but not properly held between them.</p>
+    </div>
+
+    <div>
+      <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">Routes</div>
+      <div class="footer-links">
+        <a href="partners-cgl-crs.html">CGL &amp; CRS</a>
+        <a href="partners-cpft-adhd-team.html">CPFT ADHD Team</a>
+        <a href="partners-rce-wellbeing.html">RCE Wellbeing</a>
+        <a href="partners-addenbrookes.html">Addenbrooke’s</a>
+        <a href="partners-gp-rtc-qbtech.html">GP / RTC / QbTech</a>
+        <a href="partners-mind-workwell-jo-fenton.html">Mind / WorkWell / Jo Fenton</a>
+        <a href="local-authority-public-health.html">Local Authority / Public Health</a>
+        <a href="funding-costs.html">Funding &amp; Costs</a>
+        <a href="evidence-sources.html">Evidence &amp; Sources</a>
+        <a href="public.html">Public Gateway</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p class="footer-copy">© OTOS Digital Ltd · Company registered in England &amp; Wales · Company No. 17084455 · Phone: +44 7466 334143 · Email: <a href="mailto:info@otos.life" style="color:var(--amber)">info@otos.life</a></p>
+    <p class="footer-disclaimer">OTOS Continuity™ is a non-clinical infrastructure layer. It does not diagnose, prescribe, or replace any clinical service. Human-in-control at every step.</p>
+  </div>
+</footer>
+
+<script src="js/otos.js"></script>
+</body>
+</html>
